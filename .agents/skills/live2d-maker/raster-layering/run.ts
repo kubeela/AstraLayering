@@ -7,14 +7,15 @@ export { parseRunArguments } from '../shared/raster/cli.ts';
 
 export const help = `raster-layering — 按顺序执行 Krita 栅格分层流程
 
-首次运行：pnpm raster-layering --name <任务名> --krita <可执行文件路径>
-继续运行：同上，仍须带 --krita
+首次运行：pnpm raster-layering --name <任务名> --krita <可执行文件路径> --knowledge <先验知识目录>
+继续运行：同上，仍须带 --krita 与 --knowledge
 只查安装：pnpm raster-layering --krita <可执行文件路径> --check-krita
 查看提示词：首次运行参数后加 --dry-run（检查路径和 Krita，不调用模型、不写文件）
 
 默认任务保存到运行根目录 .run/<任务名>/raster-layering/（仓库内为仓库根 .run，独立安装为 skill 上一级的 .run），不受启动工作目录影响。
 --dir <绝对路径> 可指定运行根目录，任务保存到 <dir>/<任务名>/raster-layering/；后续管线与续跑使用相同 --dir。
 --krita 每次启动（含续跑）都必须显式提供：独立 section 不保存配置，总入口从任务根 run.json 传入；不会自动下载、安装或搜索 Krita。
+--knowledge 同样每次都须提供：该目录完整替换 skill 自带的 knowledge/，启动前检查全部文件，缺失即拒绝运行。
 按 --name 直接读取同名 part-layering/ 的 parts、参考、groups.json 与 occlusion.json，无需指定输入路径。缺少产物时提示上游命令与手动放置路径。
 不复制上游输入，不保存配置；各步 thread 记在 agents/steps/<stepNN>/session.json，步骤状态由 .running / .completed 决定。
 中断保留 .running 并继续原 thread；删除某步 .completed 后，下次启动清空该步及后续目录，开启新 thread；上游 occlusion.json 的修正保留。

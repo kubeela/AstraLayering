@@ -564,8 +564,11 @@ async function loadConfigFile() {
  if(!state.file) {configText='这个版本没有可浏览的管线配置。';schemaText='';return;}
  const q=`?ref=${encodeURIComponent(state.ref)}&path=${encodeURIComponent(state.file)}`;
  configText=(await get('./api/config/content'+q)).text; schemaText=''; diffText='';
- const sibling=state.file.replace(/description\.md$/,'schema.json');
- if(sibling!==state.file&&configFiles.includes(sibling)) schemaText=(await get('./api/config/content'+`?ref=${encodeURIComponent(state.ref)}&path=${encodeURIComponent(sibling)}`)).text;
+ // Descriptions live in knowledge/, schemas stay with the code of the section or shared.
+ const tool=state.file.match(/^(?:knowledge\/)?([^/]+)\/(?:.*\/)?tools\/([^/]+)\/description\.md$/);
+ const sibling=tool&&[state.file.replace(/description\.md$/,'schema.json'),`${tool[1]}/tools/${tool[2]}/schema.json`,`shared/tools/${tool[2]}/schema.json`].find(file=>configFiles.includes(file))
+  ??configFiles.find(file=>file.endsWith(`/tools/${tool[2]}/schema.json`));
+ if(sibling) schemaText=(await get('./api/config/content'+`?ref=${encodeURIComponent(state.ref)}&path=${encodeURIComponent(sibling)}`)).text;
  if(state.diff) diffText=(await get('./api/config/diff'+q+'&base='+encodeURIComponent(state.base||'HEAD~2'))).text;
 }
 function markdown(text) {
@@ -588,30 +591,32 @@ function jsonLines(text) {
 // content is one folder shares its row (prompts / groups). Folders around the selected file
 // open by themselves; one the user opened or closed stays so until the page reloads.
 function configTree() {
+ // knowledge/<section>/ sits with <section>/, so a tool description meets its schema.
+ const scope=file=>file.replace(/^knowledge\//,'');
  const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共配置'],['','技能根目录']];
  const query=state.configFilter.toLowerCase();
- const owned=file=>families.some(([prefix])=>prefix&&file.startsWith(prefix+'/'));
+ const owned=file=>families.some(([prefix])=>prefix&&scope(file).startsWith(prefix+'/'));
  const count=node=>node.files.length+[...node.folders.values()].reduce((sum,child)=>sum+count(child),0);
  const isOpen=(path,fallback)=>query?true:state.configFolders.get(path)??fallback;
  const fileRow=(file,depth)=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" style="--depth:${depth}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(file.split('/').at(-1))}</span></button>`;
  const folderRows=(node,depth)=>[...[...node.folders].sort(([a],[b])=>a.localeCompare(b)).map(([name,child])=>{
   let label=name;
   while(!child.files.length&&child.folders.size===1){const [[next,inner]]=child.folders;label+=' / '+next;child=inner;}
-  return `<details class="config-folder" data-config-folder="${esc(child.path)}" style="--depth:${depth}" ${isOpen(child.path,state.file.startsWith(child.path+'/'))?'open':''}><summary title="${esc(child.path)}">${icon('chevron')}${icon('folder')}<span>${esc(label)}</span><small>${count(child)}</small></summary>${folderRows(child,depth+1)}</details>`;
+  return `<details class="config-folder" data-config-folder="${esc(child.path)}" style="--depth:${depth}" ${isOpen(child.path,scope(state.file).startsWith(child.path+'/'))?'open':''}><summary title="${esc(child.path)}">${icon('chevron')}${icon('folder')}<span>${esc(label)}</span><small>${count(child)}</small></summary>${folderRows(child,depth+1)}</details>`;
  }),...node.files.sort().map(file=>fileRow(file,depth))].join('');
  return families.map(([prefix,label])=> {
-  const files=configFiles.filter(file=>(prefix?file.startsWith(prefix+'/'):!owned(file))&&(!query||file.toLowerCase().includes(query)));
+  const files=configFiles.filter(file=>(prefix?scope(file).startsWith(prefix+'/'):!owned(file))&&(!query||file.toLowerCase().includes(query)));
   if(!files.length)return '';
   const root={path:prefix,folders:new Map(),files:[]};
   for(const file of files){
    let node=root;
-   for(const part of file.split('/').slice(prefix?1:0,-1)){
+   for(const part of scope(file).split('/').slice(prefix?1:0,-1)){
     if(!node.folders.has(part))node.folders.set(part,{path:(node.path?node.path+'/':'')+part,folders:new Map(),files:[]});
     node=node.folders.get(part);
    }
    node.files.push(file);
   }
-  const key=prefix||'.',active=prefix?state.file.startsWith(prefix+'/'):!!state.file&&!owned(state.file);
+  const key=prefix||'.',active=prefix?scope(state.file).startsWith(prefix+'/'):!!state.file&&!owned(state.file);
   return `<details class="config-family" data-config-folder="${key}" ${isOpen(key,active)?'open':''}><summary>${icon('chevron')}${icon(prefix==='shared'?'code':'folder')}<span>${label}</span><small>${files.length}</small></summary><div>${folderRows(root,0)}</div></details>`;
  }).join('');
 }
@@ -621,7 +626,7 @@ function bindConfigTree() {
  document.querySelectorAll('[data-config-folder]>summary').forEach(summary=>summary.onclick=()=>{if(!state.configFilter)state.configFolders.set(summary.parentElement.dataset.configFolder,!summary.parentElement.open);});
 }
 function configPage() {
- const tabs=`<nav class="config-mode-tabs" aria-label="配置内容"><button data-config-mode="env" class="${state.configMode==='env'?'active':''}">环境与模型</button><button data-config-mode="files" class="${state.configMode==='files'?'active':''}">提示词与工具</button></nav>`;
+ const tabs=`<nav class="config-mode-tabs" aria-label="配置内容"><button data-config-mode="env" class="${state.configMode==='env'?'active':''}">环境与模型</button><button data-config-mode="files" class="${state.configMode==='files'?'active':''}">先验知识</button></nav>`;
  return state.configMode==='env'?`<div class="page-heading config-heading"><div><div class="breadcrumb">工作空间 ${icon('chevron')}<span>本地配置</span></div><h1>管线配置</h1><p>选择模型、连接服务，预览并保存这份仓库的运行配置。</p></div></div>${tabs}${envEditor.view()}`:tabs+promptConfigPage();
 }
 function promptConfigPage() {
@@ -631,7 +636,7 @@ function promptConfigPage() {
  <div class="version-bar"><span class="version-label">${icon('branch')}配置来源</span><select id="config-ref" aria-label="配置版本">${sourceRefs.map(ref=>`<option value="${esc(ref)}" ${ref===state.ref?'selected':''}>${ref==='worktree'?'本地工作区':esc(ref)}</option>`).join('')}${versions?.commits?.filter(c=>c.sha===state.ref).map(c=>`<option selected value="${c.sha}">${c.short}</option>`).join('')||''}</select><span class="version-sha">${versions?.commits?.[0]?.short||'…'}</span><span class="version-description">${state.ref==='worktree'?'包含尚未提交的本地修改':'固定版本快照'}</span><span class="spacer"></span><label class="diff-toggle"><input type="checkbox" id="config-diff" ${state.diff?'checked':''}>查看差异</label><select id="config-base" aria-label="对比基准">${(versions?.commits||[]).slice(1).map((c,i)=>`<option value="${c.sha}" ${(state.base?state.base===c.sha:i===1)?'selected':''}>对比 ${c.short} · ${esc(c.title.slice(0,32))}</option>`).join('')}</select></div>
  <div class="config-workspace"><aside class="config-tree"><div class="pane-title"><h3>配置目录</h3><span class="count-badge">${configFiles.length}</span></div><div class="tree-search">${icon('search')}<input id="config-search" value="${esc(state.configFilter)}" placeholder="搜索提示词或工具" aria-label="搜索配置"></div><div class="config-tree-scroll">${configTree()}</div><div class="config-tree-footer">${icon('lock')}切换版本不会修改工作区</div></aside>
  <section class="config-content"><div class="config-file-heading"><div class="config-file-icon">${icon(isTool?'code':'file')}</div><div><h2>${esc(toolName)}</h2><code>${esc(state.file.replace(/\/description\.md$/,''))}</code></div><span class="spacer"></span><span class="small-tag">${isTool?'TOOL DEFINITION':'MARKDOWN'}</span></div><div class="config-tabs"><button class="active">${icon(state.diff?'branch':'eye')}${state.diff?'版本差异':'配置预览'}</button><span>所选版本的实际文件</span></div>
- ${state.diff?`<div class="diff-content">${diffText?diffText.split('\n').map(line=>`<pre class="${line.startsWith('+')?'addition':line.startsWith('-')?'deletion':''}">${esc(line)}</pre>`).join(''):`<div class="empty-diff">${icon('check')}这个文件在两个版本之间没有变化。</div>`}</div>`:`<div class="config-pair"><article class="markdown-panel"><header><span>${icon('file')}${currentFile.endsWith('.json')?'Schema JSON':currentFile}</span><small>${currentFile.endsWith('.json')?'JSON':'MARKDOWN'}</small></header><div class="markdown-body">${currentFile.endsWith('.json')?`<pre>${esc(configText)}</pre>`:markdown(configText)}</div></article>${schemaText?`<article class="schema-panel"><header><span>${icon('code')}schema.json</span><small>JSON SCHEMA</small></header><div class="code-body">${jsonLines(schemaText)}</div></article>`:''}</div>`}
+ ${state.diff?`<div class="diff-content">${diffText?diffText.split('\n').map(line=>`<pre class="${line.startsWith('+')?'addition':line.startsWith('-')?'deletion':''}">${esc(line)}</pre>`).join(''):`<div class="empty-diff">${icon('check')}这个文件在两个版本之间没有变化。</div>`}</div>`:`<div class="config-pair"><article class="markdown-panel"><header><span>${icon('file')}${currentFile.endsWith('schema.json')?'Schema JSON':currentFile}</span><small>${currentFile.endsWith('.json')?'JSON':'MARKDOWN'}</small></header><div class="markdown-body">${currentFile.endsWith('.json')?`<pre>${esc(configText)}</pre>`:markdown(configText)}</div></article>${schemaText?`<article class="schema-panel"><header><span>${icon('code')}schema.json</span><small>JSON SCHEMA</small></header><div class="code-body">${jsonLines(schemaText)}</div></article>`:''}</div>`}
  <div class="config-content-footer">${icon('info')}description 与 schema 来自同一版本；预览不会影响正在运行的 agent。</div></section></div>`;
 }
 function render() {

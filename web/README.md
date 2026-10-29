@@ -63,7 +63,7 @@ SVG 小图预览按实际可见内容居中取景，等比放大并保留边距�
 “管线配置”分为两个页签：
 
 - **环境与模型**：按职责选择语言模型与思考力度、按步骤选择生图模型；编辑模型连接、生图服务、图片容量保护和运行环境（含本机 Krita 并发上限 `layering_krita_max_instances`，默认 4）。CLI 检测仅查询本机入口与版本，未就绪的 CLI 对应模型会标注并禁用。填写 CLI 路径后可重新检测；登录、生图能力和账号权限在制作启动时检查。
-- **提示词与工具**：只读展示各管线 Markdown 和工具 `description.md` / `schema.json`，按 skill 目录嵌套为文件夹树，搜索时展开全部。可选择工作区、本地或远端跟踪分支（含 `origin/main`）、提交版本及差异基准。版本浏览保留工作区，远端快照由维护者执行 `git fetch` 更新。
+- **先验知识**：只读展示 `knowledge/` 中各管线的 Markdown、`agent.json` 与工具 `description.md`，以及代码中的 `schema.json`，按管线嵌套为文件夹树（`knowledge/<管线>/` 与 `<管线>/` 合并显示），搜索时展开全部。可选择工作区、本地或远端跟踪分支（含 `origin/main`）、提交版本及差异基准。版本浏览保留工作区，远端快照由维护者执行 `git fetch` 更新。
 
 ![环境与模型配置](demo-screenshots/13-environment-config.png)
 
@@ -75,7 +75,7 @@ SVG 小图预览按实际可见内容居中取景，等比放大并保留边距�
 
 [连续操作 GIF](demo-screenshots/14-env-guide.gif) · [高清 MP4](demo-screenshots/14-env-guide.mp4)
 
-![提示词与工具版本浏览](demo-screenshots/15-config-tools.png)
+![先验知识版本浏览](demo-screenshots/15-config-tools.png)
 
 **软件版本：** 标题栏显示发布标签版本（`.agents/skills/live2d-maker/shared/version.ts`：本仓库检出用 `git describe` 的 `vX.Y.Z` 标签，标签后的提交显示为 `+N`；无 `.git` 时用根 `package.json` 的 `version`）。`GET /api/version` 返回当前版本与最新标签，`/healthz` 也带 `version`。最新标签每天最多查询一次 GitHub tags API，结果缓存在 `.web/update-check.json`，失败一小时后再试且不提示；skill `.env` 的 `layering_update_check=false` 关闭查询（shell 同名变量优先，每次请求重新读取，配置页可直接切换）。任务 `run.json` 的 `createdWith`／`lastRunWith` 记录创建与最近一次配置运行的版本。发布流程：更新 `package.json` 版本与 `CHANGELOG.md`，合入 main 后打 `vX.Y.Z` 标签并推送，再用 `pnpm release:pack` 从该标签生成 `.release/AstraLayering-vX.Y.Z.zip`（按 `.gitattributes` 的 `export-ignore` 只带工作台、skill、展示图与 Pink Doll 示例）。
 

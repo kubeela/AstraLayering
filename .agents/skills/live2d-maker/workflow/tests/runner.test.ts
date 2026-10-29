@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
@@ -11,6 +11,7 @@ import { MissingDependencyError } from '../../shared/missing-dependency.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, taskStatus } from '../state.ts';
 import { main, parseArguments, startBackground } from '../run.ts';
 import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
+import { defaultKnowledgeDirectory, knowledgeDirectory, selectKnowledge } from '../../shared/knowledge.ts';
 import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
 
 // Real background workers inherit this and pass the Codex startup check without a build.
@@ -233,6 +234,22 @@ test('同名任务锁阻止重复启动，取消保留状态并释放锁', async
   const unlock = await acquireTaskLock(f.directory); await unlock();
 });
 
+test('--knowledge 记入 run.json，续跑省略沿用；缺失文件时拒绝启动，写入 workflow.log 且不改任务记录', async t => {
+  const f = await fixture(t);
+  t.after(() => selectKnowledge(defaultKnowledgeDirectory));
+  const knowledge = join(f.options.dir, 'knowledge');
+  await cp(defaultKnowledgeDirectory, knowledge, { recursive: true });
+  const done = { preflight, execute: async () => ({ summary: 'ok' }) };
+  await runTask({ ...f.options, image: 'reference.png', to: 'part-layering', knowledge }, done);
+  assert.equal((await readRun(f.directory))!.knowledge, knowledge);
+  assert.equal(knowledgeDirectory(), knowledge);
+  const before = await readFile(join(f.directory, 'run.json'), 'utf8');
+  await rm(join(knowledge, 'shared/prompts/runtime/continuation.md'));
+  await assert.rejects(runTask({ name: 'case', dir: f.options.dir, to: 'part-layering' }, done), /先验知识缺少文件：.*continuation\.md/);
+  assert.equal(await readFile(join(f.directory, 'run.json'), 'utf8'), before, '拒绝启动不能改动任务记录');
+  assert.match(await readFile(join(f.directory, 'workflow.log'), 'utf8'), /先验知识缺少文件：.*continuation\.md/);
+});
+
 test('CLI 区分只读查询、后台启动和恢复，拒绝冲突参数', () => {
   assert.equal(parseArguments(['--name', 'case', '--status', '--json']).mode, 'status');
   assert.equal(parseArguments(['--name', 'case', '--background']).mode, 'background');
@@ -251,6 +268,7 @@ test('CLI 与网页操作对应：继续、恢复、重试、停止，可指定�
   assert.equal(parse('--retry').mode, 'run');
   assert.deepEqual([parse('--resume', '--background').mode, parse('--resume', '--background').action.action], ['background', 'resume']);
   assert.equal(parse('--continue', '--krita', '/opt/krita').options.krita, '/opt/krita');
+  assert.equal(parse('--resume', '--knowledge', '/opt/knowledge').options.knowledge, '/opt/knowledge');
   assert.deepEqual(parse('--retry', '--section', 'part-layering', '--step', 'step11_completion/head').action,
     { action: 'retry', section: 'part-layering', step: 'step11_completion/head' });
   assert.deepEqual(parse('--continue', '--section', 'shadow').action, { action: 'continue', section: 'shadow', step: '' });
@@ -258,7 +276,7 @@ test('CLI 与网页操作对应：继续、恢复、重试、停止，可指定�
   assert.equal(parse().action, undefined);
   for (const args of [['--resume', '--retry'], ['--section', 'shadow'], ['--retry', '--step', 'step01'],
     ['--retry', '--section', 'shadow'], ['--retry', '--section', 'unknown', '--step', 'step01'],
-    ['--stop', '--krita', 'x'], ['--stop', '--background'], ['--stop', '--retry'], ['--status', '--retry']]) {
+    ['--stop', '--krita', 'x'], ['--stop', '--knowledge', 'x'], ['--status', '--knowledge', 'x'], ['--stop', '--background'], ['--stop', '--retry'], ['--status', '--retry']]) {
     assert.throws(() => parse(...args), Error, args.join(' '));
   }
 });

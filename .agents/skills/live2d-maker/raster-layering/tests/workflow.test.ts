@@ -61,7 +61,9 @@ test('任务名限制为单个目录；默认仓库 .run 任务目录与 cwd 无
     assert.equal(runDirectory('test'), fileURLToPath(new URL('../../../../../.run/test/raster-layering', import.meta.url)));
   } finally { process.chdir(cwd); }
   for (const name of ['', '.', '..', '../other', '/tmp/other', 'a/b', 'a\\b']) assert.throws(() => runDirectory(name), /--name/);
-  assert.equal(parseRunArguments(['--name', 'test']).name, 'test');
+  assert.equal(parseRunArguments(['--name', 'test', '--knowledge', 'knowledge']).name, 'test');
+  // A single section keeps no configuration, so every start names its knowledge.
+  assert.throws(() => parseRunArguments(['--name', 'test']), /--knowledge/);
   assert.throws(() => parseRunArguments([]), /--name/);
   assert.throws(() => parseRunArguments(['--check-krita']), /--krita/);
   assert.throws(() => parseRunArguments(['--name', 'test', '--output', 'x']), /Unknown option/);

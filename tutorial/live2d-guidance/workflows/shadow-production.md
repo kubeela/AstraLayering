@@ -4,8 +4,8 @@
 
 ```sh
 # 从 skill 根目录执行；读取同名任务的固定上游
-pnpm shadow --name jianma --krita /path/to/krita --shadow-mode mask
-pnpm shadow --name jianma --krita /path/to/krita --shadow-mode normal-depth
+pnpm shadow --name jianma --krita /path/to/krita --shadow-mode mask --knowledge /path/to/knowledge
+pnpm shadow --name jianma --krita /path/to/krita --shadow-mode normal-depth --knowledge /path/to/knowledge
 # 总流程透传
 pnpm start --name jianma --from shadow --to shadow --shadow-mode normal-depth
 ```

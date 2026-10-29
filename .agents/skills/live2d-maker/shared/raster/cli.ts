@@ -1,4 +1,5 @@
-import { resolveRunsDirectory } from '../paths.ts';
+import { resolveInput, resolveRunsDirectory } from '../paths.ts';
+import { selectKnowledge } from '../knowledge.ts';
 import { checkKrita } from './krita.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { runWorkflow, type KritaSection } from './workflow.ts';
@@ -6,13 +7,14 @@ import { parseArgs } from 'node:util';
 
 export function parseRunArguments(args: string[]) {
   const { values } = parseArgs({ args, options: {
-    name: { type: 'string' }, dir: { type: 'string' }, krita: { type: 'string' },
+    name: { type: 'string' }, dir: { type: 'string' }, krita: { type: 'string' }, knowledge: { type: 'string' },
     'dry-run': { type: 'boolean' }, 'check-krita': { type: 'boolean' },
     help: { type: 'boolean', short: 'h' },
   } });
   if (!values.help) {
     if (values['check-krita'] && !values.krita?.trim()) throw new Error('必须提供 --krita <已安装的 Krita 可执行文件路径>。');
     if (!values['check-krita'] && !values.name?.trim()) throw new Error('必须提供 --name <任务名>。');
+    if (!values['check-krita'] && !values.knowledge?.trim()) throw new Error('必须提供 --knowledge <先验知识目录>；独立 section 不保存配置，每次启动（含续跑）都须指定。');
   }
   if (values.dir !== undefined) resolveRunsDirectory(values.dir);
   return values;
@@ -25,6 +27,7 @@ export async function runCli<Input>(section: KritaSection<Input>, help: string):
     console.log(JSON.stringify(await checkKrita(args.krita!, loadWorkflowEnvironment().codex.env), null, 2));
     return;
   }
+  selectKnowledge(resolveInput(args.name!, args.knowledge!, args.dir));
   const controller = new AbortController();
   const stop = () => controller.abort(new Error('运行已中断；使用同一 --name 和运行根目录（--dir）继续原会话。'));
   process.once('SIGINT', stop);

@@ -5,13 +5,13 @@
 先准备同名任务的组装成果及下表所需参考，停止同任务总调度，再从 skill 根目录运行。独立入口只制作所选阴影模式：
 
 ```sh
-pnpm shadow --name jianma --krita /path/to/krita
-pnpm shadow --name jianma --shadow-mode normal-depth --krita /path/to/krita
+pnpm shadow --name jianma --krita /path/to/krita --knowledge /path/to/knowledge
+pnpm shadow --name jianma --shadow-mode normal-depth --krita /path/to/krita --knowledge /path/to/knowledge
 # 总入口只运行阴影；首次默认 mask
 pnpm start --name jianma --from shadow --to shadow --shadow-mode mask
 ```
 
-`--dir` 指定运行根目录；输入从 `<dir>/<name>` 的固定产物读取。独立入口省略模式默认 `mask`，总入口续跑省略则沿用保存的模式。独立入口不保存配置，每次启动都需传 `--krita`；总入口续跑复用任务根 `run.json` 记录的路径。每次启动都做不启动 Krita 的轻量检查。只有 mask 模式占用 Krita 名额并获得 `krita` 与 `inspect_shadow_mask` 工具；normal-depth 声明 `krita: false`，不占名额也没有 krita 工具。私有 Krita 见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。`--dry-run` 检查输入与提示词，不写任务或调用模型。
+`--dir` 指定运行根目录；输入从 `<dir>/<name>` 的固定产物读取。独立入口省略模式默认 `mask`，总入口续跑省略则沿用保存的模式。独立入口不保存配置，每次启动都需传 `--krita` 与 `--knowledge`；总入口续跑复用任务根 `run.json` 记录的路径。每次启动都做不启动 Krita 的轻量检查。只有 mask 模式占用 Krita 名额并获得 `krita` 与 `inspect_shadow_mask` 工具；normal-depth 声明 `krita: false`，不占名额也没有 krita 工具。私有 Krita 见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。`--dry-run` 检查输入与提示词，不写任务或调用模型。
 
 | 模式 | 输入 | 交付 |
 | --- | --- | --- |

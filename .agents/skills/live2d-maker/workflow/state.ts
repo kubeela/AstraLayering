@@ -13,7 +13,7 @@ import { currentSession } from '../shared/agents/step-session.ts';
 import { installedVersion } from '../shared/version.ts';
 
 export type TaskOptions = {
-  name: string; dir?: string; image?: string; krita?: string;
+  name: string; dir?: string; image?: string; krita?: string; knowledge?: string;
   from?: SectionId; to?: SectionId; jobs?: number; standard?: boolean; shadowMode?: ShadowMode;
 };
 export type SectionProgress = {
@@ -26,6 +26,8 @@ export type TaskRun = {
   archive?: true;
   version: 1; from: SectionId; to: SectionId;
   krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode;
+  // The knowledge directory given with --knowledge; absent, the skill's own knowledge/.
+  knowledge?: string;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
   // Release labels (shared/version.ts) of the version that created the task and that last configured a run.
@@ -63,6 +65,7 @@ export async function readRun(directory: string): Promise<TaskRun | undefined> {
   const run = JSON.parse(contents) as TaskRun;
   if (run.version !== 1 || !run.sections || typeof run.sections !== 'object'
     || !Number.isSafeInteger(run.jobs) || run.jobs < 1 || (run.standard !== undefined && typeof run.standard !== 'boolean')
+    || (run.knowledge !== undefined && typeof run.knowledge !== 'string')
     || !['ready', 'running', 'completed', 'failed', 'interrupted'].includes(run.status)) {
     throw new Error('无效的总控记录：' + join(directory, 'run.json'));
   }
@@ -159,6 +162,7 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   if (!saved) run.createdWith = label;
   run.lastRunWith = label;
   run.krita = taskKrita(options, run);
+  if (options.knowledge) run.knowledge = resolveInput(options.name, options.knowledge, options.dir);
   for (const id of selected) run.sections[id] ??= { status: 'pending', updatedAt: now() };
   return run;
 }

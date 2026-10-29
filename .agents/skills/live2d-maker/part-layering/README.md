@@ -7,13 +7,13 @@
 从 skill 根目录执行，数据位于 `<dir>/<name>/part-layering/`：
 
 ```sh
-pnpm part-layering --name my-character --image /绝对路径/角色.png
+pnpm part-layering --name my-character --image /绝对路径/角色.png --knowledge /绝对路径/knowledge
 # 姿态标准化按需追加 --standard；单独续跑须带同一选项（总入口续跑沿用总控记录）
-pnpm part-layering --name my-character
+pnpm part-layering --name my-character --knowledge /绝对路径/knowledge
 # 只处理根层，登记下一层
-pnpm part-layering --name my-character --max-depth 1
+pnpm part-layering --name my-character --max-depth 1 --knowledge /绝对路径/knowledge
 # 选择已有组及后代，需已有参考、祖先与前层成果
-pnpm part-layering --name my-character --groups /绝对路径/selection.json
+pnpm part-layering --name my-character --groups /绝对路径/selection.json --knowledge /绝对路径/knowledge
 ```
 
 `--dir` 为运行根目录，相对输入从 `<dir>/<name>/` 解析。`--jobs`／`-j`（别名 `--agents`／`-a`）控制全局实际 agent 并发，默认 3。`--max-depth` 从根深度 0 计数，1 制作根层，2 制作至第二层；省略则处理完整树。`--groups` JSON 按 ID 选择本任务已有组，沿用准备参考与前置事实；前层去重尚未完成时需要完整处理该层。独立调试先停止同任务总调度。

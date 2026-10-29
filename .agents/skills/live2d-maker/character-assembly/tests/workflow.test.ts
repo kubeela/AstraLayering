@@ -39,7 +39,7 @@ async function deliver(request: AgentRequest) {
 test('按 name 和 dir 定位两份 KRA 与实际扩展名的参考图，不需要 part SVG 或上游会话', async t => {
   const f = await fixture(t);
   assert.deepEqual(await resolveAssemblyInput('case', f.root), f.inputs);
-  assert.equal(parseRunArguments(['--name', 'case', '--dir', f.root]).dir, f.root);
+  assert.equal(parseRunArguments(['--name', 'case', '--dir', f.root, '--knowledge', 'knowledge']).dir, f.root);
   assert.equal(isAssemblyInput(f.inputs), true);
   assert.equal(isAssemblyInput({ directory: f.task, parts: f.task }), false);
 });

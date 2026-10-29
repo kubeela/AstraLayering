@@ -10,6 +10,13 @@ import { knowledgeSteps, runtimePrompts } from './knowledge-steps.ts';
 export const defaultKnowledgeDirectory = fileURLToPath(new URL('../knowledge/', import.meta.url));
 let current = defaultKnowledgeDirectory;
 export function useKnowledge(directory: string): void { current = resolve(directory); }
+// A run checks the whole knowledge directory before it uses it, so a missing
+// file stops the run before any agent starts.
+export function selectKnowledge(directory: string): void {
+  const path = resolve(directory);
+  checkKnowledge(path);
+  current = path;
+}
 export function knowledgeDirectory(): string { return current; }
 
 export type KnowledgeValues = Record<string, string>;

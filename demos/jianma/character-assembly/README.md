@@ -17,7 +17,7 @@ agent 已保存、关闭重开 KRA，并逐个检查遮罩开关；文件复核�
 在 skill 根目录使用以下入口，任务目录需已有上述三个上游文件：
 
 ```bash
-pnpm character-assembly --name jianma --dir /绝对路径/运行根目录 --krita /绝对路径/krita
+pnpm character-assembly --name jianma --dir /绝对路径/运行根目录 --krita /绝对路径/krita --knowledge /绝对路径/knowledge
 ```
 
 这里只收录关键工程、图片、报告和文件核对记录。完整会话、脚本、调度日志与过程临时文件保留本地，不随成果归档提交。

@@ -19,6 +19,7 @@ import { runWorkflow as runClothingRaster } from '../../clothing-raster-layering
 import { steps as personSteps } from '../../raster-layering/steps.ts';
 import { steps as clothingSteps } from '../../clothing-raster-layering/steps.ts';
 import { seedUpstream } from './upstream-fixture.ts';
+import { defaultKnowledgeDirectory } from '../knowledge.ts';
 
 test('默认 root 是仓库 .run，独立 skill 使用上一级 .run；--dir 必须绝对，任务不能写进 skill', () => {
   const repository = resolve(workflowsDirectory, '../../..');
@@ -27,8 +28,8 @@ test('默认 root 是仓库 .run，独立 skill 使用上一级 .run；--dir 必
   assert.equal(defaultRunsDirectory('/tmp/installed/live2d-maker'), '/tmp/installed/.run');
   assert.equal(taskDirectory('sample'), join(runsDirectory, 'sample'));
   for (const parse of [parsePart, parseRaster]) {
-    assert.equal(parse(['--name', 'sample', '--dir', '/tmp/custom']).dir, '/tmp/custom');
-    assert.throws(() => parse(['--name', 'sample', '--dir', 'relative']), /绝对路径/);
+    assert.equal(parse(['--name', 'sample', '--dir', '/tmp/custom', '--knowledge', 'knowledge']).dir, '/tmp/custom');
+    assert.throws(() => parse(['--name', 'sample', '--dir', 'relative', '--knowledge', 'knowledge']), /绝对路径/);
   }
   assert.throws(() => taskDirectory('live2d-maker', resolve(workflowsDirectory, '..')), /skill 之外/);
   assert.throws(() => taskDirectory('sample', workflowsDirectory), /skill 之外/);
@@ -63,7 +64,7 @@ test('同名任务可在不同 root 独立准备、读取上游、按 name 续�
     assert.equal(clothingCalls, 1);
     for (const section of ['part-layering', 'clothing-part-layering']) {
       await assert.rejects(promisify(execFile)(process.execPath, [join(workflowsDirectory, section, 'run.ts'),
-        '--name', name, '--dir', dir, '--groups', 'missing-groups.json'], { cwd: temporary }), error => {
+        '--name', name, '--dir', dir, '--groups', 'missing-groups.json', '--knowledge', defaultKnowledgeDirectory], { cwd: temporary }), error => {
         assert.match(String(error), /ENOENT/);
         assert.ok(String(error).includes(join(task, 'missing-groups.json')));
         return true;

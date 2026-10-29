@@ -13,6 +13,7 @@ import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../shared/cod
 import { sectionAgentSteps, preflightAgentSteps } from '../shared/agents/preflight.ts';
 import { clearTaskStop, watchTaskStop } from './control.ts';
 import { requireKrita } from './krita.ts';
+import { defaultKnowledgeDirectory, selectKnowledge } from '../shared/knowledge.ts';
 import { MissingDependencyError } from '../shared/missing-dependency.ts';
 import { readDressup } from '../shared/part/dressup.ts';
 import { AgentSlotPool, agentSlotsVariable } from './agent-slots.ts';
@@ -127,6 +128,9 @@ export async function runTask(options: TaskOptions, dependencies: {
     // preflight: it is quick, while that may build the patched Codex. A refusal
     // leaves run.json as it was.
     const configured = await configureRun(options, directory);
+    // Like Krita, the knowledge directory is checked before the run is recorded as running;
+    // the scheduler's own preflight then reads the same directory as its section workers.
+    selectKnowledge(configured.knowledge ?? defaultKnowledgeDirectory);
     // A missing system dependency such as Xvfb is the exception: the run is recorded as failed with its install hint.
     const missing = await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, environment?.codex.env)))
       .then(() => undefined, error => { if (error instanceof MissingDependencyError) return error; throw error; });

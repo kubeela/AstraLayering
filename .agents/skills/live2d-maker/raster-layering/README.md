@@ -7,15 +7,15 @@
 从 skill 根目录执行：
 
 ```sh
-pnpm raster-layering --name my-character --krita /绝对路径/krita
-# 续跑同样带 --krita（独立 section 不保存配置）
+pnpm raster-layering --name my-character --krita /绝对路径/krita --knowledge /绝对路径/knowledge
+# 续跑同样带 --krita 与 --knowledge（独立 section 不保存配置）
 # 自定义运行根目录时，首次与续跑均追加 --dir
-pnpm raster-layering --name my-character --dir /绝对路径/运行根目录 --dry-run
+pnpm raster-layering --name my-character --dir /绝对路径/运行根目录 --knowledge /绝对路径/knowledge --dry-run
 # 单独核对指定 Krita 入口
 pnpm raster-layering --check-krita --krita /绝对路径/krita
 ```
 
-数据位于 `<dir>/<name>/raster-layering/`，上游读取相邻 `part-layering/`。每次启动（含续跑）都传 Krita 的实际可执行文件，本 section 不保存配置；相对输入从 `<dir>/<name>/` 解析。`--dry-run` 检查输入、Krita 与待执行提示词，保持任务文件原样。真实绘制还需要可用显示与操作环境，桌面和 headless 检查见 setup。独立调试前先停止同任务总调度。
+数据位于 `<dir>/<name>/raster-layering/`，上游读取相邻 `part-layering/`。每次启动（含续跑）都传 Krita 的实际可执行文件与 `--knowledge` 先验知识目录，本 section 不保存配置；相对输入从 `<dir>/<name>/` 解析。`--dry-run` 检查输入、Krita 与待执行提示词，保持任务文件原样。真实绘制还需要可用显示与操作环境，桌面和 headless 检查见 setup。独立调试前先停止同任务总调度。
 
 三步都在本 section 的私有 Krita 中操作：工作流只准备环境并占名额，agent 通过 `krita` 工具自行启动，section 结束时关闭；私有进程、并发名额与显示见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。
 

@@ -66,9 +66,9 @@ pnpm start --name my-character --stop
 
 ```sh
 # 独立运行穿戴组装：读取已有的人物、衣服 KRA 与简化穿衣参考
-pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita
-# 同名续跑，沿用该段保存的 Krita 和绘制会话
-pnpm character-assembly --name my-character --dir /绝对路径/运行根目录
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita --knowledge /绝对路径/knowledge
+# 同名续跑沿用绘制会话；独立 section 不保存配置，仍须带 --krita 与 --knowledge
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita --knowledge /绝对路径/knowledge
 # 通过总入口只运行一段，使用后台、状态查询和范围记录
 pnpm start --name my-character --dir /绝对路径/运行根目录 --from character-assembly --to character-assembly --krita /绝对路径/krita --background
 ```

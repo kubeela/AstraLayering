@@ -10,8 +10,8 @@ export { parseRunArguments } from '../shared/raster/cli.ts';
 
 export const help = `character-assembly — 单 agent 组装人物与衣服 KRA
 
-首次运行：pnpm character-assembly --name <任务名> --krita <可执行文件路径>
-继续运行：同上，仍须带 --krita（独立 section 不保存配置）
+首次运行：pnpm character-assembly --name <任务名> --krita <可执行文件路径> --knowledge <先验知识目录>
+继续运行：同上，仍须带 --krita 与 --knowledge（独立 section 不保存配置；knowledge 完整替换 skill 自带的 knowledge/）
 --dir <绝对路径> 指定运行根目录，默认是 skill 上一级。
 --dry-run 检查输入和 Krita 并展示提示词，不调用模型、不写任务文件。
 --check-krita --krita <可执行文件路径> 只检查指定的 Krita。
