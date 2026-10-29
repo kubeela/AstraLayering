@@ -33,8 +33,6 @@ export type TaskRun = {
   createdWith?: string; lastRunWith?: string;
   // Sections running now; after a failed or stopped run, the ones that ended it.
   activeSections?: SectionId[];
-  // Written before the lanes ran concurrently; readRun moves it into activeSections.
-  activeSection?: SectionId;
   // childPids: the worker process of each running section.
   runner?: { id: string; pid: number; childPids?: Partial<Record<SectionId, number>>; startedAt: string; finishedAt?: string; stopProtocol?: 'file-v1' };
   sections: Partial<Record<SectionId, SectionProgress>>;
@@ -69,7 +67,6 @@ export async function readRun(directory: string, name: string): Promise<TaskRun 
   }
   selectedSections(sectionId(run.from), sectionId(run.to));
   if (run.shadowMode !== undefined) shadowMode(run.shadowMode);
-  if (run.activeSection) { run.activeSections ??= [sectionId(run.activeSection)]; delete run.activeSection; }
   return run;
 }
 export async function saveRun(directory: string, run: TaskRun, replace = rename): Promise<void> {

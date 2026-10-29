@@ -261,7 +261,11 @@ async function convertLocked(directory: string, progress?: (message: string) => 
   }
   if (known.has('run.json')) {
     const run = JSON.parse(contents.get('run.json') ?? await read('run.json'));
-    if (run.pipelines && !run.sections) { run.sections = run.pipelines; delete run.pipelines; contents.set('run.json', JSON.stringify(run, null, 2) + '\n'); }
+    if (run.pipelines && !run.sections) { run.sections = run.pipelines; delete run.pipelines; }
+    const active = run.activePipelines ?? (run.activePipeline ? [run.activePipeline] : undefined);
+    if (active && !run.activeSections) run.activeSections = active;
+    delete run.activePipelines; delete run.activePipeline;
+    contents.set('run.json', JSON.stringify(run, null, 2) + '\n');
   }
 
   // The clothing preparation.json record becomes the step01_preparation record

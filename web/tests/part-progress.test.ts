@@ -138,7 +138,7 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
 for (const section of ['part-layering', 'clothing-part-layering']) test(`${section}: initial and depth requests show running without outputs, and candidates remain previewable`, async t => {
   const f = await fixture(t, section);
   const run = await configureRun({ name: 'test', dir: f.dir, from: section as any, to: section as any }, f.task);
-  run.status = 'running'; run.activeSection = section as any;
+  run.status = 'running'; run.activeSections = [section as any];
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
   run.sections[section as 'part-layering']!.status = 'running';
   await saveRun(f.task, run);
@@ -171,7 +171,7 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
 test('preparation activity is visible before an image, and matching published references complete independently', async t => {
   const f = await fixture(t);
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'running'; run.activeSection = 'part-layering';
+  run.status = 'running'; run.activeSections = ['part-layering'];
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
   await saveRun(f.task, run);
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
@@ -236,7 +236,7 @@ test('running phases require current agent requests; queued groups, old calls an
   const f = await fixture(t);
   await f.put('groups.json', { groups: ['body', 'hair', 'neck'].map(id => ({ id, groups: [] })) });
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'running'; run.activeSection = 'part-layering';
+  run.status = 'running'; run.activeSections = ['part-layering'];
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
   run.sections['part-layering']!.status = 'running';
   await saveRun(f.task, run);
@@ -263,7 +263,7 @@ test('a call waiting to retry shows 限流等待 with the logged error verbatim 
   const f = await fixture(t);
   await f.put('groups.json', { groups: ['body', 'hair'].map(id => ({ id, groups: [] })) });
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'running'; run.activeSection = 'part-layering';
+  run.status = 'running'; run.activeSections = ['part-layering'];
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString() };
   run.sections['part-layering']!.status = 'running';
   await saveRun(f.task, run);
@@ -296,7 +296,7 @@ test('a CLI attempt that failed and scheduled a retry stays 限流等待; a resu
   const f = await fixture(t);
   await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'running'; run.activeSection = 'part-layering';
+  run.status = 'running'; run.activeSections = ['part-layering'];
   run.runner = { id: 'test-runner', pid: process.pid, startedAt: new Date(Date.now() - 10_000).toISOString() };
   run.sections['part-layering']!.status = 'running';
   await saveRun(f.task, run);
@@ -320,7 +320,7 @@ test('a CLI attempt that failed and scheduled a retry stays 限流等待; a resu
 test('a failed current group and initial request are marked failed while their drafts remain visible; recovery clears old failures', async t => {
   const f = await fixture(t);
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' }, f.task);
-  run.status = 'failed'; run.activeSection = 'part-layering';
+  run.status = 'failed'; run.activeSections = ['part-layering'];
   run.runner = { id: 'failed-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString(), finishedAt: new Date().toISOString() };
   run.sections['part-layering']!.status = 'failed'; await saveRun(f.task, run);
   await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
