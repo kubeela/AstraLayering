@@ -3,6 +3,13 @@
 版本以 Git 标签 `vX.Y.Z` 为准；根目录 `package.json` 的 `version` 在打标签前改成同一编号，供没有 `.git` 的发布包识别。
 每个版本说明实际变化，以及**升级后已完成任务是否需要重做**：续跑时由各步骤的指纹决定，只改措辞的提示词修订不会让已完成步骤重做。
 
+## 未发布
+
+- **步骤与目录命名（不兼容变更）：** 步骤目录统一为 `stepNN_<说明>`，pipeline 改称 section。part 与衣服分层为 `step01_original`～`step14_occlusion`（衣服准备为 `step01_preparation`），分组步骤为 `step09_outline/<组>`、`step11_completion/<组>`、`step12_children/<组>`，去重为 `step10_reduce/depthNN`；阴影为 `shadow/step01_mask` 或 `shadow/step01_normal-depth`，两种模式共用 `shadow/run.json`。命令行 `--pipeline` 改为 `--section`，网页单步操作参数同步改为 `section`。
+- **一键转换目录：** 旧布局任务打开时提示“需转换目录”，点击“转换目录”或运行 `pnpm convert-layout --name <任务名>`，先把原目录完整复制到 `<运行根目录>/.backups/<任务名>-<时间>`，再整体迁移；完成记录的路径与指纹随之改写，已完成步骤不重做。早于上一版本的布局、或出现无法识别的旧路径时拒绝转换且不做任何改动。
+
+升级影响：旧布局任务必须先转换才能继续运行。转换不改写 `agents/` 内的调用记录，并删除 `run.json` 中旧的 thread 字段，因此转换前的 agent 会话不再续接，中断的步骤会在新会话中继续；已完成成果无需重做。
+
 ## v0.1.3
 
 - **限流等待显示：** 修复 Claude 与 AGV CLI 重试时流程预览未显示等待状态的问题，页面展示等待提示和错误原文。
