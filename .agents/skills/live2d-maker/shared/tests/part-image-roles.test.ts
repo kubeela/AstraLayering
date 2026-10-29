@@ -10,8 +10,8 @@ import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { drawGroupOutline } from '../part/outline-agent.ts';
 import { completeGroupOcclusion } from '../part/completion-agent.ts';
 import { assertCompletionPreserves } from '../part/completion-svg.ts';
-import { normalizeGroups } from '../part/groups.ts';
-import { fixture } from '../../part-layering/tests/layering-fixture.ts';
+import { findGroup, GroupStore } from '../part/groups.ts';
+import { fixture, seedInitialGroups } from '../../part-layering/tests/layering-fixture.ts';
 import { profile as clothingProfile } from '../../clothing-part-layering/profile.ts';
 
 // Exercise actual request isolation, tool registration, image transport, bitmap
@@ -83,8 +83,9 @@ for (const harness of ['claude', 'agv'] as const) for (const section of ['charac
     // face deliberately uses a specialized completion prompt; clothing uses its
     // own generic prompt. Both must receive the shared per-section reference rule.
     const id = section === 'character' ? 'face' : 'outerwear';
-    const group = normalizeGroups([{ id }])[0];
-    const context = { ...f, ...(section === 'clothing' ? { profile: clothingProfile } : {}), group };
+    await seedInitialGroups(f.directory, [{ id }]);
+    const store = await GroupStore.open(f.directory);
+    const context = { ...f, ...(section === 'clothing' ? { profile: clothingProfile } : {}), store, group: findGroup(store.snapshot(), id) };
     await mkdir(join(f.directory, 'stages'), { recursive: true });
     const outline = await drawGroupOutline({ ...context, outputPath: join(f.directory, 'stages/outline.svg') }, agents);
     assert.equal(imageCalls, 0);

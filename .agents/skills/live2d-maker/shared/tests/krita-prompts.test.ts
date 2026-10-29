@@ -15,7 +15,7 @@ test('人物衣服绘制/review/返修、组装和两种阴影提示词不注入
   const prompts: string[] = [];
   for (const steps of [character,clothing]) {
     for(const step of steps) {
-      const prompt = await buildPrompt(step,{directory:'/fixture/input',parts:'/fixture/parts'},'/fixture/output/step01');
+      const prompt = await buildPrompt(step,{directory:'/fixture/input',parts:'/fixture/parts',...(steps === clothing ? {originalCharacter:'/fixture/reference.png'} : {})},'/fixture/output/step01');
       const body = await readFile(step.prompt,'utf8');
       assert.ok(prompt.startsWith(staticPromptPrefix(body)));
       prompts.push(prompt);

@@ -66,9 +66,9 @@ async function runtime(context: GroupContext, input: Awaited<ReturnType<typeof i
   }, null, 2);
 }
 
-function groupNoteTool(context: GroupContext): FunctionTool | undefined {
+function groupNoteTool(context: GroupContext): FunctionTool {
   const store = context.store;
-  if (!store) return;
+  if (!store) throw new Error('轮廓绘制需要 GroupStore 才能修正本组 note');
   return {
     ...toolDefinition('update_group_note'),
     async execute(value, signal) {
@@ -130,24 +130,26 @@ export async function drawGroupOutline(
       return textResult({ path: await toAgentPath(taskRootOf(context.directory), draft), bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
     },
   };
-  const taskPrompt = renderPrompt(prompt.text, {
+  const drawingPrompt = renderPrompt(prompt.text, {
     prompt_source: prompt.path, runtime_context: await runtime(context, input, {outputSvg: draft, ...(resumed ? { resumedDraft: resumedDraftNote } : {})}),
-    repair_context: repair ? renderPromptFile(new URL('../prompts/outline-repair-context.md',import.meta.url), {
-      feedback:repair.feedback, repair_rules:await readFile(repairPromptPath,'utf8'), repair_source:repairPromptPath,
-    }) : '',
-    note_repair_rule: noteRepair ? renderPromptFile(new URL('../prompts/outline-note-repair.md',import.meta.url)) : '',
-  }, prompt.path, ['prompt_source','runtime_context','repair_context','note_repair_rule']);
-  if (repair) {
-    await recordRepair(output, repair.feedback, taskPrompt);
-  }
+  }, prompt.path, ['prompt_source','runtime_context']);
+  // 返修是绘制 thread 的下一轮，只发送意见与返修要求；本次输入已在绘制轮给出。
+  // 原 thread 不可用时 recoveryPrompt 在新会话中补上原绘制任务。
+  const repairPrompt = repair && renderPromptFile(new URL('../prompts/outline-repair.md',import.meta.url), {
+    feedback:repair.feedback, repair_rules:await readFile(repairPromptPath,'utf8'), repair_source:repairPromptPath,
+  });
+  if (repairPrompt) await recordRepair(output, repair.feedback, repairPrompt);
   const response = await agents.run({
     step: partStep(profile.id, repair ? 'outline_repair' : 'outline'),
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'outline')),
     tools: [preview, write, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
-      ...(noteRepair ? [noteRepair] : [])], imageGeneration: false,
+      noteRepair], imageGeneration: false,
     images: [{ path: input.reference, description: profile.references.outline }],
-    prompt: taskPrompt,
+    prompt: repairPrompt || drawingPrompt,
+    ...(repairPrompt ? { recoveryPrompt: renderPromptFile(new URL('../prompts/outline-repair-resume.md',import.meta.url), {
+      drawing_prompt:drawingPrompt, repair_prompt:repairPrompt,
+    }) } : {}),
   });
   const actualDraft = await validateAgentOutcome(response, async () => {
     try { return await realpath(draft); }

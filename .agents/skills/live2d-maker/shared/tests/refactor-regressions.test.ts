@@ -75,7 +75,9 @@ test('每次临时错误都记录等待截止时间供限流等待显示，429 �
 test('首次分组拒绝非字符串 subject，错误参数不能写坏首次分组记录', async t => {
   for (const profile of [character, clothing]) {
     const f = await fixture(t);
-    await recognizeInitialGroups({ ...f, profile }, { run: async task => {
+    // Clothing preparation always provides the original clothed character.
+    const references = profile === clothing ? { ...f.references, originalImage: f.references.baseSubject } : f.references;
+    await recognizeInitialGroups({ ...f, profile, references }, { run: async task => {
       const write = task.tools!.find(tool => tool.name === 'write_groups')!;
       const signal = new AbortController().signal;
       const groups = [{ name: 'shape', groups: [], note: '独立实体' }];

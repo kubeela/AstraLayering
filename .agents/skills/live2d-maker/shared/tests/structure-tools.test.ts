@@ -24,7 +24,7 @@ async function fixture(t: TestContext, section: typeof character | typeof clothi
   const root = await realpath(await mkdtemp(join(tmpdir(), 'structure-tools-')));
   t.after(() => rm(root, { recursive: true, force: true }));
   const directory = await seedUpstream('case', section.inputSection, root);
-  const input = { directory, parts: join(directory, 'parts') };
+  const input = { directory, parts: join(directory, 'parts'), ...(section === clothing ? { originalCharacter: join(directory, 'references/clothing.png') } : {}) };
   const tools = createStructureTools(input);
   const tool = (name: string) => tools.find(tool => tool.name === name)!;
   const json = async (file: string) => JSON.parse(await readFile(join(directory, file), 'utf8'));
