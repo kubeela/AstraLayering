@@ -5,7 +5,6 @@ export const profile: PartProfile = {
   attachChildrenReferences: true,
   referenceLabel: '纯衣服参考图',
   originalChildrenReference: '原穿衣角色：用于辨认衣物与身体的穿插和随动，衣片形状以纯衣服图为准。',
-  promptsDirectory: fileURLToPath(new URL('prompts/', import.meta.url)),
   toolsDirectory: fileURLToPath(new URL('tools/', import.meta.url)),
   id: 'clothing-part-layering',
   subjects: ['other'],

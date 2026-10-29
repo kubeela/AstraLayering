@@ -1,0 +1,13 @@
+{
+  "main": {
+    "initial": [
+      "prompts/10-直属结构拆分.md",
+      "prompts/10-拆分操作约定.md"
+    ],
+    "tools": [
+      "view_bitmap",
+      "preview_svg",
+      "submit_children"
+    ]
+  }
+}

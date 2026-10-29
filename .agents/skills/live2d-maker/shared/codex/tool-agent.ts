@@ -1,4 +1,4 @@
-import {renderPromptFile} from '../prompts/render.ts';
+import { runtimePrompt } from '../knowledge.ts';
 import { loadWorkflowEnvironment, workflowCodexOptions } from './environment.ts';
 import { agentCallError, formatAgentError } from './diagnostics.ts';
 import { errorDetails, errorMessage } from '../agents/errors.ts';
@@ -324,7 +324,7 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       };
       const input: Record<string, unknown>[] = [{ type: 'text', text: workspacePrompt(task.prompt, paths), text_elements: [] }];
       for (const image of task.images ?? []) {
-        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd(), text_elements: [] });
+        input.push({ type: 'text', text: runtimePrompt('image-description',{image_description:image.description}).trimEnd(), text_elements: [] });
         input.push({ type: 'localImage', path: resolve(image.path) });
       }
       const log = await AgentLog.create(resolve(options.logDirectory ?? join(paths.directory, 'agents')), task.name, {

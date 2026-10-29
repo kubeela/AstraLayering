@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { stepKnowledge } from '../../shared/knowledge.ts';
 import { test, type TestContext } from 'node:test';
 import type { AgentTask } from '../../shared/codex/agents.ts';
 import { getPreparationDirectory, loadPreparedReferences, prepareReferences, type PreparationReferences } from '../preparation.ts';
@@ -19,8 +19,8 @@ const section = (refs: { directory: string } | string) => dirname(typeof refs ==
 const step = (stage: keyof typeof partSteps) => partSteps[stage];
 const optionsPath = (refs: { directory: string } | string) => join(section(refs), step('options'), 'options.json');
 
-const styleReference = fileURLToPath(new URL('../resources/简化参考图片.png', import.meta.url));
-const outfitReference = fileURLToPath(new URL('../resources/连体服参考.jpg', import.meta.url));
+const styleReference = stepKnowledge('part-layering', 'step05_simplified').reference('简化参考图片.png');
+const outfitReference = stepKnowledge('part-layering', 'step06_base').reference('连体服参考.jpg');
 
 async function fixture(t: TestContext, needsSimplification: boolean, needsAdjustment = false, reuseBase = false) {
   const temporary = await mkdtemp(join(tmpdir(), 'part-layering-preparation-'));

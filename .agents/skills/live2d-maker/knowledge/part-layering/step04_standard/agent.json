@@ -1,0 +1,9 @@
+{
+  "main": {
+    "initial": [
+      "prompts/0-标准姿态.md",
+      "prompts/preparation-standardize-rules.md"
+    ],
+    "tools": []
+  }
+}

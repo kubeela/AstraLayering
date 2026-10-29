@@ -61,7 +61,6 @@ export type AgentOptions = CodexOptions & {
   progress?: (message: string) => void;
   logDirectory?: string;
   agentConcurrency?: number;
-  toolsDirectory?: string;
   runtime?: AgentRuntime;
 };
 
@@ -135,7 +134,6 @@ export class CodexAgents {
     let closed = false, busy = false;
     return {
       run: async (task, externalSignal) => {
-        if (this.options.toolsDirectory && task.tools) task = { ...task, tools: task.tools.map(tool => ({ ...tool, ...toolDefinition(tool.name, this.options.toolsDirectory, tool.omitParameters) })) };
         await checkCodexCapabilities(this.options.environment!, this.options);
         if (closed) throw new Error('会话已关闭');
         if (busy) throw new Error('同一会话不能并发运行');

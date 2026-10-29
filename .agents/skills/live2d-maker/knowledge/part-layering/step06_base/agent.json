@@ -1,0 +1,10 @@
+{
+  "main": {
+    "initial": [
+      "prompts/3-素体参考.md"
+    ],
+    "tools": [
+      "reuse_reference"
+    ]
+  }
+}

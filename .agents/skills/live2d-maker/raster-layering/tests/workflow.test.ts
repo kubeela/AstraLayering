@@ -20,6 +20,8 @@ import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { steps, stepModels, type StepDefinition } from '../steps.ts';
 import { runWorkflow } from '../run.ts';
 import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
+import { stepKnowledge } from '../../shared/knowledge.ts';
+const mainPrompt = (step: { knowledge: { section: string; step: string } }) => stepKnowledge(step.knowledge.section, step.knowledge.step).files('main')[0];
 
 const preflight = async (executable: string) => ({ executable });
 const complete: StepResult = { status: 'completed', summary: 'Fixture delivery' };
@@ -80,7 +82,7 @@ test('dry-run 按 name 定位上游，保留完整提示词，不写文件、不
   const expected = { directory: f.input, parts: join(f.input, 'parts') };
   assert.deepEqual(await resolvePartInput('test', 'part-layering', f.deps.runsDirectory), expected);
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps, agent: forbidden });
-  assert.ok(prompt.startsWith(staticPromptPrefix(await readFile(steps[0].prompt, 'utf8'))));
+  assert.ok(prompt.startsWith(staticPromptPrefix(await readFile(mainPrompt(steps[0]), 'utf8'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.input, 'parts'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01'))));
   await assert.rejects(readdir(f.output), { code: 'ENOENT' });
@@ -118,7 +120,7 @@ test('step01 绘制和 review 完成后才执行 step02；缺 PNG 保留中断�
   await runWorkflow(f.resume, { ...deps, agent: async request => {
     if (request.step === 'raster_step03') {
       calls.push('step03'); assert.equal(request.threadId, undefined); await readFile(join(f.output, 'step02/.completed'));
-      assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(steps[2].prompt, 'utf8'))));
+      assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(mainPrompt(steps[2]), 'utf8'))));
       return deliver(request, steps[2]);
     }
     calls.push('resume-step02'); assert.equal(request.threadId, 'thread-step02');
@@ -136,7 +138,7 @@ test('已完成第一步的任务可按 name 预览第二步，显示实际输�
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
   const deps = { ...f.deps, steps: f.definitions };
   const prompt = await runWorkflow({ ...f.resume, dryRun: true }, { ...deps, agent: forbidden });
-  assert.ok(prompt.startsWith(staticPromptPrefix(await readFile(steps[1].prompt, 'utf8'))));
+  assert.ok(prompt.startsWith(staticPromptPrefix(await readFile(mainPrompt(steps[1]), 'utf8'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.input, 'references'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step01/character-depth.kra'))));
   assert.ok(prompt.includes(JSON.stringify(join(f.output, 'step02/character-soft-edges.kra'))));

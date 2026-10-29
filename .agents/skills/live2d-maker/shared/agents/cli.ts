@@ -1,4 +1,4 @@
-import {renderPromptFile} from '../prompts/render.ts';
+import { runtimePrompt } from '../knowledge.ts';
 import { access, mkdir, readFile, writeFile, copyFile, rename, chmod, realpath, stat } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { homedir } from 'node:os';
@@ -244,9 +244,9 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const input: any[] = [{ type: 'text', text: workspacePrompt(prompt, paths) }];
       await writeFile(join(log.directory,'prompt.md'),input[0].text);
       for (const image of task.images || []) {
-        if (model.harness === 'agv') { input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-reference.md',import.meta.url),{image_description:image.description,image_path:fromTaskPath(paths.root, image.path)}).trimEnd() }); continue; }
+        if (model.harness === 'agv') { input.push({ type: 'text', text: runtimePrompt('image-reference',{image_description:image.description,image_path:fromTaskPath(paths.root, image.path)}).trimEnd() }); continue; }
         const bytes = await readFile(image.path);
-        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() }, { type: 'image', source: {
+        input.push({ type: 'text', text: runtimePrompt('image-description',{image_description:image.description}).trimEnd() }, { type: 'image', source: {
           type: 'base64', media_type: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } });
       }
       child.stdin!.end(JSON.stringify(model.harness === 'agv' ? { event: 'user', message: { role: 'user', content: input } } : { type: 'user', message: { role: 'user', content: input } }) + '\n');

@@ -2,7 +2,6 @@ import type { InitialContext, Subject } from './layering-types.ts';
 
 export type PartProfile = {
   id: 'part-layering' | 'clothing-part-layering';
-  promptsDirectory: string;
   toolsDirectory?: string;
   subjects: readonly Subject[];
   attachInitialReference: boolean;

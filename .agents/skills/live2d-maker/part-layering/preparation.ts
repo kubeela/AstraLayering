@@ -10,6 +10,7 @@ import { inspectSection, runSection } from '../shared/step-section.ts';
 import type { PreparationInput, PreparationReferences } from '../shared/part/preparation-types.ts';
 import { checkStandardJudgment, copyAsPng, exists, findImage, poseJudgmentPath, preparationSteps, present, produce,
   sectionOf, stageNumber, stageStep, stepStage, writeJson, type PreparationStage, type StandardJudgment } from './preparation-state.ts';
+import { stepKnowledge } from '../shared/knowledge.ts';
 import type { DressupDecision } from '../shared/part/dressup.ts';
 
 export type { PreparationInput, PreparationReferences, StandardJudgment };
@@ -24,9 +25,7 @@ export type PreparationSteps = {
   baseSubject(inputImage: string, outputImage: string, prompt: string, processGenerated?: ProcessGenerated): Promise<ReferenceChoice | void>;
 };
 
-function readPrompt(name: string): Promise<string> {
-  return readFile(new URL(`prompts/${name}`, import.meta.url), 'utf8');
-}
+const readPrompt = (step: string): string => stepKnowledge('part-layering', step).render('main', {});
 const readJson = async (path: string): Promise<unknown> => JSON.parse(await readFile(path, 'utf8'));
 export function getPreparationDirectory(runName: string, root?: string): string {
   return join(sectionDirectory(runName, 'part-layering', root), 'references');
@@ -126,7 +125,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
         return;
       case 'options': return writeJson(output(step), { standard });
       case 'pose': {
-        const decision = await steps.judgeStandard(refs.originalImage!, await readPrompt('0-姿态判断.md'));
+        const decision = await steps.judgeStandard(refs.originalImage!, readPrompt('step03_pose'));
         checkStandardJudgment(decision);
         return writeJson(output(step), decision);
       }
@@ -140,7 +139,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
         }
         const original = refs.originalImage!;
         await produce(output(step), async temporary => {
-          if (adjust) await steps.standardize(original, temporary, await readPrompt('0-标准姿态.md'));
+          if (adjust) await steps.standardize(original, temporary, readPrompt('step04_standard'));
           else await copyAsPng(original, temporary);
           if ((await sharp(temporary).metadata()).format !== 'png') throw new Error('标准姿态输出必须为 PNG');
         });
@@ -149,11 +148,11 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
       }
       case 'simplified':
         return prepared('simplified', output(step), refs, async (temporary, processGenerated) =>
-          steps.simplify(refs.standardImage!, temporary, await readPrompt('2-简化图片.md'), processGenerated));
+          steps.simplify(refs.standardImage!, temporary, readPrompt('step05_simplified'), processGenerated));
       case 'base': {
         let choice: ReferenceChoice | undefined;
         await prepared('base', output(step), refs, async (temporary, processGenerated) => {
-          choice = await steps.baseSubject(refs.simplifiedSubject, temporary, await readPrompt('3-素体参考.md'), processGenerated) || undefined;
+          choice = await steps.baseSubject(refs.simplifiedSubject, temporary, readPrompt('step06_base'), processGenerated) || undefined;
         });
         // Read by the scheduler to decide whether the clothing lane runs.
         const records = join(sectionOf(directory), stageStep('base'));

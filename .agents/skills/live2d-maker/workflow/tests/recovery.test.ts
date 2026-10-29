@@ -17,6 +17,8 @@ import type { StepDefinition } from '../../shared/raster/steps.ts';
 import { acquireTaskLock } from '../state.ts';
 import { replaceThread } from '../recovery.ts';
 import { readStepSession, writeStepSession } from '../../shared/agents/step-session.ts';
+import { stepKnowledge } from '../../shared/knowledge.ts';
+const mainPrompt = (step: { knowledge: { section: string; step: string } }) => stepKnowledge(step.knowledge.section, step.knowledge.step).files('main')[0];
 
 test('阴影恢复按保存模式替换所选 step01 的会话，另一模式与已生成贴图不动', async t => {
   for (const mode of ['normal-depth', 'mask'] as const) {
@@ -78,7 +80,7 @@ test('替换归档旧 thread 并保留全部文件；新绘制接收交接，之
     assert.equal(request.threadId, undefined);
     assert.match(request.prompt, /旧 threadId：old-thread/);
     assert.match(request.prompt, /保留 draft.kra 中完成的衣领/);
-    assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(assemblySteps[0].prompt, 'utf8'))));
+    assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(mainPrompt(assemblySteps[0]), 'utf8'))));
     await request.onEvent({ type: 'thread.started', thread_id: 'new-thread' });
     throw new Error('interrupted again');
   } }), /interrupted again/);
@@ -146,7 +148,7 @@ for (const [section, execute, definitions, upstream] of [
       resumed++;
       if (resumed === 1) {
         assert.equal(request.threadId, undefined);
-        const original = (await readFile(definitions[0].prompt, 'utf8')).replaceAll('step01/report.md', 'step01/report.md.tmp');
+        const original = (await readFile(mainPrompt(definitions[0]), 'utf8')).replaceAll('step01/report.md', 'step01/report.md.tmp');
         assert.ok(request.prompt.startsWith(staticPromptPrefix(original)));
         assert.match(request.prompt, /repair-01.md.tmp/); assert.match(request.prompt, /保留绘制/);
         await request.onEvent({ type: 'thread.started', thread_id: 'replacement-draw' });

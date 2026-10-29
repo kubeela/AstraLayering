@@ -47,7 +47,7 @@ export async function runPartSection(
     await preflightAgentSteps(environment, sectionAgentSteps(section.profile.id, input.reference.standard), normalization);
   }
   const agents = new CodexAgents({
-    ...agentOptions, environment, imageNormalization: normalization, cwd: dirname(directory), toolsDirectory: section.profile.toolsDirectory, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
+    ...agentOptions, environment, imageNormalization: normalization, cwd: dirname(directory), logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
   });
   const references = input.groups === null
     ? await section.prepare(input.reference, agents, agentOptions.progress, normalization)

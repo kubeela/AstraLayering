@@ -1,26 +1,21 @@
 import { readFile, realpath } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
+import { stepKnowledge } from '../knowledge.ts';
+import type { PartProfile } from './profile.ts';
 
-const defaults = { outline: '5-组轮廓.md', review: '6-轮廓review.md', completion: '9-正面遮挡补全.md', children: '10-直属结构拆分.md' } as const;
-export type OutlineStage = keyof typeof defaults;
+// Prior knowledge of each part stage: knowledge/<section>/<step>/.
+const knowledgeSteps = { initial: 'step08_initial', outline: 'step09_outline', reduction: 'step10_reduce',
+  completion: 'step11_completion', children: 'step12_children', occlusion: 'step14_occlusion' } as const;
+export type PartStage = keyof typeof knowledgeSteps;
+export function partKnowledge(profile: Pick<PartProfile, 'id'>, stage: PartStage) {
+  return stepKnowledge(profile.id, knowledgeSteps[stage]);
+}
 
-export async function readGroupPrompt(
-  id: string, stage: OutlineStage,
-  directory: string,
-): Promise<{ path: string; text: string; groupDirectory: string }> {
+// A group prior lives in the step's prompts/groups/<full id>/.
+export function groupPromptDirectory(profile: Pick<PartProfile, 'id'>, stage: PartStage, id: string): string {
   if (!/^[\p{L}\p{N}_-]+(?:\/[\p{L}\p{N}_-]+)*$/u.test(id)) throw new Error('Invalid group prompt id');
-  const groupDirectory = join(directory, 'groups', id);
-  let path = join(groupDirectory, `${stage}.md`);
-  let text: string;
-  try { text = await readFile(path, 'utf8'); }
-  catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-    path = join(directory, defaults[stage]);
-    text = await readFile(path, 'utf8');
-  }
-  if (!text.trim()) throw new Error(`组提示词为空：${path}`);
-  return { path, text, groupDirectory };
+  return join(partKnowledge(profile, stage).directory, 'prompts', 'groups', id);
 }
 
 export type ReferenceImage = { path: string; description: string };
@@ -30,7 +25,7 @@ export type SiblingReference = ReferenceImage & {
 
 // References are explicit for this exact group and stage; no ancestor lookup.
 export async function readGroupReferences(
-  groupDirectory: string, stage: OutlineStage,
+  groupDirectory: string, stage: 'completion' | 'children',
   resolveSibling?: (name: string, description: string) => Promise<SiblingReference>,
 ): Promise<(ReferenceImage | SiblingReference)[]> {
   const path = join(groupDirectory, `${stage}.references.json`);

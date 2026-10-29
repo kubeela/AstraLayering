@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, realpath, rm } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { test } from 'node:test';
 import type { AgentTask } from '../../shared/codex/agents.ts';
 import { artifactPath, readJson, reportPath } from '../../shared/part/artifact-facts.ts';
@@ -11,6 +11,7 @@ import { runLayering } from '../../shared/part/layering.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
 import { parseRunArguments } from '../run.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
+import { temporaryKnowledge } from '../../shared/tests/knowledge-fixture.ts';
 
 const signal = new AbortController().signal;
 const child = (name: string, kind = 'part') => ({ name, kind, note: `${name} 的完整形体及独立控制范围` });
@@ -68,11 +69,11 @@ test('真实拆分适配器读取特化及操作约定，通过预览和工具�
 
 test('拆分收到可选图片用途，按需调用能看到 prompts 外部参考且原图保持只读', async t => {
   const f = await fixture(t), external = await fixture(t);
-  const prompts = join(external.directory, 'prompts'), hairDirectory = join(prompts, 'groups', 'hair');
+  const hairDirectory = join(await temporaryKnowledge(t), 'part-layering', 'step12_children', 'prompts', 'groups', 'hair');
   await mkdir(hairDirectory, { recursive: true });
-  await writeAtomic(join(hairDirectory, 'children.md'), '有长发粒度疑问时，按 additionalReferences 用 view_bitmap 查看完整长束。\n提示词来源：{prompt_source}\n\n【本次输入】\n{runtime_context}\n\n【固定范围与操作约定】\n{fixed_rules}\n固定约定提示词来源：{fixed_rules_source}');
+  await writeAtomic(join(hairDirectory, '10-直属结构拆分.md'), '有长发粒度疑问时，按 additionalReferences 用 view_bitmap 查看完整长束。\n提示词来源：{prompt_source}\n\n【本次输入】\n{runtime_context}\n\n【固定范围与操作约定】\n');
   await writeAtomic(join(hairDirectory, 'children.references.json'), JSON.stringify([
-    { path: '../../../references/base.png', description: '长发主束与细束对照：按需查看，不固定层数' },
+    { path: relative(hairDirectory, external.references.baseSubject), description: '长发主束与细束对照：按需查看，不固定层数' },
   ]));
   const source = join(f.directory, 'hair.svg');
   await writeAtomic(source, shape('hair'));
@@ -94,7 +95,7 @@ test('拆分收到可选图片用途，按需调用能看到 prompts 外部参�
       }, signal);
       return { text: 'done', images: [] };
     },
-  }, prompts);
+  });
   assert.deepEqual(result.groups.map(g => g.id), ['hair/main', 'hair/side']);
   assert.deepEqual(await readFile(source), sourceBefore);
   assert.deepEqual(await readFile(external.references.baseSubject), refBefore);

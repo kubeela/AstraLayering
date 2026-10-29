@@ -1,0 +1,9 @@
+{
+  "main": {
+    "initial": [
+      "prompts/preparation.md",
+      "prompts/preparation-clothing-rules.md"
+    ],
+    "tools": []
+  }
+}

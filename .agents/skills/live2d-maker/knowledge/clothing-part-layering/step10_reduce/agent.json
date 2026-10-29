@@ -1,0 +1,13 @@
+{
+  "main": {
+    "initial": [
+      "prompts/8-同层轮廓去重.md"
+    ],
+    "tools": [
+      "preview_svg",
+      "write_reduction_svg",
+      "submit_reduction",
+      "read_svg"
+    ]
+  }
+}

@@ -8,6 +8,8 @@ import {steps as character} from '../../raster-layering/steps.ts';
 import {steps as clothing} from '../../clothing-raster-layering/steps.ts';
 import {buildPrompt as assembly, steps as assembled} from '../../character-assembly/steps.ts';
 import {buildPrompt as shadow, maskSteps, mapSteps} from '../../shadow/steps.ts';
+import { stepKnowledge } from '../knowledge.ts';
+const mainPrompt = (step: { knowledge: { section: string; step: string } }) => stepKnowledge(step.knowledge.section, step.knowledge.step).files('main')[0];
 
 // Krita usage is explained only by the krita tool's description; prompts keep
 // their own task text and carry no shared Krita environment section.
@@ -16,7 +18,7 @@ test('人物衣服绘制/review/返修、组装和两种阴影提示词不注入
   for (const steps of [character,clothing]) {
     for(const step of steps) {
       const prompt = await buildPrompt(step,{directory:'/fixture/input',parts:'/fixture/parts',...(steps === clothing ? {originalCharacter:'/fixture/reference.png'} : {})},'/fixture/output/step01');
-      const body = await readFile(step.prompt,'utf8');
+      const body = await readFile(mainPrompt(step), 'utf8');
       assert.ok(prompt.startsWith(staticPromptPrefix(body)));
       prompts.push(prompt);
       if ('review' in step && step.review) for(const kind of ['review','repair'] as const) prompts.push(await buildReviewPrompt(step,

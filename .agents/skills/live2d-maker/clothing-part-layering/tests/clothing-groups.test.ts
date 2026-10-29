@@ -5,16 +5,16 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
-import { readGroupPrompt } from '../../shared/part/group-prompts.ts';
+import { partKnowledge } from '../../shared/part/group-prompts.ts';
 import { walkGroups, writeAtomic } from '../../shared/part/groups.ts';
 import { fixture, workingSteps } from './layering-fixture.ts';
 
 const signal = new AbortController().signal;
 test('clothing prompt lookup is local and has no inherited body-specific prior', async () => {
-  const prompt = await readGroupPrompt('body', 'children', profile.promptsDirectory);
-  assert.ok(prompt.path.endsWith('clothing-part-layering/prompts/10-直属结构拆分.md'));
-  assert.ok(prompt.text.includes('同动整体仍可终止为一个 part'));
-  await assert.rejects(readdir(new URL('../prompts/groups', import.meta.url)), { code: 'ENOENT' });
+  const children = partKnowledge(profile, 'children');
+  assert.ok(children.files('main', 'body')[0].endsWith('knowledge/clothing-part-layering/step12_children/prompts/10-直属结构拆分.md'));
+  assert.ok(children.render('main', {}, { group: 'body' }).includes('同动整体仍可终止为一个 part'));
+  await assert.rejects(readdir(join(children.directory, 'prompts', 'groups')), { code: 'ENOENT' });
 });
 
 test('initial groups receive both clothing and clothed-character references and reject a character subject', async t => {

@@ -1,0 +1,15 @@
+{
+  "main": {
+    "initial": [
+      "prompts/9-正面遮挡补全.md",
+      "prompts/9-补全操作约定.md"
+    ],
+    "tools": [
+      "preview_svg",
+      "set_completion_paths",
+      "submit_completion",
+      "read_svg",
+      "view_bitmap"
+    ]
+  }
+}

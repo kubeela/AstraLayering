@@ -11,7 +11,8 @@ import { GroupStore, normalizeGroups } from '../../shared/part/groups.ts';
 import { createLayeringSteps as createDefaultLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { seedInitialGroups } from './layering-fixture.ts';
-import { readGroupPrompt } from '../../shared/part/group-prompts.ts';
+import { partKnowledge } from '../../shared/part/group-prompts.ts';
+import { temporaryKnowledge } from '../../shared/tests/knowledge-fixture.ts';
 import { drawGroupOutline } from '../../shared/part/outline-agent.ts';
 import { fromTaskPath, taskRootOf } from '../../shared/task-paths.ts';
 
@@ -112,21 +113,21 @@ test('绘制 ID 在中断前落盘；重启调度后恢复同一会话，reviewe
 });
 
 test('提示词按完整 group ID 和步骤独立替换；子组不继承父组特化', async t => {
-  const directory = await mkdtemp(join(tmpdir(), 'part-layering-prompts-'));
-  t.after(() => rm(directory, { recursive: true, force: true }));
+  const directory = join(await temporaryKnowledge(t), 'part-layering', 'step09_outline', 'prompts');
+  const outline = partKnowledge(profile, 'outline');
   await writeFile(join(directory, '5-组轮廓.md'), '通用绘制');
   await writeFile(join(directory, '6-轮廓review.md'), '通用审查');
   await mkdir(join(directory, 'groups', 'face'), { recursive: true });
-  await writeFile(join(directory, 'groups', 'face', 'outline.md'), '只用于 face 的完整绘制正文');
-  assert.equal((await readGroupPrompt('face', 'outline', directory)).text, '只用于 face 的完整绘制正文');
-  assert.equal((await readGroupPrompt('face', 'review', directory)).text, '通用审查');
-  assert.equal((await readGroupPrompt('face/eye', 'outline', directory)).text, '通用绘制');
+  await writeFile(join(directory, 'groups', 'face', '5-组轮廓.md'), '只用于 face 的完整绘制正文');
+  assert.equal(outline.render('main', {}, { group: 'face' }), '只用于 face 的完整绘制正文');
+  assert.equal(outline.render('review', {}, { group: 'face' }), '通用审查');
+  assert.equal(outline.render('main', {}, { group: 'face/eye' }), '通用绘制');
   await mkdir(join(directory, 'groups', 'face', 'eye'));
-  await writeFile(join(directory, 'groups', 'face', 'eye', 'review.md'), '眼睛审查');
-  assert.equal((await readGroupPrompt('face/eye', 'review', directory)).text, '眼睛审查');
-  await writeFile(join(directory, 'groups', 'face', 'outline.md'), ' ');
-  await assert.rejects(readGroupPrompt('face', 'outline', directory), /提示词为空/);
-  await assert.rejects(readGroupPrompt('../face', 'outline', directory), /Invalid/);
+  await writeFile(join(directory, 'groups', 'face', 'eye', '6-轮廓review.md'), '眼睛审查');
+  assert.equal(outline.render('review', {}, { group: 'face/eye' }), '眼睛审查');
+  await writeFile(join(directory, 'groups', 'face', '5-组轮廓.md'), ' ');
+  assert.throws(() => outline.render('main', {}, { group: 'face' }), /先验知识文件为空/);
+  assert.throws(() => outline.render('main', {}, { group: '../face' }), /Invalid/);
 });
 
 test('轮廓写入工具在终端不可用时完成草稿，拒绝路径注入及错误归属且仍须预览', async t => {
@@ -154,8 +155,8 @@ test('真实默认适配器接入绘制、自检和独立 review，之后停在�
   const result = await runLayering({ ...f, groups: null, steps: createLayeringSteps(mock) });
   assert.equal(result.status, 'pending');
   assert.equal(mock.calls.length, 2);
-  assert.ok(mock.calls[0].task.prompt.startsWith(staticPromptPrefix(await readFile(new URL('../prompts/5-组轮廓.md', import.meta.url), 'utf8'))));
-  assert.ok(mock.calls[1].task.prompt.startsWith(staticPromptPrefix(await readFile(new URL('../prompts/6-轮廓review.md', import.meta.url), 'utf8'))));
+  assert.ok(mock.calls[0].task.prompt.startsWith(staticPromptPrefix(await readFile(partKnowledge(profile, 'outline').files('main')[0], 'utf8'))));
+  assert.ok(mock.calls[1].task.prompt.startsWith(staticPromptPrefix(await readFile(partKnowledge(profile, 'outline').files('review')[0], 'utf8'))));
   assert.ok(mock.calls.every(call => call.task.cwd === f.directory));
   assert.equal(mock.calls[0].task.imageGeneration, false);
   assert.equal(mock.calls[1].task.imageGeneration, false);

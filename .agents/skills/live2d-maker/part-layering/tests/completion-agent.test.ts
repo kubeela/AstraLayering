@@ -1,7 +1,7 @@
 import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { test } from 'node:test';
 import sharp from 'sharp';
 import type { AgentResult, AgentSession, AgentTask } from '../../shared/codex/agents.ts';
@@ -9,7 +9,8 @@ import { artifactPath, publishSvg, svgHash } from '../../shared/part/artifact-fa
 import { completeGroupOcclusion, checkGroupCompletion, readCompletionReferences } from '../../shared/part/completion-agent.ts';
 import { assertCompletionPreserves, composeCompletion } from '../../shared/part/completion-svg.ts';
 import { normalizeGroups, GroupStore, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
-import { readGroupPrompt, readGroupReferences } from '../../shared/part/group-prompts.ts';
+import { groupPromptDirectory, partKnowledge, readGroupReferences } from '../../shared/part/group-prompts.ts';
+import { temporaryKnowledge } from '../../shared/tests/knowledge-fixture.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
@@ -97,7 +98,7 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
     assert.ok(task.tools!.some(tool => tool.name === 'view_bitmap'));
     assert.match(task.prompt, /部件完全被遮挡.*必须先.*结构辅助图并查看/);
     assert.match(task.prompt, /不设计侧面、背面/);
-    const rules = await readFile(new URL('../prompts/9-补全操作约定.md', import.meta.url), 'utf8');
+    const rules = (await readFile(partKnowledge(profile, 'completion').files('main')[1], 'utf8')).replace('{prompt_source}', partKnowledge(profile, 'completion').files('main')[1]);
     assert.ok(task.prompt.includes(`【固定范围与操作约定】\n${rules}`));
     assert.match(task.prompt, /固定约定提示词来源：.*9-补全操作约定\.md/);
     const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
@@ -143,21 +144,22 @@ test('自定义补全实现也受调度器保留原形约束，不发布重画�
 
 test('face 特化与可选参考按完整 ID 独立读取；只配置参考也不要求替换通用正文', async t => {
   const f = await fixture(t);
-  const face = await readGroupPrompt('face', 'completion', profile.promptsDirectory);
-  assert.match(face.text, /不要扩成整个头型/);
-  assert.match(face.text, /不设计侧脸、背面/);
-  assert.ok((await readGroupPrompt('face/eye', 'completion', profile.promptsDirectory)).path.endsWith('9-正面遮挡补全.md'));
-  const prompts = join(f.directory, 'prompts');
-  await mkdir(join(prompts, 'groups', 'head'), { recursive: true });
-  await writeFile(join(prompts, '9-正面遮挡补全.md'), 'generic');
-  const groupPrompt = await readGroupPrompt('head', 'completion', prompts);
-  await writeFile(join(groupPrompt.groupDirectory, 'completion.references.json'), JSON.stringify([
-    { path: '../../../references/base.png', description: '仅供正面轮廓先验' },
+  const completion = partKnowledge(profile, 'completion');
+  const face = completion.render('main', {}, { group: 'face' });
+  assert.match(face, /不要扩成整个头型/);
+  assert.match(face, /不设计侧脸、背面/);
+  assert.ok(completion.files('main', 'face/eye')[0].endsWith('step11_completion/prompts/9-正面遮挡补全.md'));
+  await temporaryKnowledge(t);
+  const groupDirectory = groupPromptDirectory(profile, 'completion', 'head');
+  await mkdir(groupDirectory, { recursive: true });
+  await writeFile(join(groupDirectory, 'completion.references.json'), JSON.stringify([
+    { path: relative(groupDirectory, f.references.baseSubject), description: '仅供正面轮廓先验' },
   ]));
-  assert.deepEqual(await readCompletionReferences(groupPrompt.groupDirectory), [{ path: f.references.baseSubject, description: '仅供正面轮廓先验' }]);
-  assert.deepEqual(await readCompletionReferences(join(groupPrompt.groupDirectory, 'child')), []);
-  await writeFile(join(groupPrompt.groupDirectory, 'completion.references.json'), '[{"path":"missing.png","description":"ref"}]');
-  await assert.rejects(readCompletionReferences(groupPrompt.groupDirectory), { code: 'ENOENT' });
+  assert.ok(completion.files('main', 'head')[0].endsWith('step11_completion/prompts/9-正面遮挡补全.md'));
+  assert.deepEqual(await readCompletionReferences(groupDirectory), [{ path: f.references.baseSubject, description: '仅供正面轮廓先验' }]);
+  assert.deepEqual(await readCompletionReferences(join(groupDirectory, 'child')), []);
+  await writeFile(join(groupDirectory, 'completion.references.json'), '[{"path":"missing.png","description":"ref"}]');
+  await assert.rejects(readCompletionReferences(groupDirectory), { code: 'ENOENT' });
 });
 
 test('正式调度中左右十指附加实际掌片与完整指体图片，part 不再分析子组', async t => {
@@ -174,7 +176,7 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
     const id = input.group.id;
     calls.push(id);
-    assert.ok(task.prompt.includes(`prompts/groups/${id}/completion.md`));
+    assert.ok(task.prompt.includes(`step11_completion/prompts/groups/${id}/9-正面遮挡补全.md`));
     assert.match(task.prompt, /仅延伸到邻指下面不等于接到了手掌/);
     assert.match(task.prompt, /拇指按其自身根部与鱼际附近/);
     const palm = `${id.slice(0, id.lastIndexOf('/'))}/palm`;
@@ -187,7 +189,7 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     assert.equal(ref.sourceSvg, artifactPath(f.directory, palm, 'reduction'));
     assert.equal(ref.sourceHash, svgHash(await readFile(ref.sourceSvg)));
     const prior = input.additionalReferences[1];
-    assert.ok(prior.path.endsWith('/prompts/groups/arms/references/fingers/complete-fingers.png'));
+    assert.ok(prior.path.endsWith('/step11_completion/references/fingers/complete-fingers.png'));
     assert.match(prior.description, /不照搬姿势、宽度、肤色/);
     assert.deepEqual(task.images!.map(image => image.path), [f.references.baseSubject, ref.path, prior.path]);
     const result = await tool(task, 'read_svg').execute({ path: ref.sourceSvg }, signal);
@@ -208,7 +210,7 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     assert.ok(!events.includes(`${group.id}:children`));
   }
   for (const id of ['arms/arm_left/hand', 'arms/arm_left/hand/palm', 'arms/arm_right/hand', 'arms/arm_right/hand/palm']) {
-    assert.ok((await readGroupPrompt(id, 'completion', profile.promptsDirectory)).path.endsWith('9-正面遮挡补全.md'));
+    assert.ok(partKnowledge(profile, 'completion').files('main', id)[0].endsWith('step11_completion/prompts/9-正面遮挡补全.md'));
   }
 });
 

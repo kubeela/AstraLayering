@@ -1,4 +1,4 @@
-import {preparationImagePrompt} from '../shared/prompts/preparation.ts';
+import { stepKnowledge } from '../shared/knowledge.ts';
 import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
 import type { ImageProcessingOptions } from '../shared/image-processing.ts';
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
@@ -46,7 +46,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
         { path: image, description: '图 1：简化后的穿衣角色原稿，提供待提取衣装的款式、比例和画风。' },
         { path: baseImage, description: '图 2：同一角色的素体参考，用于确认换装范围；人物及随人物保留的外观由素体自身提供。' },
       ],
-      prompt: preparationImagePrompt(prompt,'clothing'),
+      prompt,
       outputSchema: { type: 'object', additionalProperties: false, required: ['savedPath', 'error'],
         properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } } },
     });
@@ -107,8 +107,8 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
       return async () => {
         const baseImage = await characterBase(input.runName, input.dir);
         const meta = await sharp(standard).metadata();
-        const prompt = (await readFile(new URL('prompts/preparation.md', import.meta.url), 'utf8'))
-          .replaceAll('{width}', String(meta.autoOrient.width)).replaceAll('{height}', String(meta.autoOrient.height));
+        const prompt = stepKnowledge('clothing-part-layering', 'step01_preparation')
+          .render('main', { width: String(meta.autoOrient.width), height: String(meta.autoOrient.height) });
         progress?.('preparation：使用已配置生图工具生成纯衣服参考。');
         const temporary = `${refs.baseSubject}.${randomUUID()}.tmp`;
         try {

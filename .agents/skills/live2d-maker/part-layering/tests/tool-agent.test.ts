@@ -302,7 +302,7 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   assert.ok(turns.every(message => message.params.threadId === 'native-thread'));
   assert.ok(turns[0].params.input[0].text.replace(/\r\n/g, '\n').startsWith(originalPrompt+'\n'));
   assert.match(turns[0].params.input[0].text, /当前工作区/);
-  assert.ok(turns.slice(1).every(message => message.params.input[0].text.startsWith(interruptedTaskPrompt)));
+  assert.ok(turns.slice(1).every(message => message.params.input[0].text.startsWith(interruptedTaskPrompt())));
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.split(originalPrompt).length === 2));
   assert.ok(turns[1].params.input[0].text.includes('existing-image.png'));
   assert.equal((await readdir(f.logDirectory)).length, 3);

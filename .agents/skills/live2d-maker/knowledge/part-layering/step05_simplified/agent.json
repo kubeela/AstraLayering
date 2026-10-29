@@ -1,0 +1,10 @@
+{
+  "main": {
+    "initial": [
+      "prompts/2-简化图片.md"
+    ],
+    "tools": [
+      "reuse_reference"
+    ]
+  }
+}

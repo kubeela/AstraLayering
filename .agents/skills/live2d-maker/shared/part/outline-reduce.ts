@@ -1,5 +1,5 @@
 import { layerStepId } from './part-steps.ts';
-import {renderPrompt} from '../prompts/render.ts';
+import { partKnowledge } from './group-prompts.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -88,16 +88,17 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       return textResult({ ...submitted, changed: await Promise.all(changed.map(async change => ({ ...change, path: await task(change.path) }))) });
     },
   };
+  const knowledge = partKnowledge(partProfile(context), 'reduction');
   const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, outputDirectory: join(context.directory, layerStepId(context.depth)),
-    imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory)],
-    prompt: renderPrompt(await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8'), {runtime_context: JSON.stringify({
+    imageGeneration: false, tools: knowledge.tools('main', [preview, write, submit, createSvgReadTool(context.directory)]),
+    prompt: knowledge.render('main', {runtime_context: JSON.stringify({
       depth: context.depth, reference: await task(reference), canvas, mergedPreview: await task(merged),
       groups: await Promise.all(context.entries.map(async entry => ({ id: entry.group.id, kind: entry.group.kind ?? 'group', note: entry.group.note,
         ...(entry.group.allowOutsideParent ? { allowOutsideParent: true } : {}),
         sourceSvg: await task((entry.current ?? entry.outline).path), originalOutline: await task(entry.outline.path),
         reusedReduction: !!entry.current, outputDraft: await task(entry.outputPath),
         parentSvg: entry.parent?.steps.completion.output?.path ? await task(entry.parent.steps.completion.output.path) : null }))),
-    }, null, 2)}, join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), ["runtime_context"]),
+    }, null, 2)}, { taskRoot: taskRootOf(context.directory) }),
   });
   if (!submitted) throw agentOutcomeError('同层去重未通过 submit_reduction 提交', response);
   return submitted;

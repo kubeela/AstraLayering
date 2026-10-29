@@ -11,6 +11,7 @@ import type { LayeringSteps } from '../../shared/part/layering-types.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
 import { readStep } from '../../shared/step-chain.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
+import { temporaryKnowledge } from '../../shared/tests/knowledge-fixture.ts';
 
 async function missing(paths: string[]) {
   for (const path of paths) await assert.rejects(readFile(path), { code: 'ENOENT' }, path);
@@ -115,17 +116,15 @@ test('复核中断后续跑沿用同一轮廓与复核记录，不重画也不�
   assert.ok(!events.includes('head:outline'));
 });
 
-async function referencing(t: TestContext, source: string, from: string, sibling: string) {
-  const prompts = await mkdtemp(join(tmpdir(), 'part-layering-prompts-'));
-  t.after(() => rm(prompts, { recursive: true, force: true }));
-  await cp(source, prompts, { recursive: true });
-  await writeAtomic(join(prompts, 'groups', from, 'completion.references.json'), JSON.stringify([{ sibling }]));
-  return prompts;
+async function referencing(t: TestContext, section: string, from: string, sibling: string) {
+  const knowledge = await temporaryKnowledge(t);
+  await writeAtomic(join(knowledge, section, 'step11_completion', 'prompts', 'groups', from, 'completion.references.json'), JSON.stringify([{ sibling }]));
 }
 
 test('掌片去重稿变化只重跑引用它的补全，不重画引用者轮廓或无关部件', async t => {
   const f = await fixture(t), events: string[] = [];
-  const profile = { ...f.profile, promptsDirectory: await referencing(t, f.profile.promptsDirectory, 'hand/finger', 'palm') };
+  const profile = f.profile;
+  await referencing(t, profile.id, 'hand/finger', 'palm');
   const steps = redrawn(workingSteps(events, [{ id: 'hand' }], { hand: ['palm', 'finger', 'ornament'].map(name => ({ id: `hand/${name}`, kind: 'part' as const })) }), ['hand/palm']);
   await runLayering({ ...f, profile, groups: null, steps });
   const ornament = [artifactPath(f.directory, 'hand/ornament', 'completion'), reportPath(f.directory, 'hand/ornament', 'completion-check')];

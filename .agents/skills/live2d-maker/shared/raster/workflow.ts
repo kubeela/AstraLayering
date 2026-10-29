@@ -1,6 +1,6 @@
 import { prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 import { publishReportAssets } from '../report-assets.ts';
-import {renderPromptFile} from '../prompts/render.ts';
+import { runtimePrompt, stepKnowledge } from '../knowledge.ts';
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/environment.ts';
 import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
 import { retryDelays } from '../codex/agent-runtime.ts';
@@ -205,13 +205,13 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
         await saveSession({ handoff: session.handoff }, '模型配置切换 CLI');
       }
       const handoff = !fresh && !session.threadId ? session.handoff : undefined;
-      if (!fresh && phase !== 'draw' && !session.threadId && !handoff) prompt = renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
+      if (!fresh && phase !== 'draw' && !session.threadId && !handoff) prompt = runtimePrompt('raster-repair-resume',{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
       if (handoff) {
         const notes = await readFile(fromTaskPath(taskRoot, handoff.notes), 'utf8');
         if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
         // A new repair thread also needs the original drawing task and inputs.
-        if (phase !== 'draw') prompt = renderPromptFile(new URL('../prompts/raster-handoff-repair.md',import.meta.url),{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
-        prompt = renderPromptFile(new URL('../prompts/raster-handoff.md',import.meta.url),{
+        if (phase !== 'draw') prompt = runtimePrompt('raster-handoff-repair',{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
+        prompt = runtimePrompt('raster-handoff',{
           task_prompt:prompt, previous_thread_id:handoff.previousThreadId, reason:handoff.reason,
           step_id:step.id, phase, notes,
         });
@@ -226,12 +226,13 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : session.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
-        tools: [...section.tools?.(output, reference, step, phase, sectionKrita) ?? [],
+        tools: stepKnowledge(step.knowledge.section, step.knowledge.step).tools(fresh ? 'review' : phase === 'draw' ? 'main' : 'repair', [
+          ...section.tools?.(output, reference, step, phase, sectionKrita) ?? [],
           // Drawing, review and repairs run one after another in this section
           // and share its Krita; a fresh reviewer thread is still the same section.
-          ...(step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])],
+          ...(step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])]),
         imageNormalization: { env: environment.codex.env, runsRoot: root, progress: options.progress },
-        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt}) : undefined,
+        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? runtimePrompt('raster-repair-resume',{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt}) : undefined,
         threadId: fresh ? undefined : session.threadId, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
           await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');

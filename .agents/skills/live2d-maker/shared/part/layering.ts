@@ -2,6 +2,7 @@ import { formatAgentError } from '../codex/diagnostics.ts';
 import type { PartProfile } from './profile.ts';
 import { lstat, mkdir, readdir, readFile, rm, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
+import { partKnowledge } from './group-prompts.ts';
 import sharp from 'sharp';
 import { checkSubject, findGroup, groupCompleted, GroupStore, nodeSeed, normalizeGroups, setGroupProgress, walkGroups, writeAtomic } from './groups.ts';
 import { artifactPath, draftPath, stepDraftPath, mergeSourceHash, publishSvg, readReviewReport, readSvg, reportPath, reviewedArtifact, svgHash } from './artifact-facts.ts';
@@ -64,7 +65,7 @@ export async function runLayering(input: {
   await store.update(() => {});
   const report = input.progress ?? (() => {});
   const initial = { profile: input.profile, directory, references: input.references, store };
-  const promptsDirectory = input.profile?.promptsDirectory;
+  const completionGroups = input.profile && join(partKnowledge(input.profile, 'completion').directory, 'prompts', 'groups');
   const statePath = directory;
   let selected: Set<string> | undefined;
   let completedOcclusion: string | undefined;
@@ -269,7 +270,7 @@ export async function runLayering(input: {
   }
   // step02: completion + check; step03: children split.
   async function finish(id: string) {
-    const step = groupStep(directory, id, 'completion', await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
+    const step = groupStep(directory, id, 'completion', await completionReferenceGroups(id, parentGroupId(id), completionGroups));
     const check = await guard(id, 'completion', () => checkStep(step, lookup));
     if (check.action !== 'keep') {
       await resetProgress(id, 'completion');
@@ -425,7 +426,7 @@ export async function runLayering(input: {
       if (selected) for (const entry of entries) {
         const id = entry.group.id;
         if (scope()!.has(id)) continue;
-        const step = groupStep(directory, id, 'completion', await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
+        const step = groupStep(directory, id, 'completion', await completionReferenceGroups(id, parentGroupId(id), completionGroups));
         if ((await readStep(step.directory, root)).status === 'absent') continue;
         // Only completions whose inputs changed; an unfinished one is not a change.
         if ((await checkStep(step, lookup).catch(() => undefined))?.action === 'rerun') selected.add(id);

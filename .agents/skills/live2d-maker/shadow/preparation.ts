@@ -1,12 +1,12 @@
 import { readFile } from 'node:fs/promises';
 import { prepareFileInputs } from '../shared/agents/inputs.ts';
-import { fileURLToPath } from 'node:url';
+import { stepKnowledge } from '../shared/knowledge.ts';
 import { kraContents, kraLayers } from './delivery.ts';
 import { fileHash, type ShadowInput } from './input.ts';
 import { matchLayerPart } from '../shared/layer-names.ts';
 
 export const referenceNames = ['production.md', 'skirt.png', 'hair.png'] as const;
-export const referenceUrl = (name: string) => new URL('./references/' + name, import.meta.url);
+export const referencePath = (name: string) => stepKnowledge('shadow', 'step01_mask').reference(name);
 export type InputIndex = { version: 1; sourceHash: string; parts: { id: string; name: string; note: string; depth?: unknown }[];
   layers: { uuid: string; name: string; parent: string; type: string; nameMatch: string | null; maskState?: Record<string,string> }[] };
 
@@ -33,7 +33,7 @@ export async function inputIndex(input: ShadowInput): Promise<InputIndex> {
 }
 export async function prepareMaskReferences(output: string, input: ShadowInput) {
   await prepareFileInputs(output, [
-    ...referenceNames.map(name => ({ name, source: fileURLToPath(referenceUrl(name)) })),
+    ...referenceNames.map(name => ({ name, source: referencePath(name) })),
     { name: 'inputs.json', content: JSON.stringify(await inputIndex(input), null, 2) + '\n' },
   ]);
 }
