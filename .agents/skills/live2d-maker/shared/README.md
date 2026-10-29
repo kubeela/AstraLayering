@@ -57,7 +57,6 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 | 模板 | 动态位置与用途 |
 | --- | --- |
 | [Agent 请求](prompts/agent-turn.md) | `{task_prompt}`、`{task_root}`、`{workspace}`、`{section_directory}`、`{output_directory}`。所有 CLI 共用路径约定、工作区、输入与正式交付说明。 |
-| [图片说明](prompts/image-description.md)、[图片路径](prompts/image-reference.md) | `{image_description}` 来自本次附图用途，`{image_path}` 是本次图片路径；AGV 通过路径读取。图片说明作为独立消息发送，与任务正文一起保存在请求记录。 |
 | [中断继续](prompts/interrupted-task.md) | 无动态位置。会话仍可接上时只发这一句，原任务与已有产物都在会话里。 |
 | [恢复返修](prompts/raster-repair-resume.md)、[交接返修](prompts/raster-handoff-repair.md)、[会话交接](prompts/raster-handoff.md) | `{drawing_prompt}`、`{repair_prompt}` 或 `{task_prompt}`，以及旧会话、原因、当前阶段和交接记录。 |
 | [生图请求](prompts/image-request.md)、[Nano 纯色背景](prompts/nano-solid-background.md) | `{drawing_prompt}`、`{background_instructions}`、`{background_hex}`。原始绘制要求保留，Nano 透明后处理补充独立的背景要求。 |

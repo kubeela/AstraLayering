@@ -80,7 +80,7 @@ export type OcclusionContext = InitialContext & { groups: GroupNode[]; preview: 
 
 export type OutlineReductionContext = InitialContext & {
   depth: number;
-  entries: { group: GroupNode; parent?: GroupNode; outline: SvgArtifact; current?: SvgArtifact; outputPath: string }[];
+  entries: { group: GroupNode; parent?: GroupNode; outline: SvgArtifact; outputPath: string }[];
 };
 export type OutlineReduction = {
   changed: { groupId: string; path: string }[];

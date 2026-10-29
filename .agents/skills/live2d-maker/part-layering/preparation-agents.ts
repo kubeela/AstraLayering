@@ -66,11 +66,10 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     required: [...imageOutputSchema.required, 'reason'],
   };
   const simplified = stepKnowledge('part-layering', 'step05_simplified'), base = stepKnowledge('part-layering', 'step06_base');
-  const styleReference = simplified.reference('简化参考图片.png');
   return {
     judgeStandard: async (image, prompt) => {
       const result = await agents.run({
-        step: 'part_pose_judgment', name: '姿态判断', prompt, images: [{ path: image, description: '角色原始参考图。' }],
+        step: 'part_pose_judgment', name: '姿态判断', prompt,
         outputSchema: {
           type: 'object', properties: { needsAdjustment: { type: 'boolean' }, reason: { type: 'string' } },
           required: ['needsAdjustment', 'reason'], additionalProperties: false,
@@ -85,28 +84,19 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     standardize: async (image, output, prompt) => {
       const result = await agents.run({
         step: 'part_standardize', name: '标准姿态', imageGeneration: true, outputSchema: imageOutputSchema,
-        images: [{ path: image, description: '角色原始参考图。' }],
         prompt,
       });
       await validateAgentOutcome(result, () => saveImage(result.images.at(-1), output));
     },
     simplify: async (image, output, prompt, processGenerated) => {
       await prepareImage(agents, simplified, {
-        step: 'part_simplify', name: '参考判断与简化', prompt, imageGeneration: true, images: [
-          { path: image, description: '图 1：角色原始参考图。' },
-          { path: styleReference, description: '图 2：目标 Live2D 立绘画风参考，只比较画法。' },
-        ],
+        step: 'part_simplify', name: '参考判断与简化', prompt, imageGeneration: true,
         outputSchema: referenceOutputSchema,
       }, image, output, processGenerated);
     },
     baseSubject: async (image, output, prompt, processGenerated) => {
       return prepareImage(agents, base, {
         step: 'part_base_subject', name: '素体换装', prompt, imageGeneration: true, outputSchema: referenceOutputSchema,
-        images: [
-          { path: image, description: '图 1：已准备的角色参考图。' },
-          { path: base.reference('连体服参考.jpg'),
-            description: '图 2：连体服款式参考。' },
-        ],
       }, image, output, processGenerated);
     },
   };

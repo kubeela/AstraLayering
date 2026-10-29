@@ -1,4 +1,4 @@
-完整指体参考用于十根手指的 `completion`，由每个完整 ID 的 `completion.references.json` 显式引用。运行器将 `complete-fingers.png` 作为实际图片附给补全模型；不依赖研究目录，不影响 outline 或 review 的输入。
+完整指体参考用于十根手指的 `completion`，由每个完整 ID 的补全正文在 `additionalReferences` 中以路径列出，模型自行查看 `complete-fingers.png`；不依赖研究目录，不影响 outline 或 review 的输入。
 
 上排从左到右是 Milly 的指4L、指3L、指2L、指1L、手掌L；下排是樱桃天使 ArtMesh378、379、380、382、383。只借鉴被遮指身、近端厚度和掌下余量，不对应本角色具体指名，不照搬姿势、肤色、宽度或坐标。樱桃裁片保留图集存储方向。莉尔本次检查的一体握拳手未加入。
 

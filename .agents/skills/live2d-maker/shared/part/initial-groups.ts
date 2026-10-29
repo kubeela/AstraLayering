@@ -1,7 +1,7 @@
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
-import { originalImageReference, partProfile } from './profile.ts';
+import { partProfile } from './profile.ts';
 import { join, resolve } from 'node:path';
 import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
@@ -42,7 +42,6 @@ export async function recognizeInitialGroups(
   // The tool writes the step output directly, so a turn that fails after saving
   // continues from the saved grouping instead of asking again.
   const path = join(context.directory, partSteps.initial, 'groups.json');
-  const reference = resolve(context.directory, context.references.baseSubject);
   const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
   let submitted = false;
   const writeGroups: FunctionTool = {
@@ -60,11 +59,7 @@ export async function recognizeInitialGroups(
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'initial_groups'),
     name: '首次分组识别', cwd: context.directory,
-    images: profile.attachInitialReference ? [{ path: reference, description: profile.references.initial }, ...originalImageReference(context, profile.originalReference)] : undefined,
-    prompt: knowledge.render('main', {run_directory: await task(context.directory),
-      reference_label: profile.referenceLabel,
-      reference_path: await task(reference),
-      groups_path: await task(path)}, { taskRoot: root }),
+    prompt: knowledge.render('main', context.references.originalImage ? { original_image: resolve(context.references.originalImage) } : {}, { taskRoot: root }),
     tools: knowledge.tools('main', [createBitmapTool(context.directory, join(context.directory, 'observations', 'initial-groups')), writeGroups]),
   });
   if (!submitted) throw agentOutcomeError('首次分组未通过 write_groups 保存', response);

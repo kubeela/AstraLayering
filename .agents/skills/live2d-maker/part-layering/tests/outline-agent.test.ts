@@ -3,7 +3,8 @@ import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { isAbsolute, join } from 'node:path';
+import { dirname, isAbsolute, join } from 'node:path';
+import { artifactPath } from '../../shared/part/artifact-facts.ts';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import type { AgentSession, AgentTask } from '../../shared/codex/agents.ts';
@@ -15,6 +16,7 @@ import { partKnowledge } from '../../shared/part/group-prompts.ts';
 import { temporaryKnowledge } from '../../shared/tests/knowledge-fixture.ts';
 import { drawGroupOutline } from '../../shared/part/outline-agent.ts';
 import { fromTaskPath, taskRootOf } from '../../shared/task-paths.ts';
+import { promptInput } from '../../shared/tests/prompt-input.ts';
 
 const signal = new AbortController().signal;
 // 本文件仅测试轮廓/review；后续补全由 completion-agent.test.ts 验证。
@@ -22,25 +24,25 @@ function createLayeringSteps(agents: Parameters<typeof createDefaultLayeringStep
   return { ...createDefaultLayeringSteps(agents), completeOcclusion: async () =>
     ({ status: 'pending' as const, message: '轮廓测试结束，补全另行测试' }) };
 }
-type Runtime = { group: { id: string }; outputSvg?: string; candidate?: string; parentSvg: string | null;
+type Runtime = { group: { id: string }; parentGroup: string | null; outputSvg?: string; candidate?: string;
   review?: { round: number; candidateHash: string } };
 // A repair turn carries no input of its own: the drawing turn of the same thread gave it.
 // The mock holds no thread, so it reads that input from the recovery text's drawing task.
 function runtime(task: AgentTask): Runtime {
-  const pattern = /【本次输入】\n([\s\S]*?\n})\n/;
-  const match = task.prompt.match(pattern) ?? (task.recoveryPrompt && !pattern.test(task.prompt) ? task.recoveryPrompt.match(pattern) : null);
-  assert.ok(match);
-  return JSON.parse(match[1]);
+  const prompt = task.prompt.includes('【本次输入】') ? task.prompt : task.recoveryPrompt;
+  assert.ok(prompt?.includes('【本次输入】'));
+  return promptInput(prompt!) as Runtime;
 }
 function svg(id: string, left = 10, right = 90) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g id="shape" data-group-path="${id}"><path fill="#ff0000" stroke="none" d="M${left} 10H${right}V90H${left}Z"/></g></svg>`;
 }
 async function fixture(t: TestContext) {
-  const directory = await mkdtemp(join(tmpdir(), 'part-layering-outline-'));
-  t.after(() => rm(directory, { recursive: true, force: true }));
+  // The task layout of a real run, so the prompt's task paths resolve.
+  const root = await mkdtemp(join(tmpdir(), 'part-layering-outline-')), directory = join(root, 'part-layering');
+  t.after(() => rm(root, { recursive: true, force: true }));
   const references = { directory: join(directory, 'references'), judgment: join(directory, 'references/judgment.json'),
-    simplifiedSubject: join(directory, 'references/simplified.png'), baseSubject: join(directory, 'references/base.png') };
-  await mkdir(references.directory);
+    simplifiedSubject: join(directory, 'references/simplified-subject.png'), baseSubject: join(directory, 'references/base-subject.png') };
+  await mkdir(references.directory, { recursive: true });
   await writeFile(references.judgment, JSON.stringify({ needsSimplification: false }));
   const bytes = await sharp({ create: { width: 100, height: 100, channels: 4, background: '#ffffff' } }).png().toBuffer();
   await writeFile(references.simplifiedSubject, bytes);
@@ -174,7 +176,7 @@ test('真实默认适配器接入绘制、自检和独立 review，之后停在�
   assert.equal(report.reviews[0].observations.length, 1);
   const [observation] = report.reviews[0].observations;
   for (const path of [observation.source, observation.savedPath]) assert.ok(!isAbsolute(path) && !path.startsWith('..'), path);
-  await readFile(join(f.directory, observation.savedPath));
+  await readFile(join(dirname(f.directory), observation.savedPath));
   await assert.rejects(readFile(join(f.directory, 'parts/face.svg')), { code: 'ENOENT' });
   await runLayering({ ...f, groups: null, steps: createLayeringSteps({ async run() { assert.fail('已完成的两步不能重复'); } }) });
 });
@@ -367,15 +369,17 @@ test('缺少自检不能提交轮廓；返修回合失败保留此前已登记 S
 
 test('子组绘制收到父组完成 SVG；越界由写入工具当回合退回，不能进入 review，父组文件保持原样', async t => {
   const f = await fixture(t);
-  const parent = join(f.directory, 'parent.svg');
+  const parent = join(f.directory, 'parts/face.svg');
   const before = svg('face', 20, 80);
+  await mkdir(dirname(parent), { recursive: true });
   await writeFile(parent, before);
   const group = normalizeGroups([{ id: 'face/eye' }])[0];
   const parentGroup = normalizeGroups([{ id: 'face', steps: { completion: { status: 'completed', output: { path: parent } } } }])[0];
   const calls: AgentTask[] = [];
-  await assert.rejects(drawGroupOutline({ ...f, group, parent: parentGroup, outputPath: join(f.directory, 'child.draft.svg') }, { async run(task) {
+  await assert.rejects(drawGroupOutline({ ...f, group, parent: parentGroup, outputPath: artifactPath(f.directory, 'face/eye', 'outline') }, { async run(task) {
     calls.push(task);
-    assert.equal(runtime(task).parentSvg!.endsWith('parent.svg'), true);
+    assert.equal(runtime(task).parentGroup, 'face');
+    assert.ok(task.prompt.includes(`parentSvg：${join(f.directory, 'parts')}/<parentGroup>.svg`));
     await assert.rejects(task.tools!.find(tool => tool.name === 'write_outline_svg')!.execute({ svg: svg('face/eye', 10) }, signal), /超出父轮廓/);
     return { text: '完成', images: [], threadId: 'out-of-bounds' };
   } }));
@@ -384,15 +388,16 @@ test('子组绘制收到父组完成 SVG；越界由写入工具当回合退回�
 });
 
 test('终端不可用时可读取父 SVG 复用共享曲线，源码读取不能代替预览自检', async t => {
-  const f = await fixture(t), parent = join(f.directory, 'parent.svg');
+  const f = await fixture(t), parent = join(f.directory, 'parts/face.svg');
   const before = svg('face', 20.125, 80.375);
+  await mkdir(dirname(parent), { recursive: true });
   await writeFile(parent, before);
   const group = normalizeGroups([{ id: 'face/eye' }])[0];
   const parentGroup = normalizeGroups([{ id: 'face', steps: { completion: { status: 'completed', output: { path: parent } } } }])[0];
   let preview = false;
   const mock = { async run(task: AgentTask) {
     const input = runtime(task);
-    const result = await task.tools!.find(tool => tool.name === 'read_svg')!.execute({ path: input.parentSvg }, signal);
+    const result = await task.tools!.find(tool => tool.name === 'read_svg')!.execute({ path: join(f.directory, 'parts', `${input.parentGroup}.svg`) }, signal);
     const item = result.contentItems[0]; assert.equal(item.type, 'inputText');
     const source = JSON.parse(item.text).svg as string;
     assert.equal(source, before);
@@ -400,7 +405,7 @@ test('终端不可用时可读取父 SVG 复用共享曲线，源码读取不能
     if (preview) await task.tools!.find(tool => tool.name === 'preview_svg')!.execute({ path: input.outputSvg, mode: 'blend' }, signal);
     return { text: '完成', images: [], threadId: 'bound-source-reader' };
   } };
-  const context = { ...f, group, parent: parentGroup, outputPath: join(f.directory, 'child.draft.svg') };
+  const context = { ...f, group, parent: parentGroup, outputPath: artifactPath(f.directory, 'face/eye', 'outline') };
   await assert.rejects(drawGroupOutline(context, mock), /混合叠加自检/);
   preview = true;
   await drawGroupOutline(context, mock);

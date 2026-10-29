@@ -34,6 +34,7 @@ async function advance() {
   if (mode === 'hang') return;
   if (index < calls.length) {
     const call = calls[index++];
+    await record([{ type: 'function_call', call_id: 'item-' + index, name: call.tool, arguments: JSON.stringify(call.arguments) }]);
     write({ method: 'item/tool/call', id: 'call-' + index,
       params: { threadId, turnId: 'native-turn', callId: 'item-' + index, namespace: null, ...call } });
   } else if (mode === 'eof') process.exit(0);
@@ -76,7 +77,12 @@ for await (const line of createInterface({ input: process.stdin })) {
     write({ id: msg.id, result: { turn: { id: 'native-turn', status: 'inProgress' } } });
     if (behavior.nativeReconnect) write({method:'error',params:{threadId,turnId:'native-turn',willRetry:true,error:{message:'Reconnecting... 2/5',codexErrorInfo:{responseStreamDisconnected:{httpStatusCode:503}}}}});
     await advance();
-  } else if (typeof msg.id === 'string') await advance();
+  } else if (typeof msg.id === 'string') {
+    // A tool response: record what the model saw, images included.
+    await record([{ type: 'function_call_output', call_id: 'item-' + msg.id.slice('call-'.length), output: (msg.result?.contentItems ?? []).map(part =>
+      part.type === 'inputImage' ? { type: 'input_image', image_url: part.imageUrl } : { type: 'input_text', text: part.text }) }]);
+    await advance();
+  }
 }
 `, 'utf8');
   await chmod(executable, 0o755);

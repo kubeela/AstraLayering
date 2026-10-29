@@ -13,6 +13,7 @@ import sharp from 'sharp';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { readDressup } from '../../shared/part/dressup.ts';
 import { partSteps } from '../../shared/step-paths.js';
+import { referencePaths } from '../../shared/tests/prompt-input.ts';
 
 // The part section holds the preparation steps beside the references directory.
 const section = (refs: { directory: string } | string) => dirname(typeof refs === 'string' ? refs : refs.directory);
@@ -58,8 +59,8 @@ test('无需简化仍执行换装，判断和换装各收到正确的两张图�
   const f = await fixture(t, false);
   const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
   assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
-  assert.deepEqual(f.calls[0].images?.map(image => image.path), [refs.standardImage, styleReference]);
-  assert.deepEqual(f.calls[1].images?.map(image => image.path), [refs.simplifiedSubject, outfitReference]);
+  assert.deepEqual(referencePaths(f.calls[0].prompt), [refs.standardImage, styleReference]);
+  assert.deepEqual(referencePaths(f.calls[1].prompt), [refs.simplifiedSubject, outfitReference]);
   assert.deepEqual(await readFile(refs.simplifiedSubject), f.bytes);
   assert.deepEqual(await readFile(refs.baseSubject), f.bytes);
   assert.deepEqual(await readFile(refs.standardImage!), f.bytes);
@@ -72,8 +73,8 @@ test('需要简化时先转换画风再换装，续跑不依赖外部原图', as
   const f = await fixture(t, true);
   const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
   assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
-  assert.deepEqual(f.calls[0].images?.map(image => image.path), [refs.standardImage, styleReference]);
-  assert.deepEqual(f.calls[1].images?.map(image => image.path), [refs.simplifiedSubject, outfitReference]);
+  assert.deepEqual(referencePaths(f.calls[0].prompt), [refs.standardImage, styleReference]);
+  assert.deepEqual(referencePaths(f.calls[1].prompt), [refs.simplifiedSubject, outfitReference]);
   await rm(f.original);
   f.calls.length = 0;
   const messages: string[] = [];
@@ -240,16 +241,14 @@ test('--standard 先判断；已标准仅复制，需要调整才传一张原图
     const refs = await prepareReferences({ runName: f.runName, image: f.original, standard: true }, f.steps);
     assert.deepEqual(f.calls.map(task => task.name), ['姿态判断', ...(adjust ? ['标准姿态'] : []), '参考判断与简化', '素体换装']);
     const judge = f.calls[0];
-    assert.equal(judge.images!.length, 1);
-    assert.equal(judge.images![0].path, refs.originalImage);
+    assert.deepEqual(referencePaths(judge.prompt), [refs.originalImage]);
     const generation = f.calls.find(task => task.name === '标准姿态');
     if (adjust) {
       assert.equal(generation!.imageGeneration, true);
-      assert.equal(generation!.images!.length, 1);
-      assert.equal(generation!.images![0].path, refs.originalImage);
+      assert.deepEqual(referencePaths(generation!.prompt), [refs.originalImage]);
       assert.deepEqual(await readFile(refs.standardImage!), await readFile(f.generated));
     } else assert.deepEqual(await readFile(refs.standardImage!), f.bytes);
-    assert.equal(f.calls.find(task => task.name === '参考判断与简化')!.images![0].path, refs.standardImage);
+    assert.equal(referencePaths(f.calls.find(task => task.name === '参考判断与简化')!.prompt)[0], refs.standardImage);
     assert.deepEqual(await readFile(refs.originalImage!), f.bytes);
     f.calls.length = 0;
     assert.deepEqual(await prepareReferences({ runName: f.runName, standard: true }, f.steps), refs);

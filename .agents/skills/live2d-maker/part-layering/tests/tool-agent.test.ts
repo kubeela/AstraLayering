@@ -47,10 +47,10 @@ test('未声明时限的原生工具回合不注册超时计时器', async t => 
 });
 
 test('原生初始分组可裁剪放大回传图片、保存正式分组，开放自带终端并正确续跑', async t => {
-  const f = await fixture(t);
-  const references = { directory: join(f.directory, 'references'), baseSubject: join(f.directory, 'references', '本次目标.png'),
+  const f = await fixture(t), directory = join(f.directory, 'part-layering');
+  const references = { directory: join(directory, 'references'), baseSubject: join(directory, 'references', 'base-subject.png'),
     simplifiedSubject: 'unused', judgment: 'unused' };
-  await mkdir(references.directory);
+  await mkdir(references.directory, { recursive: true });
   await sharp({ create: { width: 100, height: 200, channels: 4, background: '#ff0000' } }).png().toFile(references.baseSubject);
   const grouping = { subject: 'character', groups: [{ name: 'head', groups: [], note: '头部' }] };
   const server = await fakeAppServer(f.directory, [
@@ -62,14 +62,14 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const steps = { ...createLayeringSteps(agents), async drawOutline() {
     return { status: 'pending' as const, message: '本测试仅验证首次分组' };
   } };
-  const result = await runLayering({ profile, directory: f.directory, references, groups: null, steps });
+  const result = await runLayering({ profile, directory, references, groups: null, steps });
   assert.equal(result.groups[0].id, 'head');
   await assert.rejects(readFile(join(f.directory, 'progress.json')), { code: 'ENOENT' });
   const protocol = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   const initialize = protocol.find(item => item.method === 'initialize');
   assert.equal(initialize.params.capabilities.experimentalApi, true);
   const thread = protocol.find(item => item.method === 'thread/start');
-  assert.equal(thread.params.cwd, join(f.directory, 'step08_initial/workspace'));
+  assert.equal(thread.params.cwd, join(directory, 'step08_initial/workspace'));
   assert.equal(thread.params.model, 'gpt-6.1-sol');
   assert.equal(thread.params.config['features.shell_tool'], true);
   assert.equal(thread.params.config['features.unified_exec'], true);
@@ -92,7 +92,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   assert.equal(preview.width, 40);
   assert.equal(preview.height, 60);
   assert.equal(observation.contentItems[1].type, 'inputImage');
-  assert.equal(preview.savedPath.startsWith(join(f.directory, 'step08_initial/workspace/bitmaps') + sep), true);
+  assert.equal(preview.savedPath.startsWith(join(directory, 'step08_initial/workspace/bitmaps') + sep), true);
   const image = Buffer.from(observation.contentItems[1].imageUrl.split(',')[1], 'base64');
   assert.deepEqual(await readFile(preview.savedPath), image);
   const imageMetadata = await sharp(image).metadata();
@@ -101,7 +101,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   const submission = protocol.find(item => item.id === 'call-2').result;
   assert.equal(submission.success, true);
   const saved = JSON.parse(submission.contentItems[0].text).path;
-  assert.equal(saved, join(f.directory, 'step08_initial/groups.json'));
+  assert.equal(saved, join(directory, 'step08_initial/groups.json'));
   assert.deepEqual(JSON.parse(await readFile(saved, 'utf8')), {
     subject: 'character', groups: [{ id: 'head', kind: 'group', name: 'head', note: '头部' }],
   });
@@ -116,7 +116,7 @@ test('原生初始分组可裁剪放大回传图片、保存正式分组，开�
   for (const value of [logged.events, logged.transcript, JSON.stringify(logged.request)]) {
     assert.doesNotMatch(value, /test-secret-must-not-log/);
   }
-  await runLayering({ profile, directory: f.directory, references, groups: null, steps });
+  await runLayering({ profile, directory, references, groups: null, steps });
   assert.equal((await readdir(f.logDirectory)).length, 1);
 });
 
@@ -360,8 +360,9 @@ test('图片被内容策略拦截：本批图片换成文字后在新会话继�
   const session = agents.createSession(undefined, { onThreadReplacement: async id => { replaced.push(id); },
     onSessionStarted: async id => { started.push(id); } });
   t.after(() => session.close());
-  const images = ['a.png', 'b.png'].map(name => ({ path: join(f.directory, name), description: name }));
-  const result = await session.run({ name: '拦截', prompt: '原始任务', images, tools: [tool(async () => textResult('已提交'))] });
+  // Images reach the model only through tool results.
+  const result = await session.run({ name: '拦截', prompt: '原始任务', tools: [tool(async () => ({ success: true, contentItems: [
+    { type: 'inputImage', imageUrl: 'data:image/png;base64,AA' }, { type: 'inputImage', imageUrl: 'data:image/png;base64,AB' }] }))] });
   await session.close();
   assert.equal(result.threadId, 'native-thread-2');
   assert.deepEqual(replaced, ['native-thread-1']);
@@ -370,7 +371,7 @@ test('图片被内容策略拦截：本批图片换成文字后在新会话继�
   const [injected] = protocol.filter(message => message.method === 'thread/inject_items');
   const history = JSON.stringify(injected.params.items);
   assert.ok(!history.includes('"type":"input_image"') && !history.includes('"instructions"'));
-  for (const image of images) assert.ok(history.includes(JSON.stringify(`输入图片 ${image.path}`).slice(1, -1)));
+  assert.equal(history.split('工具 probe 的返回').length - 1, 2);
   const turns = protocol.filter(message => message.method === 'turn/start');
   assert.deepEqual(turns.map(message => message.params.threadId), ['native-thread-1', 'native-thread-2']);
   assert.equal(turns[1].params.input.length, 1);

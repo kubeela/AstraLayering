@@ -26,7 +26,6 @@ export type AgentTask = {
   name: string;
   prompt: string;
   recoveryPrompt?: string;
-  images?: { path: string; description: string }[];
   imageGeneration?: boolean;
   outputSchema?: Record<string, unknown>;
   timeoutMs?: number;
@@ -164,8 +163,8 @@ export class CodexAgents {
           const replace = this.replacement(task);
           return await this.invoke(task, signal, async () => {
             try {
-              const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
-                : interrupted ? { ...task, prompt: interruptedTaskPrompt(), images: undefined }
+              const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked) }
+                : interrupted ? { ...task, prompt: interruptedTaskPrompt() }
                 : fresh ? { ...task, prompt: task.recoveryPrompt || task.prompt } : task, signal);
               id = result.threadId || id;
               for (const image of result.images) savedImages.add(image.savedPath);
@@ -268,7 +267,7 @@ export class CodexAgents {
               let interrupted = false;
               const replace = this.replacement(task);
               result = await this.invoke(task, signal, async () => {
-                try { return await runCliTask(interrupted ? { ...task, prompt: interruptedTaskPrompt(), images: undefined } : task,
+                try { return await runCliTask(interrupted ? { ...task, prompt: interruptedTaskPrompt() } : task,
                   selected, settings, { ...this.options, onEvent: async event => {
                     if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
                     await this.options.onEvent?.(event);

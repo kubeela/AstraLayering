@@ -18,6 +18,14 @@ group 检查联合覆盖，不因没有内部路径就判附件缺失。part 检
 
 【本次输入】
 {runtime_context}
+reference：{uri:clothing-part-layering/references/clothing.png}
+groups：{uri:clothing-part-layering/groups.json}
+parentSvg：{uri:clothing-part-layering/parts/}<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+canvas：{width}×{height}
+candidate：{uri:clothing-part-layering/step09_outline/{group_dir}/outline.svg}
 
-审查报告：{report_path}
+审查报告：{uri:clothing-part-layering/step09_outline/{group_dir}/review.json}
 候选只读；完成全部检查后一次提交反馈。
+
+用于独立核对本组可见外轮廓的纯衣服参考图。
+参考图绝对路径：{uri:clothing-part-layering/references/clothing.png}

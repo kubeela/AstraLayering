@@ -10,7 +10,7 @@ export type KnowledgeStep = {
 const part = (section: string): KnowledgeStep[] => [
   { section, step: 'step08_initial', required: ['write_groups'] },
   { section, step: 'step09_outline', required: ['write_outline_svg'], review: { required: ['submit_review'] } },
-  { section, step: 'step10_reduce', required: ['write_reduction_svg', 'submit_reduction'] },
+  { section, step: 'step10_reduce', required: ['list_reduction_groups', 'write_reduction_svg', 'submit_reduction'] },
   { section, step: 'step11_completion', required: ['set_completion_paths', 'submit_completion'] },
   { section, step: 'step12_children', required: ['submit_children'] },
   { section, step: 'step14_occlusion', required: ['submit_occlusion'] },
@@ -38,7 +38,6 @@ export const knowledgeSteps: readonly KnowledgeStep[] = [
 export const runtimePrompts = [
   'agent-turn', 'interrupted-task',
   'image-blocked-multiple', 'image-blocked-placeholder', 'image-blocked-single', 'image-blocked-stop',
-  'image-description', 'image-reference',
   'outline-repair', 'outline-repair-resume',
   'raster-handoff', 'raster-handoff-repair', 'raster-repair-resume',
 ] as const;

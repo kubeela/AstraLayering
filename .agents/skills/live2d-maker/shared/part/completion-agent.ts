@@ -1,5 +1,4 @@
 import { groupStepId } from './part-steps.ts';
-import { prepareFileInputs } from '../agents/inputs.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -12,30 +11,13 @@ import { createBitmapTool } from './bitmap-tool.ts';
 import { svgHash } from './artifact-facts.ts';
 import { assertCompletionPreserves, composeCompletion, completionPaths } from './completion-svg.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { groupPromptDirectory, partKnowledge, readGroupReferences } from './group-prompts.ts';
+import { groupValues, partKnowledge } from './group-prompts.ts';
 import { nodeSeed, writeAtomic } from './groups.ts';
 import { dependenciesMatch, fileDependency } from './completion-inputs.ts';
 import type { DrawingContext, GroupContext, SvgArtifact, CompletionCheck } from './layering-types.ts';
 import { taskRootOf, toAgentPath } from '../task-paths.ts';
 import { createSvgPreviewTool, createSvgReadTool, observedPath, parentBoundsSource, validateGroupSvg, type SvgObservation } from './svg-tools.ts';
 
-
-// 同级参考只取本层已审查、去重的只读底形，避免依赖并发补全的完成顺序。
-export async function readCompletionReferences(groupDirectory: string, context?: GroupContext) {
-  return readGroupReferences(groupDirectory, 'completion', context ? async (name, description) => {
-    const sibling = context.parent?.groups.find(group => group.id === `${context.parent!.id}/${name}`);
-    if (!sibling || sibling.id === context.group.id) throw new Error(`补全参考不是当前节点的其他直属同级：${name}`);
-    const reduced = sibling.steps.reduction;
-    if (reduced.status !== 'completed' || !reduced.output) throw new Error(`补全同级参考尚未完成整层去重：${sibling.id}`);
-    const sourceSvg = await realpath(reduced.output.path);
-    const bytes = await readFile(sourceSvg);
-    const filename = `${name}.png`;
-    const inputFiles = await prepareFileInputs(join(context.directory, groupStepId(context.group.id, 'completion')),
-      [{ name: filename, content: await sharp(bytes, { limitInputPixels: 100_000_000 }).png().toBuffer() }]);
-    const path = inputFiles[filename];
-    return { path, description, groupId: sibling.id, sourceSvg, sourceHash: svgHash(bytes), sourceStage: 'reduction' };
-  } : undefined);
-}
 
 export async function completeGroupOcclusion(context: DrawingContext & { reviewed: SvgArtifact }, agents: Pick<CodexAgents, 'run'>): Promise<SvgArtifact> {
   const profile = partProfile(context);
@@ -48,11 +30,8 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   const parent = context.parent?.steps.completion.output?.path;
   const boundsParent = parentBoundsSource(context.group, parent);
   const knowledge = partKnowledge(profile, 'completion');
-  const references = await readCompletionReferences(groupPromptDirectory(profile, 'completion', context.group.id), context);
   const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
-  const dependencies = await Promise.all([fileDependency(root, reference),
-    ...references.map(ref => 'sourceSvg' in ref ? fileDependency(root, ref.sourceSvg,
-      { groupId: ref.groupId, stage: 'reduction' }) : fileDependency(root, ref.path))]);
+  const dependencies = [await fileDependency(root, reference)];
   const observations: SvgObservation[] = [];
   let submitted: SvgArtifact | undefined, submittedHash: string | undefined;
   // A continued step keeps the additions drawn so far when they still sit on the
@@ -114,16 +93,12 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'completion')), imageGeneration: true,
-    images: [{ path: reference, description: profile.references.completion }, ...references.map(({ path, description }) => ({ path, description }))],
     tools: knowledge.tools('main', [preview, set, submit, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'completion', context.group.id, 'bitmaps'))]), prompt: knowledge.render('main', {
-      runtime_context: JSON.stringify({
-      group: nodeSeed(context.group),
-      reference: await task(reference), canvas, sourceSvg: await task(sourcePath), outputDraft: await task(draft),
-      additionalReferences: await Promise.all(references.map(async ref => ({ ...ref, path: await task(ref.path),
-        ...('sourceSvg' in ref ? { sourceSvg: await task(ref.sourceSvg) } : {}) }))),
-      parentSvg: parent ? await task(parent) : null,
-    }, null, 2)}, { taskRoot: root, group: context.group.id }) });
+      // Paths are spelled in the prompt with {uri:}; the runtime input keeps the group's data.
+      runtime_context: JSON.stringify({ group: nodeSeed(context.group), parentGroup: context.parent?.id ?? null }, null, 2),
+      ...groupValues(context.group.id, canvas),
+    }, { taskRoot: root, group: context.group.id }) });
   if (!submitted) throw agentOutcomeError('补全未通过 submit_completion 提交', response);
   await verifySource();
   if (svgHash(await readFile(draft)) !== submittedHash) throw agentOutcomeError('补全提交后草稿被修改', response);

@@ -10,7 +10,7 @@ import sharp from 'sharp';
 import type { CodexAgents } from '../codex/agents.ts';
 import { artifactPath } from './artifact-facts.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { nodeSeed, walkGroups } from './groups.ts';
+import { nodeSeed } from './groups.ts';
 import type { OcclusionContext, StepResult } from './layering-types.ts';
 import { mergePartSvgs } from './merge-svg.ts';
 import { depthRegions, occlusionSourceHash, terminalParts, validateOcclusionPlan, type DepthCheck, type OcclusionPlan } from './occlusion-plan.ts';
@@ -105,16 +105,11 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'occlusion'), name: '最终遮挡层级规划', cwd: context.directory, imageGeneration: false,
-    images: [{ path: reference, description: profile.references.occlusion }],
     tools: knowledge.tools('main', [createSvgPreviewTool({ directory: context.directory, reference,
       canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, observationDirectory: directory,
       observed: entry => observations.push(entry) }), propose, check, submit, problem]),
-    prompt: knowledge.render('main', {
-      runtime_context: JSON.stringify({
-      preview: await task(previewPath), reference: await task(reference), canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height },
-      parts: await Promise.all(parts.map(async part => ({ ...part, full: await task(part.full), outline: await task(part.outline) }))), groups: walkGroups(context.groups).filter(({ group }) => group.groups.length)
-        .map(({ group, parent }) => ({ ...nodeSeed(group), parent: parent?.id })),
-    }, null, 2)}, { taskRoot: taskRootOf(context.directory) }),
+    // Paths are spelled in the prompt with {uri:}; the agent reads groups.json itself.
+    prompt: knowledge.render('main', { width: String(meta.autoOrient.width), height: String(meta.autoOrient.height) }, { taskRoot: root }),
   });
   await verify();
   if (!result) throw agentOutcomeError('层级规划未提交完整表或具体阻断', response);

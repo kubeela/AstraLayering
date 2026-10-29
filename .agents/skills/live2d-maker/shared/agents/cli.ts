@@ -1,4 +1,4 @@
-import { runtimePrompt } from '../knowledge.ts';
+import { knowledgeDirectory } from '../knowledge.ts';
 import { access, mkdir, readFile, writeFile, copyFile, rename, chmod, realpath, stat } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { homedir } from 'node:os';
@@ -10,7 +10,7 @@ import { once } from 'node:events';
 import { randomUUID } from 'node:crypto';
 import { genaiGateway } from './agv-gateway.ts';
 import { claudeGateway } from '../../patches/claude/gateway.ts';
-import { VisualContext, imageBudget, protectedImages } from '../../patches/shared/visual-context.ts';
+import { VisualContext, imageBudget } from '../../patches/shared/visual-context.ts';
 import { AgvTurn } from './agv-turn.ts';
 import { createMcpBridge } from './mcp.ts';
 import type { WorkflowEnvironment } from '../codex/environment.ts';
@@ -26,7 +26,6 @@ import { resolveRunsDirectory } from '../paths.ts';
 import { withNodePath } from '../process-environment.ts';
 import { claudeProviderSettings, validateProviderModel } from './providers.ts';
 import { prepareWorkspace, workspacePrompt, workspaceTools } from './workspace.ts';
-import { contextImages } from './inputs.ts';
 import { fromTaskPath, toTaskPath } from '../task-paths.ts';
 
 // AGV reports its Go transport timeouts only as text; these two exact forms are tagged where the CLI ends.
@@ -87,7 +86,7 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   const executable = await cliExecutable(settings, model.harness, options.imageNormalization?.runsRoot);
   const root = resolve(options.logDirectory || join(task.cwd || options.cwd!, 'agents'));
   const paths = await prepareWorkspace(task, options.cwd!);
-  task = { ...task, images: contextImages(task.images, paths.root), tools: workspaceTools(task.tools || [], paths) };
+  task = { ...task, tools: workspaceTools(task.tools || [], paths) };
   const log = await AgentLog.create(root, task.name, { task: { ...task, tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) },
     workspace: paths.workspace, outputDirectory: paths.outputDirectory,
     prompt: task.prompt, sessionThreadId: resumed || null, threadOptions: { model: model.model, modelReasoningEffort: model.effort, harness: model.harness } }, paths.root);
@@ -170,13 +169,12 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     const mcp = { mcpServers: { layering: mcpServer.config } };
     const budget = imageBudget(env, model.harness);
     const visual = new VisualContext({ directory: join(data, 'visual-context'), protocol: model.harness === 'agv' ? 'genai' : 'anthropic', budget,
-      protectedImageHashes: protectedImages(await Promise.all((task.images ?? []).map(async image => ({ data: (await readFile(image.path)).toString('base64') })))),
       observe: async event => {
         await log.recordProtocol(event);
         if (event.phase !== 'prepared' || model.harness === 'claude') options.progress?.(`[${task.name}] 图片容量保护 ${event.phase}；${event.images} 张；${event.requestBytes} 字节${event.batchImages ? `；本批 ${event.batchImages} 张 / ${event.batchBytes ?? 0} 字节` : ''}`);
       } });
     if (model.harness === 'agv') {
-      bridge = await genaiGateway(env, task.tools || [], root, signal, task.images, workspace,
+      bridge = await genaiGateway(env, task.tools || [], root, signal,
         event => {
           // AGV reports upstream failures only as text; the gateway sees the real status. A later success clears it.
           if (event.phase === 'headers' && event.status) upstreamStatus = event.status >= 400 ? event.status : undefined;
@@ -208,7 +206,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       : ['--input-format', 'stream-json', '--output-format', 'stream-json', '--model', model.model, '--effort', model.effort,
         '--disable-slash-commands', '--dangerously-skip-permissions', '--log-file', join(env.TMPDIR, 'native.log'), '--add-dir', task.cwd || options.cwd!];
     if (resumed) args.push(model.harness === 'claude' ? '--resume' : '--conversation', resumed);
-    for (const directory of new Set((task.images || []).map(image => resolve(image.path, '..')))) args.push('--add-dir', directory);
+    // Reference images are paths in the prompt; the agent opens them itself.
+    args.push('--add-dir', knowledgeDirectory());
     if (task.outputSchema) args.push('--json-schema', JSON.stringify(task.outputSchema));
     // agy requires an explicit empty --print value when prompts come from stdin.
     if (model.harness === 'agv') args.push('--print=');
@@ -243,12 +242,6 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const prompt = !resumed && requestedSession && task.recoveryPrompt ? task.recoveryPrompt : task.prompt;
       const input: any[] = [{ type: 'text', text: workspacePrompt(prompt, paths) }];
       await writeFile(join(log.directory,'prompt.md'),input[0].text);
-      for (const image of task.images || []) {
-        if (model.harness === 'agv') { input.push({ type: 'text', text: runtimePrompt('image-reference',{image_description:image.description,image_path:fromTaskPath(paths.root, image.path)}).trimEnd() }); continue; }
-        const bytes = await readFile(image.path);
-        input.push({ type: 'text', text: runtimePrompt('image-description',{image_description:image.description}).trimEnd() }, { type: 'image', source: {
-          type: 'base64', media_type: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } });
-      }
       child.stdin!.end(JSON.stringify(model.harness === 'agv' ? { event: 'user', message: { role: 'user', content: input } } : { type: 'user', message: { role: 'user', content: input } }) + '\n');
       for await (const line of createInterface({ input: child.stdout!, crlfDelay: Infinity })) {
         if (!line.trim()) continue;

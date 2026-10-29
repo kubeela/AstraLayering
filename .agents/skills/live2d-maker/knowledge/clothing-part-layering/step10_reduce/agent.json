@@ -4,6 +4,7 @@
       "prompts/8-同层轮廓去重.md"
     ],
     "tools": [
+      "list_reduction_groups",
       "preview_svg",
       "write_reduction_svg",
       "submit_reduction",

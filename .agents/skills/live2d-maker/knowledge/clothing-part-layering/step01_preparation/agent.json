@@ -2,7 +2,8 @@
   "main": {
     "initial": [
       "prompts/preparation.md",
-      "prompts/preparation-clothing-rules.md"
+      "prompts/preparation-clothing-rules.md",
+      "prompts/参考图片.md"
     ],
     "tools": []
   }

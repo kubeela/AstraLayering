@@ -42,10 +42,6 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
   return { async extract(image, baseImage, output, prompt) {
     const result = await agents.run({
       step: 'clothing_preparation', name: '纯衣服参考准备', imageGeneration: true,
-      images: [
-        { path: image, description: '图 1：简化后的穿衣角色原稿，提供待提取衣装的款式、比例和画风。' },
-        { path: baseImage, description: '图 2：同一角色的素体参考，用于确认换装范围；人物及随人物保留的外观由素体自身提供。' },
-      ],
       prompt,
       outputSchema: { type: 'object', additionalProperties: false, required: ['savedPath', 'error'],
         properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } } },
@@ -108,7 +104,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
         const baseImage = await characterBase(input.runName, input.dir);
         const meta = await sharp(standard).metadata();
         const prompt = stepKnowledge('clothing-part-layering', 'step01_preparation')
-          .render('main', { width: String(meta.autoOrient.width), height: String(meta.autoOrient.height) });
+          .render('main', { original_image: image, width: String(meta.autoOrient.width), height: String(meta.autoOrient.height) }, { taskRoot: taskDirectory(input.runName, input.dir) });
         progress?.('preparation：使用已配置生图工具生成纯衣服参考。');
         const temporary = `${refs.baseSubject}.${randomUUID()}.tmp`;
         try {

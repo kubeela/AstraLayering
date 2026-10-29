@@ -8,10 +8,11 @@ import { drawGroupOutline, reviewGroupOutline } from '../../shared/part/outline-
 import { fixture, seedInitialGroups, shape } from './layering-fixture.ts';
 import { nodeExecutables } from './node-executables.ts';
 import { patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
+import { promptInput } from '../../shared/tests/prompt-input.ts';
 
 const signal = new AbortController().signal;
 // Repair turns rely on the drawing turn's input; without a thread the mock reads it from the recovery text.
-const inputs = (task: AgentTask) => JSON.parse((task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/) ?? task.recoveryPrompt!.match(/【本次输入】\n([\s\S]*?\n})\n/))![1]);
+const inputs = (task: AgentTask) => promptInput(task.prompt.includes('【本次输入】') ? task.prompt : task.recoveryPrompt!);
 const tool = (task: AgentTask, name: string) => task.tools!.find(item => item.name === name)!;
 
 async function noteFixture(t: TestContext, note: string) {

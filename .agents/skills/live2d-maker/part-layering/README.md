@@ -57,7 +57,7 @@ preparation 完成后，总控同时推进人物线（本管线逐层制作 → 
 
 通用正文位于 `prompts/4`～`11`。`prompts/groups/<完整ID>/outline.md`、`review.md`、`completion.md`、`children.md` 可完整覆盖对应正文，只对当前 ID 生效。补全和拆分各自始终带 `9-补全操作约定.md`、`10-拆分操作约定.md`；动态输入填入模板声明的占位符，维护规则见 [shared](../shared/README.md#提示词模板与动态位置)。
 
-`completion.references.json`／`children.references.json` 显式列出 path、description，相对路径从清单目录解析；清单只决定额外提供哪些参考，不限制工具可读路径。模型按需要观察；配置文件缺图会报告具体路径。参考素材来源和准备要求保留在对应素材目录的 README。
+额外参考图在正文的 `additionalReferences` 中以路径和用途列出，模型按需要自行查看，不附加图片、不限制工具可读路径。参考素材来源和准备要求保留在对应素材目录的 README。
 
 ## 输出与恢复
 

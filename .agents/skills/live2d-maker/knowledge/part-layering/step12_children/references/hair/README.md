@@ -10,6 +10,6 @@
 | `02-长发主束与细束的粒度对照-莉尔.png` | 比较完整长发片与细发片，避免只取小碎发代替完整侧发。 |
 | `03-长卷发整束与多尖发面-樱桃蛋糕天使.png` | 长卷曲、多尖末端与丰富发纹仍可属于一件完整 part，避免按弯折或发尖机械细分。 |
 
-主 hair 清单读取本目录；back_hair 清单显式复用这三张板，bangs 清单只配置 Milly。路径相对各自的 `children.references.json` 解析。缺少已配置图片会停止该次分析并报错；如果使用自己的图片，需要同时调整清单的路径、用途及提示词中的说明。
+hair 与 back_hair 的拆分正文列出这三张板，bangs 只列 Milly，均以 `{reference:step12_children/references/hair/<文件>}` 写在 `additionalReferences` 中。如果使用自己的图片，需要同时调整正文中的路径和用途。
 
-模型通过 `additionalReferences` 收到图片路径和用途，再按需调用 `view_bitmap`。PNG 图集只提供发片形体先验，不能据其排布推断原 PSD 分组、独立运动或遮挡顺序；当前角色、父完成 SVG 和控制需求优先。
+模型从 `additionalReferences` 读到图片路径和用途，再按需调用 `view_bitmap`。PNG 图集只提供发片形体先验，不能据其排布推断原 PSD 分组、独立运动或遮挡顺序；当前角色、父完成 SVG 和控制需求优先。

@@ -2,18 +2,18 @@ import { groupStepId } from './part-steps.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
-import { originalImageReference, partProfile } from './profile.ts';
+import { partProfile } from './profile.ts';
 import { readFile, realpath } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { groupPromptDirectory, partKnowledge, readGroupReferences } from './group-prompts.ts';
+import { groupValues, partKnowledge } from './group-prompts.ts';
 import { nodeSeed, normalizeGroups } from './groups.ts';
 import type { ChildrenAnalysis, GroupContext, GroupSeed, SvgArtifact } from './layering-types.ts';
 import { createSvgPreviewTool, type SvgObservation } from './svg-tools.ts';
-import { taskRootOf, toAgentPath } from '../task-paths.ts';
+import { taskRootOf } from '../task-paths.ts';
 
 
 export function decodeChildren(parentId: string, value: unknown): ChildrenAnalysis {
@@ -46,7 +46,6 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
   const meta = await sharp(reference).metadata();
   const canvas = { width: meta.autoOrient.width, height: meta.autoOrient.height };
   const knowledge = partKnowledge(profile, 'children');
-  const references = [...await readGroupReferences(groupPromptDirectory(profile, 'children', context.group.id), 'children'), ...originalImageReference(context, profile.originalChildrenReference)];
   const observations: SvgObservation[] = [];
   const directory = join(context.directory, 'observations', 'children', context.group.id);
   let submitted: ChildrenAnalysis | undefined;
@@ -66,17 +65,16 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
       return textResult({ ids: result.groups.map(group => group.id), terminal: result.groups.length === 0, note: result.note });
     },
   };
-  const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
+  const root = taskRootOf(context.directory);
   const response = await agents.run({ step: partStep(partProfile(context).id, 'children'), name: `直属结构拆分-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'children')), imageGeneration: false,
-    images: [{ path: reference, description: profile.references.children }, ...(profile.attachChildrenReferences ? references : [])],
     tools: knowledge.tools('main', [createBitmapTool(context.directory, directory), createSvgPreviewTool({ directory: context.directory, reference, canvas,
       observationDirectory: directory, observed: entry => observations.push(entry) }), submit]),
     prompt: knowledge.render('main', {
-      runtime_context: JSON.stringify({
-      group: nodeSeed(context.group),
-      sourceSvg: await task(sourceSvg), reference: await task(reference),
-      additionalReferences: await Promise.all(references.map(async ref => ({ ...ref, path: await task(ref.path) }))), canvas, parentGroup: context.parent?.id ?? null,
-    }, null, 2)}, { taskRoot: root, group: context.group.id }),
+      // Paths are spelled in the prompt with {uri:}; the runtime input keeps the group's data.
+      runtime_context: JSON.stringify({ group: nodeSeed(context.group), parentGroup: context.parent?.id ?? null }, null, 2),
+      ...groupValues(context.group.id, canvas),
+      ...(context.references.originalImage ? { original_image: resolve(context.references.originalImage) } : {}),
+    }, { taskRoot: root, group: context.group.id }),
   });
   await verifySource();
   if (!submitted) throw agentOutcomeError('子组分析未通过 submit_children 提交', response);
