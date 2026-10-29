@@ -15,13 +15,30 @@ import { seedPreparedReferences } from './preparation-fixture.ts';
 import { seedInitialGroups, shape, workingSteps } from './layering-fixture.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { taskDirectory } from '../../shared/paths.ts';
+import { defaultKnowledgeDirectory } from '../../shared/knowledge.ts';
 
-function runCli(args: string[]) {
+// Every single-section start names its knowledge directory; `knowledge: false` omits it.
+function runCli(args: string[], { knowledge = true } = {}) {
   return promisify(execFile)(process.execPath, [
     '--import', new URL('./forbid-model-processes.ts', import.meta.url).href,
     fileURLToPath(new URL('../run.ts', import.meta.url)), ...args,
+    ...(knowledge ? ['--knowledge', defaultKnowledgeDirectory] : []),
   ], { timeout: 10000, env: { ...process.env, layering_codex_path: process.execPath } });
 }
+
+test('独立 section 每次启动都须提供 --knowledge；目录缺失文件时启动前即失败', async () => {
+  await assert.rejects(runCli(['--name', 'test'], { knowledge: false }), error => {
+    assert.match(String((error as { stderr?: string }).stderr), /必须提供 --knowledge/);
+    return true;
+  });
+  const empty = await mkdtemp(join(tmpdir(), 'knowledge-'));
+  try {
+    await assert.rejects(runCli(['--name', 'test', '--knowledge', empty], { knowledge: false }), error => {
+      assert.match(String((error as { stderr?: string }).stderr), /先验知识缺少文件/);
+      return true;
+    });
+  } finally { await rm(empty, { recursive: true, force: true }); }
+});
 
 test('CLI 隔离模拟本机版本查询，模型调用及其他外部进程仍被拒绝', async () => {
   const source = `

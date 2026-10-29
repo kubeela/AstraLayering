@@ -5,6 +5,7 @@ import { artifactPath } from '../../shared/part/artifact-facts.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { reduceGroupOutlines } from '../../shared/part/outline-reduce.ts';
 import { fixture, linkedFixture, shape, workingSteps } from './layering-fixture.ts';
+import { promptInput } from '../../shared/tests/prompt-input.ts';
 
 const signal = new AbortController().signal;
 for (const mode of ['changed', 'unchanged', 'empty', 'selected-source', 'no-preview', 'missing-submit', 'symlinked-root'] as const) {
@@ -13,12 +14,14 @@ for (const mode of ['changed', 'unchanged', 'empty', 'selected-source', 'no-prev
     const input = { ...f, groups: null, steps: { ...steps, async reduceOutlines(context: Parameters<typeof reduceGroupOutlines>[0]) {
       return { status: 'completed' as const, output: await reduceGroupOutlines(context, { async run(task) {
         assert.equal(task.imageGeneration, false);
-        const runtime = JSON.parse(task.prompt.split('【本次输入】\n')[1]);
+        const runtime = promptInput(task.prompt);
+        const listed = JSON.parse(((await task.tools!.find(tool => tool.name === 'list_reduction_groups')!.execute({}, signal)).contentItems[0] as { text: string }).text);
+        const groups = listed.parents.flatMap((parent: { groups: unknown[] }) => parent.groups);
         const preview = task.tools!.find(tool => tool.name === 'preview_svg')!;
         const write = task.tools!.find(tool => tool.name === 'write_reduction_svg')!;
         const submit = task.tools!.find(tool => tool.name === 'submit_reduction')!;
         if (mode !== 'no-preview') await preview.execute({ path: runtime.mergedPreview, mode: 'blend' }, signal);
-        const group = runtime.groups.find((group: { id: string }) => group.id === 'accessories');
+        const group = groups.find((group: { id: string }) => group.id === 'accessories');
         const changed = [];
         if (mode === 'changed' || mode === 'empty' || mode === 'symlinked-root') {
           await assert.rejects(write.execute({ groupId: 'accessories', svg: shape('accessories'), path: group.sourceSvg }, signal), /路径由程序绑定/);

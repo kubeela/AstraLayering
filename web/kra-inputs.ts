@@ -13,8 +13,8 @@ async function fingerprint(path: string): Promise<string> {
   if (fingerprints.size > 256) fingerprints.clear();
   fingerprints.set(path, { version, hash: value }); return value;
 }
-// Recorded input .kra paths: task-relative (new runs) or absolute (older runs).
-// A relative path always means the task root; one climbing out of it is ignored.
+// Input .kra paths of a section's inputs: absolute, or task-relative. A relative
+// path always means the task root; one climbing out of it is ignored.
 export function inputKras(value: unknown, root: string): string[] {
   if (typeof value === 'string') {
     if (!/\.kra$/i.test(value)) return [];

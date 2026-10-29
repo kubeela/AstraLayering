@@ -18,7 +18,7 @@ pnpm start --name jianma --background
 
 ### 姿态与参考
 
-新任务确认 `--standard`，默认关闭：直接复制原图；开启后先判断再按需生图，均输出 `part-layering/references/standard.png`。首次原图另存 `input/original.*`。选项保存在总控与 `part-layering/step02_options/options.json`，续跑省略则沿用；`--no-standard` 显式关闭。`--standard`／`--no-standard` 要求本次路线包含 part-layering。已完成的参考改变选项时，对 part-layering 的 options 步骤重试，后续依赖参考随之重做：
+新任务确认 `--standard`，默认关闭：直接复制原图；开启后先判断再按需生图，均输出 `part-layering/references/standard.png`。首次原图另存 `input/original.*`。选项只保存在总控 `run.json`，续跑省略则沿用；`part-layering/step02_options/options.json` 是该步产物，用于判断选项是否改变；`--no-standard` 显式关闭。`--standard`／`--no-standard` 要求本次路线包含 part-layering。已完成的参考改变选项时，对 part-layering 的 options 步骤重试，后续依赖参考随之重做：
 
 ```sh
 pnpm start --name jianma [--dir …] [--from part-layering] --standard --retry --section part-layering --step step02_options --background
@@ -46,7 +46,7 @@ pnpm env:check
 
 ```text
 <dir>/<name>/
-├── run.json                  # 总控配置、PID、进度、错误与最近消息
+├── run.json                  # 总控配置、PID 与错误；进度与最近消息见 workflow.log
 ├── workflow.log              # 调度、agent 和网关的唯一主日志
 ├── monitor.md                # 宿主定时信息、操作环境与巡检记录
 ├── input/

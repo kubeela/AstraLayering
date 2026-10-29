@@ -1,6 +1,6 @@
 import { prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 import { publishReportAssets } from '../report-assets.ts';
-import {renderPromptFile} from '../prompts/render.ts';
+import { runtimePrompt, stepKnowledge } from '../knowledge.ts';
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/environment.ts';
 import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
 import { retryDelays } from '../codex/agent-runtime.ts';
@@ -14,7 +14,7 @@ import type { StepDefinition } from './steps.ts';
 import { readStep, type ChainStep, type StepStatus } from '../step-chain.ts';
 import { runSection, type SectionPlan } from '../step-section.ts';
 import { clearStepSession, readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
-import { canonicalPath, fileInfo, initializeRun, loadConfig, newConfig, rasterSteps, saveConfig, taskPaths, within } from './run-store.ts';
+import { canonicalPath, fileInfo, rasterSteps, within } from './run-store.ts';
 import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
 import { modelHarnesses } from '../agents/models.ts';
@@ -86,7 +86,8 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
   const root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
   const requested = sectionDirectory(options.name, section.id, root);
   await requireCurrentLayout(dirname(requested));
-  const saved = await loadConfig<Input>(requested, options.name, section.validateInput);
+  const info = await fileInfo(requested);
+  if (info && (!info.isDirectory() || info.isSymbolicLink())) throw new Error(`管线目录必须是普通目录：${requested}`);
   const directory = await canonicalPath(requested);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
   const definitions: readonly StepDefinition[] = (dependencies.steps ?? section.steps).map(step => ({ ...step,
@@ -105,15 +106,11 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
   for (const source of inputDirectories) {
     if (within(source, directory) || within(directory, source)) throw new Error('上游与本管线目录必须分开');
   }
-  const configuredKrita = options.krita ?? saved?.krita.executable;
-  if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
-  const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, root);
+  // The section keeps no state of its own: every run is given its Krita.
+  if (!options.krita?.trim()) throw new Error('必须提供 --krita <已安装的 Krita 可执行文件路径>。');
+  const kritaPath = resolveInput(options.name, options.krita, root);
   const krita = await (dependencies.preflight ? dependencies.preflight(kritaPath) : checkKrita(kritaPath, environment.codex.env));
-  const config = saved ?? newConfig(options.name, reference, krita);
-  // run.json records inputs relative to the task root; the absolute reference stays in memory.
   const taskRoot = taskRootOf(directory);
-  config.sourceInput = await taskPaths(taskRoot, reference);
-  config.krita = krita;
   options.progress?.(`前置检查通过：Krita ${krita.executable}`);
   options.progress?.(`任务目录：${directory}；直接读取上游：${inputDirectories.join('、')}`);
 
@@ -137,10 +134,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
       await section.validateDelivery?.(chainStep.directory, reference, step, krita, options.dryRun);
       if (!options.dryRun) await logDeliveryWarnings(step);
     },
-    async prepare(plan) {
-      if (!saved) await initializeRun(directory, config);
-      else await saveConfig(directory, config);
-    },
+    async prepare() { await mkdir(directory, { recursive: true }); },
     step: (chainStep, status, plan) => stepWork(byId.get(chainStep.id)!, status, plan),
   }); } finally { await sectionKrita.release(); }
   if (options.dryRun) return previews.join('\n\n') || '当前已定义步骤均已完成；无需调用模型。';
@@ -211,13 +205,13 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
         await saveSession({ handoff: session.handoff }, '模型配置切换 CLI');
       }
       const handoff = !fresh && !session.threadId ? session.handoff : undefined;
-      if (!fresh && phase !== 'draw' && !session.threadId && !handoff) prompt = renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
+      if (!fresh && phase !== 'draw' && !session.threadId && !handoff) prompt = runtimePrompt('raster-repair-resume',{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
       if (handoff) {
         const notes = await readFile(fromTaskPath(taskRoot, handoff.notes), 'utf8');
         if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
         // A new repair thread also needs the original drawing task and inputs.
-        if (phase !== 'draw') prompt = renderPromptFile(new URL('../prompts/raster-handoff-repair.md',import.meta.url),{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
-        prompt = renderPromptFile(new URL('../prompts/raster-handoff.md',import.meta.url),{
+        if (phase !== 'draw') prompt = runtimePrompt('raster-handoff-repair',{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
+        prompt = runtimePrompt('raster-handoff',{
           task_prompt:prompt, previous_thread_id:handoff.previousThreadId, reason:handoff.reason,
           step_id:step.id, phase, notes,
         });
@@ -232,12 +226,13 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : session.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
-        tools: [...section.tools?.(output, reference, step, phase, sectionKrita) ?? [],
+        tools: stepKnowledge(step.knowledge.section, step.knowledge.step).tools(fresh ? 'review' : phase === 'draw' ? 'main' : 'repair', [
+          ...section.tools?.(output, reference, step, phase, sectionKrita) ?? [],
           // Drawing, review and repairs run one after another in this section
           // and share its Krita; a fresh reviewer thread is still the same section.
-          ...(step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])],
+          ...(step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])]),
         imageNormalization: { env: environment.codex.env, runsRoot: root, progress: options.progress },
-        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt}) : undefined,
+        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? runtimePrompt('raster-repair-resume',{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt}) : undefined,
         threadId: fresh ? undefined : session.threadId, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
           await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');

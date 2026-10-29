@@ -23,12 +23,12 @@ const readPartStep = (directory: string, id: string) => readStep(join(directory,
 export type GroupStep = 'outline' | 'completion' | 'children';
 export const groupSteps: readonly GroupStep[] = ['outline', 'completion', 'children'];
 
-export function groupStep(directory: string, id: string, step: GroupStep, references: readonly string[] = []): ChainStep {
+export function groupStep(directory: string, id: string, step: GroupStep): ChainStep {
   const stepId = groupStepId(id, step), stepDirectory = join(directory, stepId), parent = parentGroupId(id), root = taskRootOf(directory);
   if (step === 'outline') return { id: stepId, root, directory: stepDirectory, dependsOn: [parent ? groupStepId(parent, 'completion') : partSteps.initial], outputs: ['outline.svg'] };
   if (step === 'children') return { id: stepId, root, directory: stepDirectory, dependsOn: [groupStepId(id, 'completion')], outputs: ['children.json'] };
   const layer = layerStepId(groupDepth(id));
-  return { id: stepId, root, directory: stepDirectory, dependsOn: [id, ...references].map(group => `${layer}#${group}.svg`),
+  return { id: stepId, root, directory: stepDirectory, dependsOn: [`${layer}#${id}.svg`],
     outputs: [relative(stepDirectory, join(directory, 'parts', `${id}.svg`))] };
 }
 export function layerStep(directory: string, depth: number, ids: readonly string[]): ChainStep {

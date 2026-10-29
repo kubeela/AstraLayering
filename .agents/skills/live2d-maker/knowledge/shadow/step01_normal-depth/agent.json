@@ -1,0 +1,10 @@
+{
+  "main": {
+    "initial": [
+      "prompts/normal-depth.md",
+      "shared/prompts/shadow-runtime.md",
+      "shared/prompts/shadow-runtime-output.md"
+    ],
+    "tools": []
+  }
+}

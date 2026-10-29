@@ -16,11 +16,12 @@ export function shape(id: string, left = 10, right = 90, empty = false) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g id="shape" data-group-path="${id}">${empty ? '' : `<path fill="#55b9ad" d="M${left} 10H${right}V90H${left}Z"/>`}</g></svg>`;
 }
 export async function fixture(t: TestContext) {
-  const directory = await realpath(await mkdtemp(join(tmpdir(), 'part-layering-bfs-')));
-  t.after(() => rm(directory, { recursive: true, force: true }));
+  // The task layout of a real run, so the prompt's task paths resolve.
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'part-layering-bfs-'))), directory = join(root, 'clothing-part-layering');
+  t.after(() => rm(root, { recursive: true, force: true }));
   const references = { directory: join(directory, 'references'), judgment: join(directory, 'references/judgment.json'),
-    simplifiedSubject: join(directory, 'references/simplified.png'), baseSubject: join(directory, 'references/base.png') };
-  await mkdir(references.directory);
+    simplifiedSubject: join(directory, 'references/simplified-subject.png'), baseSubject: join(directory, 'references/clothing.png') };
+  await mkdir(references.directory, { recursive: true });
   await writeAtomic(references.judgment, '{"needsSimplification":false}');
   const png = await sharp({ create: { width: 100, height: 100, channels: 4, background: '#ffffff' } }).png().toBuffer();
   await writeAtomic(references.baseSubject, png);

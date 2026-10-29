@@ -8,13 +8,13 @@
 
 ```bash
 # 先检查输入、Krita 和提示词
-pnpm character-assembly --name jianma --krita /绝对路径/krita --dry-run
+pnpm character-assembly --name jianma --krita /绝对路径/krita --knowledge /绝对路径/knowledge --dry-run
 # 开始组装
-pnpm character-assembly --name jianma --krita /绝对路径/krita
-# 续跑
-pnpm character-assembly --name jianma
+pnpm character-assembly --name jianma --krita /绝对路径/krita --knowledge /绝对路径/knowledge
+# 续跑（独立 section 不保存配置，仍须带 --krita 与 --knowledge）
+pnpm character-assembly --name jianma --krita /绝对路径/krita --knowledge /绝对路径/knowledge
 # 自定义运行根目录时，首次和续跑均加 --dir
-pnpm character-assembly --name jianma --dir /绝对路径/运行根目录 --krita /绝对路径/krita
+pnpm character-assembly --name jianma --dir /绝对路径/运行根目录 --krita /绝对路径/krita --knowledge /绝对路径/knowledge
 ```
 
 默认任务目录是 `<仓库>/.run/<name>/`，独立安装时为 `<skill上一级>/.run/<name>/`；显式 `--dir` 则使用 `<dir>/<name>/`。本入口只读取同名任务的这三个输入，不复制文件，不自动运行上游：
@@ -37,7 +37,6 @@ CLI 在 `character-assembly/step01/workspace/` 中运行，提示词给出两份
 
 ```text
 character-assembly/
-├── run.json
 └── step01/
     ├── character-assembled.kra
     ├── character-assembled.png

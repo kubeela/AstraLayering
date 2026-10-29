@@ -1,4 +1,4 @@
-import {renderPrompt, renderPromptFile} from '../prompts/render.ts';
+import { stepKnowledge } from '../knowledge.ts';
 import { readFile, rename, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { StepResult } from './agent.ts';
@@ -39,15 +39,10 @@ export async function nextReviewTask(directory: string): Promise<ReviewTask | un
 
 export async function buildReviewPrompt(step: StepDefinition, task: ReviewTask): Promise<string> {
   if (!step.review) throw new Error('步骤未配置 reviewer');
-  const source = task.kind === 'review' ? step.review.prompt : step.review.repairPrompt;
   const reviewFilename = task.kind === 'review' ? `${task.filename}.tmp` : reports[task.index - 1];
-  const responsibilities = task.kind === 'repair' ? await readFile(new URL('./drawing-responsibilities.md', import.meta.url), 'utf8') : '';
-  const body = await readFile(source, 'utf8');
-  return renderPrompt(body, {
+  return stepKnowledge(step.knowledge.section, step.knowledge.step).render(task.kind, {
     review_report_filename: reviewFilename, repair_report_filename: task.filename + '.tmp',
-    drawing_responsibilities: responsibilities,
-    runtime_context: renderPromptFile(new URL('../prompts/raster-review-runtime.md', import.meta.url))
-  }, String(source), ['drawing_responsibilities','runtime_context','review_report_filename',...(task.kind==='repair'?['repair_report_filename']:[])]);
+  });
 }
 
 export async function discardReviewReports(directory: string, from = 0): Promise<void> {

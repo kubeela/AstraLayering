@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
-import { contextImages, prepareFileInputs, referencesDirectory } from '../agents/inputs.ts';
+import { prepareFileInputs, referencesDirectory } from '../agents/inputs.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { textResult } from '../codex/function-tools.ts';
@@ -19,8 +19,6 @@ async function fixture(t: { after(callback: () => Promise<unknown>): void }) {
 test('input preparation only materializes requested files in references and leaves upstream/context inputs unchanged', async t => {
   const root = await fixture(t), output = join(root, 'step02'), source = join(root, 'upstream.png');
   const bytes = Buffer.from([0, 1, 2, 255]); await writeFile(source, bytes);
-  assert.deepEqual(contextImages([{ path: 'upstream.png', description: 'reference' }], root),
-    [{ path: source, description: 'reference' }]);
   assert.deepEqual(await prepareFileInputs(output, []), {});
   await assert.rejects(readFile(join(referencesDirectory(output), 'upstream.png')), { code: 'ENOENT' });
   const inputs = await prepareFileInputs(output, [

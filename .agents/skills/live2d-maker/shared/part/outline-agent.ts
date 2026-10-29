@@ -1,6 +1,6 @@
 import { groupStepId } from './part-steps.ts';
 import { publishObservations, publishReportText } from '../report-assets.ts';
-import {renderPrompt,renderPromptFile} from '../prompts/render.ts';
+import { runtimePrompt } from '../knowledge.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError, validateAgentOutcome } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -11,7 +11,7 @@ import sharp from 'sharp';
 import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { readGroupPrompt } from './group-prompts.ts';
+import { groupValues, partKnowledge } from './group-prompts.ts';
 import { findGroup, nodeSeed, writeAtomic } from './groups.ts';
 import type { DrawingContext, GroupContext, ReviewContext, ReviewedSvgArtifact, StepResult, SvgArtifact } from './layering-types.ts';
 import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, taskObservation, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
@@ -51,24 +51,17 @@ async function inputs(context: GroupContext) {
   return { reference, canvas, parent };
 }
 
-// Paths shown to the agent are task-relative.
-async function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: {
-  outputSvg?: string; candidate?: string; resumedDraft?: string; review?: { round: number; candidateHash: string };
-}) {
-  const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
-  return JSON.stringify({
-    group: nodeSeed(context.group),
-    reference: await task(input.reference), groups: await task(join(context.directory, 'groups.json')),
-    parentGroup: context.parent?.id ?? null, parentSvg: input.parent ? await task(input.parent) : null,
-    canvas: input.canvas, ...paths,
-    ...(paths.outputSvg ? { outputSvg: await task(paths.outputSvg) } : {}),
-    ...(paths.candidate ? { candidate: await task(paths.candidate) } : {}),
-  }, null, 2);
+// Paths are spelled in the prompt with {uri:}; the runtime input keeps the group's data.
+function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, review?: { round: number; candidateHash: string }) {
+  return {
+    runtime_context: JSON.stringify({ group: nodeSeed(context.group), parentGroup: context.parent?.id ?? null, ...(review ? { review } : {}) }, null, 2),
+    ...groupValues(context.group.id, input.canvas),
+  };
 }
 
-function groupNoteTool(context: GroupContext): FunctionTool | undefined {
+function groupNoteTool(context: GroupContext): FunctionTool {
   const store = context.store;
-  if (!store) return;
+  if (!store) throw new Error('轮廓绘制需要 GroupStore 才能修正本组 note');
   return {
     ...toolDefinition('update_group_note'),
     async execute(value, signal) {
@@ -95,16 +88,13 @@ function groupNoteTool(context: GroupContext): FunctionTool | undefined {
   };
 }
 
-const resumedDraftNote = 'outputSvg 已有上次中断前画到的草稿：先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。';
-
 export async function drawGroupOutline(
   context: DrawingContext, agents: Pick<CodexAgents, 'run'>,
   repair?: { candidate: string; feedback: string },
 ): Promise<SvgArtifact> {
   const profile = partProfile(context);
-  const repairPromptPath = join(profile.promptsDirectory, '7-轮廓返修.md');
+  const knowledge = partKnowledge(profile, 'outline');
   const input = await inputs(context);
-  const prompt = await readGroupPrompt(context.group.id, 'outline', profile.promptsDirectory);
   const output = resolve(context.outputPath);
   if (!output.endsWith('.svg')) throw new Error('轮廓输出路径须以 .svg 结尾');
   const draft = output.endsWith('.draft.svg') ? output : draftPath(output);
@@ -130,24 +120,23 @@ export async function drawGroupOutline(
       return textResult({ path: await toAgentPath(taskRootOf(context.directory), draft), bytes: bytes.length, note: '草稿结构检查通过，仍须预览和视觉自检' });
     },
   };
-  const taskPrompt = renderPrompt(prompt.text, {
-    prompt_source: prompt.path, runtime_context: await runtime(context, input, {outputSvg: draft, ...(resumed ? { resumedDraft: resumedDraftNote } : {})}),
-    repair_context: repair ? renderPromptFile(new URL('../prompts/outline-repair-context.md',import.meta.url), {
-      feedback:repair.feedback, repair_rules:await readFile(repairPromptPath,'utf8'), repair_source:repairPromptPath,
-    }) : '',
-    note_repair_rule: noteRepair ? renderPromptFile(new URL('../prompts/outline-note-repair.md',import.meta.url)) : '',
-  }, prompt.path, ['prompt_source','runtime_context','repair_context','note_repair_rule']);
-  if (repair) {
-    await recordRepair(output, repair.feedback, taskPrompt);
-  }
+  const drawingPrompt = knowledge.render('main', runtime(context, input), { taskRoot: taskRootOf(context.directory), group: context.group.id });
+  // 返修是绘制 thread 的下一轮，只发送意见与返修要求；本次输入已在绘制轮给出。
+  // 原 thread 不可用时 recoveryPrompt 在新会话中补上原绘制任务。
+  const repairPrompt = repair && runtimePrompt('outline-repair', {
+    feedback:repair.feedback, repair_rules:knowledge.render('repair', {}), repair_source:knowledge.files('repair')[0],
+  });
+  if (repairPrompt) await recordRepair(output, repair.feedback, repairPrompt);
   const response = await agents.run({
     step: partStep(profile.id, repair ? 'outline_repair' : 'outline'),
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'outline')),
-    tools: [preview, write, createSvgReadTool(context.directory),
+    tools: knowledge.tools(repair ? 'repair' : 'main', [preview, write, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
-      ...(noteRepair ? [noteRepair] : [])], imageGeneration: false,
-    images: [{ path: input.reference, description: profile.references.outline }],
-    prompt: taskPrompt,
+      noteRepair]), imageGeneration: false,
+    prompt: repairPrompt || drawingPrompt,
+    ...(repairPrompt ? { recoveryPrompt: runtimePrompt('outline-repair-resume', {
+      drawing_prompt:drawingPrompt, repair_prompt:repairPrompt,
+    }) } : {}),
   });
   const actualDraft = await validateAgentOutcome(response, async () => {
     try { return await realpath(draft); }
@@ -166,7 +155,7 @@ async function reviewOnce(
 ): Promise<Review> {
   const profile = partProfile(context);
   const input = await inputs(context);
-  const prompt = await readGroupPrompt(context.group.id, 'review', profile.promptsDirectory);
+  const knowledge = partKnowledge(profile, 'outline');
   const bytes = await validateGroupSvg(candidate, context.group.id, input.canvas, undefined, true);
   const candidateHash = hash(bytes);
   const round = completedReviewCount(await readReviewReport(reportPath, context.group.id)) + 1;
@@ -204,11 +193,9 @@ async function reviewOnce(
   };
   const response = await agents.run({
     step: partStep(profile.id, 'outline_review'), name: `组轮廓review-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'outline')),
-    tools: [preview, submit, createSvgReadTool(context.directory),
-      createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))], imageGeneration: false,
-    images: [{ path: input.reference, description: profile.references.review }],
-    prompt: renderPrompt(prompt.text, {prompt_source:prompt.path, runtime_context:await runtime(context,input,{candidate,review:{round,candidateHash}}), report_path:await toAgentPath(taskRootOf(context.directory), reportPath)},
-      prompt.path, ['prompt_source','runtime_context','report_path']),
+    tools: knowledge.tools('review', [preview, submit, createSvgReadTool(context.directory),
+      createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))]), imageGeneration: false,
+    prompt: knowledge.render('review', runtime(context, input, { round, candidateHash }), { taskRoot: taskRootOf(context.directory), group: context.group.id }),
   });
   if (!submitted) throw agentOutcomeError('独立 review 未通过 submit_review 保存结论', response);
   if (hash(await readFile(candidate)) !== candidateHash) throw agentOutcomeError('独立 review 修改了候选 SVG', response);

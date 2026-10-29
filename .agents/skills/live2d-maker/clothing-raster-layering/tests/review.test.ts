@@ -14,7 +14,6 @@ import { runWorkflow } from '../run.ts';
 const completed: StepResult = { status: 'completed', summary: 'fixture completed' };
 const forbidden = async (): Promise<never> => assert.fail('unexpected model call');
 const preflight = async (executable: string) => ({ executable });
-const config = async (directory: string) => JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
 async function absent(path: string) { await assert.rejects(readFile(path), { code: 'ENOENT' }); }
 const isReview = (request: AgentRequest) => request.prompt.startsWith('你负责对第一步交付');
 function reportName(request: AgentRequest): string {
@@ -46,7 +45,7 @@ async function fixture(t: TestContext) {
     index++;
     return completed;
   } });
-  return { directory, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options, resume: { name: 'test' }, deps };
+  return { directory, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options, resume: { name: 'test', krita: process.execPath }, deps };
 }
 
 test('旧第一步交付直接补 review；无问题时一次结束，reviewer ID 不覆盖或保存为主上下文', async t => {
@@ -210,13 +209,13 @@ test('删除 review 报告只重启检查及后续反馈，保留工程和绘制
   await mkdir(join(f.output, 'step02'));
   await writeFile(join(f.output, 'step02/.completed'), '');
   const original = await readFile(join(f.output, 'step01/clothing-depth.kra'));
-  const before = await readFile(join(f.output, 'run.json'));
+  const before = (await readdir(f.output)).sort();
   const dryPrompt = await runWorkflow({ ...f.resume, dryRun: true }, { ...f.deps, agent: forbidden });
   assert.ok(dryPrompt.startsWith('你负责对第一步交付'));
   assert.ok(dryPrompt.includes('step01/review-01.md.tmp'));
   await readFile(join(f.output, 'step01/.completed'));
   await readFile(join(f.output, 'step01/repair-01.md'));
-  assert.deepEqual(await readFile(join(f.output, 'run.json')), before);
+  assert.deepEqual((await readdir(f.output)).sort(), before);
   await runWorkflow(f.resume, { ...f.deps, agent: async request => {
     assert.equal(reportName(request), 'review-01.md.tmp');
     await absent(join(f.output, 'step01/repair-01.md'));
@@ -273,8 +272,7 @@ test('缺失、不完整、无法检查的报告以及取消均不发布正式 r
 
 test('step01 返修修改分层文件后中断，续跑保留结构且保留未改动的 KRA', async t => {
   const f = await fixture(t);
-  const configBefore = await config(f.output);
-  const source = join(dirname(f.output), configBefore.sourceInput.directory);
+  const source = join(dirname(f.output), 'clothing-part-layering');
   const baseline = await readFile(join(f.output, 'step01/clothing-depth.kra'));
   let changed: Record<string, string> = {};
   await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: async request => {

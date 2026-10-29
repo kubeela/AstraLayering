@@ -5,23 +5,24 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
-import { readGroupPrompt } from '../../shared/part/group-prompts.ts';
+import { partKnowledge } from '../../shared/part/group-prompts.ts';
 import { walkGroups, writeAtomic } from '../../shared/part/groups.ts';
 import { fixture, workingSteps } from './layering-fixture.ts';
+import { promptInput } from '../../shared/tests/prompt-input.ts';
 
 const signal = new AbortController().signal;
 test('clothing prompt lookup is local and has no inherited body-specific prior', async () => {
-  const prompt = await readGroupPrompt('body', 'children', profile.promptsDirectory);
-  assert.ok(prompt.path.endsWith('clothing-part-layering/prompts/10-直属结构拆分.md'));
-  assert.ok(prompt.text.includes('同动整体仍可终止为一个 part'));
-  await assert.rejects(readdir(new URL('../prompts/groups', import.meta.url)), { code: 'ENOENT' });
+  const children = partKnowledge(profile, 'children');
+  assert.ok(children.files('main', 'body')[0].endsWith('knowledge/clothing-part-layering/step12_children/prompts/10-直属结构拆分.md'));
+  assert.ok(children.render('main', {}, { taskRoot: '/task', group: 'body' }).includes('同动整体仍可终止为一个 part'));
+  await assert.rejects(readdir(join(children.directory, 'prompts', 'groups')), { code: 'ENOENT' });
 });
 
 test('initial groups receive both clothing and clothed-character references and reject a character subject', async t => {
   const f = await fixture(t);
   const refs = { ...f.references, originalImage: f.references.simplifiedSubject };
   const adapter = createLayeringSteps({ async run(task) {
-    assert.deepEqual(task.images!.map(image => image.path), [refs.baseSubject, refs.originalImage]);
+    for (const path of [refs.baseSubject, refs.originalImage]) assert.ok(task.prompt.includes(`参考图绝对路径：${path}`));
     const tool = task.tools!.find(tool => tool.name === 'write_groups')!;
     const groups = [{ name: 'coat', groups: [], note: '整件衣物；按控制和穿插需要继续拆分' }];
     await assert.rejects(tool.execute({ subject: 'character', groups }, signal), /other/);
@@ -40,8 +41,7 @@ test('wrapping garments can become distinct front/back parts even when they move
   const refs = { ...f.references, originalImage: f.references.simplifiedSubject };
   const adapter = createLayeringSteps({ async run(task) {
     assert.equal(task.imageGeneration, false);
-    assert.equal(task.images!.length, 2);
-    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    const input = promptInput(task.prompt);
     assert.equal(input.additionalReferences[0].path, refs.originalImage);
     const preview = task.tools!.find(tool => tool.name === 'preview_svg')!;
     await preview.execute({ path: input.sourceSvg, mode: 'svg' }, signal);

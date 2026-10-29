@@ -1,0 +1,12 @@
+{
+  "main": {
+    "initial": [
+      "prompts/02-边缘柔化与去锯齿.md",
+      "shared/prompts/raster-runtime.md"
+    ],
+    "tools": [
+      "locate_pixel_differences",
+      "krita"
+    ]
+  }
+}

@@ -5,7 +5,7 @@ import { section as character } from '../raster-layering/run.ts';
 import { section as clothing } from '../clothing-raster-layering/run.ts';
 import { section as assembly } from '../character-assembly/run.ts';
 import { makeSection as shadowSection } from '../shadow/run.ts';
-import { inspectRun, loadConfig } from '../shared/raster/run-store.ts';
+import { fileInfo, inspectRun } from '../shared/raster/run-store.ts';
 import { readStepSession, writeStepSession } from '../shared/agents/step-session.ts';
 import { resolveInput, type SectionId } from '../shared/paths.ts';
 import { toTaskPath } from '../shared/task-paths.ts';
@@ -15,17 +15,16 @@ export async function replaceThread(options: Pick<TaskOptions, 'name' | 'dir'> &
   section: SectionId; handoff: string; reason: string;
 }): Promise<string> {
   const regular = [character, clothing, assembly].find(value => value.id === options.section);
-  if (!regular && options.section !== 'shadow') throw new Error('--replace-thread 仅适用于 raster、character-assembly 或 shadow；part 根据文件恢复。');
+  if (!regular && options.section !== 'shadow') throw new Error('--replace-thread 仅适用于 raster、character-assembly 或 shadow。');
   if (!options.reason.trim()) throw new Error('更换 thread 必须提供非空 --reason。');
   const directory = directoryFor(options);
   const release = await acquireTaskLock(directory);
   try {
-    const mode = options.section === 'shadow' ? (await readRun(directory, options.name))?.shadowMode : undefined;
+    const mode = options.section === 'shadow' ? (await readRun(directory))?.shadowMode : undefined;
     if (options.section === 'shadow' && !mode) throw new Error('阴影换会话需要总控记录中的 shadowMode；不能猜测目标模式。');
     const section = mode ? shadowSection(mode) : regular!;
     const target = join(directory, section.id);
-    const config = await loadConfig<unknown>(target, options.name, section.validateInput);
-    if (!config) throw new Error('缺少管线配置：' + target);
+    if (!(await fileInfo(target))?.isDirectory()) throw new Error('缺少管线目录：' + target);
     const plan = await inspectRun(target, section.steps);
     if (plan.resetFrom !== undefined) throw new Error('当前已请求重跑步骤；不能同时替换 thread。请保留原标记并先明确恢复范围。');
     const step = [...plan.statuses].find(([, status]) => status === 'running')?.[0];

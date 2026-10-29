@@ -1,5 +1,6 @@
 import { layerStepId } from './part-steps.ts';
-import {renderPrompt} from '../prompts/render.ts';
+import { layerItem } from '../step-paths.js';
+import { partKnowledge } from './group-prompts.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -22,7 +23,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
   const palette = ['#ef476f', '#118ab2', '#ffd166', '#06d6a0', '#9b5de5', '#fb8500', '#4361ee', '#f15bb5'];
   const merged = join(context.directory, layerStepId(context.depth), 'workspace', 'merged.draft.svg');
   const parts = await Promise.all(context.entries.map(async (entry, index) => {
-    let text = (await readFile((entry.current ?? entry.outline).path)).toString();
+    let text = (await readFile(entry.outline.path)).toString();
     for (const node of svgSource(text).elements.reverse()) {
       const fill = node.element.getAttribute('fill');
       if (fill !== null && fill !== 'none') text = editXmlAttributes(text, node, { fill: palette[index % palette.length] });
@@ -35,6 +36,23 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
   const preview = createSvgPreviewTool({ directory: context.directory, reference, canvas,
     observationDirectory: join(context.directory, layerStepId(context.depth), 'workspace'),
     observed: entry => observations.push(entry) });
+  // Bound to this depth: the agent gets its groups by parent, without arguments.
+  const list: FunctionTool = {
+    ...toolDefinition('list_reduction_groups'),
+    async execute(_value, signal) {
+      signal.throwIfAborted();
+      const families = new Map<string | null, unknown[]>();
+      for (const entry of context.entries) {
+        const parent = entry.parent?.id ?? null, parentSvg = entry.parent?.steps.completion.output?.path;
+        if (!families.has(parent)) families.set(parent, []);
+        families.get(parent)!.push({ id: entry.group.id, kind: entry.group.kind ?? 'group', note: entry.group.note,
+          ...(entry.group.allowOutsideParent ? { allowOutsideParent: true } : {}),
+          sourceSvg: await task(entry.outline.path), outputDraft: await task(entry.outputPath),
+          parentSvg: parentSvg ? await task(parentSvg) : null });
+      }
+      return textResult({ parents: [...families].map(([parent, groups]) => ({ parent, groups })) });
+    },
+  };
   let submitted: OutlineReduction | undefined;
   const write: FunctionTool = {
     ...toolDefinition('write_reduction_svg'),
@@ -88,16 +106,12 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       return textResult({ ...submitted, changed: await Promise.all(changed.map(async change => ({ ...change, path: await task(change.path) }))) });
     },
   };
+  const knowledge = partKnowledge(partProfile(context), 'reduction');
   const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, outputDirectory: join(context.directory, layerStepId(context.depth)),
-    imageGeneration: false, tools: [preview, write, submit, createSvgReadTool(context.directory)],
-    prompt: renderPrompt(await readFile(join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), 'utf8'), {runtime_context: JSON.stringify({
-      depth: context.depth, reference: await task(reference), canvas, mergedPreview: await task(merged),
-      groups: await Promise.all(context.entries.map(async entry => ({ id: entry.group.id, kind: entry.group.kind ?? 'group', note: entry.group.note,
-        ...(entry.group.allowOutsideParent ? { allowOutsideParent: true } : {}),
-        sourceSvg: await task((entry.current ?? entry.outline).path), originalOutline: await task(entry.outline.path),
-        reusedReduction: !!entry.current, outputDraft: await task(entry.outputPath),
-        parentSvg: entry.parent?.steps.completion.output?.path ? await task(entry.parent.steps.completion.output.path) : null }))),
-    }, null, 2)}, join(partProfile(context).promptsDirectory, '8-同层轮廓去重.md'), ["runtime_context"]),
+    imageGeneration: false, tools: knowledge.tools('main', [list, preview, write, submit, createSvgReadTool(context.directory)]),
+    // Fixed paths are spelled in the prompt; the groups come from list_reduction_groups.
+    prompt: knowledge.render('main', { depth: String(context.depth), layer_depth: layerItem(context.depth).slice('depth'.length),
+      width: String(canvas.width), height: String(canvas.height) }, { taskRoot: root }),
   });
   if (!submitted) throw agentOutcomeError('同层去重未通过 submit_reduction 提交', response);
   return submitted;

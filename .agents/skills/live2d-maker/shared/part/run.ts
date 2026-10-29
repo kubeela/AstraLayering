@@ -10,6 +10,7 @@ import { createLayeringSteps } from './layering-steps.ts';
 import { groupStages, type GroupInput, type GroupNode, type LayeringResult, type LayeringSteps, type SvgMerger } from './layering-types.ts';
 import type { PreparationInput, PreparationReferences } from './preparation-types.ts';
 import type { PartProfile } from './profile.ts';
+import { selectKnowledge } from '../knowledge.ts';
 import { sectionDirectory, resolveInput, resolveRunsDirectory, taskDirectory } from '../paths.ts';
 import { requireCurrentLayout } from '../../workflow/layout.ts';
 import { toolCatalog } from '../codex/tool-config.ts';
@@ -17,7 +18,6 @@ import { sectionAgentSteps, preflightAgentSteps } from '../agents/preflight.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { validateWorkflowOptions } from './workflow.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
-import { readPreparationOptions } from './preparation-cache.ts';
 export type PartSection = {
   profile: PartProfile; imageHelp: string; preparationHelp: string;
   getPreparationDirectory(name: string, root?: string): string;
@@ -45,12 +45,10 @@ export async function runPartSection(
   const environment = agentOptions.environment ?? loadWorkflowEnvironment(agentOptions.env);
   const normalization = { ...agentOptions.imageNormalization, runsRoot: input.reference.dir ?? agentOptions.imageNormalization?.runsRoot, progress: agentOptions.progress, env: agentOptions.imageNormalization?.env ?? environment.codex.env };
   if (!adapters.steps) {
-    let standard = input.reference.standard;
-    if (standard === undefined && section.profile.id === 'part-layering') standard = await readPreparationOptions(directory);
-    await preflightAgentSteps(environment, sectionAgentSteps(section.profile.id, standard), normalization);
+    await preflightAgentSteps(environment, sectionAgentSteps(section.profile.id, input.reference.standard), normalization);
   }
   const agents = new CodexAgents({
-    ...agentOptions, environment, imageNormalization: normalization, cwd: dirname(directory), toolsDirectory: section.profile.toolsDirectory, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
+    ...agentOptions, environment, imageNormalization: normalization, cwd: dirname(directory), logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),
   });
   const references = input.groups === null
     ? await section.prepare(input.reference, agents, agentOptions.progress, normalization)
@@ -76,7 +74,7 @@ export async function readGroupInput(path: string): Promise<GroupInput | GroupIn
 
 export function parseRunArguments(args: string[] = process.argv.slice(2)) {
   const { values } = parseArgs({ args, options: {
-    image: { type: 'string' }, name: { type: 'string' }, dir: { type: 'string' }, help: { type: 'boolean' },
+    image: { type: 'string' }, name: { type: 'string' }, dir: { type: 'string' }, knowledge: { type: 'string' }, help: { type: 'boolean' },
     groups: { type: 'string' },
     standard: { type: 'boolean' }, 'no-standard': { type: 'boolean' },
     jobs: { type: 'string', short: 'j' },
@@ -127,16 +125,19 @@ export async function runCli(section: PartSection, args = process.argv.slice(2))
   try {
     const values = parseRunArguments(args);
     if (values.help) {
-      console.log(`pnpm ${section.profile.id} --name <运行名> ${section.profile.id === 'part-layering' ? `[--image <${section.imageHelp}>] [--standard | --no-standard] ` : ''} [--dir <运行根目录绝对路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
+      console.log(`pnpm ${section.profile.id} --name <运行名> ${section.profile.id === 'part-layering' ? `[--image <${section.imageHelp}>] [--standard | --no-standard] ` : ''} --knowledge <先验知识目录> [--dir <运行根目录绝对路径>] [--groups <分组JSON路径>] [--jobs <agent并发数>] [--max-depth <制作层数>]`);
       console.log(section.preparationHelp);
       console.log('Python 模块首次实际使用时自动安装到运行根目录 .runtime 并复用。');
       console.log('各小步骤的模型、CLI 与生图配置见 skill 根目录 example.env。默认任务目录在外部 .run/<name>/；--dir 指定运行根目录，输入相对路径以该根目录下的 <name>/ 为基准。');
+      console.log('--knowledge 每次启动（含续跑）都须指定：独立 section 不保存配置；该目录完整替换 skill 自带的 knowledge/，启动前检查全部文件。');
       console.log('--groups 选择已有组及其子组；祖先须完成，可查看同层有效底稿复核去重，仅实际变化的部件及真实引用者扩入后续制作。省略时按层自动准备或续跑。');
       console.log(`--jobs / -j 设置所有步骤共享的 agent 调用并发上限，默认 ${defaultAgentConcurrency}；组任务不另设数量限制，按树的层级依赖进入队列。`);
       console.log('--max-depth 限制本次制作层数：1 完成第一层并登记第二层，2 制作到第二层并登记第三层，以此类推。省略时继续到终止部件。');
       console.log('--agents / -a 为 --jobs / -j 的兼容别名，控制同一上限。临时服务错误等待后沿用会话恢复，次数不设上限，过程写入 agent 日志。');
     } else {
       if (!values.name) throw new Error('需要 --name <运行名>');
+      if (!values.knowledge?.trim()) throw new Error('必须提供 --knowledge <先验知识目录>；独立 section 不保存配置，每次启动（含续跑）都须指定。');
+      selectKnowledge(resolveInput(values.name, values.knowledge, values.dir));
       const { references, layering } = await runPartSection(section, {
         reference: { image: values.image, runName: values.name, dir: values.dir, standard: values.standard },
         groups: values.groups ? await readGroupInput(resolveInput(values.name, values.groups, values.dir)) : null, maxDepth: values.maxDepth,

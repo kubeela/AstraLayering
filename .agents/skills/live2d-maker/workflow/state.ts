@@ -3,18 +3,17 @@ import { stepPattern } from '../shared/step-paths.js';
 import { randomUUID, createHash } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { setTimeout as delay } from 'node:timers/promises';
-import { extname, join, relative } from 'node:path';
+import { extname, join } from 'node:path';
 import lockfile from 'proper-lockfile';
 import { sectionIds, resolveInput, resolveRunsDirectory, taskDirectory, type SectionId } from '../shared/paths.ts';
 import { defaultAgentConcurrency } from '../shared/codex/agent-runtime.ts';
-import { readPreparationOptions } from '../shared/part/preparation-cache.ts';
 import { readTaskLog } from './log.ts';
 import { requireCurrentLayout } from './layout.ts';
 import { currentSession } from '../shared/agents/step-session.ts';
 import { installedVersion } from '../shared/version.ts';
 
 export type TaskOptions = {
-  name: string; dir?: string; image?: string; krita?: string;
+  name: string; dir?: string; image?: string; krita?: string; knowledge?: string;
   from?: SectionId; to?: SectionId; jobs?: number; standard?: boolean; shadowMode?: ShadowMode;
 };
 export type SectionProgress = {
@@ -25,8 +24,10 @@ export type SectionProgress = {
 };
 export type TaskRun = {
   archive?: true;
-  version: 1; name: string; dir: string; from: SectionId; to: SectionId;
-  image?: string; krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode;
+  version: 1; from: SectionId; to: SectionId;
+  krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode;
+  // The knowledge directory given with --knowledge; absent, the skill's own knowledge/.
+  knowledge?: string;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
   // Release labels (shared/version.ts) of the version that created the task and that last configured a run.
@@ -34,10 +35,12 @@ export type TaskRun = {
   // Sections running now; after a failed or stopped run, the ones that ended it.
   activeSections?: SectionId[];
   // childPids: the worker process of each running section.
-  runner?: { id: string; pid: number; childPids?: Partial<Record<SectionId, number>>; startedAt: string; finishedAt?: string; stopProtocol?: 'file-v1' };
+  runner?: { id: string; pid: number; childPids?: Partial<Record<SectionId, number>>; startedAt: string; finishedAt?: string };
   sections: Partial<Record<SectionId, SectionProgress>>;
-  lastMessage?: string; error?: string; output?: string;
+  error?: string; output?: string;
 };
+// Fields of earlier records, dropped when a run is configured.
+const retiredFields = ['name', 'dir', 'image', 'lastMessage'] as const;
 
 export const now = () => new Date().toISOString();
 export function sectionId(value: string): SectionId {
@@ -54,14 +57,15 @@ export function directoryFor(options: Pick<TaskOptions, 'name' | 'dir'>): string
   if (!/^[\p{L}\p{N}][\p{L}\p{N}._-]{0,127}$/u.test(options.name)) throw new Error('--name 必须以字母或数字开头，只含字母、数字、点、下划线和短横线，最多 128 字符。');
   return taskDirectory(options.name, resolveRunsDirectory(options.dir));
 }
-export async function readRun(directory: string, name: string): Promise<TaskRun | undefined> {
+export async function readRun(directory: string): Promise<TaskRun | undefined> {
   await requireCurrentLayout(directory);
   let contents: string;
   try { contents = await readFile(join(directory, 'run.json'), 'utf8'); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; throw error; }
   const run = JSON.parse(contents) as TaskRun;
-  if (run.version !== 1 || run.name !== name || !run.sections || typeof run.sections !== 'object'
+  if (run.version !== 1 || !run.sections || typeof run.sections !== 'object'
     || !Number.isSafeInteger(run.jobs) || run.jobs < 1 || (run.standard !== undefined && typeof run.standard !== 'boolean')
+    || (run.knowledge !== undefined && typeof run.knowledge !== 'string')
     || !['ready', 'running', 'completed', 'failed', 'interrupted'].includes(run.status)) {
     throw new Error('无效的总控记录：' + join(directory, 'run.json'));
   }
@@ -104,7 +108,8 @@ export function processAlive(pid: number | undefined): boolean {
   try { process.kill(pid, 0); return true; }
   catch (error) { return (error as NodeJS.ErrnoException).code === 'EPERM'; }
 }
-async function originalImage(directory: string, input?: string): Promise<string | undefined> {
+// The task's original image, input/original.<ext>; undefined before one is given.
+export async function taskOriginal(directory: string): Promise<string | undefined> {
   const folder = join(directory, 'input');
   const names = await readdir(folder).catch(error => {
     if (error.code === 'ENOENT') return [] as string[];
@@ -112,38 +117,30 @@ async function originalImage(directory: string, input?: string): Promise<string 
   });
   const originals = names.filter(name => /^original\.[^.]+$/.test(name));
   if (originals.length > 1) throw new Error('原图不唯一：' + folder);
-  let retained = originals[0] && join(folder, originals[0]);
-  if (input) {
-    if (!(await stat(input)).isFile()) throw new Error('输入图像不是文件：' + input);
-    if (retained) {
-      const hash = (data: Buffer) => createHash('sha256').update(data).digest('hex');
-      if (hash(await readFile(input)) !== hash(await readFile(retained))) {
-        throw new Error('任务已有不同的原图：' + retained + '。制作另一张图请使用新的 --name。');
-      }
-    } else {
-      await mkdir(folder, { recursive: true });
-      retained = join(folder, 'original' + (extname(input) || '.png'));
-      await copyFile(input, retained);
+  return originals[0] && join(folder, originals[0]);
+}
+// Keeps the given image as the task's original.
+async function keepOriginal(directory: string, input?: string): Promise<void> {
+  if (!input) return;
+  if (!(await stat(input)).isFile()) throw new Error('输入图像不是文件：' + input);
+  const retained = await taskOriginal(directory);
+  if (retained) {
+    const hash = (data: Buffer) => createHash('sha256').update(data).digest('hex');
+    if (hash(await readFile(input)) !== hash(await readFile(retained))) {
+      throw new Error('任务已有不同的原图：' + retained + '。制作另一张图请使用新的 --name。');
     }
+  } else {
+    await mkdir(join(directory, 'input'), { recursive: true });
+    await copyFile(input, join(directory, 'input', 'original' + (extname(input) || '.png')));
   }
-  return retained ? relative(directory, retained) : undefined;
 }
 export const usesKrita = (selected: SectionId[]) => selected.some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow');
-// The Krita executable for this run: the one given now, else the one recorded by
-// the task or, for older tasks, by one of its Krita sections.
-export async function taskKrita(options: Pick<TaskOptions, 'name' | 'dir' | 'krita'>, directory: string,
-  saved: Pick<TaskRun, 'krita'> | undefined, selected: SectionId[]): Promise<string | undefined> {
-  if (options.krita) return resolveInput(options.name, options.krita, options.dir);
-  if (saved?.krita || !usesKrita(selected)) return saved?.krita;
-  for (const id of ['raster-layering', 'clothing-raster-layering', 'character-assembly', 'shadow']) {
-    try {
-      const config = JSON.parse(await readFile(join(directory, id, 'run.json'), 'utf8'));
-      if (typeof config.krita?.executable === 'string') return config.krita.executable;
-    } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-  }
+// The Krita executable for this run: the one given now, else the one the task recorded.
+export function taskKrita(options: Pick<TaskOptions, 'name' | 'dir' | 'krita'>, saved: Pick<TaskRun, 'krita'> | undefined): string | undefined {
+  return options.krita ? resolveInput(options.name, options.krita, options.dir) : saved?.krita;
 }
 export async function configureRun(options: TaskOptions, directory: string): Promise<TaskRun> {
-  const saved = await readRun(directory, options.name);
+  const saved = await readRun(directory);
   if (saved?.archive) throw new Error('这是导出的成果归档；请在原运行目录继续制作。');
   const from = options.from ?? saved?.from ?? 'part-layering';
   const to = options.to ?? saved?.to ?? 'shadow';
@@ -151,28 +148,27 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   if (options.standard !== undefined && !selected.includes('part-layering')) {
     throw new Error('--standard / --no-standard 需要本次路线包含 part-layering；请用 --from part-layering 运行人物 preparation。');
   }
-  const standard = options.standard ?? saved?.standard
-    ?? await readPreparationOptions(join(directory, 'part-layering/references')) ?? false;
+  const standard = options.standard ?? saved?.standard ?? false;
   const jobs = options.jobs ?? saved?.jobs ?? defaultAgentConcurrency;
   if (!Number.isSafeInteger(jobs) || jobs < 1) throw new Error('--jobs 必须为正整数。');
-  const image = await originalImage(directory, options.image && resolveInput(options.name, options.image, options.dir));
+  await keepOriginal(directory, options.image && resolveInput(options.name, options.image, options.dir));
   const run: TaskRun = saved ?? {
-    version: 1, name: options.name, dir: resolveRunsDirectory(options.dir), from, to, jobs,
-    status: 'ready', createdAt: now(), updatedAt: now(), sections: {},
+    version: 1, from, to, jobs, status: 'ready', createdAt: now(), updatedAt: now(), sections: {},
   };
-  Object.assign(run, { dir: resolveRunsDirectory(options.dir), from, to, jobs, standard,
-    shadowMode: shadowMode(options.shadowMode ?? saved?.shadowMode) });
-  run.image = image ?? saved?.image;
+  for (const field of retiredFields) delete (run as Record<string, unknown>)[field];
+  if (run.runner) delete (run.runner as { stopProtocol?: unknown }).stopProtocol;
+  Object.assign(run, { from, to, jobs, standard, shadowMode: shadowMode(options.shadowMode ?? saved?.shadowMode) });
   const { label } = await installedVersion();
   if (!saved) run.createdWith = label;
   run.lastRunWith = label;
-  run.krita = await taskKrita(options, directory, run, selected);
+  run.krita = taskKrita(options, run);
+  if (options.knowledge) run.knowledge = resolveInput(options.name, options.knowledge, options.dir);
   for (const id of selected) run.sections[id] ??= { status: 'pending', updatedAt: now() };
   return run;
 }
 export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
   const directory = directoryFor(options);
-  const run = await readRun(directory, options.name);
+  const run = await readRun(directory);
   if (!run) throw new Error('缺少总控记录：' + join(directory, 'run.json') + '。先用总入口启动；已有上游产物可指定 --from。');
   const runnerAlive = !run.runner?.finishedAt && processAlive(run.runner?.pid);
   const lockHeld = await lockfile.check(directory, { lockfilePath: join(directory, '.runner.lock'), stale: 30_000 });
@@ -180,7 +176,6 @@ export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
     const path = join(directory, id);
     let threadId: string | null | undefined, steps: { name: string; status: string }[] = [];
     try {
-      await stat(join(path, 'run.json'));
       const entries = await readdir(path);
       steps = await Promise.all(entries.filter(name => stepPattern.test(name)).sort().map(async name => ({
         name, status: await stat(join(path, name, '.completed')).then(() => 'completed', () =>
@@ -195,7 +190,7 @@ export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
   return {
     ...run, status: run.status === 'running' && !runnerAlive ? 'interrupted' : run.status,
     directory, runnerAlive: !!runnerAlive, lockHeld, sections,
-    lastMessage: log.message ?? run.lastMessage, log: log.path, logUpdatedAt: log.updatedAt,
+    lastMessage: log.message, log: log.path, logUpdatedAt: log.updatedAt,
     monitor: join(directory, 'monitor.md'),
   };
 }

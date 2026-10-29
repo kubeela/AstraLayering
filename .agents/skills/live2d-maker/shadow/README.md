@@ -5,13 +5,13 @@
 先准备同名任务的组装成果及下表所需参考，停止同任务总调度，再从 skill 根目录运行。独立入口只制作所选阴影模式：
 
 ```sh
-pnpm shadow --name jianma --krita /path/to/krita
-pnpm shadow --name jianma --shadow-mode normal-depth --krita /path/to/krita
+pnpm shadow --name jianma --krita /path/to/krita --knowledge /path/to/knowledge
+pnpm shadow --name jianma --shadow-mode normal-depth --krita /path/to/krita --knowledge /path/to/knowledge
 # 总入口只运行阴影；首次默认 mask
 pnpm start --name jianma --from shadow --to shadow --shadow-mode mask
 ```
 
-`--dir` 指定运行根目录；输入从 `<dir>/<name>` 的固定产物读取。独立入口省略模式默认 `mask`，总入口续跑省略则沿用保存的模式。两种模式首次都需传 `--krita`，续跑复用该模式记录的路径，每次启动都做不启动 Krita 的轻量检查。只有 mask 模式占用 Krita 名额并获得 `krita` 与 `inspect_shadow_mask` 工具；normal-depth 声明 `krita: false`，不占名额也没有 krita 工具。私有 Krita 见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。`--dry-run` 检查输入与提示词，不写任务或调用模型。
+`--dir` 指定运行根目录；输入从 `<dir>/<name>` 的固定产物读取。独立入口省略模式默认 `mask`，总入口续跑省略则沿用保存的模式。独立入口不保存配置，每次启动都需传 `--krita` 与 `--knowledge`；总入口续跑复用任务根 `run.json` 记录的路径。每次启动都做不启动 Krita 的轻量检查。只有 mask 模式占用 Krita 名额并获得 `krita` 与 `inspect_shadow_mask` 工具；normal-depth 声明 `krita: false`，不占名额也没有 krita 工具。私有 Krita 见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。`--dry-run` 检查输入与提示词，不写任务或调用模型。
 
 | 模式 | 输入 | 交付 |
 | --- | --- | --- |
@@ -22,7 +22,7 @@ pnpm start --name jianma --from shadow --to shadow --shadow-mode mask
 
 Krita 阴影采用隔离组和透明度继承，JSON 保存真实 part ID 与最终图层 UUID、跟随／裁切关系。重叠发束优先正常阴影色层，避免叠底重复压暗。KRA 是可编辑素材，`shadows.json` 是供后续绑定消费的关系；它们不是 cmo3/moc3，也不代表已经绑定 deformer。
 
-复用现有 raster runner 的模型调用、日志、thread 与完成标记。两种模式是同一 section 的两个 step01，启动时选其一：共用 `shadow/run.json`，各自在 `shadow/step01_<模式>/` 保存 `.running` / `.completed` 与会话；切换模式只检查所选步骤，另一模式的产物保留。character-assembly 重做后所选 step01 随之重做；只改代码或路径不触发重做。删除某模式的 `step01_<模式>/.completed` 可按既有规则重做。
+复用现有 raster runner 的模型调用、日志、thread 与完成标记。两种模式是同一 section 的两个 step01，启动时选其一：各自在 `shadow/step01_<模式>/` 保存 `.running` / `.completed` 与会话；切换模式只检查所选步骤，另一模式的产物保留。character-assembly 重做后所选 step01 随之重做；只改代码或路径不触发重做。删除某模式的 `step01_<模式>/.completed` 可按既有规则重做。
 
 仅文件存在不代表检查通过：检查原尺寸、KRA 合成与 PNG 一致、真实图层与 part 引用、原生裁切和模式；地图检查原尺寸、深度灰度、原画 alpha。原生检查由 agent 通过 `inspect_shadow_mask` 工具在本 section 的 Krita 中运行；交付不核对检查结果。绘制 agent 仍需逐图评估画法和余量，不能用像素计数替代艺术验收。
 

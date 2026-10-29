@@ -1,4 +1,5 @@
 import { partProfile } from './profile.ts';
+import { partKnowledge } from './group-prompts.ts';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
@@ -87,15 +88,15 @@ export function validateOcclusionDocument(value: unknown): OcclusionPlan {
 
 // 层级是独立的最后一步：绑定语义、两类轮廓、参考、已有预览及提示词，不改变上游事实。
 export async function occlusionSourceHash(context: OcclusionContext): Promise<string> {
-  const occlusionPromptPath = join(partProfile(context).promptsDirectory, '11-遮挡层级规划.md');
-  const files = [resolve(context.directory, context.references.baseSubject), resolve(context.directory, context.preview.path), occlusionPromptPath];
+  const prompts = partKnowledge(partProfile(context), 'occlusion').files('main');
+  const files = [resolve(context.directory, context.references.baseSubject), resolve(context.directory, context.preview.path), ...prompts];
   const inputs = [];
   for (const { group, parent } of walkGroups(context.groups)) {
     inputs.push({ id: group.id, parent: parent?.id, kind: group.kind, name: group.name, note: group.note, metadata: group.metadata,
       children: group.groups.map(child => child.id) });
     if (!group.groups.length) files.push(artifactPath(context.directory, group.id, 'reduction'), artifactPath(context.directory, group.id, 'completion'));
   }
-  const hashes = await Promise.all(files.map(async path => ({ path: path === occlusionPromptPath ? 'planning-prompt' : relative(context.directory, path),
+  const hashes = await Promise.all(files.map(async path => ({ path: prompts.includes(path) ? 'planning-prompt' : relative(context.directory, path),
     hash: createHash('sha256').update(await readFile(path)).digest('hex') })));
   const tree = await readOptional(join(context.directory, 'groups.json'));
   if (tree) hashes.push({ path: 'groups.json', hash: svgHash(tree) });

@@ -172,7 +172,7 @@ export class VisualContext {
   #state?: State;
   #queue: Promise<unknown> = Promise.resolve();
   readonly options: { directory: string; protocol: VisualProtocol; budget: ImageBudget;
-    protectedImageHashes?: ReadonlySet<string>; observe?: (event: VisualContextEvent) => Promise<void> };
+    observe?: (event: VisualContextEvent) => Promise<void> };
   constructor(options: VisualContext['options']) { this.options = options; }
   prepare(original: any, summarize: (body: any) => Promise<string>): Promise<any> {
     const pending = this.#queue.catch(() => {}).then(() => this.#prepare(original, summarize));
@@ -201,7 +201,7 @@ export class VisualContext {
     // Fresh reads stay available even if the same bitmap was summarized before.
     const latest = new Set(list.slice(-4).map(slot => slot.key));
     const active = new Set(list.map(slot => slot.key));
-    const protectedSlot = (slot: Slot) => latest.has(slot.key) || this.options.protectedImageHashes?.has(slot.hash);
+    const protectedSlot = (slot: Slot) => latest.has(slot.key);
     const shown = new Set<string>();
     const replace = (slot: Slot, batch: string) => {
       const summary = state.summaries[batch];
@@ -257,10 +257,6 @@ export class VisualContext {
     }
     await emit('prepared'); return body;
   }
-}
-
-export function protectedImages(images: readonly { data: string }[]): ReadonlySet<string> {
-  return new Set(images.map(image => digest(Buffer.from(image.data, 'base64'))));
 }
 
 export async function readVisualSummary(response: Response, protocol: VisualProtocol): Promise<string> {

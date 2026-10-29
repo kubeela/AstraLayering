@@ -9,6 +9,7 @@ import type { AgentTask } from '../../shared/codex/agents.ts';
 import { createPreparationSteps, getPreparationDirectory, loadPreparedReferences, prepareReferences } from '../preparation.ts';
 import { taskDirectory, sectionDirectory } from '../../shared/paths.ts';
 import { clothingPreparationStep, partSteps } from '../../shared/step-paths.js';
+import { referencePaths } from '../../shared/tests/prompt-input.ts';
 
 // The person part steps the clothing preparation is built on; a new stamp stands for a redone step.
 const personSteps = [partSteps.standard, partSteps.simplified, partSteps.base];
@@ -47,7 +48,7 @@ test('preparation sends clothed and base references in order through one configu
   assert.equal(f.calls[0].imageGeneration, true);
   assert.match(f.calls[0].prompt, /image_gen\.imagegen/);
   assert.match(f.calls[0].prompt, /生图工具 imagegen（Codex 为内置 image_gen\.imagegen，其他模型为同名工具 imagegen/);
-  assert.deepEqual(f.calls[0].images!.map(image => image.path), [refs.originalImage, f.base]);
+  assert.deepEqual(referencePaths(f.calls[0].prompt), [refs.originalImage, f.base]);
   assert.equal(f.calls[0].step, 'clothing_preparation');
   assert.ok(f.calls[0].prompt.includes('96×128'));
   assert.ok(!f.calls[0].prompt.includes('{width}'));

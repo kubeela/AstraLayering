@@ -24,7 +24,7 @@ async function fixture(t: TestContext, section: typeof character | typeof clothi
   const root = await realpath(await mkdtemp(join(tmpdir(), 'structure-tools-')));
   t.after(() => rm(root, { recursive: true, force: true }));
   const directory = await seedUpstream('case', section.inputSection, root);
-  const input = { directory, parts: join(directory, 'parts') };
+  const input = { directory, parts: join(directory, 'parts'), ...(section === clothing ? { originalCharacter: join(directory, 'references/clothing.png') } : {}) };
   const tools = createStructureTools(input);
   const tool = (name: string) => tools.find(tool => tool.name === name)!;
   const json = async (file: string) => JSON.parse(await readFile(join(directory, file), 'utf8'));
@@ -182,7 +182,7 @@ test('两套 step01 结束时结构诊断仅记日志，保留完成状态并推
     await assert.rejects(readFile(join(output, 'error.txt')), { code: 'ENOENT' });
     assert.equal((await f.json('occlusion.json')).layers[0].layer, '051 | fixture');
     // A retained completed step diagnoses the same issue without rerunning it.
-    await runWorkflow(section, { name: 'case' }, { ...deps, agent: async () => assert.fail('already completed') });
+    await runWorkflow(section, { name: 'case', krita: process.execPath }, { ...deps, agent: async () => assert.fail('already completed') });
   }
 });
 

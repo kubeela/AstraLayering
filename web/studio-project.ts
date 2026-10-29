@@ -49,7 +49,6 @@ export async function studioProject(directory: string, name: string, dir: string
   let draftRecord;
   if (!mapsSource && !publishedMaps && all.draftNormal.available && all.draftDepth.available) {
     try {
-      await safePath(directory, 'shadow/run.json');
       await safePath(directory, 'part-layering/references');
       draftRecord = await inspectDraftPreview(name, dir);
     } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }

@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { renderPromptFile } from '../prompts/render.ts';
+import { runtimePrompt } from '../knowledge.ts';
 
 // Content-policy image blocks. The turn fails at once (no reconnects) and every
 // later turn in the same thread would resend the image, so the agent continues
@@ -60,7 +60,7 @@ export function replaceBlockedImages(rollout: string): BlockedImages | undefined
   const batch = recent.length ? recent : all;
   if (!batch.length) return undefined;
   for (const image of batch) (image.item[image.field] as Content[])[image.index] = { type: 'input_text',
-    text: renderPromptFile(new URL('../prompts/image-blocked-placeholder.md', import.meta.url), { origin: image.origin }).trimEnd() };
+    text: runtimePrompt('image-blocked-placeholder', { origin: image.origin }).trimEnd() };
   return { items, origins: batch.map(image => image.origin) };
 }
 
@@ -69,9 +69,9 @@ export async function readBlockedImages(rolloutPath: string): Promise<BlockedIma
 }
 
 export function blockedImagesPrompt({ origins }: BlockedImages): string {
-  const stop = renderPromptFile(new URL('../prompts/image-blocked-stop.md', import.meta.url)).trimEnd();
+  const stop = runtimePrompt('image-blocked-stop').trimEnd();
   const list = origins.map(origin => `- ${origin}`).join('\n');
   return (origins.length > 1
-    ? renderPromptFile(new URL('../prompts/image-blocked-multiple.md', import.meta.url), { count: String(origins.length), images: list, stop })
-    : renderPromptFile(new URL('../prompts/image-blocked-single.md', import.meta.url), { images: list, stop })).trimEnd();
+    ? runtimePrompt('image-blocked-multiple', { count: String(origins.length), images: list, stop })
+    : runtimePrompt('image-blocked-single', { images: list, stop })).trimEnd();
 }

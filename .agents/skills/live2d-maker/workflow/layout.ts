@@ -104,7 +104,7 @@ function mapShadow(segments: string[]): Mapped {
   const [mode, ...tail] = segments;
   if (!shadowModes.includes(mode)) return { path: ['shadow', ...segments].join('/'), rest: [] };
   if (tail.some(segment => segment.includes('.previous-'))) return null;
-  if (tail[0] === 'run.json' && tail.length === 1) return { path: 'shadow/run.json', rest: [] };
+  if (tail[0] === 'run.json' && tail.length === 1) return null;
   if (tail[0] === 'step01') return stepIn('shadow', [shadowStep(mode)], tail.slice(1));
   if (mode === 'normal-depth' && tail[0] === 'step02') return null;
   if (tail[0] === 'agents') return { path: ['shadow', ...tail].join('/'), rest: [] };
@@ -116,6 +116,8 @@ export function mapPath(path: string): Mapped {
   if (!(sectionIds as readonly string[]).includes(section) || !segments.length) return { path, rest: [] };
   if ((partSections as readonly string[]).includes(section)) return mapPart(section, segments);
   if (section === 'shadow') return mapShadow(segments);
+  // Sections keep no run state of their own; the coordinator's run.json holds it.
+  if (segments.join('/') === 'run.json') return null;
   return stepPattern.test(segments[0]) ? stepIn(section, [segments[0]], segments.slice(1)) : { path, rest: [] };
 }
 
@@ -191,16 +193,10 @@ async function convertLocked(directory: string, progress?: (message: string) => 
     entries.push({ old: file, target: mapped.path });
   }
   if (unknown.length) throw new Error(`以下文件不在已知的旧版目录布局中，未做任何改动：\n${unknown.slice(0, 20).join('\n')}${unknown.length > 20 ? `\n…共 ${unknown.length} 个` : ''}`);
-  // One shadow run.json serves both modes; the mask one is kept.
   const byTarget = new Map<string, Entry[]>();
   for (const entry of entries) byTarget.set(entry.target, [...byTarget.get(entry.target) ?? [], entry]);
   for (const [target, group] of byTarget) {
-    if (group.length < 2) continue;
-    const keep = target === 'shadow/run.json' ? group.find(entry => entry.old === 'shadow/mask/run.json') : undefined;
-    if (!keep) {
-      throw new Error(`转换后路径冲突，未做任何改动：${target}\n${group.map(entry => entry.old).join('\n')}`);
-    }
-    for (const entry of group) if (entry !== keep) { retired.add(entry.old); entries.splice(entries.indexOf(entry), 1); }
+    if (group.length > 1) throw new Error(`转换后路径冲突，未做任何改动：${target}\n${group.map(entry => entry.old).join('\n')}`);
   }
 
   const backup = backupDirectory(directory);
@@ -252,13 +248,6 @@ async function convertLocked(directory: string, progress?: (message: string) => 
     contents.set(old, JSON.stringify(record) + '\n');
   }
 
-  // Section configurations: legacy thread fields are dropped; agents/ records stay as they are.
-  for (const entry of entries.filter(entry => /^[^/]+(\/(mask|normal-depth))?\/run\.json$/.test(entry.old))) {
-    const config = JSON.parse(await read(entry.old));
-    if (!legacyRunFields.some(field => field in config)) continue;
-    for (const field of legacyRunFields) delete config[field];
-    contents.set(entry.old, JSON.stringify(config, null, 2) + '\n');
-  }
   if (known.has('run.json')) {
     const run = JSON.parse(contents.get('run.json') ?? await read('run.json'));
     if (run.pipelines && !run.sections) { run.sections = run.pipelines; delete run.pipelines; }

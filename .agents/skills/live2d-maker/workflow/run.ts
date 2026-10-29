@@ -31,6 +31,8 @@ export const help = [
   '  请加 --krita <可执行文件> 重新指定。继续、恢复、重试同样先检查，检查通过后才改动步骤。',
   '',
   '--dir <绝对路径> 指定运行根目录，任务记录在 <dir>/<name>/run.json。',
+  '--knowledge <目录> 用该目录完整替换 skill 自带的 knowledge/ 先验知识，不回退；记录在 run.json，续跑省略沿用。',
+  '  启动、继续、恢复、重试前先检查其中全部文件，缺失则拒绝运行并写入 workflow.log。',
   '--from / --to <管线> 选择连续范围，默认从人物 part 到阴影制作；只制作一个管线时两者相同。',
   '管线：part-layering、raster-layering、clothing-part-layering、clothing-raster-layering、character-assembly、shadow',
   '--shadow-mode mask|normal-depth 选择阴影路线，首次默认 mask；续跑省略沿用保存值。',
@@ -46,7 +48,7 @@ export const help = [
 
 export function parseArguments(args: string[]) {
   const { values } = parseArgs({ args, options: {
-    name: { type: 'string' }, dir: { type: 'string' }, image: { type: 'string' }, krita: { type: 'string' },
+    name: { type: 'string' }, dir: { type: 'string' }, image: { type: 'string' }, krita: { type: 'string' }, knowledge: { type: 'string' },
     'shadow-mode': { type: 'string' }, from: { type: 'string' }, to: { type: 'string' }, jobs: { type: 'string' },
     standard: { type: 'boolean' }, 'no-standard': { type: 'boolean' },
     background: { type: 'boolean' }, 'background-worker': { type: 'boolean' },
@@ -58,7 +60,7 @@ export function parseArguments(args: string[]) {
   if (values.help) return { mode: 'help' as const };
   if (!values.name) throw new Error('请提供 --name <任务名>。');
   if (values.standard && values['no-standard']) throw new Error('--standard 与 --no-standard 不能同时使用。');
-  const options: TaskOptions = { name: values.name, dir: values.dir, image: values.image, krita: values.krita,
+  const options: TaskOptions = { name: values.name, dir: values.dir, image: values.image, krita: values.krita, knowledge: values.knowledge,
     standard: values['no-standard'] ? false : values.standard,
     shadowMode: values['shadow-mode'] === undefined ? undefined : shadowMode(values['shadow-mode']),
     from: values.from ? sectionId(values.from) : undefined, to: values.to ? sectionId(values.to) : undefined,
@@ -79,7 +81,7 @@ export function parseArguments(args: string[]) {
   if (values.json && !values.status) throw new Error('--json 只能与 --status 一起使用。');
   if ((values.handoff || values.reason) && !values['replace-thread']) throw new Error('--handoff / --reason 只能与 --replace-thread 一起使用。');
   if (values.status || values.stop || values['replace-thread']) {
-    if (values.image || values.krita || values.from || values.to || values.jobs || options.standard !== undefined || options.shadowMode !== undefined) throw new Error('查询、停止或替换 thread 时不修改启动配置。');
+    if (values.image || values.krita || values.knowledge || values.from || values.to || values.jobs || options.standard !== undefined || options.shadowMode !== undefined) throw new Error('查询、停止或替换 thread 时不修改启动配置。');
   }
   if (values.stop) return { mode: 'stop' as const, options };
   if (values['replace-thread']) {
@@ -99,7 +101,7 @@ export async function startBackground(options: TaskOptions): Promise<number> {
   const args = ['--background-worker', '--name', options.name];
   if (options.shadowMode !== undefined) args.push('--shadow-mode', options.shadowMode);
   if (options.standard !== undefined) args.push(options.standard ? '--standard' : '--no-standard');
-  for (const key of ['dir', 'image', 'krita', 'from', 'to', 'jobs'] as const) {
+  for (const key of ['dir', 'image', 'krita', 'knowledge', 'from', 'to', 'jobs'] as const) {
     if (options[key] !== undefined) args.push('--' + key, String(options[key]));
   }
   try {

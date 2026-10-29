@@ -1,16 +1,16 @@
 import { partSteps } from '../step-paths.js';
-import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
+import { partKnowledge } from './group-prompts.ts';
 import { readFile, realpath } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../codex/agents.ts';
 import { artifactPath } from './artifact-facts.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { nodeSeed, walkGroups } from './groups.ts';
+import { nodeSeed } from './groups.ts';
 import type { OcclusionContext, StepResult } from './layering-types.ts';
 import { mergePartSvgs } from './merge-svg.ts';
 import { depthRegions, occlusionSourceHash, terminalParts, validateOcclusionPlan, type DepthCheck, type OcclusionPlan } from './occlusion-plan.ts';
@@ -19,10 +19,8 @@ import { taskRootOf, toAgentPath } from '../task-paths.ts';
 
 export async function planPartOcclusion(context: OcclusionContext, agents: Pick<CodexAgents, 'run'>): Promise<StepResult<OcclusionPlan>> {
   const profile = partProfile(context);
-  const occlusionPromptPath = join(profile.promptsDirectory, '11-遮挡层级规划.md');
+  const knowledge = partKnowledge(profile, 'occlusion');
   const sourceHash = await occlusionSourceHash(context);
-  const prompt = await readFile(occlusionPromptPath, 'utf8');
-  if (!prompt.trim()) throw new Error('遮挡层级规划提示词为空');
   const reference = resolve(context.directory, context.references.baseSubject);
   const meta = await sharp(reference).metadata();
   const directory = join(context.directory, partSteps.occlusion, 'workspace');
@@ -107,16 +105,11 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
     },
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'occlusion'), name: '最终遮挡层级规划', cwd: context.directory, imageGeneration: false,
-    images: [{ path: reference, description: profile.references.occlusion }],
-    tools: [createSvgPreviewTool({ directory: context.directory, reference,
+    tools: knowledge.tools('main', [createSvgPreviewTool({ directory: context.directory, reference,
       canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height }, observationDirectory: directory,
-      observed: entry => observations.push(entry) }), propose, check, submit, problem],
-    prompt: renderPrompt(prompt, {prompt_source: occlusionPromptPath,
-      runtime_context: JSON.stringify({
-      preview: await task(previewPath), reference: await task(reference), canvas: { width: meta.autoOrient.width, height: meta.autoOrient.height },
-      parts: await Promise.all(parts.map(async part => ({ ...part, full: await task(part.full), outline: await task(part.outline) }))), groups: walkGroups(context.groups).filter(({ group }) => group.groups.length)
-        .map(({ group, parent }) => ({ ...nodeSeed(group), parent: parent?.id })),
-    }, null, 2)}, occlusionPromptPath, ["prompt_source","runtime_context"]),
+      observed: entry => observations.push(entry) }), propose, check, submit, problem]),
+    // Paths are spelled in the prompt with {uri:}; the agent reads groups.json itself.
+    prompt: knowledge.render('main', { width: String(meta.autoOrient.width), height: String(meta.autoOrient.height) }, { taskRoot: root }),
   });
   await verify();
   if (!result) throw agentOutcomeError('层级规划未提交完整表或具体阻断', response);

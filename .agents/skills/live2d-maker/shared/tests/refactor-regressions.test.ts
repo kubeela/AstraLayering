@@ -10,7 +10,6 @@ import { AgentLog, retryWaitFile } from '../codex/agent-log.ts';
 import { recognizeInitialGroups } from '../part/initial-groups.ts';
 import { runWorkflow as runRaster } from '../../raster-layering/run.ts';
 import { runWorkflow as runClothingRaster } from '../../clothing-raster-layering/run.ts';
-import { initializeRun, newConfig } from '../raster/run-store.ts';
 import { profile as character } from '../../part-layering/profile.ts';
 import { profile as clothing } from '../../clothing-part-layering/profile.ts';
 import { fixture } from '../../part-layering/tests/layering-fixture.ts';
@@ -76,7 +75,9 @@ test('每次临时错误都记录等待截止时间供限流等待显示，429 �
 test('首次分组拒绝非字符串 subject，错误参数不能写坏首次分组记录', async t => {
   for (const profile of [character, clothing]) {
     const f = await fixture(t);
-    await recognizeInitialGroups({ ...f, profile }, { run: async task => {
+    // Clothing preparation always provides the original clothed character.
+    const references = profile === clothing ? { ...f.references, originalImage: f.references.baseSubject } : f.references;
+    await recognizeInitialGroups({ ...f, profile, references }, { run: async task => {
       const write = task.tools!.find(tool => tool.name === 'write_groups')!;
       const signal = new AbortController().signal;
       const groups = [{ name: 'shape', groups: [], note: '独立实体' }];
@@ -106,21 +107,17 @@ test('两套 raster 的缺失输入提示各自指向对应的 part 管线', asy
   }
 });
 
-test('续跑时显式传空 Krita 路径仍报错，不静默沿用旧配置', async t => {
+test('显式传空 Krita 路径报错', async t => {
   const root = await mkdtemp(join(tmpdir(), 'krita-empty-override-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const input = { directory: join(root, 'source'), parts: join(root, 'source/parts') };
-  await mkdir(input.parts, { recursive: true });
   const runsDirectory = join(root, 'runs');
   for (const [run, id] of [[runRaster, 'raster-layering'],
     [runClothingRaster, 'clothing-raster-layering']] as const) {
     await seedUpstream('saved', id === 'raster-layering' ? 'part-layering' : 'clothing-part-layering', runsDirectory);
-    const directory = sectionDirectory('saved', id, runsDirectory);
-    await initializeRun(directory, newConfig('saved', input, { executable: process.execPath }));
     for (const krita of ['', '   ']) {
       await assert.rejects(run({ name: 'saved', krita, dryRun: true }, { runsDirectory,
         preflight: async () => { throw new Error('preflight must not run'); },
-      }), /首次运行必须提供 --krita/);
+      }), /必须提供 --krita/);
     }
   }
 });

@@ -1,5 +1,6 @@
 import { readRun, sectionId } from './state.ts';
 import { executeSection } from './sections.ts';
+import { defaultKnowledgeDirectory, selectKnowledge } from '../shared/knowledge.ts';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
 import { GroupExecutionError } from '../shared/part/layering.ts';
 import { formatLayeringSummary } from '../shared/part/run.ts';
@@ -23,12 +24,13 @@ for (const signal of ['SIGTERM', 'SIGINT'] as const) process.once(signal, () => 
 });
 
 try {
-  const [directory, name, requested, execution] = process.argv.slice(2);
-  const run = await readRun(directory, name);
+  const [directory, requested, execution] = process.argv.slice(2);
+  const run = await readRun(directory);
   if (!run || run.runner?.id !== execution) throw new Error('总控执行记录已改变，拒绝启动过期子进程。');
+  selectKnowledge(run.knowledge ?? defaultKnowledgeDirectory);
   // Agents of all concurrent sections share the scheduler's slots.
   if (process.send && process.env[agentSlotsVariable] === 'ipc') shareAgentSlots(ipcAgentSlots(process));
-  const result = await executeSection(sectionId(requested), run, message => console.log(message),
+  const result = await executeSection(sectionId(requested), directory, run, message => console.log(message),
     { prepared: () => process.send?.({ type: 'prepared' }) });
   process.send?.({ type: 'result', result });
 } catch (error) {

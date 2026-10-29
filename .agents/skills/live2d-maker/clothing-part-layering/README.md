@@ -13,10 +13,10 @@
 需要 Node 24.12+、pnpm，以及外部已配置好的 Codex。先准备同名人物 part 的简化穿衣图与素体图，停止同任务总调度，再从 skill 根目录执行本 section；制作结果保存在衣服 part 目录：
 
 ```bash
-pnpm clothing-part-layering --name jianma
+pnpm clothing-part-layering --name jianma --knowledge /绝对路径/knowledge
 
 # 首次及续跑都通过任务名定位上游
-pnpm clothing-part-layering --name jianma
+pnpm clothing-part-layering --name jianma --knowledge /绝对路径/knowledge
 ```
 
 preparation 使用当前配置的生图工具，将两张参考按顺序放入同一次请求；模型与接口配置见[模型与生图通道](../references/model-presets.md)。工具不可用或生成结果无效时明确失败，保留输入供重试，不以原图或脚本结果冒充生图。

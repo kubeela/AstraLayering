@@ -196,9 +196,9 @@ Krita 安装和 agent 定时巡检由启动方式 1 的 agent 协助处理；网
 
 [高清连续录屏：修改模型配置](web/demo-screenshots/14-env-guide.mp4) · [完整配置键与模型方案](.agents/skills/live2d-maker/references/model-presets.md)
 
-同页的 **“提示词与工具”** 按管线以文件夹树列出提示词 Markdown、工具说明和参数 schema，可对照 Git 分支、提交历史和差异。选择一个工具后，可并排查看说明与参数定义，便于理解当前制作要求。
+同页的 **“先验知识”** 按管线以文件夹树列出 `knowledge/` 中的提示词 Markdown、`agent.json` 与工具说明，以及代码中的参数 schema，可对照 Git 分支、提交历史和差异。选择一个工具后，可并排查看说明与参数定义，便于理解当前制作要求。
 
-![提示词与工具：生图工具说明与参数定义并排查看](web/demo-screenshots/15-config-tools.png)
+![先验知识：生图工具说明与参数定义并排查看](web/demo-screenshots/15-config-tools.png)
 
 可选的混合模型方案使用 GPT、Claude 和独立生图服务，差异、模板与授权要求见同一份 [模型方案](.agents/skills/live2d-maker/references/model-presets.md)。
 

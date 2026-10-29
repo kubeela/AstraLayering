@@ -50,7 +50,7 @@ test('independent run directory, parts path normalization, and external-only pro
   const f = await fixture(t);
   assert.equal(runDirectory('test'), fileURLToPath(new URL('../../../../../.run/test/clothing-raster-layering', import.meta.url)));
   assert.equal((await resolvePartInput('test', 'clothing-part-layering', f.deps.runsDirectory)).directory, f.source);
-  assert.equal(parseRunArguments(['--name', 'test']).name, 'test');
+  assert.equal(parseRunArguments(['--name', 'test', '--knowledge', 'knowledge']).name, 'test');
   assert.throws(() => parseRunArguments(['--name', 'test', '--provider-config', 'secret.json']), /Unknown option/);
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps, agent: async () => assert.fail('dry run must not invoke Codex') });
   assert.ok(prompt.includes('本步骤配置的生图工具 imagegen'));
@@ -72,13 +72,12 @@ test('each drawing stage starts its own thread; review completes before step01 m
     return deliver(request, requests.length === 3 ? 'drawing-step02' : undefined);
   } });
   assert.equal(requests.length, 3);
-  const config = JSON.parse(await readFile(join(f.output, 'run.json'), 'utf8'));
-  assert.equal((await readStepSession(f.output, 'step02'))?.threadId, 'drawing-step02'); assert.ok(!('threadId' in config));
-  assert.ok(!('models' in config));
+  assert.equal((await readStepSession(f.output, 'step02'))?.threadId, 'drawing-step02');
+  await assert.rejects(readFile(join(f.output, 'run.json')), { code: 'ENOENT' });
   assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-1');
   for (const step of steps) { await readFile(join(f.output, step.id, '.completed')); for (const file of step.requiredFiles) await readFile(join(f.output, step.id, file)); }
   await assert.rejects(readdir(join(f.output, 'step03')), { code: 'ENOENT' });
-  await runWorkflow({ name: 'test' }, { ...f.deps, agent: async () => assert.fail('completed run must not invoke Codex') });
+  await runWorkflow(f.options, { ...f.deps, agent: async () => assert.fail('completed run must not invoke Codex') });
 });
 
 test('interrupted drawing resumes saved thread and directly reads upstream', async t => {
@@ -91,7 +90,7 @@ test('interrupted drawing resumes saved thread and directly reads upstream', asy
   await readFile(join(f.output, 'step01/.running'));
   await assert.rejects(readdir(join(f.output, 'input')), { code: 'ENOENT' });
   let first = true;
-  await runWorkflow({ name: 'test' }, { ...f.deps, agent: async request => {
+  await runWorkflow(f.options, { ...f.deps, agent: async request => {
     if (first) {
       first = false;
       assert.equal(request.threadId, 'drawing-resume');
@@ -112,7 +111,7 @@ test('deleting step02 completion resets its directory and context, preserving st
   await writeFile(join(f.output, 'step02/old.png'), 'old');
   await rm(join(f.output, 'step02/.completed'));
   let calls = 0;
-  await runWorkflow({ name: 'test' }, { ...f.deps, agent: async request => {
+  await runWorkflow(f.options, { ...f.deps, agent: async request => {
     calls++;
     if (calls === 1) {
       assert.ok(request.prompt.startsWith('在 clothing-raster-layering/step01/'));
@@ -137,7 +136,7 @@ test('clothing-part-layering occlusion 重做后 step01 及后续重跑并换新
   assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'clothing-part-layering/step14_occlusion': 'clothing-a' });
   await mark('clothing-b');
   const drawn: (string | undefined)[] = [];
-  await runWorkflow({ name: 'test' }, { ...f.deps, agent: async request => {
+  await runWorkflow(f.options, { ...f.deps, agent: async request => {
     if (!request.prompt.startsWith('你负责对第一步交付')) drawn.push(request.threadId);
     return deliver(request, request.threadId ?? 'drawing-2');
   } });

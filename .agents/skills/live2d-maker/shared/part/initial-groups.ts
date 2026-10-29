@@ -1,12 +1,11 @@
-import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
-import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
+import { partKnowledge } from './group-prompts.ts';
 import { normalizeGroups, writeAtomic } from './groups.ts';
 import { readInitialGroups } from './part-steps.ts';
 import { partSteps } from '../step-paths.js';
@@ -39,11 +38,10 @@ export async function recognizeInitialGroups(
   context: InitialContext, agents: Pick<CodexAgents, 'run'>,
 ): Promise<InitialGrouping> {
   const profile = partProfile(context);
-  const prompt = await readFile(join(profile.promptsDirectory, '4-初始分组.md'), 'utf8');
+  const knowledge = partKnowledge(profile, 'initial');
   // The tool writes the step output directly, so a turn that fails after saving
   // continues from the saved grouping instead of asking again.
   const path = join(context.directory, partSteps.initial, 'groups.json');
-  const reference = resolve(context.directory, context.references.baseSubject);
   const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
   let submitted = false;
   const writeGroups: FunctionTool = {
@@ -61,12 +59,8 @@ export async function recognizeInitialGroups(
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'initial_groups'),
     name: '首次分组识别', cwd: context.directory,
-    images: profile.attachInitialReference ? [{ path: reference, description: profile.references.initial }, ...(profile.originalReference && context.references.originalImage ? [{ path: context.references.originalImage, description: profile.originalReference }] : [])] : undefined,
-    prompt: renderPrompt(prompt, {run_directory: await task(context.directory),
-      reference_label: profile.referenceLabel,
-      reference_path: await task(reference),
-      groups_path: await task(path)}, join(profile.promptsDirectory, '4-初始分组.md'), ["run_directory","reference_label","reference_path","groups_path"]),
-    tools: [createBitmapTool(context.directory, join(context.directory, 'observations', 'initial-groups')), writeGroups],
+    prompt: knowledge.render('main', context.references.originalImage ? { original_image: resolve(context.references.originalImage) } : {}, { taskRoot: root }),
+    tools: knowledge.tools('main', [createBitmapTool(context.directory, join(context.directory, 'observations', 'initial-groups')), writeGroups]),
   });
   if (!submitted) throw agentOutcomeError('首次分组未通过 write_groups 保存', response);
   return readInitialGroups(context.directory);

@@ -31,7 +31,7 @@ test('raster 等待 CLI 终态后在原 thread 继续并记录退避', async t =
   assert.equal(prompts.length, 2);
   assert.equal(prompts[0], workspacePrompt(f.request().prompt, executionPaths({ cwd: f.directory }, f.directory)));
   assert.match(prompts[1], /原要求.*未完成处继续/);
-  assert.match(prompts[1], /按原图继续修边/);
+  assert.equal(prompts[1].includes(f.request().prompt), false);
   assert.ok(events.includes('thread.started'));
 });
 

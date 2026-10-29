@@ -1,9 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { directoryFor, readRun, taskStatus, type TaskOptions, type TaskRun } from './state.ts';
+import { directoryFor, taskStatus, type TaskOptions, type TaskRun } from './state.ts';
 
-type LegacyWorker = { token?: string; runnerId?: string };
 export const stopRequestPath = (directory: string) => join(directory, '.stop-request.json');
 async function optionalJSON(path: string) {
   try { return JSON.parse(await readFile(path, 'utf8')); }
@@ -15,29 +14,13 @@ async function writeJSON(path: string, value: unknown) {
   finally { await rm(temporary, { force: true }); }
 }
 
-export function taskStopMethod(runner: TaskRun['runner'], alive: boolean, locked: boolean,
-  worker?: LegacyWorker, platform: NodeJS.Platform = process.platform): 'request' | 'web-request' | 'signal' | undefined {
-  if (!alive || !locked || !runner?.id) return;
-  if (runner.stopProtocol === 'file-v1') return 'request';
-  // Keep already-running workers controllable without restarting their model calls.
-  if (worker?.token && worker.runnerId === runner.id) return 'web-request';
-  if (platform !== 'win32') return 'signal';
-}
+// A live runner watches for a stop request naming it.
+export const canStopTask = (runner: TaskRun['runner'], alive: boolean, locked: boolean) => alive && locked && !!runner?.id;
 
 export async function requestTaskStop(options: Pick<TaskOptions, 'name' | 'dir'>) {
   const directory = directoryFor(options), live = await taskStatus(options);
-  const worker: LegacyWorker | undefined = await optionalJSON(join(directory, '.web-worker.json'));
-  const method = taskStopMethod(live.runner, live.runnerAlive, live.lockHeld, worker);
-  if (!method) throw new Error('当前没有可停止的运行任务');
-  if (method === 'request') await writeJSON(stopRequestPath(directory), { runnerId: live.runner!.id });
-  else if (method === 'web-request') await writeJSON(join(directory, '.web-cancel.json'), { token: worker!.token });
-  else {
-    const current = await readRun(directory, options.name);
-    if (current?.runner?.id !== live.runner!.id || current.runner.pid !== live.runner!.pid || current.runner.finishedAt) {
-      throw new Error('运行任务已改变，请刷新页面后重试');
-    }
-    process.kill(current.runner.pid, 'SIGTERM');
-  }
+  if (!canStopTask(live.runner, live.runnerAlive, live.lockHeld)) throw new Error('当前没有可停止的运行任务');
+  await writeJSON(stopRequestPath(directory), { runnerId: live.runner!.id });
 }
 
 export function watchTaskStop(directory: string, runnerId: string, controller: AbortController, onError: (error: unknown) => void) {

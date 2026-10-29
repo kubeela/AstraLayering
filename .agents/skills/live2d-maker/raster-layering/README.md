@@ -7,15 +7,15 @@
 从 skill 根目录执行：
 
 ```sh
-pnpm raster-layering --name my-character --krita /绝对路径/krita
-pnpm raster-layering --name my-character
+pnpm raster-layering --name my-character --krita /绝对路径/krita --knowledge /绝对路径/knowledge
+# 续跑同样带 --krita 与 --knowledge（独立 section 不保存配置）
 # 自定义运行根目录时，首次与续跑均追加 --dir
-pnpm raster-layering --name my-character --dir /绝对路径/运行根目录 --dry-run
+pnpm raster-layering --name my-character --dir /绝对路径/运行根目录 --knowledge /绝对路径/knowledge --dry-run
 # 单独核对指定 Krita 入口
 pnpm raster-layering --check-krita --krita /绝对路径/krita
 ```
 
-数据位于 `<dir>/<name>/raster-layering/`，上游读取相邻 `part-layering/`。首次明确传 Krita 的实际可执行文件，续跑复用保存值；相对输入从 `<dir>/<name>/` 解析。`--dry-run` 检查输入、Krita 与待执行提示词，保持任务文件原样。真实绘制还需要可用显示与操作环境，桌面和 headless 检查见 setup。独立调试前先停止同任务总调度。
+数据位于 `<dir>/<name>/raster-layering/`，上游读取相邻 `part-layering/`。每次启动（含续跑）都传 Krita 的实际可执行文件与 `--knowledge` 先验知识目录，本 section 不保存配置；相对输入从 `<dir>/<name>/` 解析。`--dry-run` 检查输入、Krita 与待执行提示词，保持任务文件原样。真实绘制还需要可用显示与操作环境，桌面和 headless 检查见 setup。独立调试前先停止同任务总调度。
 
 三步都在本 section 的私有 Krita 中操作：工作流只准备环境并占名额，agent 通过 `krita` 工具自行启动，section 结束时关闭；私有进程、并发名额与显示见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。
 
@@ -61,7 +61,7 @@ step02 沿用已确认结构，用 `locate_pixel_differences` 候选框引导细
 
 ## 会话与恢复
 
-`run.json` 保存任务输入与 Krita 可执行文件路径（不记版本；运行中的版本见 `krita` 工具状态与 section 的 `krita.json`）；各步骤的绘制 threadId 与 harness 记在 `agents/steps/<stepNN>/session.json`；每步 `.running`／`.completed` 记录交付状态。模型从本次启动的 `.env`／环境读取，每个步骤新建自己的绘制会话，从文件读取上一步的工程与报告。各 CLI 的历史与隔离请求目录保留，恢复规则见 [模型与会话](../references/model-presets.md#会话与记录)。
+本 section 没有自己的 `run.json`：Krita 路径由每次启动参数或总控传入（运行中的版本见 `krita` 工具状态与 section 的 `krita.json`），旧任务残留的该文件不再读取；各步骤的绘制 threadId 与 harness 记在 `agents/steps/<stepNN>/session.json`；每步 `.running`／`.completed` 记录交付状态。模型从本次启动的 `.env`／环境读取，每个步骤新建自己的绘制会话，从文件读取上一步的工程与报告。各 CLI 的历史与隔离请求目录保留，恢复规则见 [模型与会话](../references/model-presets.md#会话与记录)。
 
 调用记录位于 `agents/steps/<stepNN>/`：绘制的完整展开提示词为 `prompt.md`、结果为 `result.json`，review／repair 按环节名保存 `review-01.prompt.txt`、`review-01.result.json`、`repair-01.prompt.txt`、`repair-01.result.json` 等；`attempts.jsonl`、`events.jsonl` 和 `error.txt` 记录调用与故障；总日志在任务根 `workflow.log`。 CLI 在 `stepNN/workspace/` 中运行，绝对／相对路径约定见 [工作区与产物](../shared/README.md#工作区与产物)。模板维护见 [shared](../shared/README.md#提示词模板与动态位置)。
 

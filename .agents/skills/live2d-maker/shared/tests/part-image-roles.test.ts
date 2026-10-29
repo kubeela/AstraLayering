@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import { CodexAgents } from '../codex/agents.ts';
@@ -10,9 +10,10 @@ import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { drawGroupOutline } from '../part/outline-agent.ts';
 import { completeGroupOcclusion } from '../part/completion-agent.ts';
 import { assertCompletionPreserves } from '../part/completion-svg.ts';
-import { normalizeGroups } from '../part/groups.ts';
-import { fixture } from '../../part-layering/tests/layering-fixture.ts';
-import { profile as clothingProfile } from '../../clothing-part-layering/profile.ts';
+import { findGroup, GroupStore } from '../part/groups.ts';
+import { fixture as characterFixture, seedInitialGroups } from '../../part-layering/tests/layering-fixture.ts';
+import { fixture as clothingFixture } from '../../clothing-part-layering/tests/layering-fixture.ts';
+import { artifactPath, stepDraftPath } from '../part/artifact-facts.ts';
 
 // Exercise actual request isolation, tool registration, image transport, bitmap
 // viewing and SVG submission without asking a live model to change an asset.
@@ -24,7 +25,9 @@ import {join} from 'node:path';
 const args=process.argv.slice(2),claude=args.includes('--mcp-config');
 let raw='';for await(const chunk of process.stdin)raw+=chunk;
 const prompt=JSON.parse(raw).message.content[0].text;
-const input=JSON.parse(prompt.match(/【本次输入】\\n([\\s\\S]*?\\n})\\n/)[1]);
+const body=prompt.split('【本次输入】\\n')[1].split('\\n\\n')[0],json=/^\\{[\\s\\S]*?\\n\\}(?=\\n|$)/.exec(body)?.[0];
+const input=json?JSON.parse(json):{};
+for(const line of body.slice(json?.length??0).split('\\n')){const field=/^([A-Za-z]+)：(.+)$/.exec(line);if(field)input[field[1]]=field[2];}
 const config=claude?args[args.indexOf('--mcp-config')+1]:join(process.env.ANTIGRAVITY_GEMINI_DIR,'config/mcp_config.json');
 const env=JSON.parse(await readFile(config,'utf8')).mcpServers.layering.env;
 const rpc=async(method,params)=>{
@@ -57,7 +60,7 @@ console.log(JSON.stringify(claude?{type:'result',session_id:id,result:'完成'}:
 
 for (const harness of ['claude', 'agv'] as const) for (const section of ['character', 'clothing'] as const) {
   test(`${harness} ${section}: only completion can generate and view references, original SVG remains intact`, async t => {
-    const f = await fixture(t), executable = join(f.directory, 'fixture-cli.mjs');
+    const f = await (section === 'character' ? characterFixture : clothingFixture)(t), executable = join(f.directory, 'fixture-cli.mjs');
     await writeFile(executable, cli, { mode: 0o700 });
     const png = await sharp({ create: { width: 40, height: 40, channels: 4, background: '#ffccaa' } }).png().toBuffer();
     let imageCalls = 0;
@@ -83,13 +86,14 @@ for (const harness of ['claude', 'agv'] as const) for (const section of ['charac
     // face deliberately uses a specialized completion prompt; clothing uses its
     // own generic prompt. Both must receive the shared per-section reference rule.
     const id = section === 'character' ? 'face' : 'outerwear';
-    const group = normalizeGroups([{ id }])[0];
-    const context = { ...f, ...(section === 'clothing' ? { profile: clothingProfile } : {}), group };
-    await mkdir(join(f.directory, 'stages'), { recursive: true });
-    const outline = await drawGroupOutline({ ...context, outputPath: join(f.directory, 'stages/outline.svg') }, agents);
+    await seedInitialGroups(f.directory, [{ id }]);
+    const store = await GroupStore.open(f.directory);
+    const context = { ...f, store, group: findGroup(store.snapshot(), id) };
+    // The prompt names the task's fixed paths, so the outputs sit there.
+    const outline = await drawGroupOutline({ ...context, outputPath: artifactPath(f.directory, id, 'outline') }, agents);
     assert.equal(imageCalls, 0);
     const before = await readFile(outline.path, 'utf8');
-    const completion = await completeGroupOcclusion({ ...context, reviewed: outline, outputPath: join(f.directory, 'stages/complete.draft.svg') }, agents);
+    const completion = await completeGroupOcclusion({ ...context, reviewed: outline, outputPath: stepDraftPath(f.directory, id, 'completion') }, agents);
     assert.equal(imageCalls, 1);
     assert.equal(await readFile(outline.path, 'utf8'), before);
     assert.equal(assertCompletionPreserves(before, await readFile(completion.path, 'utf8')), 1);

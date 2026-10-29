@@ -26,7 +26,7 @@ description: 从角色参考图制作人物与衣服分层 KRA、透明 PNG、�
 | `--name <任务名>` | 任务目录名；续跑沿用 |
 | `--image <参考图>` | 首次原图，推荐绝对路径 |
 | `--dir <运行根目录>` | 必须是绝对路径；数据在 `<dir>/<name>/`，`.runtime` 为保留名不能作任务名；默认完整仓库 `.run/`，独立安装为 skill 上一级的 `.run/`，不放 skill 内 |
-| `--krita <可执行文件>` | 绘制、组装与阴影需要；续跑复用保存值。路线含 Krita 时每次启动（含继续／恢复／重试）先检查：只核对可执行文件与显示环境（`DISPLAY`／`WAYLAND_DISPLAY`／`QT_QPA_PLATFORM` 或可用的 Xvfb），不启动 Krita；不通过即拒绝且不改动任何步骤，用 `--krita` 重新指定 |
+| `--krita <可执行文件>` | 绘制、组装与阴影需要；总入口续跑复用任务根 `run.json` 记录的值，单独运行 section 时每次都要传。路线含 Krita 时每次启动（含继续／恢复／重试）先检查：只核对可执行文件与显示环境（`DISPLAY`／`WAYLAND_DISPLAY`／`QT_QPA_PLATFORM` 或可用的 Xvfb），不启动 Krita；不通过即拒绝且不改动任何步骤，用 `--krita` 重新指定 |
 | `--from / --to <section>` | 连续范围；默认完整六段，section ID 见下表 |
 | `--standard / --no-standard` | 是否标准化人物姿态；首次默认关闭，续跑沿用；本次路线须包含 part-layering；已有参考改选项需按 [workflow 规则](workflow/README.md#姿态与参考)重试 |
 | `--shadow-mode mask\|normal-depth` | 原生投影蒙版／法线深度；首次默认 `mask`，分支独立恢复 |
@@ -66,9 +66,9 @@ pnpm start --name my-character --stop
 
 ```sh
 # 独立运行穿戴组装：读取已有的人物、衣服 KRA 与简化穿衣参考
-pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita
-# 同名续跑，沿用该段保存的 Krita 和绘制会话
-pnpm character-assembly --name my-character --dir /绝对路径/运行根目录
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita --knowledge /绝对路径/knowledge
+# 同名续跑沿用绘制会话；独立 section 不保存配置，仍须带 --krita 与 --knowledge
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita --knowledge /绝对路径/knowledge
 # 通过总入口只运行一段，使用后台、状态查询和范围记录
 pnpm start --name my-character --dir /绝对路径/运行根目录 --from character-assembly --to character-assembly --krita /绝对路径/krita --background
 ```

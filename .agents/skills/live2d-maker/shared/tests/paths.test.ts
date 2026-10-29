@@ -35,7 +35,7 @@ test('同名任务的管线互为输入；raster 直接读取且重跑仅清理�
   await runWorkflow({ name, krita: process.execPath }, deps);
   assert.equal(await readFile(join(part, 'parts/face.svg'), 'utf8'), 'original part');
   await rm(join(raster, 'step01/.completed'));
-  await runWorkflow({ name }, deps);
+  await runWorkflow({ name, krita: process.execPath }, deps);
   assert.equal(calls, 2);
   assert.equal(await readFile(join(part, 'parts/face.svg'), 'utf8'), 'original part');
   assert.equal(await readFile(join(clothing, '.completed'), 'utf8'), 'another section');

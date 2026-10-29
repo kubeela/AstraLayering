@@ -1,6 +1,6 @@
 import { fork, spawn, type ChildProcess } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { dirname, join } from 'node:path';
+import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createTaskLog, readTaskLog } from './log.ts';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
@@ -13,11 +13,14 @@ import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../shared/cod
 import { sectionAgentSteps, preflightAgentSteps } from '../shared/agents/preflight.ts';
 import { clearTaskStop, watchTaskStop } from './control.ts';
 import { requireKrita } from './krita.ts';
+import { defaultKnowledgeDirectory, selectKnowledge } from '../shared/knowledge.ts';
 import { MissingDependencyError } from '../shared/missing-dependency.ts';
 import { readDressup } from '../shared/part/dressup.ts';
 import { AgentSlotPool, agentSlotsVariable } from './agent-slots.ts';
 
 export type SectionExecution = (id: SectionId, run: TaskRun, context: {
+  // The task directory, <runs root>/<task name>.
+  directory: string;
   signal: AbortSignal; progress(message: string): void; started(pid: number): Promise<void>;
   // The task's agent slots, shared by every section worker it starts.
   slots?: AgentSlotPool;
@@ -50,9 +53,9 @@ function terminate(child: ChildProcess, force = false) {
 }
 export const executeChild: SectionExecution = async (id, run, context) => {
   context.signal.throwIfAborted();
-  const directory = directoryFor(run);
+  const { directory } = context;
   return new Promise<SectionResult>((resolve, reject) => {
-    const child = fork(fileURLToPath(new URL('./section-worker.ts', import.meta.url)), [directory, run.name, id, run.runner!.id], {
+    const child = fork(fileURLToPath(new URL('./section-worker.ts', import.meta.url)), [directory, id, run.runner!.id], {
       cwd: directory, detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
       env: context.slots ? { ...process.env, [agentSlotsVariable]: 'ipc' } : process.env,
     });
@@ -118,24 +121,22 @@ export async function runTask(options: TaskOptions, dependencies: {
     pending = operation.catch(() => {});
     return operation;
   };
-  const progress = (message: string) => {
-    if (!message) return;
-    run!.lastMessage = message;
-    log.write(message);
-    void persist().catch(error => log.write('状态保存失败，将在后续更新重试：' + formatAgentError(error)));
-  };
+  const progress = (message: string) => { if (message) log.write(message); };
   try {
     const environment = !dependencies.execute || dependencies.environment ? dependencies.environment ?? loadWorkflowEnvironment() : undefined;
     // Krita is checked before the run is recorded as running, and before the agent
     // preflight: it is quick, while that may build the patched Codex. A refusal
     // leaves run.json as it was.
     const configured = await configureRun(options, directory);
+    // Like Krita, the knowledge directory is checked before the run is recorded as running;
+    // the scheduler's own preflight then reads the same directory as its section workers.
+    selectKnowledge(configured.knowledge ?? defaultKnowledgeDirectory);
     // A missing system dependency such as Xvfb is the exception: the run is recorded as failed with its install hint.
     const missing = await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, environment?.codex.env)))
       .then(() => undefined, error => { if (error instanceof MissingDependencyError) return error; throw error; });
     run = configured;
     run.status = 'running'; delete run.error; delete run.output; delete run.activeSections;
-    run.runner = { id: randomUUID(), pid: process.pid, startedAt: now(), stopProtocol: 'file-v1' };
+    run.runner = { id: randomUUID(), pid: process.pid, startedAt: now() };
     const slots = new AgentSlotPool(run.jobs);
     await persist();
     if (missing) throw missing;
@@ -181,7 +182,7 @@ export async function runTask(options: TaskOptions, dependencies: {
       progress('启动或恢复：' + id + '；由该管线校验已有产物和完成标记。');
       try {
         const result = await (dependencies.execute ?? executeChild)(id, run!, {
-          signal, progress, slots,
+          directory, signal, progress, slots,
           started: async pid => { (run!.runner!.childPids ??= {})[id] = pid; await persist(); },
           prepared: () => { if (!prepared.has(id)) { prepared.add(id); schedule(); } },
         });

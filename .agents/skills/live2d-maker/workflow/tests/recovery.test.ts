@@ -17,25 +17,22 @@ import type { StepDefinition } from '../../shared/raster/steps.ts';
 import { acquireTaskLock } from '../state.ts';
 import { replaceThread } from '../recovery.ts';
 import { readStepSession, writeStepSession } from '../../shared/agents/step-session.ts';
+import { stepKnowledge } from '../../shared/knowledge.ts';
+const mainPrompt = (step: { knowledge: { section: string; step: string } }) => stepKnowledge(step.knowledge.section, step.knowledge.step).files('main')[0];
 
 test('阴影恢复按保存模式替换所选 step01 的会话，另一模式与已生成贴图不动', async t => {
   for (const mode of ['normal-depth', 'mask'] as const) {
     const f = await fixture(t), target = join(f.task, 'shadow');
     const step = `step01_${mode}`, other = `step01_${mode === 'mask' ? 'normal-depth' : 'mask'}`;
     await mkdir(join(target, step), { recursive: true }); await mkdir(join(target, other), { recursive: true });
-    const rootRun = { version: 1, name: 'case', dir: f.dir, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', sections: {}, shadowMode: mode };
+    const rootRun = { version: 1, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', sections: {}, shadowMode: mode };
     await writeFile(join(f.task, 'run.json'), JSON.stringify(rootRun));
-    const run = JSON.stringify({ version: 2, name: 'case',
-      sourceInput: { characterKra: 'source.kra', characterColor: 'source.png', simplifiedCharacter: 'simplified.png', structureFiles: [] },
-      krita: { executable: process.execPath, version: 'test' } });
-    await writeFile(join(target, 'run.json'), run);
     await writeStepSession(target, step, { threadId: 'old-shadow' });
     await writeFile(join(target, step, '.running'), '');
     await writeFile(join(target, step, 'normal.png'), 'existing map');
     await writeFile(join(target, other, '.completed'), 'completed');
     const archive = await replaceThread({ ...f.recovery, section: 'shadow' });
     assert.ok(archive.startsWith(join(target, 'recovery')));
-    assert.equal(await readFile(join(target, 'run.json'), 'utf8'), run);
     const session = await readStepSession(target, step);
     assert.equal(session?.threadId, undefined); assert.equal(session?.handoff?.previousThreadId, 'old-shadow');
     assert.equal(JSON.parse(await readFile(join(archive, 'session-before.json'), 'utf8')).threadId, 'old-shadow');
@@ -83,7 +80,7 @@ test('替换归档旧 thread 并保留全部文件；新绘制接收交接，之
     assert.equal(request.threadId, undefined);
     assert.match(request.prompt, /旧 threadId：old-thread/);
     assert.match(request.prompt, /保留 draft.kra 中完成的衣领/);
-    assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(assemblySteps[0].prompt, 'utf8'))));
+    assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(mainPrompt(assemblySteps[0]), 'utf8'))));
     await request.onEvent({ type: 'thread.started', thread_id: 'new-thread' });
     throw new Error('interrupted again');
   } }), /interrupted again/);
@@ -151,7 +148,7 @@ for (const [section, execute, definitions, upstream] of [
       resumed++;
       if (resumed === 1) {
         assert.equal(request.threadId, undefined);
-        const original = (await readFile(definitions[0].prompt, 'utf8')).replaceAll('step01/report.md', 'step01/report.md.tmp');
+        const original = (await readFile(mainPrompt(definitions[0]), 'utf8')).replaceAll('step01/report.md', 'step01/report.md.tmp');
         assert.ok(request.prompt.startsWith(staticPromptPrefix(original)));
         assert.match(request.prompt, /repair-01.md.tmp/); assert.match(request.prompt, /保留绘制/);
         await request.onEvent({ type: 'thread.started', thread_id: 'replacement-draw' });
