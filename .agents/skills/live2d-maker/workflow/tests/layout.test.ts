@@ -32,9 +32,10 @@ async function previousTask(t: { after(fn: () => Promise<void>): void }) {
   const completion = { '../../../parts/a.svg': sha('<svg id="a"/>') };
   await put(part, 'groups/a/step02/.completed', { stamp: sha(completion), inputs: { 'layers/depth01#a.svg': sha('<svg/>') }, outputs: completion });
   await put(part, 'groups/a/step02/report.md', '[layer](../../../layers/depth01/a.svg)');
-  await put(part, 'groups/a/step01/session.json', { threadId: 'outline-thread' });
+  await put(part, 'agents/steps/groups/a/step01/session.json', { threadId: 'outline-thread' });
   await put(task, 'shadow/mask/step01/.completed', { stamp: 'mask', inputs: { 'part-layering/occlusion': 'x' } });
   await put(task, 'shadow/mask/run.json', { version: 2, name: 'demo', threadId: 'shadow-thread' });
+  await put(task, 'shadow/mask/agents/sessions.json', { mask: {} });
   await put(task, 'shadow/normal-depth/step02/.previous-1/old.png', 'old');
   return { runs, task };
 }
@@ -63,12 +64,13 @@ test('a previous-layout task converts as a whole after a full backup, keeping it
   assert.deepEqual(completion.inputs, { 'step10_reduce/depth01#a.svg': sha('<svg/>') });
   assert.equal(completion.stamp, sha({ '../../parts/a.svg': sha('<svg id="a"/>') }));
   assert.equal(await readFile(join(part, 'step11_completion/a/report.md'), 'utf8'), '[layer](../../step10_reduce/depth01/a.svg)');
-  assert.deepEqual(await json(part, 'agents/steps/step09_outline/a/session.json'), { threadId: 'outline-thread' });
+  // agents/ records are not read or renamed; legacy thread fields are dropped.
+  assert.deepEqual(await json(part, 'agents/steps/groups/a/step01/session.json'), { threadId: 'outline-thread' });
 
   const shadow = join(task, 'shadow');
   assert.deepEqual((await json(shadow, 'step01_mask/.completed')).inputs, { 'part-layering/step14_occlusion': 'x' });
   assert.deepEqual(await json(shadow, 'run.json'), { version: 2, name: 'demo' });
-  assert.deepEqual(await json(shadow, 'agents/steps/step01_mask/session.json'), { threadId: 'shadow-thread' });
+  assert.deepEqual(await json(shadow, 'agents/sessions.json'), { mask: {} });
   assert.deepEqual((await readdir(shadow)).sort(), ['agents', 'run.json', 'step01_mask']);
   await assert.rejects(convertLayout(task), /无需转换/);
 });
