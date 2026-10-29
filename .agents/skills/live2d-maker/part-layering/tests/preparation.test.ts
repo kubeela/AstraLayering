@@ -252,13 +252,13 @@ test('--standard 先判断；已标准仅复制，需要调整才传一张原图
     assert.equal(f.calls.find(task => task.name === '参考判断与简化')!.images![0].path, refs.standardImage);
     assert.deepEqual(await readFile(refs.originalImage!), f.bytes);
     f.calls.length = 0;
-    assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
+    assert.deepEqual(await prepareReferences({ runName: f.runName, standard: true }, f.steps), refs);
     assert.equal(f.calls.length, 0);
     assert.deepEqual(JSON.parse(await readFile(optionsPath(refs), 'utf8')), { standard: true });
   });
 });
 
-test('标准生图异常保留选项和判断，续跑无需再次传 --standard 或重做判断', async t => {
+test('标准生图异常保留选项和判断，带同一 --standard 续跑不重做判断', async t => {
   const f = await fixture(t, false, true);
   const failed = createPreparationSteps({ async run() {
     return { text: '没有 image_generation 工具，无法生图', images: [], threadId: 'standard-thread', logDirectory: '/logs/standard' };
@@ -273,7 +273,7 @@ test('标准生图异常保留选项和判断，续跑无需再次传 --standard
   assert.deepEqual(JSON.parse(await readFile(optionsPath(directory), 'utf8')), { standard: true });
   assert.equal(JSON.parse(await readFile(join(section(directory), step('pose'), 'judgment.json'), 'utf8')).needsAdjustment, true);
   f.calls.length = 0;
-  await prepareReferences({ runName: f.runName }, f.steps);
+  await prepareReferences({ runName: f.runName, standard: true }, f.steps);
   assert.deepEqual(f.calls.map(task => task.name), ['标准姿态', '参考判断与简化', '素体换装']);
 });
 
@@ -286,7 +286,7 @@ test('无效姿态判断和无效生成图片明确报错，不回退原图', as
     assert.match(formatAgentError(error), /boolean needsAdjustment[\s\S]*invalid-decision/); return true;
   });
   await writeFile(f.generated, 'invalid PNG');
-  await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), /did not produce a PNG/);
+  await assert.rejects(prepareReferences({ runName: f.runName, standard: true }, f.steps), /did not produce a PNG/);
   await assert.rejects(readFile(join(getPreparationDirectory(f.runName), 'standard.png')), { code: 'ENOENT' });
 });
 

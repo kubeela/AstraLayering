@@ -28,11 +28,11 @@ test('两套 raster 经受控工具新增分组及 SVG 后，中断与主动重�
       for (const [file, bytes] of Object.entries(changed)) assert.equal(await readFile(join(source, file), 'utf8'), bytes);
       return deliverRasterStep(request, section.steps[0], 'new-thread');
     }
-    await runWorkflow(section, { name: 'case' }, { ...deps, agent: async request => {
+    await runWorkflow(section, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
       if (!isRasterReview(request)) assert.equal(request.threadId, 'fixed-thread'); return deliver(request);
     } });
     await rm(join(output, 'step01/.completed'));
-    await runWorkflow(section, { name: 'case' }, { ...deps, agent: async request => {
+    await runWorkflow(section, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
       assert.equal(request.threadId, undefined); return deliver(request);
     } });
     for (const [file, bytes] of Object.entries(changed)) assert.equal(await readFile(join(source, file), 'utf8'), bytes);

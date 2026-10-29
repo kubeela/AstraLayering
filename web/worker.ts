@@ -1,36 +1,29 @@
 import { fork } from 'node:child_process';
-import { randomUUID } from 'node:crypto';
-import { mkdir, open, rm } from 'node:fs/promises';
+import { mkdir, open } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runTask } from '../.agents/skills/live2d-maker/workflow/runner.ts';
 import { taskLogName } from '../.agents/skills/live2d-maker/workflow/log.ts';
 import { directoryFor, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
-import { atomicJSON, jsonFile, tail } from './files.ts';
+import { tail } from './files.ts';
 
 // Only the process host is web-specific. Scheduling, locking, retries, markers and threads
 // remain owned by the existing coordinator and section entrypoints.
-export async function runWebTask(options: TaskOptions, token: string, dependencies: Parameters<typeof runTask>[1] = {}) {
-  const directory = directoryFor(options), controller = new AbortController();
+export async function runWebTask(options: TaskOptions, dependencies: Parameters<typeof runTask>[1] = {}) {
+  const controller = new AbortController();
   const interrupt = () => controller.abort(new Error('已请求停止；保留已有产物与 thread，稍后可续跑。'));
   process.once('SIGTERM', interrupt); process.once('SIGINT', interrupt);
-  let readyWrite: Promise<void> | undefined;
+  let confirmed = false;
   try {
     // The task lock is already held when either callback runs. A Codex build
     // confirms the start early, so launch does not time out while it builds.
     const confirm = (run: Parameters<NonNullable<typeof dependencies.ready>>[0]) => {
-      readyWrite ??= atomicJSON(join(directory, '.web-worker.json'), { token, pid: process.pid, runnerId: run.runner!.id })
-        .then(() => { dependencies.ready?.(run); process.send?.({ type: 'ready' }); })
-        .catch(error => { controller.abort(error); process.send?.({ type: 'failure', message: String(error) }); });
+      if (confirmed) return;
+      confirmed = true; dependencies.ready?.(run); process.send?.({ type: 'ready' });
     };
     return await runTask(options, { ...dependencies, signal: controller.signal, preparing: confirm, ready: confirm });
   } finally {
-    await readyWrite;
     process.removeListener('SIGTERM', interrupt); process.removeListener('SIGINT', interrupt);
-    if ((await jsonFile(directory, '.web-worker.json'))?.token === token) {
-      await rm(join(directory, '.web-worker.json'), { force: true });
-      await rm(join(directory, '.web-cancel.json'), { force: true });
-    }
   }
 }
 export async function launch(options: TaskOptions): Promise<number> {
@@ -39,7 +32,7 @@ export async function launch(options: TaskOptions): Promise<number> {
   const log = await open(join(directory, taskLogName), 'a', 0o600);
   try {
     return await new Promise((resolve, reject) => {
-      const child = fork(fileURLToPath(new URL('./worker.ts', import.meta.url)), [JSON.stringify(options), randomUUID()], {
+      const child = fork(fileURLToPath(new URL('./worker.ts', import.meta.url)), [JSON.stringify(options)], {
         cwd: directory, detached: true, stdio: ['ignore', log.fd, log.fd, 'ipc'],
       });
       let settled = false, failure: Error | undefined;
@@ -59,7 +52,7 @@ export async function launch(options: TaskOptions): Promise<number> {
   } finally { await log.close(); }
 }
 if (import.meta.main) {
-  runWebTask(JSON.parse(process.argv[2]), process.argv[3]).catch(error => {
+  runWebTask(JSON.parse(process.argv[2])).catch(error => {
     console.error(error);
     if (process.connected) process.send?.({ type: 'failure', message: (error as Error).message });
     process.exitCode = 1;

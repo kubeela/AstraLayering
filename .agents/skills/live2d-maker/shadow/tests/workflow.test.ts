@@ -99,7 +99,7 @@ test('默认蒙版；全局保存、透传并仅预检所选 step01', async t =>
       assert.equal(id, 'shadow'); assert.equal(run.shadowMode, 'normal-depth'); return { summary: 'maps' };
     },
   });
-  assert.equal((await readRun(f.task, 'case'))?.shadowMode, 'normal-depth');
+  assert.equal((await readRun(f.task))?.shadowMode, 'normal-depth');
   await runTask({ name: 'case', dir: f.root }, { ...f.deps, execute: async (_id, run) => {
     assert.equal(run.shadowMode, 'normal-depth'); return { summary: 'resumed' };
   } });
@@ -155,7 +155,6 @@ test('character-assembly 重做后所选 step01 删除旧产物、新建 thread 
   const f = await fixture(t);
   await runWorkflow(f.options, { ...f.deps, agent: f.deliver });
   await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: f.deliver });
-  const run = await readFile(join(f.task, 'shadow/run.json'));
   const maps = await readFile(join(f.task, 'shadow/step01_normal-depth/.completed'));
   await writeFile(join(f.task, 'shadow/step01_mask/work.kra'), 'stale');
   await writeFile(join(f.source, '.completed'), JSON.stringify({ stamp: 'assembly-2', inputs: {} }));
@@ -165,7 +164,7 @@ test('character-assembly 重做后所选 step01 删除旧产物、新建 thread 
     return f.deliver(request);
   } });
   assert.ok(!(await readdir(join(f.task, 'shadow'))).some(name => name.includes('.previous-')));
-  assert.deepEqual(await readFile(join(f.task, 'shadow/run.json')), run);
+  await assert.rejects(readFile(join(f.task, 'shadow/run.json')), { code: 'ENOENT' });
   assert.deepEqual(await readFile(join(f.task, 'shadow/step01_normal-depth/.completed')), maps);
 });
 test('法线深度只生成一步；删除的发布贴图从已完成步骤恢复', async t => {

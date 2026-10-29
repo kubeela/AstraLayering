@@ -43,7 +43,6 @@ test('页面与状态查询读取同一份最新日志，不被旧 run.json 摘�
   const f = await fixture(t), task = join(f.dir, 'test');
   await mkdir(task);
   const run = await configureRun({ name: 'test', dir: f.dir }, task);
-  run.lastMessage = '[review-hair] 旧消息';
   await saveRun(task, run);
   await put(task, 'workflow.log', '[2026-10-20T14:40:00.000Z] [review-hair] 旧消息\n');
   await utimes(join(task, 'workflow.log'), 1, 1);
@@ -82,7 +81,7 @@ test('upload retains original/config; same name never overwrites; selection pers
   assert.equal((await f.post('tasks', { name: '角色-01', upload: bytes, from: 'part-layering', to: 'part-layering', standard: true })).status, 201);
   const task = join(f.dir, '角色-01');
   assert.equal((await readFile(join(task, 'input/original.png'))).toString('base64'), bytes);
-  assert.equal((await readRun(task, '角色-01'))?.standard, true);
+  assert.equal((await readRun(task))?.standard, true);
   assert.equal((await f.post('tasks', { name: '角色-01', upload: bytes })).status, 400);
   assert.equal((await f.post('tasks', { name: 'bad', upload: Buffer.from('not an image').toString('base64') })).status, 400);
   assert.equal((await f.post('tasks', { name: '../escape', upload: bytes })).status, 400);
@@ -191,14 +190,14 @@ test('real coordinator owns web execution: locking, failure diagnostics, resume,
   await f.post('tasks', { name: 'test', upload: await upload(), from: 'part-layering', to: 'part-layering' });
   await put(task, 'raster-layering/agents/steps/step01/session.json', JSON.stringify({ threadId: 'keep-me' }));
   const options = { name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' } as const;
-  await assert.rejects(runWebTask(options, 'failure', { execute: async (_id, _run, context) => {
+  await assert.rejects(runWebTask(options, { execute: async (_id, _run, context) => {
     context.progress('模型最后消息：没有 image_generation 工具'); throw new Error('未交付结果');
   } }), /未交付/);
-  let run = await readRun(task, 'test'); assert.equal(run?.status, 'failed');
+  let run = await readRun(task); assert.equal(run?.status, 'failed');
   assert.match(await readFile(join(task, 'workflow.log'), 'utf8'), /没有 image_generation/);
   let started!: () => void;
   const ready = new Promise<void>(resolve => { started = resolve; });
-  const executing = runWebTask(options, 'cancel', { ready: started, execute: async (_id, _run, context) => {
+  const executing = runWebTask(options, { ready: started, execute: async (_id, _run, context) => {
     await new Promise<void>((_resolve, reject) => context.signal.addEventListener('abort', () => reject(context.signal.reason), { once: true }));
     throw new Error('unreachable');
   } });
@@ -209,9 +208,9 @@ test('real coordinator owns web execution: locking, failure diagnostics, resume,
   assert.equal((await snapshot(task, 'test', f.dir)).canStop, true);
   assert.equal((await f.post('stop', { name: 'test' })).status, 200);
   await cancelled;
-  assert.equal((await readRun(task, 'test'))?.status, 'interrupted');
-  await runWebTask(options, 'resume', { execute: async () => ({ output: join(task, 'parts'), summary: '完成' }) });
-  run = await readRun(task, 'test'); assert.equal(run?.status, 'completed');
+  assert.equal((await readRun(task))?.status, 'interrupted');
+  await runWebTask(options, { execute: async () => ({ output: join(task, 'parts'), summary: '完成' }) });
+  run = await readRun(task); assert.equal(run?.status, 'completed');
   assert.equal((await jsonFile(task, 'raster-layering/agents/steps/step01/session.json'))?.threadId, 'keep-me');
 });
 
@@ -233,18 +232,17 @@ test('终端总调度没有 web worker 记录仍可在网页停止；旧请求�
   const signal = await entered.promise;
   await new Promise(resolve => setTimeout(resolve, 1100));
   assert.equal(signal.aborted, false, 'a stop request must match this runner, not its predecessor');
-  assert.equal(await jsonFile(task, '.web-worker.json'), undefined);
   assert.equal((await snapshot(task, 'test', f.dir)).canStop, true);
   assert.equal((await f.post('stop', { name: 'test' })).status, 200);
   await cancelled;
-  assert.equal((await readRun(task, 'test'))?.status, 'interrupted');
+  assert.equal((await readRun(task))?.status, 'interrupted');
   assert.equal((await snapshot(task, 'test', f.dir)).canStop, false);
   assert.equal(await jsonFile(task, '.stop-request.json'), undefined);
   assert.equal(await readFile(join(task, 'part-layering/parts/face.draft.svg'), 'utf8'), 'saved draft');
   assert.equal((await jsonFile(task, 'raster-layering/agents/steps/step01/session.json'))?.threadId, 'keep-cli-thread');
   assert.equal((await f.post('stop', { name: 'test' })).status, 400);
   await runTask(options, { execute: async () => ({ summary: '续跑完成' }) });
-  assert.equal((await readRun(task, 'test'))?.status, 'completed');
+  assert.equal((await readRun(task))?.status, 'completed');
 });
 
 test('shadow reference routes serve only bundled guides, and inspection previews use declared files', async t => {

@@ -27,29 +27,24 @@ async function fixture(t: TestContext) {
 }
 const preflight = async (executable: string) => ({ executable, version: 'test' });
 
-test('状态保存失败不能切断后续 agent 日志、状态和阶段推进', async t => {
+test('agent 进度只写入日志，不改写状态记录', async t => {
   const f = await fixture(t);
-  let injected = false;
+  let saves = 0, during = 0;
   await runTask({ ...f.options, from: 'part-layering', to: 'part-layering' }, {
-    save: async (directory, run) => {
-      if (run.lastMessage === '[hair] 第一条消息' && !injected) {
-        injected = true;
-        throw Object.assign(new Error('模拟 Windows 文件占用'), { code: 'EPERM' });
-      }
-      await saveRun(directory, run);
-    },
+    save: async (directory, run) => { saves++; await saveRun(directory, run); },
     execute: async (_id, _run, context) => {
+      const before = saves;
       context.progress('[hair] 第一条消息');
       context.progress('[hair] 写入草稿成功');
+      during = saves - before;
       return { summary: '完成' };
     },
   });
-  assert.equal(injected, true);
+  assert.equal(during, 0);
   const log = await readFile(join(f.directory, 'workflow.log'), 'utf8');
-  assert.match(log, /状态保存失败.*模拟 Windows 文件占用/);
   assert.equal(log.match(/\[hair\] 写入草稿成功/g)?.length, 1);
   assert.match(log, /所选路线已完成/);
-  assert.equal((await readRun(f.directory, 'case'))?.status, 'completed');
+  assert.equal((await readRun(f.directory))?.status, 'completed');
   assert.equal((await taskStatus(f.options)).log, join(f.directory, 'workflow.log'));
   assert.equal((await readdir(f.directory)).includes('service.log'), false);
 });
@@ -82,11 +77,10 @@ test('总控保留输入与配置，按依赖推进；后续仅用 name 和 dir 
   const f = await fixture(t), first: SectionId[] = [], second: SectionId[] = [];
   await runTask({ ...f.options, image: 'reference.png', jobs: 2, standard: true }, { preflight, execute: async (id, run) => {
     first.push(id);
-    const disk = (await readRun(f.directory, 'case'))!;
+    const disk = (await readRun(f.directory))!;
     assert.ok(disk.activeSections?.includes(id));
     assert.equal(disk.status, 'running');
     assert.equal(run.jobs, 2);
-    assert.equal(run.image, join('input', 'original.png'));
     assert.equal(run.standard, true); assert.equal(disk.standard, true);
     return { summary: id, output: join(f.directory, id, 'output') };
   } });
@@ -95,7 +89,7 @@ test('总控保留输入与配置，按依赖推进；后续仅用 name 和 dir 
     ['clothing-part-layering', 'clothing-raster-layering'], ['raster-layering', 'character-assembly'],
     ['clothing-raster-layering', 'character-assembly'], ['character-assembly', 'shadow']] as const) assert.ok(first.indexOf(before) < first.indexOf(after), before + ' → ' + after);
   // The delivery is the furthest section's, whichever lane finished last.
-  assert.equal((await readRun(f.directory, 'case'))!.output, 'shadow/output');
+  assert.equal((await readRun(f.directory))!.output, 'shadow/output');
   assert.equal(await readFile(join(f.directory, 'input/original.png'), 'utf8'), 'original-image');
   await rm(join(f.directory, 'reference.png'));
   await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async (id, run) => {
@@ -118,7 +112,7 @@ test('一条线异常只阻断汇合后的管线，另一条线做完；展示�
     return { summary: 'complete' };
   } }), /没有 image_generation/);
   assert.deepEqual([...calls].sort(), ['clothing-part-layering', 'clothing-raster-layering', 'part-layering', 'raster-layering']);
-  const run = (await readRun(f.directory, 'case'))!;
+  const run = (await readRun(f.directory))!;
   assert.equal(run.status, 'failed'); assert.deepEqual(run.activeSections, ['raster-layering']);
   assert.equal(run.sections['raster-layering']!.status, 'failed');
   assert.match(run.error!, /thread=draw-1/);
@@ -126,7 +120,7 @@ test('一条线异常只阻断汇合后的管线，另一条线做完；展示�
   assert.equal(run.sections['character-assembly']!.status, 'pending');
   assert.match(await readFile(join(f.directory, 'workflow.log'), 'utf8'), /模型最后消息/);
   await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async () => ({ summary: 'resumed' }) });
-  assert.equal((await readRun(f.directory, 'case'))!.status, 'completed');
+  assert.equal((await readRun(f.directory))!.status, 'completed');
 });
 
 test('人物准备完成即并发启动衣服线，两条线共用 agent 名额，在组装处汇合', async t => {
@@ -140,7 +134,7 @@ test('人物准备完成即并发启动衣服线，两条线共用 agent 名额�
       // Still layering the character when the clothing lane starts.
       context.prepared?.(); context.prepared?.();
       await clothing;
-      const disk = (await readRun(f.directory, 'case'))!;
+      const disk = (await readRun(f.directory))!;
       assert.deepEqual(disk.activeSections, ['part-layering', 'clothing-part-layering']);
       checked.resolve();
     }
@@ -170,7 +164,7 @@ test('停止时两条并发管线一起中断，记录各自状态，汇合处�
     return { summary: id };
   } }), /stop test/);
   assert.deepEqual([...calls].sort(), ['clothing-part-layering', 'part-layering', 'raster-layering']);
-  const run = (await readRun(f.directory, 'case'))!;
+  const run = (await readRun(f.directory))!;
   assert.equal(run.status, 'interrupted');
   assert.deepEqual(run.activeSections, ['raster-layering', 'clothing-part-layering']);
   assert.equal(run.sections['clothing-raster-layering']!.status, 'pending');
@@ -183,7 +177,7 @@ test('手动上游可从组装开始，不伪造此前进度；更换原图不�
     calls.push(id); return { summary: 'assembled' };
   } });
   assert.deepEqual(calls, ['character-assembly', 'shadow']);
-  assert.deepEqual(Object.keys((await readRun(f.directory, 'case'))!.sections), ['character-assembly', 'shadow']);
+  assert.deepEqual(Object.keys((await readRun(f.directory))!.sections), ['character-assembly', 'shadow']);
   await runTask({ ...f.options, image: 'reference.png' }, { preflight, execute: async () => ({ summary: 'ok' }) });
   await writeFile(join(f.directory, 'different.png'), 'different image');
   await assert.rejects(runTask({ ...f.options, image: 'different.png' }), /已有不同的原图/);
@@ -204,7 +198,7 @@ test('Krita 不可用时拒绝启动且不改动任务记录；用 --krita 重�
   await assert.rejects(runTask({ name: 'case', dir: f.options.dir, to: 'shadow', krita: 'other-krita' }, { ...refuse, preflight: broken }), /指定的 Krita 不可用：.*other-krita/);
   assert.equal(await readFile(join(f.directory, 'run.json'), 'utf8'), before, '拒绝启动不能记录失败状态或错误路径');
   await runTask({ name: 'case', dir: f.options.dir, to: 'shadow' }, { preflight, execute: async () => ({ summary: 'ok' }) });
-  assert.equal((await readRun(f.directory, 'case'))!.krita, process.execPath);
+  assert.equal((await readRun(f.directory))!.krita, process.execPath);
 });
 
 test('Linux 无桌面且缺 Xvfb：不当成 Krita 路径问题，任务记为失败，workflow.log 首行给安装和继续提示；装好后继续即运行', { skip: process.platform !== 'linux' }, async t => {
@@ -215,14 +209,14 @@ test('Linux 无桌面且缺 Xvfb：不当成 Krita 路径问题，任务记为�
   assert.equal(await preflightKrita({ name: 'case', dir: f.options.dir, to: 'shadow' }, headless), undefined);
   await assert.rejects(runTask({ name: 'case', dir: f.options.dir, to: 'shadow' }, { preflight: headless, execute: async () => assert.fail('缺依赖时不能开始生产') }),
     error => error instanceof MissingDependencyError);
-  const failed = (await readRun(f.directory, 'case'))!;
+  const failed = (await readRun(f.directory))!;
   assert.equal(failed.status, 'failed'); assert.equal(failed.krita, process.execPath);
   assert.match(failed.error!.split('\n')[0], /找不到虚拟桌面 Xvfb.*apt install xvfb.*ASTRA_STUDIO_XVFB.*在网页点「继续」（命令行 --continue）/);
   assert.doesNotMatch(failed.error!, /重新指定 Krita/);
   const log = await readFile(join(f.directory, 'workflow.log'), 'utf8');
   assert.match(log, /找不到虚拟桌面 Xvfb[^\n]*在网页点「继续」/);
   await runTask({ name: 'case', dir: f.options.dir, to: 'shadow' }, { preflight: path => checkKrita(path, { PATH: '', DISPLAY: ':1' }), execute: async () => ({ summary: 'ok' }) });
-  assert.equal((await readRun(f.directory, 'case'))!.status, 'completed');
+  assert.equal((await readRun(f.directory))!.status, 'completed');
 });
 
 test('同名任务锁阻止重复启动，取消保留状态并释放锁', async t => {
@@ -284,7 +278,7 @@ test('CLI 恢复与重试先检查 Krita，不可用则拒绝且不改动步骤'
   await assert.rejects(main(['--name', 'case', '--dir', dir, '--stop']), /缺少总控记录/);
 });
 
-test('标准化选项保持未指定、开启和关闭的区别，并继承独立 part 的已存选项', async t => {
+test('标准化选项保持未指定、开启和关闭的区别，只由总控记录，不读取 part 步骤产物', async t => {
   for (const [flags, expected] of [[[], undefined], [['--standard'], true], [['--no-standard'], false]] as const) {
     const parsed = parseArguments(['--name', 'case', ...flags]);
     assert.notEqual(parsed.mode, 'help');
@@ -295,7 +289,7 @@ test('标准化选项保持未指定、开启和关闭的区别，并继承独�
   const options = join(f.directory, 'part-layering/step02_options');
   await mkdir(options, { recursive: true });
   await writeFile(join(options, 'options.json'), JSON.stringify({ standard: true }));
-  assert.equal((await configureRun(f.options, f.directory)).standard, true);
+  assert.equal((await configureRun(f.options, f.directory)).standard, false);
   assert.equal((await configureRun({ ...f.options, standard: false }, f.directory)).standard, false);
   await assert.rejects(configureRun({ ...f.options, from: 'character-assembly', standard: true }, f.directory), /需要本次路线包含 part-layering/);
   await assert.rejects(configureRun({ ...f.options, from: 'character-assembly', standard: false }, f.directory), /需要本次路线包含 part-layering/);

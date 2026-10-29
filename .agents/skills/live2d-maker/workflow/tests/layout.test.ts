@@ -43,11 +43,11 @@ async function previousTask(t: { after(fn: () => Promise<void>): void }) {
 test('a previous-layout task converts as a whole after a full backup, keeping its step records valid', async t => {
   const { runs, task } = await previousTask(t);
   assert.equal(await layoutState(task), 'previous');
-  await assert.rejects(readRun(task, 'demo'), /旧版目录布局/);
+  await assert.rejects(readRun(task), /旧版目录布局/);
   const result = await convertLayout(task);
   assert.equal(await layoutState(task), 'current');
   await requireCurrentLayout(task);
-  assert.equal((await readRun(task, 'demo'))!.sections['part-layering']?.status, 'completed');
+  assert.equal((await readRun(task))!.sections['part-layering']?.status, 'completed');
   const run = await json(task, 'run.json');
   assert.deepEqual([run.activeSections, run.activePipelines, run.pipelines], [['shadow'], undefined, undefined]);
 
@@ -71,9 +71,9 @@ test('a previous-layout task converts as a whole after a full backup, keeping it
 
   const shadow = join(task, 'shadow');
   assert.deepEqual((await json(shadow, 'step01_mask/.completed')).inputs, { 'part-layering/step14_occlusion': 'x' });
-  assert.deepEqual(await json(shadow, 'run.json'), { version: 2, name: 'demo' });
+  await assert.rejects(readFile(join(shadow, 'run.json')), { code: 'ENOENT' });
   assert.deepEqual(await json(shadow, 'agents/sessions.json'), { mask: {} });
-  assert.deepEqual((await readdir(shadow)).sort(), ['agents', 'run.json', 'step01_mask']);
+  assert.deepEqual((await readdir(shadow)).sort(), ['agents', 'step01_mask']);
   await assert.rejects(convertLayout(task), /无需转换/);
 });
 

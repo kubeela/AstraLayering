@@ -14,7 +14,7 @@ import type { StepDefinition } from './steps.ts';
 import { readStep, type ChainStep, type StepStatus } from '../step-chain.ts';
 import { runSection, type SectionPlan } from '../step-section.ts';
 import { clearStepSession, readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
-import { canonicalPath, fileInfo, initializeRun, loadConfig, newConfig, rasterSteps, saveConfig, taskPaths, within } from './run-store.ts';
+import { canonicalPath, fileInfo, rasterSteps, within } from './run-store.ts';
 import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
 import { modelHarnesses } from '../agents/models.ts';
@@ -86,7 +86,8 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
   const root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
   const requested = sectionDirectory(options.name, section.id, root);
   await requireCurrentLayout(dirname(requested));
-  const saved = await loadConfig<Input>(requested, options.name, section.validateInput);
+  const info = await fileInfo(requested);
+  if (info && (!info.isDirectory() || info.isSymbolicLink())) throw new Error(`管线目录必须是普通目录：${requested}`);
   const directory = await canonicalPath(requested);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
   const definitions: readonly StepDefinition[] = (dependencies.steps ?? section.steps).map(step => ({ ...step,
@@ -105,15 +106,11 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
   for (const source of inputDirectories) {
     if (within(source, directory) || within(directory, source)) throw new Error('上游与本管线目录必须分开');
   }
-  const configuredKrita = options.krita ?? saved?.krita.executable;
-  if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
-  const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, root);
+  // The section keeps no state of its own: every run is given its Krita.
+  if (!options.krita?.trim()) throw new Error('必须提供 --krita <已安装的 Krita 可执行文件路径>。');
+  const kritaPath = resolveInput(options.name, options.krita, root);
   const krita = await (dependencies.preflight ? dependencies.preflight(kritaPath) : checkKrita(kritaPath, environment.codex.env));
-  const config = saved ?? newConfig(options.name, reference, krita);
-  // run.json records inputs relative to the task root; the absolute reference stays in memory.
   const taskRoot = taskRootOf(directory);
-  config.sourceInput = await taskPaths(taskRoot, reference);
-  config.krita = krita;
   options.progress?.(`前置检查通过：Krita ${krita.executable}`);
   options.progress?.(`任务目录：${directory}；直接读取上游：${inputDirectories.join('、')}`);
 
@@ -137,10 +134,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
       await section.validateDelivery?.(chainStep.directory, reference, step, krita, options.dryRun);
       if (!options.dryRun) await logDeliveryWarnings(step);
     },
-    async prepare(plan) {
-      if (!saved) await initializeRun(directory, config);
-      else await saveConfig(directory, config);
-    },
+    async prepare() { await mkdir(directory, { recursive: true }); },
     step: (chainStep, status, plan) => stepWork(byId.get(chainStep.id)!, status, plan),
   }); } finally { await sectionKrita.release(); }
   if (options.dryRun) return previews.join('\n\n') || '当前已定义步骤均已完成；无需调用模型。';

@@ -5,11 +5,10 @@ import { dirname, join, relative } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import { runWorkflow, section, parseRunArguments } from '../run.ts';
-import { resolveAssemblyInput, isAssemblyInput, type AssemblyInput } from '../input.ts';
+import { resolveAssemblyInput, isAssemblyInput } from '../input.ts';
 import { steps } from '../steps.ts';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
-import { loadConfig } from '../../shared/raster/run-store.ts';
 import { type AgentRequest } from '../../shared/raster/agent.ts';
 import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
 
@@ -98,13 +97,10 @@ test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工�
   await runWorkflow(f.options, { ...f.deps, agent });
   await stat(join(f.output, 'step01/.completed'));
   await assert.rejects(stat(join(f.output, 'step01/.running')), { code: 'ENOENT' });
-  await runWorkflow({ name: 'case', dir: f.root }, { ...f.deps, agent });
+  await runWorkflow(f.options, { ...f.deps, agent });
   assert.equal(calls, 1);
-  const config = await loadConfig(f.output, 'case', isAssemblyInput);
   assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'assembly-thread');
-  // run.json records task-root paths.
-  assert.deepEqual(config?.sourceInput, { characterKra: 'raster-layering/step03/character-dressup-base.kra',
-    clothingKra: 'clothing-raster-layering/step02/clothing-soft-edges.kra', simplifiedCharacter: 'part-layering/references/simplified-subject.webp' });
+  await assert.rejects(stat(join(f.output, 'run.json')), { code: 'ENOENT' });
   assert.ok(!(await readdir(join(f.output, 'step01'))).some(name => /review|repair/.test(name)));
   for (const [kind, file] of Object.entries(f.inputs)) assert.equal(await readFile(file, 'utf8'), kind);
 });
@@ -116,13 +112,13 @@ test('中断恢复同一组装 thread；删 completed 重建 thread，只清理�
     await writeFile(join(f.output, 'step01/work.kra'), 'progress');
     throw new Error('interrupted');
   } }), /interrupted/);
-  await runWorkflow({ name: 'case', dir: f.root }, { ...f.deps, agent: async request => {
+  await runWorkflow({ name: 'case', dir: f.root, krita: f.options.krita }, { ...f.deps, agent: async request => {
     assert.equal(request.threadId, 'in-progress');
     assert.equal(await readFile(join(f.output, 'step01/work.kra'), 'utf8'), 'progress');
     return deliver(request);
   } });
   await rm(join(f.output, 'step01/.completed'));
-  await runWorkflow({ name: 'case', dir: f.root }, { ...f.deps, agent: async request => {
+  await runWorkflow({ name: 'case', dir: f.root, krita: f.options.krita }, { ...f.deps, agent: async request => {
     assert.equal(request.threadId, undefined);
     await assert.rejects(stat(join(f.output, 'step01/work.kra')), { code: 'ENOENT' });
     return deliver(request);
@@ -169,8 +165,7 @@ test('素体未换装时不需要衣服 KRA，不调用 agent，直接复制人�
   assert.equal(await readFile(join(f.output, 'step01/character-assembled.png'), 'utf8'), 'character png');
   assert.match(await readFile(join(f.output, 'step01/report.md'), 'utf8'), /没有衣服需要组装/);
   await stat(join(f.output, 'step01/.completed'));
-  assert.equal((await loadConfig<AssemblyInput>(f.output, 'case', isAssemblyInput))?.sourceInput.clothingKra, null);
-  await runWorkflow({ name: 'case', dir: f.root }, { ...f.deps, agent });
+  await runWorkflow(f.options, { ...f.deps, agent });
 });
 
 test('旧任务未换装但已画出衣服 KRA 时继续按原输入组装，不改变已完成的输入', async t => {

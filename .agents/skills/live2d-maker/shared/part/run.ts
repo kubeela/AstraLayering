@@ -17,7 +17,6 @@ import { sectionAgentSteps, preflightAgentSteps } from '../agents/preflight.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { validateWorkflowOptions } from './workflow.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
-import { readPreparationOptions } from './preparation-cache.ts';
 export type PartSection = {
   profile: PartProfile; imageHelp: string; preparationHelp: string;
   getPreparationDirectory(name: string, root?: string): string;
@@ -45,9 +44,7 @@ export async function runPartSection(
   const environment = agentOptions.environment ?? loadWorkflowEnvironment(agentOptions.env);
   const normalization = { ...agentOptions.imageNormalization, runsRoot: input.reference.dir ?? agentOptions.imageNormalization?.runsRoot, progress: agentOptions.progress, env: agentOptions.imageNormalization?.env ?? environment.codex.env };
   if (!adapters.steps) {
-    let standard = input.reference.standard;
-    if (standard === undefined && section.profile.id === 'part-layering') standard = await readPreparationOptions(directory);
-    await preflightAgentSteps(environment, sectionAgentSteps(section.profile.id, standard), normalization);
+    await preflightAgentSteps(environment, sectionAgentSteps(section.profile.id, input.reference.standard), normalization);
   }
   const agents = new CodexAgents({
     ...agentOptions, environment, imageNormalization: normalization, cwd: dirname(directory), toolsDirectory: section.profile.toolsDirectory, logDirectory: agentOptions.logDirectory ?? join(dirname(directory), 'agents'),

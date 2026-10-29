@@ -18,7 +18,12 @@ import { currentAgentCalls, throttled } from './agent-progress.ts';
 import { readTaskLog } from '../.agents/skills/live2d-maker/workflow/log.ts';
 import { projectDisplayName } from './project-metadata.ts';
 import { reportPreview, type ReportPreview } from './report.ts';
-import { taskStopMethod } from '../.agents/skills/live2d-maker/workflow/control.ts';
+import { canStopTask } from '../.agents/skills/live2d-maker/workflow/control.ts';
+import { section as characterRaster } from '../.agents/skills/live2d-maker/raster-layering/run.ts';
+import { section as clothingRaster } from '../.agents/skills/live2d-maker/clothing-raster-layering/run.ts';
+import { section as assembly } from '../.agents/skills/live2d-maker/character-assembly/run.ts';
+import { makeSection as shadowSection } from '../.agents/skills/live2d-maker/shadow/run.ts';
+import type { KritaSection } from '../.agents/skills/live2d-maker/shared/raster/workflow.ts';
 import { completeRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { copiedInput, inputKras } from './kra-inputs.ts';
 import { kritaRecordFile, kritaSlotsInUse, readKritaRecord } from '../.agents/skills/live2d-maker/shared/krita/section-krita.ts';
@@ -44,7 +49,7 @@ export async function summary(directory: string, name: string, dir: string) {
     const message = layout === 'previous' ? '任务使用旧版目录布局，需要先转换目录（转换前会完整备份原目录）。' : layout.message;
     return { name, displayName, status: 'layout', layout: layout === 'previous' ? layout : layout.layout, message, directory, run: undefined, runnerAlive: false, lockHeld: false };
   }
-  const run = await readRun(directory, name);
+  const run = await readRun(directory);
   if (!run) return { name, displayName, status: 'untracked', directory, run: undefined, runnerAlive: false, lockHeld: false };
   const live = await taskStatus({ name, dir });
   return { name, displayName, status: live.status, directory, run, runnerAlive: live.runnerAlive, lockHeld: live.lockHeld };
@@ -73,7 +78,10 @@ export async function snapshot(directory: string, name: string, dir: string) {
     const active = record.runnerAlive && record.lockHeld && current && saved?.status !== 'failed';
     const failed = record.status === 'failed' || saved?.status === 'failed';
     const mode = shadowMode(record.run?.shadowMode);
-    const config = await optional(id + '/run.json');
+    // The section's inputs, resolved from its upstream as a run would; none while the upstream is unfinished.
+    const section: { resolveInput(name: string, root: string): Promise<unknown> } | undefined = id === 'shadow' ? shadowSection(mode)
+      : ({ 'raster-layering': characterRaster, 'clothing-raster-layering': clothingRaster, 'character-assembly': assembly } as Record<string, KritaSection<any>>)[id];
+    const sourceInput = await section?.resolveInput(name, dir).catch(() => undefined);
     const states: Record<string, Status> = {};
     const messages: Record<string, string> = {};
     const previews: Record<string, { path: string; savedAt: string }> = {};
@@ -121,7 +129,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
       for (const step of id === 'shadow' ? stepsFor(mode) : rasterDefinitions[id]) {
         const prefix = id + '/' + step.id;
         await loadReport(step.id, prefix + '/report.md');
-        const previewInputs = [...inputKras(config?.sourceInput, directory), ...files
+        const previewInputs = [...inputKras(sourceInput, directory), ...files
           .filter(path => path.startsWith(prefix + '/') && !path.includes('/workspace/') && /\.kra$/i.test(path))
           .map(path => resolve(directory, path))];
         const candidates = await Promise.all(files.filter(path => /\.kra$/i.test(path) &&
@@ -234,7 +242,6 @@ export async function snapshot(directory: string, name: string, dir: string) {
       threadId, krita, summary: saved?.summary, ...(saved?.skipped ? { skipped: true } : {}) });
   }
   const log = await readTaskLog(directory);
-  const worker = await optional('.web-worker.json');
   // Server-side readers above may use agent records; the page only gets readable artifacts.
   const servedFiles = files.filter(path => !agentRecord(path));
   const servedVersions = Object.fromEntries(servedFiles.flatMap(path => fileVersions[path] ? [[path, fileVersions[path]]] : []));
@@ -242,7 +249,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
     archived: !!record.run?.archive,
     canExport: completeRun(record.run) && !record.runnerAlive && !record.lockHeld,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,
-    canStop: !!taskStopMethod(record.run?.runner, record.runnerAlive, record.lockHeld, worker),
+    canStop: canStopTask(record.run?.runner, record.runnerAlive, record.lockHeld),
     original: files.find(path => /^input\/original\.(png|jpe?g|webp)$/i.test(path)),
     reference: files.find(path => /^part-layering\/references\/simplified-subject\.(png|jpe?g|webp)$/i.test(path)),
   };
