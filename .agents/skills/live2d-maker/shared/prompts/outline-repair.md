@@ -4,6 +4,3 @@
 【返修要求】
 {repair_rules}
 提示词来源：{repair_source}
-
-【本次输入】
-{runtime_context}

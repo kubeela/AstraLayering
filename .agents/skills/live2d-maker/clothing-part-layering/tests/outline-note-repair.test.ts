@@ -10,7 +10,8 @@ import { nodeExecutables } from './node-executables.ts';
 import { patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
 
 const signal = new AbortController().signal;
-const inputs = (task: AgentTask) => JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+// Repair turns rely on the drawing turn's input; without a thread the mock reads it from the recovery text.
+const inputs = (task: AgentTask) => JSON.parse((task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/) ?? task.recoveryPrompt!.match(/【本次输入】\n([\s\S]*?\n})\n/))![1]);
 const tool = (task: AgentTask, name: string) => task.tools!.find(item => item.name === name)!;
 
 async function noteFixture(t: TestContext, note: string) {
@@ -59,7 +60,7 @@ test('note repair is bound to one group, requires a unique match and preserves c
   const f = await noteFixture(t, '重复；重复；原层序');
   await drawGroupOutline(f, { async run(task) {
     // Without the drawing thread, the recovery prompt restores the drawing task before the repair.
-    assert.doesNotMatch(task.prompt, /对照纯衣服参考与本组 note/);
+    assert.doesNotMatch(task.prompt, /对照纯衣服参考与本组 note|【本次输入】/);
     assert.match(task.prompt, /修正层序说明/);
     assert.match(task.recoveryPrompt!, /对照纯衣服参考与本组 note[\s\S]*原绘制会话不可用[\s\S]*修正层序说明/);
     const update = tool(task, 'update_group_note');
@@ -137,8 +138,8 @@ for await (const line of createInterface({ input: process.stdin })) {
   assert.equal(messages.filter(message => message.method === 'thread/start').length, 1);
   const turns = messages.filter(message => message.method === 'turn/start').map(message => JSON.stringify(message.params.input));
   assert.equal(turns.length, 2);
-  // The repair is the drawing thread's next turn: it carries the feedback, not the drawing task again.
-  assert.match(turns[0], /对照纯衣服参考与本组 note/);
-  assert.doesNotMatch(turns[1], /对照纯衣服参考与本组 note/);
+  // The repair is the drawing thread's next turn: it carries the feedback, not the drawing task or its input again.
+  assert.match(turns[0], /对照纯衣服参考与本组 note[\s\S]*【本次输入】/);
+  assert.doesNotMatch(turns[1], /对照纯衣服参考与本组 note|【本次输入】/);
   assert.match(turns[1], /只修正说明，保留轮廓/);
 });

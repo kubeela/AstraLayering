@@ -133,11 +133,10 @@ export async function drawGroupOutline(
   const drawingPrompt = renderPrompt(prompt.text, {
     prompt_source: prompt.path, runtime_context: await runtime(context, input, {outputSvg: draft, ...(resumed ? { resumedDraft: resumedDraftNote } : {})}),
   }, prompt.path, ['prompt_source','runtime_context']);
-  // 返修是绘制 thread 的下一轮，只发送意见与返修要求；原 thread 不可用时
-  // recoveryPrompt 在新会话中补上原绘制任务。
+  // 返修是绘制 thread 的下一轮，只发送意见与返修要求；本次输入已在绘制轮给出。
+  // 原 thread 不可用时 recoveryPrompt 在新会话中补上原绘制任务。
   const repairPrompt = repair && renderPromptFile(new URL('../prompts/outline-repair.md',import.meta.url), {
     feedback:repair.feedback, repair_rules:await readFile(repairPromptPath,'utf8'), repair_source:repairPromptPath,
-    runtime_context:await runtime(context, input, {outputSvg: draft}),
   });
   if (repairPrompt) await recordRepair(output, repair.feedback, repairPrompt);
   const response = await agents.run({

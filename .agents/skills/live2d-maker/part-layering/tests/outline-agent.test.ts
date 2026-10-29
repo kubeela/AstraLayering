@@ -23,8 +23,11 @@ function createLayeringSteps(agents: Parameters<typeof createDefaultLayeringStep
 }
 type Runtime = { group: { id: string }; outputSvg?: string; candidate?: string; parentSvg: string | null;
   review?: { round: number; candidateHash: string } };
+// A repair turn carries no input of its own: the drawing turn of the same thread gave it.
+// The mock holds no thread, so it reads that input from the recovery text's drawing task.
 function runtime(task: AgentTask): Runtime {
-  const match = task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/);
+  const pattern = /【本次输入】\n([\s\S]*?\n})\n/;
+  const match = task.prompt.match(pattern) ?? (task.recoveryPrompt && !pattern.test(task.prompt) ? task.recoveryPrompt.match(pattern) : null);
   assert.ok(match);
   return JSON.parse(match[1]);
 }
