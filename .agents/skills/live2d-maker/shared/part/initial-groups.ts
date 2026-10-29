@@ -2,7 +2,7 @@ import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
-import { partProfile } from './profile.ts';
+import { originalImageReference, partProfile } from './profile.ts';
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import type { CodexAgents } from '../codex/agents.ts';
@@ -60,7 +60,7 @@ export async function recognizeInitialGroups(
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'initial_groups'),
     name: '首次分组识别', cwd: context.directory,
-    images: profile.attachInitialReference ? [{ path: reference, description: profile.references.initial }, ...(profile.originalReference && context.references.originalImage ? [{ path: context.references.originalImage, description: profile.originalReference }] : [])] : undefined,
+    images: profile.attachInitialReference ? [{ path: reference, description: profile.references.initial }, ...originalImageReference(context, profile.originalReference)] : undefined,
     prompt: renderPrompt(prompt, {run_directory: await task(context.directory),
       reference_label: profile.referenceLabel,
       reference_path: await task(reference),

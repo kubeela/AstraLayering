@@ -58,6 +58,10 @@ test('note-only feedback is persisted and visible to the next reviewer without c
 test('note repair is bound to one group, requires a unique match and preserves concurrent updates', async t => {
   const f = await noteFixture(t, '重复；重复；原层序');
   await drawGroupOutline(f, { async run(task) {
+    // Without the drawing thread, the recovery prompt restores the drawing task before the repair.
+    assert.doesNotMatch(task.prompt, /对照纯衣服参考与本组 note/);
+    assert.match(task.prompt, /修正层序说明/);
+    assert.match(task.recoveryPrompt!, /对照纯衣服参考与本组 note[\s\S]*原绘制会话不可用[\s\S]*修正层序说明/);
     const update = tool(task, 'update_group_note');
     await assert.rejects(update.execute({ oldText: '原层序', newText: '新层序', groupId: 'tail' }, signal), /仅提交/);
     await assert.rejects(update.execute({ oldText: '重复', newText: '新说明' }, signal), /唯一匹配/);
@@ -100,14 +104,16 @@ import { createInterface } from 'node:readline';
 import { appendFileSync } from 'node:fs';
 const send = value => process.stdout.write(JSON.stringify(value) + '\\n');
 if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))}); process.exit(0); }
+let turns = 0;
 for await (const line of createInterface({ input: process.stdin })) {
   const message = JSON.parse(line);
   appendFileSync(${JSON.stringify(requests)}, JSON.stringify(message) + '\\n');
   if (message.method === 'initialize') send({ id: message.id, result: {} });
   if (message.method === 'thread/start') send({ id: message.id, result: { thread: { id: 'drawing-thread' } } });
   if (message.method === 'turn/start') {
-    send({ id: message.id, result: {} });
-    send({ method: 'turn/completed', params: { turn: { status: 'completed' } } });
+    const turn = { id: 'turn-' + ++turns, status: 'inProgress' };
+    send({ id: message.id, result: { turn } });
+    send({ method: 'turn/completed', params: { threadId: 'drawing-thread', turn: { ...turn, status: 'completed' } } });
   }
 }
 `, 'utf8');
@@ -129,5 +135,10 @@ for await (const line of createInterface({ input: process.stdin })) {
   assert.equal(findGroup((await GroupStore.open(f.directory)).snapshot(), 'band').note, '修正说明');
   const messages = (await readFile(requests, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(messages.filter(message => message.method === 'thread/start').length, 1);
-  assert.equal(messages.filter(message => message.method === 'turn/start').length, 2);
+  const turns = messages.filter(message => message.method === 'turn/start').map(message => JSON.stringify(message.params.input));
+  assert.equal(turns.length, 2);
+  // The repair is the drawing thread's next turn: it carries the feedback, not the drawing task again.
+  assert.match(turns[0], /对照纯衣服参考与本组 note/);
+  assert.doesNotMatch(turns[1], /对照纯衣服参考与本组 note/);
+  assert.match(turns[1], /只修正说明，保留轮廓/);
 });

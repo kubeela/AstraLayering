@@ -3,7 +3,7 @@ import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
-import { partProfile } from './profile.ts';
+import { originalImageReference, partProfile } from './profile.ts';
 import { readFile, realpath } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import sharp from 'sharp';
@@ -49,7 +49,7 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
   const meta = await sharp(reference).metadata();
   const canvas = { width: meta.autoOrient.width, height: meta.autoOrient.height };
   const prompt = await readGroupPrompt(context.group.id, 'children', promptDirectory ?? profile.promptsDirectory);
-  const references = [...await readGroupReferences(prompt.groupDirectory, 'children'), ...(profile.originalChildrenReference && context.references.originalImage ? [{ path: context.references.originalImage, description: profile.originalChildrenReference }] : [])];
+  const references = [...await readGroupReferences(prompt.groupDirectory, 'children'), ...originalImageReference(context, profile.originalChildrenReference)];
   const rules = await readFile(rulesPath, 'utf8');
   if (!rules.trim()) throw new Error('拆分操作约定提示词为空');
   const observations: SvgObservation[] = [];

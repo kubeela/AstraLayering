@@ -41,12 +41,12 @@ export async function buildPrompt(step: StepDefinition, input: PartLayeringInput
       upstream_directory: await json(input.directory),
       parts_path: await json(input.parts),
       references_directory: await json(join(input.directory, 'references')),
-      original_character_reference: input.originalCharacter ? renderPromptFile(new URL('../prompts/raster-original-reference.md',import.meta.url),{original_character_path:await json(input.originalCharacter)}).trim() : '',
       output_directory: await json(output),
       previous_steps: JSON.stringify(await Promise.all(previous.map(async directory => ({ directory: await at(directory), report: await at(join(directory, 'report.md')) })))),
       required_files: await list(requiredFiles.map(file => join(output, file))),
       report_path: await json(join(output, report)),
-      report_publish_rule: step.review ? renderPromptFile(new URL('../prompts/raster-report-publish.md',import.meta.url)).trim() : ''
-    })
+    }),
+    // Only clothing raster has the original clothed character; its prompts name it.
+    ...(input.originalCharacter ? { original_character_path: await json(input.originalCharacter) } : {}),
   }, String(step.prompt), ['drawing_responsibilities','runtime_context',...(step.review?['drawing_report_filename']:[])]);
 }
