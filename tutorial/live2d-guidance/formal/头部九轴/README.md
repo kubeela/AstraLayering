@@ -37,3 +37,14 @@
 | [sources/hair-nine-axis-swing.mp4](sources/hair-nine-axis-swing.mp4) | 头发物理的九轴摆动形变视频教程，约 322 秒 | 用户 2026-10-29 提供；尚未解析。SHA-256 `89090e66288f19c4460a5f584444b9fd66548b1150700f7675c5f3c4b2909374` |
 
 目前没有头发透视形变的教程。脸部透视形变有视频教程可参考，待用户提供后加入本表。
+
+## 工具
+
+[`tools/generate_turn_video.py`](../../tools/generate_turn_video.py)：以正面原图为首帧调用 Seedance（默认 `seedance-2.5`）生成转头参考视频。它复用 live2d-maker `.env` 中的 OpenAI 生图代理（`layering_openai_image_base_url/api_key`），也可用 `LAYERING_VIDEO_BASE_URL/API_KEY` 覆盖，并输出 `.mp4` 和记录参数、提示词、输入／输出 SHA-256 的 `.json`。
+
+```bash
+python3 tutorial/live2d-guidance/tools/generate_turn_video.py \
+  --image upper-body.png --prompt-file prompt.txt --out runs/turn-01 --seconds 5
+```
+
+已知：代理会静默丢弃 multipart 上传的图片并退回文生视频（生成出另一个人物），因此工具以 JSON + data URL 传首帧。2026-10-29 Jianma 上半身试跑一次约 2.5 分钟，人物、发冠和流苏保持一致，转角目测约 20–30°，脖子未被扭曲；但嘴从微张变为闭合，远侧发丝排布会变。这只是一次试跑，不是验收结论。
