@@ -53,7 +53,7 @@ async function inputs(context: GroupContext) {
 
 // Paths shown to the agent are task-relative.
 async function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, paths: {
-  outputSvg?: string; candidate?: string; resumedDraft?: string; review?: { round: number; candidateHash: string };
+  outputSvg?: string; candidate?: string; review?: { round: number; candidateHash: string };
 }) {
   const root = taskRootOf(context.directory), task = (path: string) => toAgentPath(root, path);
   return JSON.stringify({
@@ -95,8 +95,6 @@ function groupNoteTool(context: GroupContext): FunctionTool {
   };
 }
 
-const resumedDraftNote = 'outputSvg 已有上次中断前画到的草稿：先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。';
-
 export async function drawGroupOutline(
   context: DrawingContext, agents: Pick<CodexAgents, 'run'>,
   repair?: { candidate: string; feedback: string },
@@ -130,7 +128,7 @@ export async function drawGroupOutline(
     },
   };
   const drawingPrompt = knowledge.render('main', {
-    runtime_context: await runtime(context, input, {outputSvg: draft, ...(resumed ? { resumedDraft: resumedDraftNote } : {})}),
+    runtime_context: await runtime(context, input, {outputSvg: draft}),
   }, { taskRoot: taskRootOf(context.directory), group: context.group.id });
   // 返修是绘制 thread 的下一轮，只发送意见与返修要求；本次输入已在绘制轮给出。
   // 原 thread 不可用时 recoveryPrompt 在新会话中补上原绘制任务。

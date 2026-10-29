@@ -36,7 +36,7 @@ export const knowledgeSteps: readonly KnowledgeStep[] = [
 
 // Fixed runtime texts in knowledge/shared/prompts/runtime/<name>.md.
 export const runtimePrompts = [
-  'agent-turn', 'continuation', 'continuation-images', 'interrupted-task',
+  'agent-turn', 'interrupted-task',
   'image-blocked-multiple', 'image-blocked-placeholder', 'image-blocked-single', 'image-blocked-stop',
   'image-description', 'image-reference',
   'outline-repair', 'outline-repair-resume',

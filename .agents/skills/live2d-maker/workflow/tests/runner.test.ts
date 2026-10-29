@@ -244,10 +244,10 @@ test('--knowledge 记入 run.json，续跑省略沿用；缺失文件时拒绝�
   assert.equal((await readRun(f.directory))!.knowledge, knowledge);
   assert.equal(knowledgeDirectory(), knowledge);
   const before = await readFile(join(f.directory, 'run.json'), 'utf8');
-  await rm(join(knowledge, 'shared/prompts/runtime/continuation.md'));
-  await assert.rejects(runTask({ name: 'case', dir: f.options.dir, to: 'part-layering' }, done), /先验知识缺少文件：.*continuation\.md/);
+  await rm(join(knowledge, 'shared/prompts/runtime/interrupted-task.md'));
+  await assert.rejects(runTask({ name: 'case', dir: f.options.dir, to: 'part-layering' }, done), /先验知识缺少文件：.*interrupted-task\.md/);
   assert.equal(await readFile(join(f.directory, 'run.json'), 'utf8'), before, '拒绝启动不能改动任务记录');
-  assert.match(await readFile(join(f.directory, 'workflow.log'), 'utf8'), /先验知识缺少文件：.*continuation\.md/);
+  assert.match(await readFile(join(f.directory, 'workflow.log'), 'utf8'), /先验知识缺少文件：.*interrupted-task\.md/);
 });
 
 test('CLI 区分只读查询、后台启动和恢复，拒绝冲突参数', () => {

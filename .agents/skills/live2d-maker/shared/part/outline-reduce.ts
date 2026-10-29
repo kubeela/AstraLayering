@@ -96,7 +96,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
       groups: await Promise.all(context.entries.map(async entry => ({ id: entry.group.id, kind: entry.group.kind ?? 'group', note: entry.group.note,
         ...(entry.group.allowOutsideParent ? { allowOutsideParent: true } : {}),
         sourceSvg: await task((entry.current ?? entry.outline).path), originalOutline: await task(entry.outline.path),
-        reusedReduction: !!entry.current, outputDraft: await task(entry.outputPath),
+        outputDraft: await task(entry.outputPath),
         parentSvg: entry.parent?.steps.completion.output?.path ? await task(entry.parent.steps.completion.output.path) : null }))),
     }, null, 2)}, { taskRoot: taskRootOf(context.directory) }),
   });

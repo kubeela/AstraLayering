@@ -123,7 +123,6 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
       additionalReferences: await Promise.all(references.map(async ref => ({ ...ref, path: await task(ref.path),
         ...('sourceSvg' in ref ? { sourceSvg: await task(ref.sourceSvg) } : {}) }))),
       parentSvg: parent ? await task(parent) : null,
-      ...(resumed ? { resumedDraft: 'outputDraft 已含上次中断前补上的形状：先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。' } : {}),
     }, null, 2)}, { taskRoot: root, group: context.group.id }) });
   if (!submitted) throw agentOutcomeError('补全未通过 submit_completion 提交', response);
   await verifySource();

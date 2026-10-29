@@ -280,7 +280,7 @@ test('原生生图事件的相对 savedPath 是协议异常：本回合失败，
   assert.equal(protocol.filter(message => message.method === 'turn/start').length, 1);
 });
 
-test('原生容量失败恢复同一 thread，继续提示词保留已提交结果和生图路径，每次尝试都留日志', async t => {
+test('原生容量失败恢复同一 thread，续接只发固定的中断继续提示，结果保留已有生图，每次尝试都留日志', async t => {
   const f = await fixture(t);
   const savedPath = join(f.directory,'existing-image.png');
   const server = await fakeAppServer(f.directory, [{tool:'probe',arguments:{}}], 'completed',
@@ -303,8 +303,8 @@ test('原生容量失败恢复同一 thread，继续提示词保留已提交结�
   assert.ok(turns[0].params.input[0].text.replace(/\r\n/g, '\n').startsWith(originalPrompt+'\n'));
   assert.match(turns[0].params.input[0].text, /当前工作区/);
   assert.ok(turns.slice(1).every(message => message.params.input[0].text.startsWith(interruptedTaskPrompt())));
-  assert.ok(turns.slice(1).every(message => message.params.input[0].text.split(originalPrompt).length === 2));
-  assert.ok(turns[1].params.input[0].text.includes('existing-image.png'));
+  assert.ok(turns.slice(1).every(message => !message.params.input[0].text.includes(originalPrompt)));
+  assert.ok(turns.slice(1).every(message => !message.params.input[0].text.includes('existing-image.png')));
   assert.equal((await readdir(f.logDirectory)).length, 3);
   assert.equal(messages.filter(message => message.includes('限流等待（临时错误）')).length, 2);
   const names = await readdir(f.logDirectory);

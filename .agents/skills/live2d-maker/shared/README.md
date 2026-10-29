@@ -58,7 +58,7 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 | --- | --- |
 | [Agent 请求](prompts/agent-turn.md) | `{task_prompt}`、`{task_root}`、`{workspace}`、`{section_directory}`、`{output_directory}`。所有 CLI 共用路径约定、工作区、输入与正式交付说明。 |
 | [图片说明](prompts/image-description.md)、[图片路径](prompts/image-reference.md) | `{image_description}` 来自本次附图用途，`{image_path}` 是本次图片路径；AGV 通过路径读取。图片说明作为独立消息发送，与任务正文一起保存在请求记录。 |
-| [中断继续](prompts/interrupted-task.md)、[续跑](prompts/continuation.md)、[已有图片](prompts/continuation-images.md) | `{interrupted_task}`、`{saved_images_context}`、`{saved_image_paths}`。没有已生成图片时对应位置为空。 |
+| [中断继续](prompts/interrupted-task.md) | 无动态位置。会话仍可接上时只发这一句，原任务与已有产物都在会话里。 |
 | [恢复返修](prompts/raster-repair-resume.md)、[交接返修](prompts/raster-handoff-repair.md)、[会话交接](prompts/raster-handoff.md) | `{drawing_prompt}`、`{repair_prompt}` 或 `{task_prompt}`，以及旧会话、原因、当前阶段和交接记录。 |
 | [生图请求](prompts/image-request.md)、[Nano 纯色背景](prompts/nano-solid-background.md) | `{drawing_prompt}`、`{background_instructions}`、`{background_hex}`。原始绘制要求保留，Nano 透明后处理补充独立的背景要求。 |
 | [单张图片被拦截](prompts/image-blocked-single.md)、[多张图片被拦截](prompts/image-blocked-multiple.md)、[无法继续](prompts/image-blocked-stop.md)、[移除占位](prompts/image-blocked-placeholder.md) | `{images}`、`{count}`、`{stop}`、`{origin}`。图片被内容策略拦截时，从会话历史移除该图并以占位文字替代，提示换方式读取或说明后结束回合。 |

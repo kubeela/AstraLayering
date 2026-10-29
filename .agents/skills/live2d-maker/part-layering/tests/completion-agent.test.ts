@@ -308,27 +308,29 @@ test('补全 threadId 记在 agents/steps：中断后续跑恢复同一会话，
   assert.deepEqual(JSON.parse(await readFile(session, 'utf8')), { threadId: 'completion-thread-3', harness: 'agv' });
 });
 
-test('续跑补全沿用保留原形的草稿并提示 agent；原形已变的草稿或非续跑从原形开始', async t => {
+test('续跑补全沿用保留原形的草稿，提示词只给固定的先读草稿规则；原形已变的草稿或非续跑从原形开始', async t => {
   const f = await fixture(t), group = normalizeGroups([{ id: 'face' }])[0];
   const source = join(f.directory, 'source.svg'), outputPath = join(f.directory, 'face.draft.svg');
   await writeFile(source, shape('face'));
   const drawn = composeCompletion(shape('face'), paths);
   const seen = async (resumeDraft: boolean) => {
-    let state: { draft: string; resumed: boolean } | undefined;
+    let state: string | undefined;
     await completeGroupOcclusion({ ...f, group, reviewed: { path: source }, outputPath, resumeDraft }, { async run(task) {
       const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
-      state = { draft: await readFile(outputPath, 'utf8'), resumed: 'resumedDraft' in input };
+      assert.equal('resumedDraft' in input, false);
+      assert.match(task.prompt, /outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时/);
+      state = await readFile(outputPath, 'utf8');
       await submit(task, outputPath);
       return { text: 'done', images: [] };
     } });
     return state!;
   };
   await writeFile(outputPath, drawn);
-  assert.deepEqual(await seen(true), { draft: drawn, resumed: true });
+  assert.equal(await seen(true), drawn);
   await writeFile(outputPath, drawn);
-  assert.deepEqual(await seen(false), { draft: shape('face'), resumed: false });
+  assert.equal(await seen(false), shape('face'));
   await writeFile(outputPath, shape('face', 20, 80));
-  assert.deepEqual(await seen(true), { draft: shape('face'), resumed: false });
+  assert.equal(await seen(true), shape('face'));
 });
 
 test('不可见部件直接绘制非空 SVG，分别完成生成图 edge、原图 blend 和独显后提交', async t => {

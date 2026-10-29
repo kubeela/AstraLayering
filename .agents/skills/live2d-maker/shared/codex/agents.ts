@@ -4,7 +4,7 @@ import { workflowsDirectory } from '../paths.ts';
 import type { CodexOptions } from '@openai/codex-sdk';
 import { join } from 'node:path';
 import { AgentLog } from './agent-log.ts';
-import { AgentCallError, AgentRuntime, retryDelays, continuationPrompt, recoverableAgentError, retryableAgentError, type AgentRetry, type RecoverableAgentError } from './agent-runtime.ts';
+import { AgentCallError, AgentRuntime, retryDelays, interruptedTaskPrompt, recoverableAgentError, retryableAgentError, type AgentRetry, type RecoverableAgentError } from './agent-runtime.ts';
 import { blockedImagesPrompt, readBlockedImages, type BlockedImages } from './blocked-images.ts';
 import { createFunctionToolSession } from './tool-agent.ts';
 import type { FunctionTool } from './function-tools.ts';
@@ -165,7 +165,7 @@ export class CodexAgents {
           return await this.invoke(task, signal, async () => {
             try {
               const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
-                : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt, paths.root), images: undefined }
+                : interrupted ? { ...task, prompt: interruptedTaskPrompt(), images: undefined }
                 : fresh ? { ...task, prompt: task.recoveryPrompt || task.prompt } : task, signal);
               id = result.threadId || id;
               for (const image of result.images) savedImages.add(image.savedPath);
@@ -268,7 +268,7 @@ export class CodexAgents {
               let interrupted = false;
               const replace = this.replacement(task);
               result = await this.invoke(task, signal, async () => {
-                try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt, paths.root), images: undefined } : task,
+                try { return await runCliTask(interrupted ? { ...task, prompt: interruptedTaskPrompt(), images: undefined } : task,
                   selected, settings, { ...this.options, onEvent: async event => {
                     if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
                     await this.options.onEvent?.(event);

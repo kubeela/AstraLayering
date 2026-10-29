@@ -1,6 +1,5 @@
 import { runtimePrompt } from '../knowledge.ts';
 import { setTimeout as delay } from 'node:timers/promises';
-import { fromTaskPath } from '../task-paths.ts';
 
 export const defaultAgentConcurrency = 3;
 // Retry n waits about initial * 2^(n-1), at most maximum: 5, 10, 20, 40, 80, then 120 s; after the tenth the call fails.
@@ -200,13 +199,3 @@ export class AgentRuntime {
 }
 
 export const interruptedTaskPrompt = (): string => runtimePrompt('interrupted-task').trim();
-
-// With the task root, saved images are shown absolute like every other path.
-export function continuationPrompt(savedImagePaths: string[], taskPrompt: string, root?: string): string {
-  if (root) savedImagePaths = savedImagePaths.map(path => fromTaskPath(root, path));
-  return runtimePrompt('continuation', {
-    interrupted_task:interruptedTaskPrompt(),
-    task_prompt:taskPrompt,
-    saved_images_context:savedImagePaths.length?runtimePrompt('continuation-images',{saved_image_paths:savedImagePaths.join('\n')}):'',
-  }).trimEnd();
-}

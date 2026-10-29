@@ -15,7 +15,7 @@ export async function replaceThread(options: Pick<TaskOptions, 'name' | 'dir'> &
   section: SectionId; handoff: string; reason: string;
 }): Promise<string> {
   const regular = [character, clothing, assembly].find(value => value.id === options.section);
-  if (!regular && options.section !== 'shadow') throw new Error('--replace-thread 仅适用于 raster、character-assembly 或 shadow；part 根据文件恢复。');
+  if (!regular && options.section !== 'shadow') throw new Error('--replace-thread 仅适用于 raster、character-assembly 或 shadow。');
   if (!options.reason.trim()) throw new Error('更换 thread 必须提供非空 --reason。');
   const directory = directoryFor(options);
   const release = await acquireTaskLock(directory);
