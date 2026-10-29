@@ -177,13 +177,6 @@ test('停止时两条并发管线一起中断，记录各自状态，汇合处�
   assert.equal(run.runner!.childPids, undefined);
 });
 
-test('旧记录的单个 activeSection 读作 activeSections', async t => {
-  const f = await fixture(t), run = await configureRun(f.options, f.directory);
-  await saveRun(f.directory, { ...run, status: 'failed', activeSection: 'raster-layering' });
-  const read = (await readRun(f.directory, 'case'))!;
-  assert.deepEqual(read.activeSections, ['raster-layering']); assert.equal(read.activeSection, undefined);
-});
-
 test('手动上游可从组装开始，不伪造此前进度；更换原图不会覆盖已有输入', async t => {
   const f = await fixture(t), calls: SectionId[] = [];
   await runTask({ ...f.options, from: 'character-assembly' }, { preflight, execute: async id => {

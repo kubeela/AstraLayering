@@ -20,11 +20,11 @@ pnpm part-layering --name my-character --groups /绝对路径/selection.json
 
 ## 参考准备
 
-输出 `references/standard.png`、`simplified-subject.*`、`base-subject.png`。标准化选项默认关闭，开启后先判断姿态再按需调整；原图保留在任务 `input/`。素体保留手套、鞋袜和各自饰件，主体衣装以临时连体服替换。步骤目录按 preparation/step01～08 记录原图、选项、姿态、标准图、简化、素体与就绪；step05 为已退场的独立画风判断，其他步骤沿用原编号。
+输出 `references/standard.png`、`simplified-subject.*`、`base-subject.png`。标准化选项默认关闭，开启后先判断姿态再按需调整；原图保留在任务 `input/`。素体保留手套、鞋袜和各自饰件，主体衣装以临时连体服替换。步骤目录 `step01_original`～`step07_ready` 依次记录原图、选项、姿态、标准图、简化、素体与就绪，拆分步骤从 `step08_initial` 接续编号。
 
 简化与素体各由一个 preparation agent 完成“判断 → 复制或生图”。简化 agent 另收到画风参考 `resources/简化参考图片.png`（只比较画法），素体 agent 另收到连体服款式参考 `resources/连体服参考.jpg`。图1画法已足够简单（平涂色块、边界清楚、细节概括，有无线稿均可）时，简化 agent 直接复用，只在半写实、厚涂或晕染明显时转换；当前画幅没有主体衣装、角色已是素体或已有合适的临时连体服时，素体 agent 直接复用。复制工具 `reuse_reference` 绑定当前参考与输出位置，PNG 原样复制，其他格式转换为 PNG；需要转换或换装时调用本步骤配置的生图工具。两份完整提示词为 `prompts/2-简化图片.md`、`prompts/3-素体参考.md`。
 
-step06 与 step07 各自直接保存最终图片及步骤完成记录。step06 的选择理由只保存在 agent 调用日志；step07 另写 `preparation/step07/decision.json`（`{ version, dressed, reason }`）。`dressed: false` 时总控跳过两条衣服管线，组装沿用人物 KRA，阴影照常运行；没有 decision.json 的旧任务按简化图与素体像素是否相同判断，完整规则见 [workflow](../workflow/README.md#姿态与参考)。复制结果原样交付，生图结果在准备函数内部完成后处理；续跑依据已有图片与步骤记录复用。旧任务已完成的图片继续沿用，缺图时按当前单次 agent 流程制作。
+简化与素体步骤各自直接保存最终图片及步骤完成记录。简化的选择理由只保存在 agent 调用日志；素体步骤另写 `step06_base/decision.json`（`{ version, dressed, reason }`）。`dressed: false` 时总控跳过两条衣服管线，组装沿用人物 KRA，阴影照常运行；没有 decision.json 的旧任务按简化图与素体像素是否相同判断，完整规则见 [workflow](../workflow/README.md#姿态与参考)。复制结果原样交付，生图结果在准备函数内部完成后处理；续跑依据已有图片与步骤记录复用。旧任务已完成的图片继续沿用，缺图时按当前单次 agent 流程制作。
 
 preparation 完成后，总控同时推进人物线（本管线逐层制作 → raster）与衣服线（[clothing-part-layering](../clothing-part-layering/README.md) → 衣服 raster），两线共用同一 `--jobs` agent 名额，见 [workflow](../workflow/README.md#总入口)。参考与选项按内容指纹复用；主动改变选项或重做参考的规则见 [workflow](../workflow/README.md#姿态与参考)。生成图后处理见 [shared](../shared/README.md#参考图后处理)。
 
@@ -63,18 +63,18 @@ preparation 完成后，总控同时推进人物线（本管线逐层制作 → 
 
 | 步骤 | 产物／事实位置 |
 | --- | --- |
-| 首次分组 | `initial/step01/groups.json` |
-| 轮廓与复核 | `groups/<id>/step01/outline.svg`、`review.json`、`outline.repairs/` |
-| 同层去重 | `layers/depthNN/<id>.svg` |
-| 补全与检查 | `groups/<id>/step02/check.json`；正式 `parts/<id>.svg` |
-| 绘制会话 | `agents/steps/groups/<id>/step01`、`step02` 下的 `session.json` |
-| 直属拆分 | `groups/<id>/step03/children.json` |
-| 整树合并 | `merge/`；正式 `preview.svg` |
-| 深度与逐件检查 | `occlusion/`；正式 `occlusion.json` |
+| 首次分组 | `step08_initial/groups.json` |
+| 轮廓与复核 | `step09_outline/<id>/outline.svg`、`review.json`、`outline.repairs/` |
+| 同层去重 | `step10_reduce/depthNN/<id>.svg` |
+| 补全与检查 | `step11_completion/<id>/check.json`；正式 `parts/<id>.svg` |
+| 绘制会话 | `agents/steps/step09_outline/<id>`、`agents/steps/step11_completion/<id>` 下的 `session.json` |
+| 直属拆分 | `step12_children/<id>/children.json` |
+| 整树合并 | `step13_merge/`；正式 `preview.svg` |
+| 深度与逐件检查 | `step14_occlusion/`；正式 `occlusion.json` |
 
-子组目录嵌套为 `groups/<父>/children/<名>`。步骤使用 `.running`／`.completed` 与依赖产物哈希，`groups.json` 是名称、note 与结构视图。轮廓与补全会话保存在 `agents/steps/<步骤>/session.json`（步骤路径同上，子组含 `children/<名>`），续跑恢复同一会话；被替换的会话追加到同目录 `session.json.history.jsonl`。重做某步骤会删除其整个会话目录（含历史）。旧任务步骤目录内的 session.json 仍可读取，下次写入时迁移。reviewer、去重、子组分析每次独立调用。
+分组步骤下的子组目录嵌套为 `<步骤>/<父>/children/<名>`。步骤使用 `.running`／`.completed` 与依赖产物哈希，`groups.json` 是名称、note 与结构视图。轮廓与补全会话保存在 `agents/steps/<步骤>/session.json`（步骤路径同上，子组含 `children/<名>`），续跑恢复同一会话；被替换的会话追加到同目录 `session.json.history.jsonl`。重做某步骤会删除其整个会话目录（含历史）。布局转换不改写 `agents/`，转换前的会话不再续接。reviewer、去重、子组分析每次独立调用。
 
-默认草稿：轮廓 `groups/<id>/step01/workspace/outline.draft.svg`，补全 `groups/<id>/step02/workspace/completion.draft.svg`，去重 `layers/depthNN/workspace/<id>.draft.svg`。工具参数与依赖记录中的相对路径以任务根目录为基准且不能越出，绝对路径照常接受；生图输入与结果路径必须为绝对路径。也可交付其他本地 SVG 路径，通过校验后由程序保存到正式位置，自选源文件保留。整树完成后程序合并终止部件、隔离资源 ID 并发布 preview，保留逻辑父容器。相同输入复用结果，内容改变只重跑实际依赖；主动删除完成标记或产物会重做对应步骤及下游。旧 stages/ 布局可继续浏览，运行时需要当前事实布局；原参考、调用与其他 section 成果保持各自归属。
+默认草稿：轮廓 `step09_outline/<id>/workspace/outline.draft.svg`，补全 `step11_completion/<id>/workspace/completion.draft.svg`，去重 `step10_reduce/depthNN/workspace/<id>.draft.svg`。工具参数与依赖记录中的相对路径以任务根目录为基准且不能越出，绝对路径照常接受；生图输入与结果路径必须为绝对路径。也可交付其他本地 SVG 路径，通过校验后由程序保存到正式位置，自选源文件保留。整树完成后程序合并终止部件、隔离资源 ID 并发布 preview，保留逻辑父容器。相同输入复用结果，内容改变只重跑实际依赖；主动删除完成标记或产物会重做对应步骤及下游。旧 stages/ 布局可继续浏览，运行时需要当前事实布局；原参考、调用与其他 section 成果保持各自归属。
 
 ## 深度规划
 

@@ -172,7 +172,7 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .flow-footnote{padding:8px 12px}
 
 /* Execution lives in the task tab; the selected section fills the preview tab. */
-.pipeline-overview{flex:1;min-height:0;overflow:auto}
+.section-overview{flex:1;min-height:0;overflow:auto}
 .overview-heading{display:flex;align-items:center;gap:16px;padding:12px 0 24px}
 .overview-heading h2{font-size:18px;font-weight:600}
 .overview-heading p{margin-top:8px;color:var(--muted);font-size:12px}

@@ -26,11 +26,13 @@ pnpm web --port 4387
 标题栏右上角按任务状态显示操作：运行中只有“停止”（当前 runner 无法停止时置灰并说明原因）；空闲时提供继续／恢复／重试，一次作用于任务里全部中断或失败的步骤，覆盖人物与衣服的分块、绘制、组装和阴影；全流程完成后另有“导出成果”。成果归档只显示“成果归档”与导出。操作在任务锁内执行，完成后按任务保存的路线在后台重新运行：
 
 - **继续**：不改任何文件，保留产物和会话从中断处续跑。
-- **恢复**：清除该步骤的会话、保留产物，下次在新会话中继续。所有管线的步骤会话统一保存在 `<管线>/agents/steps/<步骤>/session.json`（thread、harness、待交接信息），旧记录追加到 `session.json.history.jsonl`；旧任务分块目录内的 `session.json` 和 raster `run.json` 中的 thread 字段在操作时迁入该位置。没有会话的一次性步骤，恢复等同继续。
+- **恢复**：清除该步骤的会话、保留产物，下次在新会话中继续。所有管线的步骤会话统一保存在 `<管线>/agents/steps/<步骤>/session.json`（thread、harness、待交接信息），旧记录追加到 `session.json.history.jsonl`。没有会话的一次性步骤，恢复等同继续。
 - **重试**：删除这些步骤的目录（含会话）及其登记的产物与草稿，例如补全的 `parts/<id>.svg`、合并的 `preview.svg`、遮挡的 `occlusion.json`；依赖它的后续步骤由续跑校验自动重跑，无关步骤保留。已完成的步骤不受影响；重试需确认后执行。产物在管线目录之外的步骤（如输入原图）不能在此重试。
 
+旧布局任务在标题栏显示“需转换目录”及“转换目录”按钮，调用 `POST /api/convert-layout {name}`：先把原目录完整复制到运行根目录的 `.backups/`，再整体迁移到当前布局；早于上一版本的布局只提示，不提供转换。
+
 标题栏的继续／恢复／重试调用 `POST /api/task-action {name, action}`，一次作用于任务里全部中断或失败的步骤，随后重新运行任务；没有任何步骤记录时，继续打开运行对话框。
-单个步骤仍可用 `POST /api/step-action {name, pipeline, step, action}`（CLI 等客户端），`step` 为管线目录下的步骤路径，如 `groups/head/children/eye/step02`、`layers/depth01`、`step02`。阴影按总控记录的方式定位 `shadow/<模式>/`。命令行对应 `pnpm start --name <任务名> --continue|--resume|--retry [--pipeline <section> --step <步骤>]`，停止为 `pnpm start --name <任务名> --stop`。
+单个步骤仍可用 `POST /api/step-action {name, section, step, action}`（CLI 等客户端），`step` 为管线目录下的步骤路径，如 `step11_completion/head/children/eye`、`step10_reduce/depth01`、`step02`、`step01_mask`。命令行对应 `pnpm start --name <任务名> --continue|--resume|--retry [--section <管线> --step <步骤>]`，停止为 `pnpm start --name <任务名> --stop`。
 
 ## 任务执行与流程预览
 
@@ -162,7 +164,7 @@ pnpm web
 | 法线 | `lighting/normal.png` |
 | 深度 | `lighting/depth.png` |
 
-角色工程沿用已有组装管线。法线 / 深度路径是阴影管线 normal-depth 分支的固定发布约定。未生成时显示“待管线生成”，仍可预览角色原画；组装结果缺失则显示等待状态，不使用任意 KRA 或参考图代替。管线产出后点“更新项目”（或重新打开项目）自动绑定，操作会重置本次图层改动。管线负责保证贴图与组装原画对应，尺寸不符仍明确拒绝。
+角色工程沿用已有组装管线。法线 / 深度路径是阴影 normal-depth 模式的固定发布约定。未生成时显示“待管线生成”，仍可预览角色原画；组装结果缺失则显示等待状态，不使用任意 KRA 或参考图代替。管线产出后点“更新项目”（或重新打开项目）自动绑定，操作会重置本次图层改动。管线负责保证贴图与组装原画对应，尺寸不符仍明确拒绝。
 
 项目模式隐藏手动选择 / 移除贴图；本地 KRA / PSD / PNG 导入继续支持手动绑定。`?name=jianma` 保留归档快捷入口兼容性；当前项目使用 `?project=jianma`。项目选择尊重网页配置的运行目录，目录改变时旧页面请求会被拒绝。
 
@@ -170,7 +172,7 @@ pnpm web
 
 整条流程在组装后进入阴影制作，运行面板的“阴影方式”默认 Live2D 蒙版，可改法线＋深度。独立运行阴影时使用当前任务组装结果，不重新上传图片。LLM 职责为 `layering_agent_shadow_model`，蒙版不启用生图，法线／深度生图配置为 `layering_shadow_maps_image_model`，沿用现有配置和服务。
 
-两分支进度及产物同时展示，续跑只检查所选分支。最后完整交付的路线写入 `shadow/selection.json`；制作选择记录该路线。产物接口可通过 `preview=mask|normal-depth|mixed` 选择预览文件，不改制作选择；角色前端优先载入完整可用的蒙版工程，显隐由其图层控制。混合预览要求两分支的 `step01/source.json` 都匹配当前组装 KRA / PNG；源工程改变则暂停旧结果，不能用新分支记录验证旧分支。
+两种模式的进度及产物同时展示，续跑只检查所选模式的 step01。最后完整交付的路线写入 `shadow/selection.json`；制作选择记录该路线。产物接口可通过 `preview=mask|normal-depth|mixed` 选择预览文件，不改制作选择；角色前端优先载入完整可用的蒙版工程，显隐由其图层控制。混合预览要求两种模式的 `step01_<模式>/source.json` 都匹配当前组装 KRA / PNG；源工程改变则暂停旧结果，不能用一种模式的记录验证另一种模式。
 
 角色工作台左侧选择“贴图投影”或“光照”，右侧排列对应工具。投影工作台解析蒙版分支的正式 `shadows.json`，以 `shadowLayerUuid` 关联 Krita `Node.uniqueId()`；逐条开关和定位与左下原生图层面板同步，实际蒙版裁切、混合和透明度继承仍交给 Krita。关系文件缺失或 UUID 未找到时不按名字猜测。
 

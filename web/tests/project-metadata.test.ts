@@ -12,7 +12,7 @@ test('Chinese project names persist across views and restarts without changing a
   const name = 'character-01', folder = join(dir, name);
   await mkdir(folder); await mkdir(join(folder, '.runner.lock'));
   const run = JSON.stringify({ version: 1, name, dir, jobs: 1, from: 'part-layering', to: 'part-layering', status: 'running',
-    activeSection: 'part-layering', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+    activeSections: ['part-layering'], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
     sections: { 'part-layering': { status: 'running', updatedAt: new Date().toISOString() } },
     runner: { id: 'fixture', pid: process.pid, startedAt: new Date().toISOString() } });
   await writeFile(join(folder, 'run.json'), run);

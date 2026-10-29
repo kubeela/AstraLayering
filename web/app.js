@@ -402,7 +402,7 @@ function projectPage() {
  const cards=indexes=>indexes.filter(index=>stages[index]&&visibleStage(index)).map(index=>overviewCard(stages[index],index)).join('');
  const column=(kind,title,html)=>html?`<div class="overview-column ${kind}"><small class="overview-column-title">${title}</small>${html}</div>`:'';
  const lanes=[{name:'人物线',stages:[1]},{name:'衣服线',stages:[2,3]}].map(lane=>({...lane,html:cards(lane.stages)})).filter(lane=>lane.html);
- return `${pageHeading()}${runNotice()}<section class="pipeline-overview">
+ return `${pageHeading()}${runNotice()}<section class="section-overview">
  <div class="overview-heading"><div><h2>管线执行</h2><p>人物分块准备完成后，人物线与衣服线并行执行，共用同一组 agent 名额，在穿戴组装合流。选择管线，打开完整进展图。</p></div></div>
  <div class="overview-flow">${column('overview-start','共同准备',cards([0]))}${lanes.length?`<div class="overview-lanes">${lanes.map(lane=>`<div class="overview-lane"><small class="overview-column-title">${lane.name}</small><div class="overview-lane-cards">${lane.html}</div></div>`).join('')}</div>`:''}${column('overview-merge','合流',cards([4,5]))}</div></section>`;
 }

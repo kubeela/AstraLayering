@@ -20,7 +20,7 @@ async function previousTask(t: { after(fn: () => Promise<void>): void }) {
   const runs = await mkdtemp(join(tmpdir(), 'layout-')), task = join(runs, 'demo');
   t.after(() => rm(runs, { recursive: true, force: true }));
   const part = join(task, 'part-layering');
-  await put(task, 'run.json', { version: 1, name: 'demo', pipelines: { 'part-layering': { status: 'completed' } }, from: 'part-layering', to: 'shadow', jobs: 1, status: 'completed' });
+  await put(task, 'run.json', { version: 1, name: 'demo', pipelines: { 'part-layering': { status: 'completed' } }, from: 'part-layering', to: 'shadow', jobs: 1, status: 'failed', activePipelines: ['shadow'] });
   await put(part, 'references/standard.png', 'standard');
   const standardOutputs = { '../../references/standard.png': sha('standard') };
   await put(part, 'preparation/step04/.completed', { stamp: sha(standardOutputs), inputs: {}, outputs: standardOutputs });
@@ -48,6 +48,8 @@ test('a previous-layout task converts as a whole after a full backup, keeping it
   assert.equal(await layoutState(task), 'current');
   await requireCurrentLayout(task);
   assert.equal((await readRun(task, 'demo'))!.sections['part-layering']?.status, 'completed');
+  const run = await json(task, 'run.json');
+  assert.deepEqual([run.activeSections, run.activePipelines, run.pipelines], [['shadow'], undefined, undefined]);
 
   // The backup is the untouched old directory.
   assert.equal(dirname(result.backup), join(runs, '.backups'));
