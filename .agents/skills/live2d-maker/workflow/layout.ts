@@ -23,7 +23,6 @@ const oldPartDirs = ['preparation', 'initial', 'groups', 'layers', 'merge', 'occ
 const shadowModes = ['mask', 'normal-depth'];
 const threadFields = ['threadId', 'threadHarness', 'threadStep', 'threadHandoff'] as const;
 const legacyRunFields = [...threadFields, 'inputFingerprint'] as const;
-const sessionFiles = ['session.json', 'session.json.history.jsonl'];
 
 async function present(path: string): Promise<boolean> {
   try { await lstat(path); return true; }
@@ -81,11 +80,7 @@ function mapPart(section: string, segments: string[]): Mapped {
   const [head, ...tail] = segments;
   if (head === 'preparation') {
     if (section !== 'part-layering') return;
-    if (tail[0] === 'agents') {
-      if (tail[1] !== 'steps') return { path: [section, ...tail].join('/'), rest: [] };
-      const id = preparationIds[tail[2]];
-      return id === undefined ? undefined : id === null ? null : { path: [section, 'agents', 'steps', id, ...tail.slice(3)].join('/'), rest: [] };
-    }
+    if (tail[0] === 'agents') return { path: [section, ...tail].join('/'), rest: [] };
     const id = preparationIds[tail[0]];
     return id === undefined ? undefined : id === null ? null : stepIn(section, [id], tail.slice(1));
   }
@@ -101,12 +96,6 @@ function mapPart(section: string, segments: string[]): Mapped {
   if (head === 'layers') return tail[0] ? stepIn(section, [partSteps.reduce, tail[0]], tail.slice(1)) : undefined;
   if (head === 'merge') return stepIn(section, [partSteps.merge], tail);
   if (head === 'occlusion') return stepIn(section, [partSteps.occlusion], tail);
-  if (head === 'agents' && tail[0] === 'steps') {
-    // agents/steps/<step id>/<file>: the id has the same form as the step's directory.
-    const inner = mapPart(section, tail.slice(1));
-    if (!inner || !inner.step) return inner;
-    return { path: [section, 'agents', 'steps', inner.step, ...inner.rest].join('/'), rest: [] };
-  }
   if (section === 'clothing-part-layering' && segments.join('/') === 'references/preparation.json') return null;
   return { path: [section, ...segments].join('/'), rest: [] };
 }
@@ -118,11 +107,7 @@ function mapShadow(segments: string[]): Mapped {
   if (tail[0] === 'run.json' && tail.length === 1) return { path: 'shadow/run.json', rest: [] };
   if (tail[0] === 'step01') return stepIn('shadow', [shadowStep(mode)], tail.slice(1));
   if (mode === 'normal-depth' && tail[0] === 'step02') return null;
-  if (tail[0] === 'agents') {
-    if (tail[1] !== 'steps') return { path: ['shadow', ...tail].join('/'), rest: [] };
-    if (tail[2] === 'step01') return { path: ['shadow', 'agents', 'steps', shadowStep(mode), ...tail.slice(3)].join('/'), rest: [] };
-    return mode === 'normal-depth' && tail[2] === 'step02' ? null : undefined;
-  }
+  if (tail[0] === 'agents') return { path: ['shadow', ...tail].join('/'), rest: [] };
 }
 
 // Maps an old task-relative path, a file or directory.
@@ -131,7 +116,6 @@ export function mapPath(path: string): Mapped {
   if (!(sectionIds as readonly string[]).includes(section) || !segments.length) return { path, rest: [] };
   if ((partSections as readonly string[]).includes(section)) return mapPart(section, segments);
   if (section === 'shadow') return mapShadow(segments);
-  if (segments[0] === 'agents' && segments[1] === 'steps') return { path, rest: [] };
   return stepPattern.test(segments[0]) ? stepIn(section, [segments[0]], segments.slice(1)) : { path, rest: [] };
 }
 
@@ -201,24 +185,19 @@ async function convertLocked(directory: string, progress?: (message: string) => 
   // Plan every move before anything changes.
   const unknown: string[] = [], retired = new Set<string>(), entries: Entry[] = [];
   for (const file of files) {
-    let mapped = mapPath(file);
+    const mapped = mapPath(file);
     if (mapped === undefined) { unknown.push(file); continue; }
     if (mapped === null) { retired.add(file); continue; }
-    // Sessions kept in a step directory move to the section's session store.
-    if (mapped.step && mapped.rest.length === 1 && sessionFiles.includes(mapped.rest[0])) {
-      mapped = { path: [mapped.section, 'agents', 'steps', mapped.step, mapped.rest[0]].join('/'), rest: [] };
-    }
     entries.push({ old: file, target: mapped.path });
   }
   if (unknown.length) throw new Error(`以下文件不在已知的旧版目录布局中，未做任何改动：\n${unknown.slice(0, 20).join('\n')}${unknown.length > 20 ? `\n…共 ${unknown.length} 个` : ''}`);
-  // One shadow run.json serves both modes; a session in the store wins over a legacy copy.
+  // One shadow run.json serves both modes; the mask one is kept.
   const byTarget = new Map<string, Entry[]>();
   for (const entry of entries) byTarget.set(entry.target, [...byTarget.get(entry.target) ?? [], entry]);
   for (const [target, group] of byTarget) {
     if (group.length < 2) continue;
-    const keep = target === 'shadow/run.json' ? group.find(entry => entry.old === 'shadow/mask/run.json')
-      : group.find(entry => entry.old.includes('/agents/steps/'));
-    if (!keep || (target !== 'shadow/run.json' && !sessionFiles.includes(basename(target)))) {
+    const keep = target === 'shadow/run.json' ? group.find(entry => entry.old === 'shadow/mask/run.json') : undefined;
+    if (!keep) {
       throw new Error(`转换后路径冲突，未做任何改动：${target}\n${group.map(entry => entry.old).join('\n')}`);
     }
     for (const entry of group) if (entry !== keep) { retired.add(entry.old); entries.splice(entries.indexOf(entry), 1); }
@@ -231,7 +210,6 @@ async function convertLocked(directory: string, progress?: (message: string) => 
     filter: source => source !== join(directory, '.runner.lock') && !source.startsWith(join(directory, '.runner.lock') + sep) });
 
   const contents = new Map<string, string>();
-  const targetOf = new Map(entries.map(entry => [entry.old, entry.target]));
   const read = (path: string) => readFile(join(directory, path), 'utf8');
 
   // Step records: outputs re-keyed for the new directories, output stamps
@@ -274,25 +252,10 @@ async function convertLocked(directory: string, progress?: (message: string) => 
     contents.set(old, JSON.stringify(record) + '\n');
   }
 
-  // Section configurations: the legacy run.json thread moves to its step's session.
+  // Section configurations: legacy thread fields are dropped; agents/ records stay as they are.
   for (const entry of entries.filter(entry => /^[^/]+(\/(mask|normal-depth))?\/run\.json$/.test(entry.old))) {
     const config = JSON.parse(await read(entry.old));
     if (!legacyRunFields.some(field => field in config)) continue;
-    if (config.threadId || config.threadHandoff) {
-      const unit = dirname(entry.old);
-      let owner: string | undefined = config.threadStep ?? (config.threadId ? 'step01' : undefined);
-      if (!owner) owner = markers.find(marker => basename(marker.old) === '.running' && oldUnit(marker.old) === unit && dirname(dirname(marker.old)) === unit)
-        ?.old.split('/').at(-2);
-      const id = owner && mapId(owner, unit);
-      if (id) {
-        const section = dirname(entry.target), session = `${section}/agents/steps/${id}/session.json`;
-        if (![...targetOf.values()].includes(session)) {
-          contents.set(`\0${session}`, JSON.stringify({ ...(config.threadId ? { threadId: config.threadId } : {}),
-            ...(config.threadHarness ? { harness: config.threadHarness } : {}), ...(config.threadHandoff ? { handoff: config.threadHandoff } : {}) }, null, 2) + '\n');
-          notes.push(`${entry.old} 的会话移到 ${session}`);
-        }
-      }
-    }
     for (const field of legacyRunFields) delete config[field];
     contents.set(entry.old, JSON.stringify(config, null, 2) + '\n');
   }
