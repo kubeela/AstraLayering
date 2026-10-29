@@ -135,7 +135,7 @@ test('task assets reject traversal and symlinks; SVG is served sandboxed; versio
   const svg = await fetch(artifact('out.svg'));
   assert.equal(svg.status, 200); assert.match(svg.headers.get('content-security-policy')!, /sandbox/);
   const files = await (await fetch(f.url + '/api/config/files?ref=HEAD')).json() as any;
-  assert.ok(files.paths.includes('part-layering/prompts/11-遮挡层级规划.md'));
+  assert.ok(files.paths.includes('knowledge/part-layering/step14_occlusion/prompts/11-遮挡层级规划.md'));
   const localFiles = await (await fetch(f.url + '/api/config/files?ref=worktree')).json() as any;
   assert.ok(localFiles.paths.includes('presets/optimized.env'));
   assert.ok(localFiles.paths.includes('references/model-presets.md'));
