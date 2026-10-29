@@ -1,9 +1,9 @@
-import { stepId } from '../step-section.ts';
+import { partSteps, stepNumber, stepPattern } from '../step-paths.js';
 
-// Fixed identities shared by preparation checkpoints and agent workspaces.
-// The retired style judgment used step05; retain every other step number.
-export const preparationNumbers = { original: 1, options: 2, pose: 3, standard: 4, simplified: 6, base: 7, ready: 8 } as const;
-export type PreparationStage = keyof typeof preparationNumbers;
-export const preparationStages = Object.keys(preparationNumbers) as PreparationStage[];
-export const stageStep = (stage: PreparationStage) => stepId(preparationNumbers[stage]);
+// The preparation stages are the first steps of the part section.
+export const preparationStages = ['original', 'options', 'pose', 'standard', 'simplified', 'base', 'ready'] as const;
+export type PreparationStage = typeof preparationStages[number];
+export const stageStep = (stage: PreparationStage) => partSteps[stage];
+export const stageNumber = (stage: PreparationStage) => stepNumber(partSteps[stage])!;
+export const stageNote = (stage: PreparationStage) => stepPattern.exec(partSteps[stage])![2];
 export const stepStage = (id: string) => preparationStages.find(stage => stageStep(stage) === id)!;

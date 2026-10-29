@@ -1,4 +1,5 @@
 import { shadowMode, type ShadowMode } from '../shared/shadow.ts';
+import { stepPattern } from '../shared/step-paths.js';
 import { randomUUID, createHash } from 'node:crypto';
 import { copyFile, mkdir, readFile, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -135,7 +136,7 @@ export async function taskKrita(options: Pick<TaskOptions, 'name' | 'dir' | 'kri
   saved: Pick<TaskRun, 'krita'> | undefined, selected: PipelineId[]): Promise<string | undefined> {
   if (options.krita) return resolveInput(options.name, options.krita, options.dir);
   if (saved?.krita || !usesKrita(selected)) return saved?.krita;
-  for (const id of ['raster-layering', 'clothing-raster-layering', 'character-assembly', 'shadow/mask', 'shadow/normal-depth']) {
+  for (const id of ['raster-layering', 'clothing-raster-layering', 'character-assembly', 'shadow']) {
     try {
       const config = JSON.parse(await readFile(join(directory, id, 'run.json'), 'utf8'));
       if (typeof config.krita?.executable === 'string') return config.krita.executable;
@@ -177,12 +178,12 @@ export async function taskStatus(options: Pick<TaskOptions, 'name' | 'dir'>) {
   const runnerAlive = !run.runner?.finishedAt && processAlive(run.runner?.pid);
   const lockHeld = await lockfile.check(directory, { lockfilePath: join(directory, '.runner.lock'), stale: 30_000 });
   const pipelines = await Promise.all(selectedPipelines(run.from, run.to).map(async id => {
-    const path = join(directory, id, id === 'shadow' ? shadowMode(run.shadowMode) : '');
+    const path = join(directory, id);
     let threadId: string | null | undefined, steps: { name: string; status: string }[] = [];
     try {
       await stat(join(path, 'run.json'));
       const entries = await readdir(path);
-      steps = await Promise.all(entries.filter(name => /^step\d{2}$/.test(name)).sort().map(async name => ({
+      steps = await Promise.all(entries.filter(name => stepPattern.test(name)).sort().map(async name => ({
         name, status: await stat(join(path, name, '.completed')).then(() => 'completed', () =>
           stat(join(path, name, '.running')).then(() => 'running', () => 'unmarked')),
       })));

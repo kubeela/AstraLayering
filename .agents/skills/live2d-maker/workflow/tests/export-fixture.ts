@@ -7,7 +7,8 @@ import sharp from 'sharp';
 import { zipSync } from 'fflate';
 import { pipelineIds } from '../../shared/paths.ts';
 import { artifactPath, reportPath, svgHash } from '../../shared/part/artifact-facts.ts';
-import { groupStepId, layerStepId, initialStepId } from '../../shared/part/part-steps.ts';
+import { groupStepId, groupSteps, layerStepId } from '../../shared/part/part-steps.ts';
+import { clothingPreparationStep, partSteps } from '../../shared/step-paths.js';
 import { steps as personSteps } from '../../raster-layering/steps.ts';
 import { steps as clothingSteps } from '../../clothing-raster-layering/steps.ts';
 import { steps as assemblySteps } from '../../character-assembly/steps.ts';
@@ -34,12 +35,13 @@ export async function exportFixture(t: TestContext) {
     ] };
     await put(pipeline + '/groups.json', JSON.stringify({ groups })); await put(pipeline + '/occlusion.json', JSON.stringify(plan));
     await put(pipeline + '/preview.svg', '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><path d="M0 0L8 8"/></svg>');
-    for (const step of [initialStepId, layerStepId(0), 'merge', 'occlusion', 'preparation/step04', 'preparation/step06', 'preparation/step07']) await mark(pipeline + '/' + step);
+    for (const step of [partSteps.initial, layerStepId(0), partSteps.merge, partSteps.occlusion,
+      ...(pipeline === 'part-layering' ? [partSteps.standard, partSteps.simplified, partSteps.base] : [clothingPreparationStep])]) await mark(pipeline + '/' + step);
     for (const reference of pipeline === 'part-layering' ? ['standard', 'simplified-subject', 'base-subject'] : ['clothing']) await put(pipeline + '/references/' + reference + '.png', png);
     for (const group of groups) {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8"><g id="part-${group.id}" data-group-path="${group.id}"><path d="M1 1H7V7H1Z" fill="#aabbcc"/></g></svg>`;
       for (const stage of ['outline', 'reduction', 'completion'] as const) await put(artifactPath(pipeline, group.id, stage), svg);
-      for (const step of [1, 2, 3] as const) await mark(pipeline + '/' + groupStepId(group.id, step));
+      for (const step of groupSteps) await mark(pipeline + '/' + groupStepId(group.id, step));
       await put(reportPath(pipeline, group.id, 'review'), JSON.stringify({ groupId: group.id, reviews: [
         { verdict: 'pass', candidateHash: svgHash(svg), feedback: '复核通过', observations: [], updatedAt: run.updatedAt },
       ] }));
@@ -47,7 +49,7 @@ export async function exportFixture(t: TestContext) {
       await put(reportPath(pipeline, group.id, 'children'), JSON.stringify({ groupId: group.id, groups: [] }));
     }
   }
-  for (const [pipeline, steps] of [['raster-layering', personSteps], ['clothing-raster-layering', clothingSteps], ['character-assembly', assemblySteps], ['shadow/mask', maskSteps]] as const) {
+  for (const [pipeline, steps] of [['raster-layering', personSteps], ['clothing-raster-layering', clothingSteps], ['character-assembly', assemblySteps], ['shadow', maskSteps]] as const) {
     for (const step of steps) {
       for (const file of step.requiredFiles) await put(pipeline + '/' + step.id + '/' + file,
         file.endsWith('.kra') ? kra : file.endsWith('.png') ? png : file.endsWith('.json') ? '{}' : '结论：已完成\n绘制通过。\n');
@@ -66,7 +68,7 @@ export async function exportFixture(t: TestContext) {
   await put('raster-layering/step01/orphan.png', png);
   await put('physics/step01/.completed', '{"stamp":"physics","inputs":{},"outputs":{"physics.png":"test"}}');
   await put('physics/step01/physics.png', png);
-  await put('shadow/mask/step01/inspection/overview.png', png);
-  await put('shadow/mask/step01/inspection/relation-000-review.png', png);
+  await put('shadow/step01_mask/inspection/overview.png', png);
+  await put('shadow/step01_mask/inspection/relation-000-review.png', png);
   return { base, dir, root, name, run, put, png, kra, artHash: createHash('sha256').update(kra).digest('hex') };
 }

@@ -20,10 +20,10 @@ async function noteFixture(t: TestContext, note: string) {
     { id: 'tail', kind: 'part', name: 'tail', note: '独立长幅', metadata: { preserved: true } },
   ]);
   const store = await GroupStore.open(f.directory);
-  const candidate = join(f.directory, 'groups/band/step01/outline.svg');
+  const candidate = join(f.directory, 'step09_outline/band/outline.svg');
   await writeAtomic(candidate, shape('band'));
   return { ...f, store, group: findGroup(store.snapshot(), 'band'), outline: { path: candidate },
-    outputPath: candidate, reportPath: join(f.directory, 'groups/band/step01/review.json') };
+    outputPath: candidate, reportPath: join(f.directory, 'step09_outline/band/review.json') };
 }
 
 test('note-only feedback is persisted and visible to the next reviewer without changing correct geometry', async t => {

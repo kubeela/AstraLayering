@@ -13,7 +13,7 @@ import { checkKrita, type KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import { readStep, type ChainStep, type StepStatus } from '../step-chain.ts';
 import { runSection, type SectionPlan } from '../step-section.ts';
-import { clearStepSession, migrateRunSession, readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
+import { clearStepSession, readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
 import { canonicalPath, fileInfo, initializeRun, loadConfig, newConfig, rasterSteps, saveConfig, taskPaths, within } from './run-store.ts';
 import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
@@ -53,11 +53,8 @@ async function checkFiles(directory: string, files: readonly string[]): Promise<
 export type Passthrough = { reason: string; deliver(): Promise<void> };
 export type KritaPipeline<Input> = {
   id: Extract<PipelineId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow'>;
-  directorySuffix?: string;
   // `krita`: the section's Krita, reserved when the step uses Krita.
   tools?(output: string, input: Input, step: StepDefinition, phase: string, krita?: SectionKrita): NonNullable<AgentRequest['tools']>;
-  fingerprintInput?(input: Input): Promise<string>;
-  compatibleInputFingerprint?(input: Input, recorded: string | undefined): Promise<boolean>;
   // The upstream pipeline's final step; step01 records its stamp and reruns when it changes.
   upstreamStep?(input: Input): ChainStep;
   prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
@@ -86,8 +83,7 @@ async function upstreamSteps(step: ChainStep | undefined): Promise<ChainStep[]> 
 
 export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options: WorkflowOptions, dependencies: Dependencies = {}): Promise<string> {
   const root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
-  if (pipeline.directorySuffix && !/^[a-z][a-z-]*$/.test(pipeline.directorySuffix)) throw new Error('无效的管线分支目录');
-  const requested = join(pipelineDirectory(options.name, pipeline.id, root), pipeline.directorySuffix ?? '');
+  const requested = pipelineDirectory(options.name, pipeline.id, root);
   const saved = await loadConfig<Input>(requested, options.name, pipeline.validateInput);
   const directory = await canonicalPath(requested);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
@@ -102,9 +98,6 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
     }
   }
   const reference = await pipeline.resolveInput(options.name, root);
-  const fingerprint = await pipeline.fingerprintInput?.(reference);
-  const inputChanged = !!saved && fingerprint !== undefined && saved.inputFingerprint !== fingerprint
-    && !(await pipeline.compatibleInputFingerprint?.(reference, saved.inputFingerprint));
   const inputDirectories = pipeline.inputDirectories(reference);
   const upstream = await upstreamSteps(pipeline.upstreamStep?.(reference));
   for (const source of inputDirectories) {
@@ -114,8 +107,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
   if (!configuredKrita?.trim()) throw new Error('首次运行必须提供 --krita <已安装的 Krita 可执行文件路径>。');
   const kritaPath = options.krita === undefined ? configuredKrita : resolveInput(options.name, configuredKrita, root);
   const krita = await (dependencies.preflight ? dependencies.preflight(kritaPath) : checkKrita(kritaPath, environment.codex.env));
-  const config = !saved || inputChanged ? newConfig(options.name, reference, krita) : saved;
-  if (fingerprint !== undefined) config.inputFingerprint = fingerprint;
+  const config = saved ?? newConfig(options.name, reference, krita);
   // run.json records inputs relative to the task root; the absolute reference stays in memory.
   const taskRoot = taskRootOf(directory);
   config.sourceInput = await taskPaths(taskRoot, reference);
@@ -134,7 +126,7 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
     record: join(directory, kritaRecordFile) });
   const kritaTool = createKritaTool(sectionKrita, taskRoot);
   try { await runSection({ directory, root: taskRoot, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
-    progress: options.progress, fresh: inputChanged, resetNote: '，并清除这些步骤的 thread',
+    progress: options.progress, resetNote: '，并清除这些步骤的 thread',
     // Validate retained deliveries before making any reset destructive.
     async keep(chainStep) {
       const step = byId.get(chainStep.id)!;
@@ -144,13 +136,8 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
       if (!options.dryRun) await logDeliveryWarnings(step);
     },
     async prepare(plan) {
-      if (inputChanged) {
-        const archive = directory + '.previous-' + randomUUID();
-        await rename(directory, archive);
-        options.progress?.(`输入或制作规则已变化；旧分支已保留到 ${archive}，重新制作本分支。`);
-      }
-      if (!saved || inputChanged) await initializeRun(directory, config);
-      else { await migrateRunSession(directory, config); await saveConfig(directory, config); }
+      if (!saved) await initializeRun(directory, config);
+      else await saveConfig(directory, config);
     },
     step: (chainStep, status, plan) => stepWork(byId.get(chainStep.id)!, status, plan),
   }); } finally { await sectionKrita.release(); }
@@ -303,7 +290,6 @@ export async function runWorkflow<Input>(pipeline: KritaPipeline<Input>, options
           validate: () => checkFiles(output, step.requiredFiles),
         });
       }
-      if (fingerprint !== undefined && await pipeline.fingerprintInput?.(reference) !== fingerprint) throw new Error('制作期间上游输入改变，保留进度；续跑将重新制作本分支。');
       await pipeline.prepareDelivery?.(output, reference, step);
       await publishReportAssets(join(output, 'report.md'), join(output, 'workspace'));
       await checkFiles(output, step.requiredFiles);

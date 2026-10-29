@@ -1,32 +1,23 @@
-import type { Harness } from '../agents/models.ts';
 import { lstat, mkdir, mkdtemp, readFile, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { isPartLayeringInput, type PartLayeringInput } from './input.ts';
 import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import type { StepStatus } from '../step-chain.ts';
-import { inspectSection, stepId, type SectionPlan, type SectionStep } from '../step-section.ts';
+import { inspectSection, type SectionPlan, type SectionStep } from '../step-section.ts';
+import { stepNumber, stepPattern } from '../step-paths.js';
 import { fromTaskPath, taskRootOf, toTaskPathReal } from '../task-paths.ts';
 
-import type { ThreadHandoff } from '../agents/step-session.ts';
-export type { ThreadHandoff };
+// Sessions live per step in agents/steps/<step>/session.json (see step-session.ts).
 export type RunConfig<Input = PartLayeringInput> = {
   version: 2;
   name: string;
   sourceInput: Input;
-  inputFingerprint?: string;
   krita: KritaInstallation;
-  // Legacy: sessions live per step in agents/steps/<step>/session.json
-  // (see step-session.ts); a run migrates these fields there and drops them.
-  threadId?: string | null;
-  threadHarness?: Harness;
-  threadStep?: string;
-  threadHandoff?: ThreadHandoff;
 };
 export type { StepStatus };
 export type RunPlan = SectionPlan;
 
-export { stepId };
 export function within(parent: string, path: string): boolean {
   const name = relative(parent, path);
   return name === '' || (!name.startsWith(`..${sep}`) && name !== '..' && !isAbsolute(name));
@@ -79,22 +70,13 @@ export async function loadConfig<Input = PartLayeringInput>(directory: string, n
   const config = JSON.parse(await readFile(file, 'utf8')) as RunConfig<Input> & { models?: unknown };
   if (config?.version !== 2 || config.name !== name
     || !validateInput(config.sourceInput)
-    || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim()
-    || !(config.threadId === undefined || config.threadId === null || (typeof config.threadId === 'string' && !!config.threadId.trim()))
-    || (config.threadStep !== undefined && (typeof config.threadStep !== 'string' || !config.threadStep.trim()))
-    || (config.threadHandoff !== undefined && !validHandoff(config.threadHandoff))) {
+    || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim()) {
     throw new Error(`无效的任务配置：${file}`);
   }
   // Old snapshots are ignored and removed on the next save. Model selection
   // belongs to the current environment; sessions belong to their steps.
   delete config.models;
   return config;
-}
-
-function validHandoff(value: ThreadHandoff): boolean {
-  return !!value && ['id', 'previousThreadId', 'notes', 'reason', 'createdAt'].every(key =>
-    typeof value[key as keyof ThreadHandoff] === 'string' && !!value[key as keyof ThreadHandoff]?.trim())
-    && (value.replacementThreadId === undefined || (typeof value.replacementThreadId === 'string' && !!value.replacementThreadId.trim()));
 }
 
 export function newConfig<Input>(name: string, input: Input, krita: KritaInstallation): RunConfig<Input> {
@@ -124,9 +106,9 @@ export async function initializeRun(directory: string, config: RunConfig<unknown
 // parts reruns the artwork built on them.
 export function rasterSteps(steps: readonly StepDefinition[], upstream: readonly string[] = []): SectionStep[] {
   return steps.map((step, index) => {
-    if (step.id !== stepId(index + 1)) throw new Error('已定义步骤必须从 step01 开始连续排列。');
-    const outputs = step.requiredFiles.filter(file => /\.(kra|png)$/i.test(file));
-    return { number: index + 1, ...(index === 0 && upstream.length ? { upstream } : {}), ...(outputs.length ? { outputs } : {}) };
+    if (stepNumber(step.id) !== index + 1) throw new Error('已定义步骤必须从 step01 开始连续排列。');
+    const outputs = step.requiredFiles.filter(file => /\.(kra|png)$/i.test(file)), note = stepPattern.exec(step.id)![2];
+    return { number: index + 1, ...(note ? { note } : {}), ...(index === 0 && upstream.length ? { upstream } : {}), ...(outputs.length ? { outputs } : {}) };
   });
 }
 

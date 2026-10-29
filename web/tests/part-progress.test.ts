@@ -30,68 +30,68 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   const group = { id: 'body', kind: 'group', groups: [] };
   await f.put('groups.json', { groups: [group] });
   const original = await readFile(join(f.task, pipeline, 'groups.json'));
-  await f.put('groups/body/step01/outline.draft.svg', svg);
+  await f.put('step09_outline/body/outline.draft.svg', svg);
   let value = await f.get();
   assert.equal(value.part.groups[0].webPhases.outline, 'available');
   assert.equal(value.part.groups[0].webMessages.outline, '已有产物');
   assert.match(value.part.groups[0].webDetails.outline, /草稿/);
-  const version = value.fileVersions[pipeline + '/groups/body/step01/outline.draft.svg'];
-  await f.put('groups/body/step01/outline.draft.svg', svg + '\n');
+  const version = value.fileVersions[pipeline + '/step09_outline/body/outline.draft.svg'];
+  await f.put('step09_outline/body/outline.draft.svg', svg + '\n');
   value = await f.get();
-  assert.notEqual(value.fileVersions[pipeline + '/groups/body/step01/outline.draft.svg'], version);
+  assert.notEqual(value.fileVersions[pipeline + '/step09_outline/body/outline.draft.svg'], version);
   assert.equal(value.part.groups[0].webPhases.outline, 'available', 'an inactive draft is never running');
-  await f.put('groups/body/step01/outline.svg', svg);
-  await rm(join(f.task, pipeline, 'groups/body/step01/outline.draft.svg'));
+  await f.put('step09_outline/body/outline.svg', svg);
+  await rm(join(f.task, pipeline, 'step09_outline/body/outline.draft.svg'));
   assert.equal((await f.get()).part.groups[0].webPhases.outline, 'done');
   const review = { verdict: 'pass', candidateHash: svgHash(svg), feedback: '通过', observations: [] };
-  await f.put('groups/body/step01/review.json', { groupId: 'body', reviews: [{ ...review, candidateHash: 'stale' }] });
+  await f.put('step09_outline/body/review.json', { groupId: 'body', reviews: [{ ...review, candidateHash: 'stale' }] });
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'available');
-  await f.put('groups/body/step01/review.json', { groupId: 'body', reviews: [review] });
+  await f.put('step09_outline/body/review.json', { groupId: 'body', reviews: [review] });
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'available', 'a passed review counts once its step is completed');
-  await f.mark('groups/body/step01');
+  await f.mark('step09_outline/body');
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'done');
   assert.deepEqual((await f.get()).part.groups[0].webReviewRounds.map((round: any) => [round.review.status, round.repair.status]),
     [['done', 'skipped'], ['skipped', 'skipped']]);
-  await f.put('groups/body/step01/review.json', { groupId: 'body', reviews: [review, { ...review, verdict: 'revise', candidateHash: 'old', repairedCandidateHash: svgHash(svg) }] });
+  await f.put('step09_outline/body/review.json', { groupId: 'body', reviews: [review, { ...review, verdict: 'revise', candidateHash: 'old', repairedCandidateHash: svgHash(svg) }] });
   assert.equal((await f.get()).part.groups[0].webMessages.review, '已完成');
   assert.match((await f.get()).part.groups[0].webDetails.review, /不再复审/);
-  await f.put('layers/depth01/body.svg', svg);
+  await f.put('step10_reduce/depth01/body.svg', svg);
   assert.equal((await f.get()).part.groups[0].webPhases.reduction, 'available');
-  await f.mark('layers/depth01');
+  await f.mark('step10_reduce/depth01');
   const completed = stampedSvg(svg, svgHash(svg));
   await f.put('parts/body.svg', completed);
-  await f.put('groups/body/step02/check.json', { groupId: 'body', passed: true });
-  await f.mark('groups/body/step02');
+  await f.put('step11_completion/body/check.json', { groupId: 'body', passed: true });
+  await f.mark('step11_completion/body');
   value = await f.get();
   assert.deepEqual(value.part.groups[0].webPhases, { outline: 'done', review: 'done', reduction: 'done', completion: 'done', completionCheck: 'done', children: 'pending' });
   assert.deepEqual(await readFile(join(f.task, pipeline, 'groups.json')), original, 'display must not save restored steps');
   await f.put('groups.json', { groups: [{ ...group, groups: [{ id: 'body/torso', kind: 'part', groups: [] }] }] });
-  await f.mark('groups/body/step03');
+  await f.mark('step12_children/body');
   value = await f.get();
   assert.equal(value.part.groups[0].webPhases.children, 'done');
   assert.equal(value.part.groups[0].groups[0].webPhases.outline, 'pending');
   // Rerunning the step clears its completed marker: the old check is only a record.
-  await rm(join(f.task, pipeline, 'groups/body/step02/.completed'));
-  await f.mark('groups/body/step02', 'running');
+  await rm(join(f.task, pipeline, 'step11_completion/body/.completed'));
+  await f.mark('step11_completion/body', 'running');
   assert.equal((await f.get()).part.groups[0].webPhases.completionCheck, 'available');
 });
 
 for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipeline}: completed nested parts show every phase from native artifact paths`, async t => {
   const f = await fixture(t, pipeline), id = 'face/eye_left/iris';
   await f.put('groups.json', { groups: [{ id: 'face', groups: [{ id: 'face/eye_left', groups: [{ id, kind: 'part', groups: [] }] }] }] });
-  const prefix = 'groups/face/children/eye_left/children/iris';
-  await f.put(`${prefix}/step01/outline.svg`, svg);
-  await f.put(`${prefix}/step01/review.json`, { groupId: id, reviews: [
+  const item = 'face/children/eye_left/children/iris';
+  await f.put(`step09_outline/${item}/outline.svg`, svg);
+  await f.put(`step09_outline/${item}/review.json`, { groupId: id, reviews: [
     { verdict: 'pass', candidateHash: svgHash(svg), feedback: '通过', observations: [] },
   ] });
-  await f.put(`layers/depth03/${id}.svg`, svg);
+  await f.put(`step10_reduce/depth03/${id}.svg`, svg);
   await f.put(`parts/${id}.svg`, stampedSvg(svg, svgHash(svg)));
-  await f.put(`${prefix}/step02/check.json`, { groupId: id, passed: true });
-  for (const step of [`${prefix}/step01`, 'layers/depth03', `${prefix}/step02`, `${prefix}/step03`]) await f.mark(step);
+  await f.put(`step11_completion/${item}/check.json`, { groupId: id, passed: true });
+  for (const step of [`step09_outline/${item}`, 'step10_reduce/depth03', `step11_completion/${item}`, `step12_children/${item}`]) await f.mark(step);
   const value = await f.get(), node = value.part.groups[0].groups[0].groups[0];
   assert.deepEqual(node.webPhases, Object.fromEntries(['outline', 'review', 'reduction', 'completion', 'completionCheck', 'children'].map(phase => [phase, 'done'])));
   assert.equal(node.webReviewRounds[0].review.status, 'done');
-  assert.ok(value.files.includes(`${pipeline}/${prefix}/step01/outline.svg`));
+  assert.ok(value.files.includes(`${pipeline}/step09_outline/${item}/outline.svg`));
   assert.deepEqual(value.errors ?? [], []);
 });
 
@@ -102,11 +102,11 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   const original = await readFile(join(f.task, pipeline, 'groups.json'));
   const hiddenSource = '<svg xmlns="http://www.w3.org/2000/svg" data-hidden-in-reference="true"><g data-group-path="iris"/></svg>';
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending', 'the flag alone is not a completed skip');
-  await f.mark('groups/iris/step01', 'running');
-  await f.put('groups/iris/step01/outline.svg', hiddenSource);
+  await f.mark('step09_outline/iris', 'running');
+  await f.put('step09_outline/iris/outline.svg', hiddenSource);
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending', 'an interrupted skip still needs its completed marker');
-  await rm(join(f.task, pipeline, 'groups/iris/step01/.running'));
-  await f.mark('groups/iris/step01');
+  await rm(join(f.task, pipeline, 'step09_outline/iris/.running'));
+  await f.mark('step09_outline/iris');
   let value = await f.get(), node = value.part.groups[0];
   assert.equal(node.webPhases.outline, 'done');
   assert.equal(node.webPhases.review, 'done');
@@ -116,10 +116,10 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
     [['skipped', 'skipped'], ['skipped', 'skipped']]);
   assert.ok(node.webReviewRounds.every((round: any) => round.review.reportIndex === undefined && round.repair.reportIndex === undefined));
   assert.equal(value.files.some(file => file.endsWith('/review.json')), false, 'skipped reviews have no invented report');
-  await f.put('layers/depth01/iris.svg', hiddenSource);
+  await f.put('step10_reduce/depth01/iris.svg', hiddenSource);
   await f.put('parts/iris.svg', svg);
-  await f.put('groups/iris/step02/check.json', { groupId: 'iris', passed: true });
-  for (const step of ['layers/depth01', 'groups/iris/step02', 'groups/iris/step03', 'merge']) await f.mark(step);
+  await f.put('step11_completion/iris/check.json', { groupId: 'iris', passed: true });
+  for (const step of ['step10_reduce/depth01', 'step11_completion/iris', 'step12_children/iris', 'step13_merge']) await f.mark(step);
   await f.put('preview.svg', svg);
   value = await f.get();
   assert.ok(Object.values(value.part.groups[0].webPhases).every(status => status === 'done'));
@@ -129,7 +129,7 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   await f.put('groups.json', { groups: [{ ...group, hiddenInReference: false }] });
   assert.equal((await f.get()).part.groups[0].webPhases.review, 'pending', 'ordinary parts still require their review report');
   await f.put('groups.json', { groups: [group] });
-  await rm(join(f.task, pipeline, 'groups/iris/step01/outline.svg'));
+  await rm(join(f.task, pipeline, 'step09_outline/iris/outline.svg'));
   value = await f.get();
   assert.equal(value.part.groups[0].webPhases.outline, 'pending');
   assert.equal(value.part.groups[0].webPhases.review, 'pending', 'missing skip output is not a completed review');
@@ -146,22 +146,22 @@ for (const pipeline of ['part-layering', 'clothing-part-layering']) test(`${pipe
   await f.put('agents/initial/request.json', { task: { name: '首次分组识别' } });
   assert.equal((await f.get()).part.states.initial, 'running');
   await f.put('groups.json', { groups: [{ id: 'body', kind: 'part', groups: [] }] });
-  await f.mark('initial/step01');
+  await f.mark('step08_initial');
   assert.equal((await f.get()).part.states.initial, 'running', 'saving an output does not hide the still active agent');
   await f.put('agents/initial/result.json', { status: 'completed' });
   assert.equal((await f.get()).part.states.initial, 'done');
   await f.put('agents/depth/request.json', { task: { name: '最终遮挡层级规划' } });
   assert.equal((await f.get()).part.states.occlusion, 'running');
-  await f.put('occlusion/workspace/candidate.svg', svg);
+  await f.put('step14_occlusion/workspace/candidate.svg', svg);
   let value = await f.get();
   assert.equal(value.part.states.occlusion, 'running');
-  assert.ok(value.files.includes(pipeline + '/occlusion/workspace/candidate.svg'));
+  assert.ok(value.files.includes(pipeline + '/step14_occlusion/workspace/candidate.svg'));
   await f.put('agents/depth/result.json', { status: 'completed' });
   assert.equal((await f.get()).part.states.occlusion, 'available');
   await f.put('occlusion.json', { version: 3, direction: 'back-to-front', sourceHash: 'input',
     layers: [{ id: 'body', level: 0, note: 'body', check: { passed: true, note: 'checked' } }] });
   assert.equal((await f.get()).part.states.occlusion, 'available', 'the table counts once its step is completed');
-  await f.mark('occlusion');
+  await f.mark('step14_occlusion');
   assert.equal((await f.get()).part.states.occlusion, 'done');
   await rm(join(f.task, pipeline, 'occlusion.json'));
   run.runner.finishedAt = new Date().toISOString(); await saveRun(f.task, run);
@@ -181,25 +181,24 @@ test('preparation activity is visible before an image, and matching published re
     assert.equal(value.part.states[phase], 'running'); assert.equal(value.part.states.preparation, 'running');
     await f.put(`agents/${step}/result.json`, { status: 'completed' });
   }
-  const files: any = {};
-  for (const [stage, filename] of [['standard', 'standard.png'], ['judgment', 'judgment.json'], ['simplified', 'simplified-subject.png'], ['base', 'base-subject.png']]) {
-    await f.put('references/' + filename, svg);
-    files[stage] = { outputHash: svgHash(svg) };
+  for (const [step, name] of [['step04_standard', 'standard'], ['step05_simplified', 'simplified-subject'], ['step06_base', 'base-subject']]) {
+    await f.put(`references/${name}.png`, svg);
+    await f.mark(step);
   }
-  await f.put('references/preparation.json', { version: 1, standard: true, files });
   let value = await f.get();
   assert.equal(value.part.states.preparation, 'done');
   assert.deepEqual(['standard', 'simplified', 'base'].map(phase => value.part.states[phase]), ['done', 'done', 'done']);
-  await f.put('references/base-subject.png', svg + '\n');
+  // An upstream redo deletes the downstream step records.
+  await rm(join(f.task, 'part-layering/step06_base/.completed'));
   value = await f.get();
   assert.equal(value.part.states.base, 'available'); assert.equal(value.part.states.preparation, 'available');
 });
 
 test('人物参考仅凭图片与步骤完成记录展示完成，缺图时仍显示待制作', async t => {
   const f = await fixture(t);
-  for (const [number, name] of [[4, 'standard'], [6, 'simplified-subject'], [7, 'base-subject']] as const) {
+  for (const [step, name] of [['step04_standard', 'standard'], ['step05_simplified', 'simplified-subject'], ['step06_base', 'base-subject']] as const) {
     await f.put(`references/${name}.png`, svg);
-    await f.mark(`preparation/step0${number}`);
+    await f.mark(step);
   }
   let value = await f.get();
   assert.equal(value.part.states.preparation, 'done');
@@ -214,22 +213,22 @@ test('人物参考仅凭图片与步骤完成记录展示完成，缺图时仍�
 test('a completed merge step is complete before the whole part pipeline finishes', async t => {
   const f = await fixture(t), group = { id: 'body', kind: 'part', groups: [] };
   await f.put('groups.json', { groups: [group] });
-  await f.put('groups/body/step01/outline.svg', svg);
-  await f.put('groups/body/step01/review.json', { groupId: 'body', reviews: [{ verdict: 'pass', candidateHash: svgHash(svg), feedback: 'ok', observations: [] }] });
-  await f.put('layers/depth01/body.svg', svg);
+  await f.put('step09_outline/body/outline.svg', svg);
+  await f.put('step09_outline/body/review.json', { groupId: 'body', reviews: [{ verdict: 'pass', candidateHash: svgHash(svg), feedback: 'ok', observations: [] }] });
+  await f.put('step10_reduce/depth01/body.svg', svg);
   await f.put('parts/body.svg', stampedSvg(svg, svgHash(svg)));
-  await f.put('groups/body/step02/check.json', { groupId: 'body', passed: true });
-  for (const step of ['initial/step01', 'groups/body/step01', 'layers/depth01', 'groups/body/step02', 'groups/body/step03']) await f.mark(step);
+  await f.put('step11_completion/body/check.json', { groupId: 'body', passed: true });
+  for (const step of ['step08_initial', 'step09_outline/body', 'step10_reduce/depth01', 'step11_completion/body', 'step12_children/body']) await f.mark(step);
   await f.put('preview.svg', svg);
   assert.equal((await f.get()).part.states.merge, 'available');
-  await f.mark('merge');
+  await f.mark('step13_merge');
   assert.equal((await f.get()).part.states.merge, 'done');
   // Current step records store task-relative output keys; the view reads them against the task root.
-  await f.put('merge/.completed', { stamp: 'stamp', inputs: {}, outputs: { 'part-layering/preview.svg': svgHash(svg) }, paths: 'task' });
+  await f.put('step13_merge/.completed', { stamp: 'stamp', inputs: {}, outputs: { 'part-layering/preview.svg': svgHash(svg) }, paths: 'task' });
   const current = await f.get();
   assert.equal(current.part.states.merge, 'done');
   assert.deepEqual(current.errors ?? [], []);
-  await rm(join(f.task, 'part-layering/merge/.completed'));
+  await rm(join(f.task, 'part-layering/step13_merge/.completed'));
   assert.equal((await f.get()).part.states.merge, 'available');
 });
 
@@ -245,10 +244,10 @@ test('running phases require current agent requests; queued groups, old calls an
   await f.put('agents/current/request.json', { task: { name: '组轮廓绘制-body' } });
   await f.put('agents/old/request.json', { task: { name: '组轮廓绘制-hair' } });
   await utimes(join(f.task, 'part-layering/agents/old/request.json'), 1, 1);
-  await f.put('groups/hair/step01/outline.draft.svg', svg);
+  await f.put('step09_outline/hair/outline.draft.svg', svg);
   let value = await f.get();
   assert.deepEqual(value.part.groups.map(node => node.webPhases.outline), ['running', 'available', 'pending']);
-  await f.put('groups/body/step01/outline.svg', svg);
+  await f.put('step09_outline/body/outline.svg', svg);
   assert.equal((await f.get()).part.groups[0].webPhases.outline, 'running');
   await f.put('agents/current/result.json', { status: 'completed' });
   await f.put('agents/review/request.json', { task: { name: '组轮廓review-body' } });
@@ -325,8 +324,8 @@ test('a failed current group and initial request are marked failed while their d
   run.runner = { id: 'failed-runner', pid: process.pid, startedAt: new Date(Date.now() - 1000).toISOString(), finishedAt: new Date().toISOString() };
   run.pipelines['part-layering']!.status = 'failed'; await saveRun(f.task, run);
   await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
-  await f.mark('initial/step01');
-  await f.put('groups/body/step01/outline.draft.svg', svg);
+  await f.mark('step08_initial');
+  await f.put('step09_outline/body/outline.draft.svg', svg);
   await f.put('agents/draw/request.json', { task: { name: '组轮廓绘制-body' } });
   await f.put('agents/draw/result.json', { status: 'failed' });
   await f.put('agents/initial/request.json', { task: { step: 'part_initial_groups', name: '首次分组识别' } });
@@ -334,7 +333,7 @@ test('a failed current group and initial request are marked failed while their d
   let value = await f.get();
   assert.equal(value.part.groups[0].webPhases.outline, 'failed');
   assert.equal(value.part.states.initial, 'failed');
-  assert.ok(value.files.includes('part-layering/groups/body/step01/outline.draft.svg'));
+  assert.ok(value.files.includes('part-layering/step09_outline/body/outline.draft.svg'));
   run.status = 'running'; run.pipelines['part-layering']!.status = 'running';
   run.runner = { id: 'new-runner', pid: process.pid, startedAt: new Date().toISOString() }; await saveRun(f.task, run);
   const release = await acquireTaskLock(f.task); t.after(async () => { await release(); });
@@ -348,15 +347,15 @@ test('unsafe group paths and symlinked drafts cannot expose outside files', asyn
   await f.put('groups.json', { groups: [{ id: '../../../private', groups: [] }] });
   assert.match((await f.get()).errors.join(), /group id 无效/);
   await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
-  await mkdir(join(f.task, 'part-layering/groups/body'), { recursive: true });
+  await mkdir(join(f.task, 'part-layering/step09_outline'), { recursive: true });
   await mkdir(join(f.dir, 'private'));
   await writeFile(join(f.dir, 'private/outline.svg'), svg);
   // A directory junction covers symlinked parents without requiring Windows'
   // file-symlink privilege (or enabling Developer Mode on the user's machine).
-  await symlink(join(f.dir, 'private'), join(f.task, 'part-layering/groups/body/step01'), process.platform === 'win32' ? 'junction' : 'dir');
+  await symlink(join(f.dir, 'private'), join(f.task, 'part-layering/step09_outline/body'), process.platform === 'win32' ? 'junction' : 'dir');
   const value = await f.get();
   assert.equal(value.part.groups[0].webPhases.outline, 'pending');
-  assert.ok(!value.files.includes('part-layering/groups/body/step01/outline.svg'));
+  assert.ok(!value.files.includes('part-layering/step09_outline/body/outline.svg'));
 });
 
 test('lanes skipped because the subject was not dressed show as skipped with their reason, not pending', async t => {

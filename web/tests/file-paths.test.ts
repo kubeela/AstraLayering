@@ -9,12 +9,12 @@ test('Windows and POSIX artifact paths resolve to the same inventory and version
   const root = await mkdtemp(join(tmpdir(), 'web-paths-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const keys = [
-    'part-layering/groups/face/children/eye_left/children/iris/step01/outline.svg',
-    'part-layering/groups/face/children/eye_left/children/iris/step01/workspace/outline.draft.svg',
-    'part-layering/layers/depth03/face/eye_left/iris.svg',
-    'part-layering/layers/depth03/workspace/face/eye_left/iris.draft.svg',
+    'part-layering/step09_outline/face/children/eye_left/children/iris/outline.svg',
+    'part-layering/step09_outline/face/children/eye_left/children/iris/workspace/outline.draft.svg',
+    'part-layering/step10_reduce/depth03/face/eye_left/iris.svg',
+    'part-layering/step10_reduce/depth03/workspace/face/eye_left/iris.draft.svg',
     'part-layering/parts/face/eye_left/iris.svg',
-    'part-layering/groups/face/children/eye_left/children/iris/step01/review.json',
+    'part-layering/step09_outline/face/children/eye_left/children/iris/review.json',
     'raster-layering/step01/参考 对照.png',
   ];
   for (const key of keys) {

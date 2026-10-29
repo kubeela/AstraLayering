@@ -8,7 +8,7 @@ import { artifactPath, readJson, reportPath } from '../../shared/part/artifact-f
 import { GroupStore, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import type { LayeringSteps } from '../../shared/part/layering-types.ts';
-import { groupDirectory, groupStepId } from '../../shared/part/part-steps.ts';
+import { groupStepId } from '../../shared/part/part-steps.ts';
 import { readStep } from '../../shared/step-chain.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
 
@@ -39,7 +39,7 @@ test('删 outline 后原样重画：只重做轮廓与复核，本层去重、�
   events.length = 0;
   await runLayering({ ...f, groups: null, steps: { ...steps, async drawOutline(context) {
     // 重做 step01 会先删掉整个步骤目录：旧复核记录和会话不会带进新一轮。
-    await missing([reportPath(f.directory, 'a', 'review'), join(f.directory, groupStepId('a', 1), 'session.json')]);
+    await missing([reportPath(f.directory, 'a', 'review'), join(f.directory, groupStepId('a', 'outline'), 'session.json')]);
     return steps.drawOutline(context);
   } }, mergeSvg: workingMerger(events) });
   assert.deepEqual(events, ['a:outline', 'a:review']);
@@ -75,7 +75,7 @@ test('父稿变化后重新分析子组：保留的子组按新父稿重画，�
   const children: Record<string, { id: string; kind?: 'part' }[]> = { head: [{ id: 'head/eye', kind: 'part' }, { id: 'head/ear', kind: 'part' }] };
   const steps = redrawn(workingSteps(events, [{ id: 'head' }], children), ['head']);
   await runLayering({ ...f, groups: null, steps });
-  const ear = [artifactPath(f.directory, 'head/ear', 'completion'), groupDirectory(f.directory, 'head/ear')];
+  const ear = [artifactPath(f.directory, 'head/ear', 'completion'), join(f.directory, groupStepId('head/ear', 'outline'))];
   for (const path of ear) await stat(path);
   children.head = [{ id: 'head/eye', kind: 'part' }];
   await rm(artifactPath(f.directory, 'head', 'outline'));
@@ -106,7 +106,7 @@ test('复核中断后续跑沿用同一轮廓与复核记录，不重画也不�
   await assert.rejects(runLayering({ ...f, groups: null, steps: { ...steps, async reviewOutline(context) {
     await writeAtomic(context.reportPath, JSON.stringify(report)); throw new Error('review interrupted');
   } } }), /review interrupted/);
-  assert.equal((await readStep(join(f.directory, groupStepId('head', 1)), taskRootOf(f.directory))).status, 'running');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 'outline')), taskRootOf(f.directory))).status, 'running');
   events.length = 0;
   await runLayering({ ...f, groups: null, steps: { ...steps, async reviewOutline(context) {
     assert.deepEqual(await readJson(context.reportPath), report);

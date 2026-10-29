@@ -12,7 +12,8 @@ import { toTaskPath } from '../shared/task-paths.ts';
 import { artifactPath, reportPath } from '../shared/part/artifact-facts.ts';
 import { normalizeGroups, walkGroups } from '../shared/part/groups.ts';
 import { publishDepthPreview } from '../shared/part/depth-preview.ts';
-import { groupStepId, groupDepth, initialStepId, layerStepId } from '../shared/part/part-steps.ts';
+import { groupStepId, groupDepth, groupSteps, layerStepId } from '../shared/part/part-steps.ts';
+import { partSteps } from '../shared/step-paths.js';
 import { steps as personSteps } from '../raster-layering/steps.ts';
 import { steps as clothingSteps } from '../clothing-raster-layering/steps.ts';
 import { steps as assemblySteps } from '../character-assembly/steps.ts';
@@ -112,11 +113,11 @@ export async function exportFiles(root: string, run: TaskRun, aliases: readonly 
   }
   await add('.web-project.json');
   for (const pipeline of ['part-layering', 'clothing-part-layering']) {
-    for (const step of [initialStepId, 'merge', 'occlusion']) await add(join(pipeline, step, '.completed'), !run.archive);
+    for (const step of [partSteps.initial, partSteps.merge, partSteps.occlusion]) await add(join(pipeline, step, '.completed'), !run.archive);
     for (const path of ['groups.json', 'occlusion.json', 'preview.svg']) await add(join(pipeline, path), true);
     const groups = normalizeGroups(JSON.parse(await readFile(join(root, pipeline, 'groups.json'), 'utf8')).groups);
     for (const { group } of walkGroups(groups)) {
-      for (const step of [1, 2, 3] as const) await add(join(pipeline, groupStepId(group.id, step), '.completed'), !run.archive);
+      for (const step of groupSteps) await add(join(pipeline, groupStepId(group.id, step), '.completed'), !run.archive);
       await add(join(pipeline, layerStepId(groupDepth(group.id)), '.completed'), !run.archive);
       for (const stage of ['outline', 'reduction', 'completion'] as const) await add(artifactPath(pipeline, group.id, stage), true);
       for (const kind of ['review', 'completion-check', 'children'] as const) await add(reportPath(pipeline, group.id, kind));
@@ -124,7 +125,7 @@ export async function exportFiles(root: string, run: TaskRun, aliases: readonly 
   }
   const definitions = [
     ['raster-layering', personSteps], ['clothing-raster-layering', clothingSteps],
-    ['character-assembly', assemblySteps], ['shadow/' + shadowMode(run.shadowMode), stepsFor(shadowMode(run.shadowMode))],
+    ['character-assembly', assemblySteps], ['shadow', stepsFor(shadowMode(run.shadowMode))],
   ] as const;
   for (const [pipeline, definitionsForPipeline] of definitions) {
     for (const step of definitionsForPipeline) {
@@ -249,7 +250,7 @@ export async function exportCompletedRun(options: { name: string; dir?: string; 
       const directory = join(content, pipeline);
       const document = JSON.parse(await readFile(join(directory, 'groups.json'), 'utf8'));
       await publishDepthPreview(directory, document.groups, JSON.parse(await readFile(join(directory, 'occlusion.json'), 'utf8')));
-      entries.set(pipeline + '/occlusion/preview.svg', {});
+      entries.set(`${pipeline}/${partSteps.occlusion}/preview.svg`, {});
     }
     // Fill the fixed PNG card from Krita's saved projection, without rendering or
     // modifying the document. KRA remains the authoritative saved artwork.

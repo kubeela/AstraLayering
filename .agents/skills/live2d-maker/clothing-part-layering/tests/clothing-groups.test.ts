@@ -30,7 +30,7 @@ test('initial groups receive both clothing and clothed-character references and 
   } });
   const result = await adapter.initialGroups({ ...f, references: refs });
   assert.equal(result.status, 'completed');
-  const tree = JSON.parse(await readFile(join(f.directory, 'initial/step01/groups.json'), 'utf8'));
+  const tree = JSON.parse(await readFile(join(f.directory, 'step08_initial/groups.json'), 'utf8'));
   assert.equal(tree.subject, 'other');
   assert.deepEqual(tree.groups.map((group: { id: string }) => group.id), ['coat']);
 });

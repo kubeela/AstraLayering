@@ -30,9 +30,9 @@ export async function studioProject(directory: string, name: string, dir: string
     }
   }
   const [selection, maskRecord, mapsRecord] = await Promise.all([
-    record(shadowArtifacts.selection), record('shadow/mask/step01/source.json', 'mask'), record('shadow/normal-depth/step01/source.json', 'normal-depth'),
+    record(shadowArtifacts.selection), record('shadow/step01_mask/source.json', 'mask'), record('shadow/step01_normal-depth/source.json', 'normal-depth'),
   ]);
-  // Each branch keeps its own provenance. A newer route never validates an older one.
+  // Each shadow mode keeps its own provenance. A newer route never validates an older one.
   const sourceHashes = await Promise.all([studioArtifacts.document, studioArtifacts.color].map(async path => {
     try { return createHash('sha256').update(await readFile(await safePath(directory, path))).digest('hex'); }
     catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; return null; }
@@ -49,7 +49,7 @@ export async function studioProject(directory: string, name: string, dir: string
   let draftRecord;
   if (!mapsSource && !publishedMaps && all.draftNormal.available && all.draftDepth.available) {
     try {
-      await safePath(directory, 'shadow/normal-depth/run.json');
+      await safePath(directory, 'shadow/run.json');
       await safePath(directory, 'part-layering/references');
       draftRecord = await inspectDraftPreview(name, dir);
     } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }

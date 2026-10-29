@@ -7,6 +7,9 @@ import { randomUUID } from 'node:crypto';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { keyReferencePixels } from './reference-key.ts';
 import { pipelineDirectory, type PipelineId } from '../paths.ts';
+import { clothingPreparationStep } from '../step-paths.js';
+
+const stepCompleted = (directory: string) => stat(join(directory, '.completed')).then(info => info.isFile(), () => false);
 
 // This only decides whether preparation may generate a new reference. Its own
 // fingerprint checks remain authoritative; no cache or artifact is changed here.
@@ -22,7 +25,7 @@ export async function referenceNeedsGeneration(pipeline: PipelineId, name: strin
   })));
   return pipeline === 'part-layering'
     ? !files.has('base-subject.png') || ![...files].some(name => name.startsWith('simplified-subject.') && !name.endsWith('.tmp'))
-    : !files.has('clothing.png') || !files.has('preparation.json');
+    : !files.has('clothing.png') || !await stepCompleted(join(dirname(directory), clothingPreparationStep));
 }
 
 // Archives are write-only history, never preparation inputs or recovery checkpoints.

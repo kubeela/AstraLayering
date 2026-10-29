@@ -1,5 +1,4 @@
-import { createHash } from 'node:crypto';
-import { initialStepId } from '../.agents/skills/live2d-maker/shared/part/part-steps.ts';
+import { clothingPreparationStep, partSteps } from '../.agents/skills/live2d-maker/shared/step-paths.js';
 import type { StepStatus } from '../.agents/skills/live2d-maker/shared/step-chain.ts';
 import { validateOcclusionDocument } from '../.agents/skills/live2d-maker/shared/part/occlusion-plan.ts';
 import { throttled, type AgentCall } from './agent-progress.ts';
@@ -18,38 +17,30 @@ const namePhases: Record<string, string> = {
 
 // Observe published files and existing receipts. This function never restores or writes scheduler state.
 export async function partStages(directory: string, pipeline: string, groups: any[], files: Set<string>,
-  json: (path: string) => Promise<any>, read: (path: string) => Promise<Buffer | undefined>, calls: AgentCall[], errors: string[], active = true,
+  json: (path: string) => Promise<any>, calls: AgentCall[], errors: string[], active = true,
   step: (id: string) => Promise<StepStatus> = async () => 'absent') {
   const states: Record<string, Status> = {}, messages: Record<string, string> = {};
   const present = (path: string) => files.has(pipeline + '/' + path);
   const artifact = (...paths: string[]): Status => paths.some(present) ? 'available' : 'pending';
-  const record = await json(pipeline + '/references/preparation.json');
-  const prep = record?.version === 1 ? record : undefined;
   const reference = (name: string) => ['png', 'jpg', 'jpeg', 'webp'].map(ext => `references/${name}.${ext}`).find(present);
-  const fingerprint = async (path: string | undefined, hash: unknown) => {
-    if (!path || typeof hash !== 'string') return false;
-    const bytes = await read(pipeline + '/' + path);
-    return !!bytes && createHash('sha256').update(bytes).digest('hex') === hash;
-  };
-  states.initial = await step(initialStepId) === 'completed' ? 'done' : groups.length ? 'available' : 'pending';
+  states.initial = await step(partSteps.initial) === 'completed' ? 'done' : groups.length ? 'available' : 'pending';
   if (pipeline === 'part-layering') {
-    for (const [phase, name, number] of [['standard', 'standard', 4], ['simplified', 'simplified-subject', 6], ['base', 'base-subject', 7]] as const) {
+    for (const [phase, name] of [['standard', 'standard'], ['simplified', 'simplified-subject'], ['base', 'base-subject']] as const) {
       const path = reference(name);
-      states[phase] = path && (await step(`preparation/step0${number}`) === 'completed'
-        || await fingerprint(path, prep?.files?.[phase]?.outputHash)) ? 'done' : path ? 'available' : 'pending';
+      states[phase] = path && await step(partSteps[phase]) === 'completed' ? 'done' : path ? 'available' : 'pending';
     }
     states.preparation = ['standard', 'simplified', 'base'].every(phase => states[phase] === 'done') ? 'done'
       : ['standard', 'simplified', 'base'].some(phase => states[phase] !== 'pending') ? 'available' : 'pending';
   } else {
-    states.clothing = await fingerprint('references/clothing.png', prep?.clothingHash) ? 'done' : artifact('references/clothing.png');
+    states.clothing = await step(clothingPreparationStep) === 'completed' ? 'done' : artifact('references/clothing.png');
     states.preparation = states.clothing;
   }
   states.merge = artifact('preview.svg', 'preview.draft.svg');
   const all = (nodes: any[]): any[] => nodes.flatMap(node => [node, ...all(node.groups ?? [])]);
-  if (present('preview.svg') && groups.length && await step('merge') === 'completed' &&
+  if (present('preview.svg') && groups.length && await step(partSteps.merge) === 'completed' &&
       all(groups).every(node => Object.values(node.webPhases).every(value => value === 'done'))) states.merge = 'done';
-  states.occlusion = artifact('occlusion.json', 'occlusion/preview.svg', 'occlusion/workspace/candidate.svg');
-  if (present('occlusion.json') && await step('occlusion') === 'completed') {
+  states.occlusion = artifact('occlusion.json', `${partSteps.occlusion}/preview.svg`, `${partSteps.occlusion}/workspace/candidate.svg`);
+  if (present('occlusion.json') && await step(partSteps.occlusion) === 'completed') {
     try {
       const plan = validateOcclusionDocument(await json(pipeline + '/occlusion.json'));
       const leaves = all(groups).filter(node => !node.groups?.length);

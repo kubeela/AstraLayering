@@ -11,7 +11,8 @@ import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { GroupStore } from '../../shared/part/groups.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
-import { initialStepId, readInitialGroups } from '../../shared/part/part-steps.ts';
+import { readInitialGroups } from '../../shared/part/part-steps.ts';
+import { partSteps } from '../../shared/step-paths.js';
 import { readStep } from '../../shared/step-chain.ts';
 import type { InitialContext } from '../../shared/part/layering-types.ts';
 
@@ -176,9 +177,9 @@ test('工具报错可修正参数后提交；重复提交不能覆盖已有组',
   const steps = initialSteps({ async run(task) {
     await assert.rejects(saveGrouping(task, { ...wingGroups, groups: [] }), /非空/);
     await saveGrouping(task);
-    const before = await readFile(join(context.directory, initialStepId, 'groups.json'), 'utf8');
+    const before = await readFile(join(context.directory, partSteps.initial, 'groups.json'), 'utf8');
     await assert.rejects(saveGrouping(task, { subject: 'character', groups: [{ name: 'head', groups: [], note: null }] }), /不能覆盖/);
-    assert.equal(await readFile(join(context.directory, initialStepId, 'groups.json'), 'utf8'), before);
+    assert.equal(await readFile(join(context.directory, partSteps.initial, 'groups.json'), 'utf8'), before);
     return { text: 'ok', images: [] };
   } });
   const result = await runLayering({ ...context, groups: null, steps });
@@ -192,7 +193,7 @@ test('工具已保存分组后回合失败，续跑仍跳过已完成识别', as
     throw new Error('回合中断');
   } });
   await assert.rejects(runLayering({ ...context, groups: null, steps }), /回合中断/);
-  assert.equal((await readStep(join(context.directory, initialStepId), taskRootOf(context.directory))).status, 'running');
+  assert.equal((await readStep(join(context.directory, partSteps.initial), taskRootOf(context.directory))).status, 'running');
   assert.equal((await readInitialGroups(context.directory)).groups.length, 2);
   await runLayering({ ...context, groups: null, steps: initialSteps({ async run() { assert.fail('不应重做首次识别'); } }) });
 });

@@ -1,3 +1,4 @@
+import { writeStepSession } from '../../shared/agents/step-session.ts';
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
@@ -45,8 +46,8 @@ async function fixture(t: TestContext, slow = false) {
   }
   const output = join(task, 'character-assembly');
   const config = newConfig(name, inputs, { executable: krita });
-  config.threadId = 'completed-fixture';
   await initializeRun(output, config);
+  await writeStepSession(output, 'step01', { threadId: 'completed-fixture', harness: 'codex' });
   await mkdir(join(output, 'step01'));
   // A slow fixture leaves the step unfinished, so the worker calls the agent.
   for (const file of [...steps[0].requiredFiles, ...(slow ? [] : ['.completed'])]) await writeFile(join(output, 'step01', file), 'retained');

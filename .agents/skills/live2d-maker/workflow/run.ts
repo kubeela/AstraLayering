@@ -26,7 +26,7 @@ export const help = [
   '导出成果：pnpm export --name <任务名> [--dir <运行根目录>] [--output <目录或.zip>]',
   '',
   '继续、恢复、重试作用于所有中断或失败的步骤，然后按保存的路线运行；没有这类步骤时继续即从未完成处续跑。',
-  '--pipeline <管线> --step <步骤> 只处理一个步骤（如 step02、groups/head/step02）；只给 --pipeline 时仅可继续。',
+  '--pipeline <管线> --step <步骤> 只处理一个步骤（如 step02、step11_completion/head）；只给 --pipeline 时仅可继续。',
   '路线含 Krita（raster、character-assembly、shadow）时，启动前先检查记录的 Krita 路径；不可用则拒绝运行，',
   '  请加 --krita <可执行文件> 重新指定。继续、恢复、重试同样先检查，检查通过后才改动步骤。',
   '',

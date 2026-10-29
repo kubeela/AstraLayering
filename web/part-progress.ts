@@ -53,8 +53,8 @@ export async function partProgress(directory: string, pipeline: string, groups: 
     const outline = await read(path('outline'));
     const reduced = await read(path('reduction'));
     const completed = await read(path('completion'));
-    const [prepared, layer, finished, split] = await Promise.all([step(groupStepId(node.id, 1)), step(layerStepId(depth)),
-      step(groupStepId(node.id, 2)), step(groupStepId(node.id, 3))]);
+    const [prepared, layer, finished, split] = await Promise.all([step(groupStepId(node.id, 'outline')), step(layerStepId(depth)),
+      step(groupStepId(node.id, 'completion')), step(groupStepId(node.id, 'children'))]);
     const skipped = node.hiddenInReference === true && prepared === 'completed' && !!outline;
     const skipDetail = '原图不可见，已跳过描边和轮廓复核';
     if (skipped) skippedReviews.add(node);
@@ -129,5 +129,5 @@ export async function partProgress(directory: string, pipeline: string, groups: 
         : ({ outline: '正在绘制 / 自检', review: '正在复核', reduction: '正在同层去重', completion: '正在补全 / 自检', children: '正在分析直属结构' } as any)[phase];
     }
   }
-  return partStages(directory, pipeline, groups, files, json, read, calls, errors, !!activeSince, step);
+  return partStages(directory, pipeline, groups, files, json, calls, errors, !!activeSince, step);
 }

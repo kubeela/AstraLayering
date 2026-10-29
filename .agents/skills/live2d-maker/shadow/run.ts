@@ -1,37 +1,36 @@
 import { parseArgs } from 'node:util';
-import { lstat, mkdir, rename, writeFile } from 'node:fs/promises';
+import { mkdir, rename, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
 import { acquireTaskLock } from '../workflow/state.ts';
 import { pipelineDirectory, taskDirectory, resolveRunsDirectory } from '../shared/paths.ts';
 import { shadowMode, type ShadowMode } from '../shared/shadow.ts';
+import { shadowStep } from '../shared/step-paths.js';
 import { runWorkflow as runSharedWorkflow, type KritaPipeline, type WorkflowOptions, type Dependencies } from '../shared/raster/workflow.ts';
-import { inputDirectories, isShadowInput, resolveShadowInput, shadowInputFingerprint, compatibleShadowFingerprint, fileHash, type ShadowInput } from './input.ts';
+import { assemblyStep, inputDirectories, isShadowInput, resolveShadowInput, fileHash, type ShadowInput } from './input.ts';
 import { buildPrompt, stepsFor } from './steps.ts';
 import { prepareMaps, validateDelivery } from './delivery.ts';
 import { loadWorkflowEnvironment } from '../shared/codex/environment.ts';
-import { prepareMaskReferences, referenceNames, referenceUrl } from './preparation.ts';
+import { prepareMaskReferences } from './preparation.ts';
 import { createInspectionTool } from './inspection.ts';
 
 export const help = `shadow — Live2D 投影阴影或整图法线＋深度
 pnpm shadow --name <任务名> --krita <可执行文件> [--dir <绝对运行根目录>]
---shadow-mode mask|normal-depth 选择分支，独立入口默认 mask。
+--shadow-mode mask|normal-depth 选择本次走哪个 step01，独立入口默认 mask。
 --dry-run 只检查输入和 Krita、展示提示词，不调用模型、不写文件。
-读取同名 character-assembly 的 KRA / PNG 和 simplified 参考。
-mask 另读取两套 part 的分组和遮挡顺序；产物位于 shadow/<模式>/step01/。
-分支独立保存 thread 和完成标记；已完成产物必须通过原尺寸、配准与绑定检查。
-输入改变时保留旧分支到 .previous-* 后重新制作，不覆盖上游或另一分支。
+读取同名 character-assembly 的 KRA / PNG、simplified 参考和两套 part 的分组与遮挡顺序；产物位于 shadow/step01_<模式>/。
+两种模式共用 shadow/run.json，各自的 step01 保存 thread 和完成标记；已完成产物必须通过原尺寸、配准与绑定检查。
+character-assembly 重做后 step01 随之重做。
 总入口：pnpm start --name <任务名> --from shadow --to shadow --shadow-mode <模式>。
 `;
 export function makePipeline(mode: ShadowMode): KritaPipeline<ShadowInput> {
   const steps = stepsFor(mode);
-  return { id: 'shadow', directorySuffix: mode, steps,
-    resolveInput: (name, root) => resolveShadowInput(name, root, mode), validateInput: isShadowInput,
+  return { id: 'shadow', steps,
+    resolveInput: resolveShadowInput, validateInput: isShadowInput,
     inputDirectories, buildPrompt,
-    fingerprintInput: input => shadowInputFingerprint(input, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
-    compatibleInputFingerprint: (input, saved) => compatibleShadowFingerprint(input, saved, mode, steps[0].prompt, mode === 'mask' ? referenceNames.map(referenceUrl) : []),
-    ...(mode === 'normal-depth' ? { prepareDelivery: async (output, input, step) => { if (step.id === 'step01') await prepareMaps(output, input); } } : { prepareStep: prepareMaskReferences }),
+    upstreamStep: assemblyStep,
+    ...(mode === 'normal-depth' ? { prepareDelivery: async (output, input, step) => { if (step.id === shadowStep(mode)) await prepareMaps(output, input); } } : { prepareStep: prepareMaskReferences }),
     // The mask agent inspects its own work in the section's Krita whenever it chooses.
     ...(mode === 'mask' ? { tools: (output, _input, _step, _phase, krita) => krita?.reserved ? [createInspectionTool(output, krita)] : [] } : {}),
     validateDelivery: (output, input) => validateDelivery(output, input, mode) };
@@ -44,25 +43,9 @@ async function atomicFile(path: string, bytes: Uint8Array | string) {
 export async function runWorkflow(options: WorkflowOptions & { shadowMode?: ShadowMode }, dependencies: Dependencies = {}) {
   const mode = shadowMode(options.shadowMode), root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
-  if (mode === 'normal-depth' && !options.dryRun) {
-    // Archive the retired step before the shared runner sees it as a descendant
-    // to reset. Completed maps and their drawing session remain reusable.
-    const legacy = join(pipelineDirectory(options.name, 'shadow', root), mode, 'step02');
-    let info;
-    try { info = await lstat(legacy); }
-    catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-    if (info) {
-      if (!info.isDirectory() || info.isSymbolicLink()) throw Error('旧光照步骤目录无效：' + legacy);
-      await resolveShadowInput(options.name, root, mode);
-      options.signal?.throwIfAborted();
-      const archive = join(dirname(legacy), 'lighting.previous-' + randomUUID());
-      await rename(legacy, archive);
-      options.progress?.('旧光照调校步骤已保留到 ' + archive + '；后续仅检查法线与深度。');
-    }
-  }
   const result = await runSharedWorkflow(makePipeline(mode), options, { ...dependencies, environment });
   if (options.dryRun) return result;
-  const input = await resolveShadowInput(options.name, root, mode), output = join(pipelineDirectory(options.name, 'shadow', root), mode, 'step01');
+  const input = await resolveShadowInput(options.name, root), output = join(pipelineDirectory(options.name, 'shadow', root), shadowStep(mode));
   const selection = { version: 1, mode, sourceKraHash: await fileHash(input.characterKra),
     sourceColorHash: await fileHash(input.characterColor), updatedAt: new Date().toISOString(),
     ...(mode === 'normal-depth' ? { normalEncoding: 'rgb-xyz', normalY: 'up', depthEncoding: 'white-near-black-far', dataColorSpace: 'linear' } : {}) };
@@ -85,7 +68,7 @@ if (import.meta.main) {
   (async () => {
     const args = parseRunArguments(process.argv.slice(2));
     if (args.help) { console.log(help); return; }
-    const controller = new AbortController(), stop = () => controller.abort(new Error('阴影制作已中断；同名同分支续跑保留进度。'));
+    const controller = new AbortController(), stop = () => controller.abort(new Error('阴影制作已中断；同名同模式续跑保留进度。'));
     process.once('SIGINT', stop); process.once('SIGTERM', stop);
     // CLI shares the coordinator lock. The coordinator calls the exported runner under its own lock.
     const release = args['dry-run'] ? undefined : await acquireTaskLock(taskDirectory(args.name!, args.dir));

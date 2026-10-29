@@ -118,9 +118,9 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .shadow-references{display:flex;gap:16px;padding:4px 0 12px;font-size:12px}.shadow-references a{color:var(--accent,#6b72cd);text-decoration:none}.shadow-references a:hover{text-decoration:underline}
 .step-children.step-alternatives{display:grid;grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:8px;align-items:start}
 .step-alternatives>.step-node:before{display:none}
-.branch-or{align-self:start;margin-top:42px;text-align:center;font-size:11px;font-weight:650;color:var(--muted)}
-.branch-choice{padding:8px 10px 0;font-size:10px;color:var(--muted)}
-.branch-choice.current{color:var(--accent);font-weight:650}
+.alternative-or{align-self:start;margin-top:42px;text-align:center;font-size:11px;font-weight:650;color:var(--muted)}
+.mode-choice{padding:8px 10px 0;font-size:10px;color:var(--muted)}
+.mode-choice.current{color:var(--accent);font-weight:650}
 /* Follow the pipeline horizontally; keep the ordinary view within its height. */
 #app:has(.project-main){height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 #app:has(.project-main)>.app-header{flex-shrink:0}
@@ -132,7 +132,7 @@ button:disabled{opacity:.5;cursor:wait}.phase-mark.failed,.phase-mark.interrupte
 .flow-world{display:flex;gap:52px;padding:106px 24px 24px;--step-height:clamp(300px,calc(100dvh - 330px),510px)}
 .flow-input{position:relative;left:auto;top:auto;flex:0 0 185px}
 .flow-grid{align-items:flex-start}
-.pipeline-lane,.pipeline-lane.group-expanded,.pipeline-lane.branch-lane:not(.collapsed){width:max-content}
+.pipeline-lane,.pipeline-lane.group-expanded,.pipeline-lane.shadow-lane:not(.collapsed){width:max-content}
 .pipeline-heading>button:first-child{flex:0 1 auto}
 .pipeline-heading>.icon-button{margin-left:10px}
 .pipeline-steps{display:flex;flex-direction:row;align-items:flex-start;gap:22px;padding-top:18px;position:relative;padding-bottom:52px}

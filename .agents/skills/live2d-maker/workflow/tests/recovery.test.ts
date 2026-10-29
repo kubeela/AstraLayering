@@ -16,30 +16,32 @@ import type { AgentRequest } from '../../shared/raster/agent.ts';
 import type { StepDefinition } from '../../shared/raster/steps.ts';
 import { acquireTaskLock } from '../state.ts';
 import { replaceThread } from '../recovery.ts';
-import { readStepSession } from '../../shared/agents/step-session.ts';
+import { readStepSession, writeStepSession } from '../../shared/agents/step-session.ts';
 
-test('阴影恢复按保存模式替换当前会话，保留另一分支与已生成贴图', async t => {
+test('阴影恢复按保存模式替换所选 step01 的会话，另一模式与已生成贴图不动', async t => {
   for (const mode of ['normal-depth', 'mask'] as const) {
-    const f = await fixture(t), target = join(f.task, 'shadow', mode), other = join(f.task, 'shadow', mode === 'mask' ? 'normal-depth' : 'mask');
-    await mkdir(join(target, 'step01'), { recursive: true }); await mkdir(join(other, 'step01'), { recursive: true });
+    const f = await fixture(t), target = join(f.task, 'shadow');
+    const step = `step01_${mode}`, other = `step01_${mode === 'mask' ? 'normal-depth' : 'mask'}`;
+    await mkdir(join(target, step), { recursive: true }); await mkdir(join(target, other), { recursive: true });
     const rootRun = { version: 1, name: 'case', dir: f.dir, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', pipelines: {}, shadowMode: mode };
     await writeFile(join(f.task, 'run.json'), JSON.stringify(rootRun));
-    await writeFile(join(target, 'run.json'), JSON.stringify({ version: 2, name: 'case', threadId: 'old-shadow',
+    const run = JSON.stringify({ version: 2, name: 'case',
       sourceInput: { characterKra: 'source.kra', characterColor: 'source.png', simplifiedCharacter: 'simplified.png', structureFiles: [] },
-      krita: { executable: process.execPath, version: 'test' }, models: { step01: { model: 'gpt-6.1-sol', effort: 'xhigh' } } }));
-    await writeFile(join(target, 'step01/.running'), 'running');
-    await writeFile(join(target, 'step01/normal.png'), 'existing map');
-    await writeFile(join(other, 'run.json'), 'other branch unchanged');
-    await writeFile(join(other, 'step01/.completed'), 'completed');
+      krita: { executable: process.execPath, version: 'test' } });
+    await writeFile(join(target, 'run.json'), run);
+    await writeStepSession(target, step, { threadId: 'old-shadow' });
+    await writeFile(join(target, step, '.running'), '');
+    await writeFile(join(target, step, 'normal.png'), 'existing map');
+    await writeFile(join(target, other, '.completed'), 'completed');
     const archive = await replaceThread({ ...f.recovery, pipeline: 'shadow' });
     assert.ok(archive.startsWith(join(target, 'recovery')));
-    assert.ok(!('threadId' in JSON.parse(await readFile(join(target, 'run.json'), 'utf8'))));
-    const session = await readStepSession(target, 'step01');
+    assert.equal(await readFile(join(target, 'run.json'), 'utf8'), run);
+    const session = await readStepSession(target, step);
     assert.equal(session?.threadId, undefined); assert.equal(session?.handoff?.previousThreadId, 'old-shadow');
     assert.equal(JSON.parse(await readFile(join(archive, 'session-before.json'), 'utf8')).threadId, 'old-shadow');
-    assert.equal(await readFile(join(target, 'step01/normal.png'), 'utf8'), 'existing map');
-    assert.equal(await readFile(join(other, 'run.json'), 'utf8'), 'other branch unchanged');
-    assert.equal(await readFile(join(other, 'step01/.completed'), 'utf8'), 'completed');
+    assert.equal(await readFile(join(target, step, 'normal.png'), 'utf8'), 'existing map');
+    assert.equal(await readStepSession(target, other), undefined);
+    assert.equal(await readFile(join(target, other, '.completed'), 'utf8'), 'completed');
     assert.equal(await readFile(join(f.task, 'run.json'), 'utf8'), JSON.stringify(rootRun));
   }
 });

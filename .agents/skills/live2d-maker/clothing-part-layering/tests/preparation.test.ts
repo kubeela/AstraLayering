@@ -8,6 +8,15 @@ import sharp from 'sharp';
 import type { AgentTask } from '../../shared/codex/agents.ts';
 import { createPreparationSteps, getPreparationDirectory, loadPreparedReferences, prepareReferences } from '../preparation.ts';
 import { taskDirectory, pipelineDirectory } from '../../shared/paths.ts';
+import { clothingPreparationStep, partSteps } from '../../shared/step-paths.js';
+
+// The person part steps the clothing preparation is built on; a new stamp stands for a redone step.
+const personSteps = [partSteps.standard, partSteps.simplified, partSteps.base];
+async function markPerson(runName: string, step: string, stamp: string) {
+  const directory = join(pipelineDirectory(runName, 'part-layering'), step);
+  await mkdir(directory, { recursive: true });
+  await writeFile(join(directory, '.completed'), JSON.stringify({ stamp, inputs: {} }));
+}
 
 async function fixture(t: TestContext) {
   const temporary = await mkdtemp(join(tmpdir(), 'clothing-preparation-'));
@@ -22,6 +31,7 @@ async function fixture(t: TestContext) {
   await copyFile(input, join(dirname(upstream), 'standard.png'));
   const base = join(dirname(upstream), 'base-subject.png');
   await sharp({ create: { width: 96, height: 128, channels: 4, background: '#a0b0c0' } }).png().toFile(base);
+  for (const step of personSteps) await markPerson(runName, step, `${step}-1`);
   const calls: AgentTask[] = [];
   const steps = createPreparationSteps({ async run(task) {
     calls.push(task);
@@ -44,10 +54,8 @@ test('preparation sends clothed and base references in order through one configu
   assert.deepEqual(await readFile(refs.originalImage!), await readFile(f.input));
   assert.deepEqual(await readFile(refs.baseSubject), await readFile(f.generated));
   assert.equal(refs.baseSubject, refs.simplifiedSubject);
-  const record = JSON.parse(await readFile(refs.judgment, 'utf8'));
-  assert.equal(record.version, 2);
-  assert.equal(typeof record.baseInputHash, 'string');
-  assert.notEqual(record.inputHash, record.baseInputHash);
+  const marker = JSON.parse(await readFile(join(dirname(f.directory), clothingPreparationStep, '.completed'), 'utf8'));
+  assert.deepEqual(Object.keys(marker.inputs).sort(), personSteps.map(step => `part-layering/${step}`).sort());
   await rm(f.input);
   f.calls.length = 0;
   assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
@@ -76,7 +84,7 @@ test('missing native image tool leaves a retryable preparation without fake outp
   await readFile(f.upstream);
   await assert.rejects(readFile(join(f.directory, 'simplified-character.png')), { code: 'ENOENT' });
   await assert.rejects(readFile(join(f.directory, 'clothing.png')), { code: 'ENOENT' });
-  await assert.rejects(readFile(join(f.directory, 'preparation.json')), { code: 'ENOENT' });
+  await assert.rejects(readFile(join(dirname(f.directory), clothingPreparationStep, '.completed')), { code: 'ENOENT' });
   await prepareReferences({ runName: f.runName }, f.steps);
   assert.equal(f.calls.length, 1);
 });
@@ -94,7 +102,7 @@ test('reject invalid or empty-foreground images, normalize differing dimensions'
         assert.equal(m.width, 96); assert.equal(m.height, 128);
       } else {
         await assert.rejects(prepareReferences({ runName: f.runName }, f.steps));
-        await assert.rejects(readFile(join(f.directory, 'preparation.json')), { code: 'ENOENT' });
+        await assert.rejects(readFile(join(dirname(f.directory), clothingPreparationStep, '.completed')), { code: 'ENOENT' });
       }
     });
   }
@@ -105,7 +113,7 @@ test('changed cached references are not silently reused; loading missing referen
   await assert.rejects(loadPreparedReferences(f.runName));
   await assert.rejects(readdir(f.directory), { code: 'ENOENT' });
   const refs = await prepareReferences({ runName: f.runName }, f.steps);
-  await writeFile(refs.originalImage!, 'changed source');
+  await markPerson(f.runName, partSteps.simplified, 'simplified-2');
   await assert.rejects(loadPreparedReferences(f.runName), /参考已变化/);
   assert.equal(f.calls.length, 1);
 });
@@ -123,35 +131,27 @@ test('new clothing generation requires the base reference before calling an agen
   await assert.rejects(readFile(join(f.directory, 'clothing.png')), { code: 'ENOENT' });
 });
 
-test('changed base reference invalidates the new cache without deleting existing clothing or decomposition', async t => {
+test('上游 base 重做后衣服 preparation 删除旧参考与拆分并重新生成', async t => {
   const f = await fixture(t);
   const refs = await prepareReferences({ runName: f.runName }, f.steps);
-  const oldBase = await readFile(f.base), oldClothing = await readFile(refs.baseSubject);
-  const part = join(dirname(f.directory), 'parts/kept.svg');
+  const part = join(dirname(f.directory), 'parts/old.svg');
   await mkdir(dirname(part), { recursive: true });
-  await writeFile(part, 'keep existing decomposition');
-  await sharp({ create: { width: 96, height: 128, channels: 4, background: '#405060' } }).png().toFile(f.base);
-  await assert.rejects(loadPreparedReferences(f.runName), /base-subject 参考已变化/);
-  await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), /base-subject 参考已变化/);
+  await writeFile(part, 'old decomposition');
+  await markPerson(f.runName, partSteps.base, 'base-2');
+  await assert.rejects(loadPreparedReferences(f.runName), /上游参考已变化/);
   assert.equal(f.calls.length, 1);
-  assert.deepEqual(await readFile(refs.baseSubject), oldClothing);
-  assert.equal(await readFile(part, 'utf8'), 'keep existing decomposition');
-  await writeFile(f.base, oldBase);
   assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
-  assert.equal(f.calls.length, 1);
+  assert.equal(f.calls.length, 2);
+  await assert.rejects(readFile(part), { code: 'ENOENT' });
+  assert.ok(!(await readdir(dirname(f.directory))).some(name => name.startsWith('.previous')));
+  await loadPreparedReferences(f.runName);
 });
 
-test('legacy single-reference cache stays reusable without requiring or regenerating the base reference', async t => {
+test('上游人物 preparation 未完成时不生成衣服参考', async t => {
   const f = await fixture(t);
-  const refs = await prepareReferences({ runName: f.runName }, f.steps);
-  const record = JSON.parse(await readFile(refs.judgment, 'utf8'));
-  record.version = 1;
-  delete record.baseInputHash;
-  await writeFile(refs.judgment, JSON.stringify(record));
-  await rm(f.base);
-  assert.deepEqual(await loadPreparedReferences(f.runName), refs);
-  assert.deepEqual(await prepareReferences({ runName: f.runName }, f.steps), refs);
-  assert.equal(f.calls.length, 1);
+  await rm(join(pipelineDirectory(f.runName, 'part-layering'), partSteps.base, '.completed'));
+  await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), /part-layering\/step06_base 尚未完成/);
+  assert.equal(f.calls.length, 0);
 });
 
 test('衣服 preparation 不接受人物标准化选项', async t => {
@@ -168,9 +168,7 @@ test('衣服输出采用 standard 尺寸而非 simplified 尺寸，并记录自�
   const refs = await prepareReferences({ runName: f.runName }, f.steps);
   const m = await sharp(refs.baseSubject).metadata();
   assert.equal(m.width, 200); assert.equal(m.height, 200);
-  const record = JSON.parse(await readFile(refs.judgment, 'utf8'));
-  assert.equal(record.normalization, undefined);
-  const archive = join(dirname(f.directory), 'preparation/step01/workspace/generation');
+  const archive = join(dirname(f.directory), clothingPreparationStep, 'workspace/generation');
   const entries = await readdir(archive);
   assert.equal(entries.length, 1);
   assert.deepEqual(await readFile(join(archive, entries[0], 'original.png')), await readFile(f.generated));
@@ -179,7 +177,6 @@ test('衣服输出采用 standard 尺寸而非 simplified 尺寸，并记录自�
   await rm(archive, { recursive: true });
   await prepareReferences({ runName: f.runName }, f.steps);
   assert.equal(f.calls.length, 1);
-  assert.ok(record.standardHash);
   await loadPreparedReferences(f.runName);
   await assert.rejects(readFile(join(f.directory, 'standard.png')), { code: 'ENOENT' });
 });

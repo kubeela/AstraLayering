@@ -5,8 +5,8 @@ import sharp from 'sharp';
 import { type SectionStep } from '../shared/step-section.ts';
 import { preparationOptionsPath } from '../shared/part/preparation-cache.ts';
 import type { PreparationReferences } from '../shared/part/preparation-types.ts';
-import { preparationNumbers, preparationStages, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
-export { preparationStages, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
+import { stageNote, stageNumber, stageStep, type PreparationStage } from '../shared/part/preparation-steps.ts';
+export { preparationStages, stageNumber, stageStep, stepStage, type PreparationStage } from '../shared/part/preparation-steps.ts';
 
 export type StandardJudgment = { needsAdjustment: boolean; reason?: string };
 
@@ -53,9 +53,9 @@ export async function copyAsPng(source: string, output: string): Promise<void> {
   else await sharp(bytes).autoOrient().png().toFile(output);
 }
 
-// Preparation is the section part-layering/preparation, with fixed step
+// Preparation is the first stage of the part section, with fixed step
 // numbers; pose keeps its number when a run does not standardize.
-export const sectionDirectory = (references: string) => join(dirname(references), 'preparation');
+export const sectionDirectory = (references: string) => dirname(references);
 export const poseJudgmentPath = (references: string) => join(sectionDirectory(references), stageStep('pose'), 'judgment.json');
 
 // Each step's output stays at its existing reference path; the options and
@@ -77,7 +77,7 @@ export async function preparationSteps(refs: PreparationReferences, standard: bo
     ['base', ['simplified'], [refs.baseSubject]], ['ready', ['simplified', 'base']]);
   return steps.map(([stage, dependsOn, outputs]) => {
     const directory = join(root, stageStep(stage));
-    return { number: preparationNumbers[stage], dependsOn: dependsOn.map(dependency => preparationNumbers[dependency]),
+    return { number: stageNumber(stage), note: stageNote(stage), dependsOn: dependsOn.map(stageNumber),
       ...(outputs ? { outputs: outputs.map(path => relative(directory, path)) } : {}) };
   });
 }

@@ -202,31 +202,6 @@ test('已完成第一步的任务接续后两步，各步新建 thread 并使用
   }
 });
 
-test('旧记录的共享 thread 只属于第一步：中断的 step02 新建 thread 并保留其产物', async t => {
-  const f = await fixture(t);
-  let index = 0;
-  await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: async request => {
-    const step = f.definitions[index++];
-    if (step.id === 'step02') { await request.onEvent({ type: 'thread.started', thread_id: 'thread-1' }); throw new Error('interrupted'); }
-    return deliver(request, step);
-  } }).catch(error => assert.match(String(error), /interrupted/));
-  // Before per-step sessions, run.json held one thread, and before threadStep
-  // it belonged to step01; step02 must not continue it.
-  await rm(join(f.output, 'agents/steps/step02/session.json'));
-  await writeFile(join(f.output, 'run.json'), JSON.stringify({ ...await readConfig(f.output), threadId: 'thread-1', threadHarness: 'codex' }));
-  index = 1;
-  await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: async request => {
-    const step = f.definitions[index++];
-    assert.equal(request.threadId, undefined);
-    return deliver(request, step, 'thread-' + step.id);
-  } });
-  assert.equal(index, 3);
-  const config = await readConfig(f.output);
-  assert.ok(!('threadId' in config), 'the legacy thread moves out of run.json');
-  assert.equal(await threadOf(f.output), 'thread-1');
-  assert.equal(await threadOf(f.output, 'step02'), 'thread-step02'); assert.equal(await threadOf(f.output, 'step03'), 'thread-step03');
-});
-
 test('旧 models 快照不影响续跑；使用当前环境模型，保留会话、产物与请求历史', async t => {
   const f = await fixture(t);
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async request => {
@@ -292,19 +267,19 @@ test('删 step02 完成标记后保留 step01/上游产物，清理后续目录�
 });
 
 test('part 终止步骤 occlusion 重做后 step01 及后续重跑并换新 thread；上游未完成时拒绝且不动本管线', async t => {
-  const f = await fixture(t), occlusion = join(f.input, 'occlusion');
+  const f = await fixture(t), occlusion = join(f.input, 'step14_occlusion');
   const mark = (stamp: string) => writeFile(join(occlusion, '.completed'), JSON.stringify({ stamp, inputs: {} }));
   await mkdir(occlusion);
   await mark('part-a');
   let index = 0;
   await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: request => deliver(request, f.definitions[index++]) });
-  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'part-layering/occlusion': 'part-a' });
+  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'part-layering/step14_occlusion': 'part-a' });
   // 上游没有变化时全部沿用。
   await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: forbidden });
   await rm(join(occlusion, '.completed'));
   await writeFile(join(occlusion, '.running'), '');
   const before = await readFile(join(f.output, 'step03/.completed'));
-  await assert.rejects(runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: forbidden }), /上游步骤 part-layering\/occlusion 尚未完成/);
+  await assert.rejects(runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: forbidden }), /上游步骤 part-layering\/step14_occlusion 尚未完成/);
   assert.deepEqual(await readFile(join(f.output, 'step03/.completed')), before);
   await rm(join(occlusion, '.running'));
   await mark('part-b');
@@ -318,7 +293,7 @@ test('part 终止步骤 occlusion 重做后 step01 及后续重跑并换新 thre
     return deliver(request, step, 'thread-part-b');
   } });
   assert.equal(index, 3);
-  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'part-layering/occlusion': 'part-b' });
+  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'part-layering/step14_occlusion': 'part-b' });
 });
 
 test('删 step01 完成标记清空所有后续步骤，包括尚未定义提示词的目录', async t => {

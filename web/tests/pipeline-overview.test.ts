@@ -81,7 +81,7 @@ test('人物和衣服跳过的 review/repair 共用紧凑节点，明确为无�
   }
 });
 
-test('共用过程文件组件识别阴影分支目录，排除已展示文件和其他分支，空目录隐藏', () => {
+test('共用过程文件组件识别阴影方式目录，排除已展示文件和另一种方式，空目录隐藏', () => {
   const component = source.slice(source.indexOf('function processArtifacts('), source.indexOf('function flowCard('));
   const mask = pipelineSteps[5][0].children[0], maps = pipelineSteps[5][0].children[1].children[0];
   const render = (pipeline: string, step: object, files: string[], known: typeof stepArtifacts[number]) => runInNewContext(component + '\nprocessArtifacts(0, step);', {
@@ -89,16 +89,16 @@ test('共用过程文件组件识别阴影分支目录，排除已展示文件�
     reportEvidence: () => '',
     esc: String, artifacts: (items: { path: string; label: string }[]) => JSON.stringify(items),
   }) as string;
-  const files = ['shadow/mask/step01/character-shadowed.kra', 'shadow/mask/step01/inspection/relation-001-review.png',
-    'shadow/mask/step01/workspace/inspection/native-case/clip-base.png', 'shadow/normal-depth/step01/workspace/draft.png',
-    'shadow/mask/agents/request/workspace/temporary.png'];
+  const files = ['shadow/step01_mask/character-shadowed.kra', 'shadow/step01_mask/inspection/relation-001-review.png',
+    'shadow/step01_mask/workspace/inspection/native-case/clip-base.png', 'shadow/step01_normal-depth/workspace/draft.png',
+    'shadow/agents/request/workspace/temporary.png'];
   const maskHtml = render('shadow', mask, files, stepArtifacts[5]);
   assert.match(maskHtml, /1 个过程文件/);
   assert.match(maskHtml, /inspection\/native-case\/clip-base\.png/);
-  assert.doesNotMatch(maskHtml, /character-shadowed|relation-001-review|normal-depth|\/agents\//);
+  assert.doesNotMatch(maskHtml, /character-shadowed|relation-001-review|step01_normal-depth|\/agents\//);
   const mapsHtml = render('shadow', maps, files, stepArtifacts[5]);
-  assert.match(mapsHtml, /1 个过程文件/); assert.match(mapsHtml, /normal-depth\/step01\/workspace\/draft\.png/);
-  assert.doesNotMatch(mapsHtml, /shadow\/mask/);
+  assert.match(mapsHtml, /1 个过程文件/); assert.match(mapsHtml, /step01_normal-depth\/workspace\/draft\.png/);
+  assert.doesNotMatch(mapsHtml, /shadow\/step01_mask/);
   assert.equal(render('shadow', mask, files.slice(0, 2), stepArtifacts[5]), '');
   const raster = render('raster-layering', pipelineSteps[1][0], ['raster-layering/step01/workspace/draft.png'], stepArtifacts[1]);
   assert.match(raster, /1 个过程文件/); assert.match(raster, /raster-layering\/step01\/workspace\/draft\.png/);

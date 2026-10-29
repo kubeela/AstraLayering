@@ -25,7 +25,7 @@ test('archive snapshot preserves all pipeline/group states, reports and KRA prev
   // Earlier archives omitted raster receipts. Their explicit archived facts
   // still show completion, provided the formal deliveries remain present.
   await rm(join(destination, 'raster-layering/step01/.completed'));
-  await rm(join(destination, 'shadow/mask/step01/.completed'));
+  await rm(join(destination, 'shadow/step01_mask/.completed'));
   const legacy = await snapshot(destination, f.name, join(f.base, 'archive'));
   assert.equal(legacy.pipelines[1].states.step01, 'done');
   assert.equal(legacy.pipelines[5].states.mask, 'done');
@@ -46,7 +46,7 @@ test('HTTP export downloads the shared ZIP; incomplete and stale-directory reque
   assert.match(response.headers.get('content-disposition')!, /case.zip/);
   const zip = unzipSync(new Uint8Array(await response.arrayBuffer()));
   assert.deepEqual(Buffer.from(zip['case/raster-layering/step01/character-depth.kra']), f.kra);
-  assert.ok(zip['case/part-layering/occlusion/preview.svg']);
+  assert.ok(zip['case/part-layering/step14_occlusion/preview.svg']);
   assert.equal((await fetch(base + '/api/export?' + new URLSearchParams({ dir: f.base, name: f.name }))).status, 409);
   await f.put('run.json', JSON.stringify({ ...f.run, status: 'failed' }));
   assert.equal((await fetch(url)).status, 400);

@@ -81,11 +81,11 @@ test('首次分组拒绝非字符串 subject，错误参数不能写坏首次分
       const signal = new AbortController().signal;
       const groups = [{ name: 'shape', groups: [], note: '独立实体' }];
       await assert.rejects(write.execute({ subject: ['other'], groups }, signal), /subject/);
-      await assert.rejects(readFile(join(f.directory, 'initial/step01/groups.json')), { code: 'ENOENT' });
+      await assert.rejects(readFile(join(f.directory, 'step08_initial/groups.json')), { code: 'ENOENT' });
       await write.execute({ subject: 'other', groups }, signal);
       return { text: 'saved', images: [] };
     } });
-    assert.equal(JSON.parse(await readFile(join(f.directory, 'initial/step01/groups.json'), 'utf8')).subject, 'other');
+    assert.equal(JSON.parse(await readFile(join(f.directory, 'step08_initial/groups.json'), 'utf8')).subject, 'other');
   }
 });
 

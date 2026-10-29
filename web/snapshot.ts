@@ -2,6 +2,7 @@ import { lstat, readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { shadowMode, shadowModes } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { stepsFor } from '../.agents/skills/live2d-maker/shadow/steps.ts';
+import { shadowStep } from '../.agents/skills/live2d-maker/shared/step-paths.js';
 import { pipelineIds } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { listSteps } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { currentSession } from '../.agents/skills/live2d-maker/shared/agents/step-session.ts';
@@ -16,7 +17,6 @@ import { currentAgentCalls, throttled } from './agent-progress.ts';
 import { readTaskLog } from '../.agents/skills/live2d-maker/workflow/log.ts';
 import { projectDisplayName } from './project-metadata.ts';
 import { reportPreview, type ReportPreview } from './report.ts';
-import { legacyWorkspaces } from './workspaces.ts';
 import { taskStopMethod } from '../.agents/skills/live2d-maker/workflow/control.ts';
 import { completeRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { copiedInput, inputKras } from './kra-inputs.ts';
@@ -49,7 +49,6 @@ export async function snapshot(directory: string, name: string, dir: string) {
   });
   const fileVersions: Record<string, string> = {};
   const files = await inventory(directory, fileVersions), fileSet = new Set(files);
-  const processWorkspaces = await legacyWorkspaces(directory, files);
   const optional = async (path: string) => jsonFile(directory, path).catch(error => { errors.push(String(error)); return undefined; });
   const exists = async (path: string) => {
     try { return (await lstat(await safePath(directory, path))).isFile(); }
@@ -67,8 +66,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
     const active = record.runnerAlive && record.lockHeld && current && saved?.status !== 'failed';
     const failed = record.status === 'failed' || saved?.status === 'failed';
     const mode = shadowMode(record.run?.shadowMode);
-    const branch = id === 'shadow' ? id + '/' + mode : id;
-    const config = await optional(branch + '/run.json');
+    const config = await optional(id + '/run.json');
     const states: Record<string, Status> = {};
     const messages: Record<string, string> = {};
     const previews: Record<string, { path: string; savedAt: string }> = {};
@@ -114,14 +112,13 @@ export async function snapshot(directory: string, name: string, dir: string) {
       }
     } else {
       for (const step of id === 'shadow' ? stepsFor(mode) : rasterDefinitions[id]) {
-        const prefix = branch + '/' + step.id;
+        const prefix = id + '/' + step.id;
         await loadReport(step.id, prefix + '/report.md');
-        const legacy = processWorkspaces[prefix] || [];
         const previewInputs = [...inputKras(config?.sourceInput, directory), ...files
           .filter(path => path.startsWith(prefix + '/') && !path.includes('/workspace/') && /\.kra$/i.test(path))
           .map(path => resolve(directory, path))];
         const candidates = await Promise.all(files.filter(path => /\.kra$/i.test(path) &&
-          (path.startsWith(prefix + '/') || legacy.some(root => path.startsWith(root + '/')))
+          path.startsWith(prefix + '/')
           && !path.split('/').some(segment => segment.startsWith('.') || ['recovery', 'archive'].includes(segment)))
           .map(async path => ({ path, info: await lstat(await safePath(directory, path)),
             inputCopy: await copiedInput(await safePath(directory, path), previewInputs) })));
@@ -175,28 +172,35 @@ export async function snapshot(directory: string, name: string, dir: string) {
       }
     }
     if (id === 'shadow') {
+      // The run's step01 is the chosen mode's; the other mode's step01 is shown as it was left.
       for (const variant of shadowModes) {
-        const branchStates: Status[] = [];
+        const modeStates: Status[] = [];
         for (const step of stepsFor(variant)) {
-          const prefix = id + '/' + variant + '/' + step.id;
+          const prefix = id + '/' + step.id;
           let complete = await exists(prefix + '/.completed');
           const delivered = await Promise.all(step.requiredFiles.map(path => exists(prefix + '/' + path)));
           if (record.run?.archive && saved?.status === 'completed' && variant === mode && delivered.every(Boolean)) complete = true;
           const state: Status = complete ? delivered.every(Boolean) ? 'done' : 'failed'
             : await exists(prefix + '/.running') ? variant === mode ? observed('running') : 'unconfirmed'
               : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
-          branchStates.push(state);
+          modeStates.push(state);
           if (variant === 'normal-depth') states['normal-depth-maps'] = state;
         }
-        states[variant] = branchStates.includes('running') ? 'running' : branchStates.includes('throttled') ? 'throttled' : branchStates.includes('failed') ? 'failed'
-          : branchStates.includes('unconfirmed') ? 'unconfirmed' : branchStates.every(v => v === 'done') ? 'done'
-            : branchStates.some(v => v === 'available' || v === 'done') ? 'available' : 'pending';
+        states[variant] = modeStates.includes('running') ? 'running' : modeStates.includes('throttled') ? 'throttled' : modeStates.includes('failed') ? 'failed'
+          : modeStates.includes('unconfirmed') ? 'unconfirmed' : modeStates.every(v => v === 'done') ? 'done'
+            : modeStates.some(v => v === 'available' || v === 'done') ? 'available' : 'pending';
       }
+      // The workbench shows the chosen step01 under one step01 node.
+      const chosen = shadowStep(mode);
       states.step01 = states[mode];
+      delete states[chosen];
+      for (const entries of [messages, previews, reports] as Record<string, unknown>[]) {
+        if (chosen in entries) { entries.step01 = entries[chosen]; delete entries[chosen]; }
+      }
     }
     // One agent runs a raster or shadow section at a time: while it waits out a 429, its running steps wait too.
     const waiting = active && id !== 'part-layering' && id !== 'clothing-part-layering'
-      ? (await currentAgentCalls(directory, branch, fileSet, errors, record.run?.runner?.startedAt)).find(call => throttled(call)) : undefined;
+      ? (await currentAgentCalls(directory, id, fileSet, errors, record.run?.runner?.startedAt)).find(call => throttled(call)) : undefined;
     if (waiting) for (const key of Object.keys(states)) if (states[key] === 'running') { states[key] = 'throttled'; messages[key] = waiting.retryError!; }
     let status: Status = active ? 'running' : observed(saved?.status);
     if (!saved) status = Object.values(states).includes('failed') ? 'failed' : Object.values(states).includes('unconfirmed') ? 'unconfirmed'
@@ -211,11 +215,11 @@ export async function snapshot(directory: string, name: string, dir: string) {
       for (const key of Object.keys(states)) if (states[key] === 'pending' || states[key] === 'available') states[key] = 'skipped';
     }
     // Every marked step, for the continue / resume / retry actions.
-    const steps = await listSteps(join(directory, branch), id).catch(error => { errors.push(id + ': ' + String(error)); return []; });
+    const steps = await listSteps(join(directory, id), id).catch(error => { errors.push(id + ': ' + String(error)); return []; });
     // The thread of the running step, else of the last step that kept one.
-    const threadId = (await currentSession(join(directory, branch), steps).catch(() => undefined))?.threadId ?? null;
+    const threadId = (await currentSession(join(directory, id), steps).catch(() => undefined))?.threadId ?? null;
     // The section's machine-wide Krita slot: queued for, held, or held with Krita running.
-    const kritaRecord = await readKritaRecord(join(directory, branch, kritaRecordFile));
+    const kritaRecord = await readKritaRecord(join(directory, id, kritaRecordFile));
     const krita = !kritaRecord ? null : { state: kritaRecord.state, since: kritaRecord.since, limit: kritaRecord.limit,
       ...(kritaRecord.state === 'running' ? { pid: kritaRecord.pid, version: kritaRecord.version, startedAt: kritaRecord.startedAt } : {}) };
     if (krita) kritaInUse ??= await kritaSlotsInUse();
@@ -227,7 +231,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
   // Server-side readers above may use agent records; the page only gets readable artifacts.
   const servedFiles = files.filter(path => !agentRecord(path));
   const servedVersions = Object.fromEntries(servedFiles.flatMap(path => fileVersions[path] ? [[path, fileVersions[path]]] : []));
-  return { ...record, files: servedFiles, ...(kritaInUse !== undefined ? { kritaInUse } : {}), fileVersions: servedVersions, processWorkspaces, pipelines, errors, logs: log.text,
+  return { ...record, files: servedFiles, ...(kritaInUse !== undefined ? { kritaInUse } : {}), fileVersions: servedVersions, pipelines, errors, logs: log.text,
     archived: !!record.run?.archive,
     canExport: completeRun(record.run) && !record.runnerAlive && !record.lockHeld,
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,

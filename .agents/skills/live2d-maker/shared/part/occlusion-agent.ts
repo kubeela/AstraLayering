@@ -1,3 +1,4 @@
+import { partSteps } from '../step-paths.js';
 import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
@@ -24,9 +25,9 @@ export async function planPartOcclusion(context: OcclusionContext, agents: Pick<
   if (!prompt.trim()) throw new Error('遮挡层级规划提示词为空');
   const reference = resolve(context.directory, context.references.baseSubject);
   const meta = await sharp(reference).metadata();
-  const directory = join(context.directory, 'occlusion', 'workspace');
+  const directory = join(context.directory, partSteps.occlusion, 'workspace');
   const previewPath = await realpath(context.preview.path);
-  const candidatePath = join(await realpath(context.directory), 'occlusion', 'workspace', 'candidate.svg');
+  const candidatePath = join(await realpath(context.directory), partSteps.occlusion, 'workspace', 'candidate.svg');
   const parts = await Promise.all(terminalParts(context).map(async ({ group, parent }) => ({
     ...nodeSeed(group), parent: parent?.id,
     full: await realpath(artifactPath(context.directory, group.id, 'completion')),

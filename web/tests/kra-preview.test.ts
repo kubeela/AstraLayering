@@ -11,7 +11,7 @@ import { createWorkbench } from '../server.ts';
 import { snapshot } from '../snapshot.ts';
 import { pipelineSteps } from '../progress.js';
 
-test('阴影蒙版显示最新 KRA，首次保存前等待；法线分支不显示蒙版预览', async () => {
+test('阴影蒙版显示最新 KRA，首次保存前等待；法线方式不显示蒙版预览', async () => {
   const { latestKraPreview } = await import(new URL('../progress.js', import.meta.url).href);
   const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
   const helpers = source.slice(source.indexOf('const isRasterPipeline ='), source.indexOf('async function post('));
@@ -27,10 +27,10 @@ test('阴影蒙版显示最新 KRA，首次保存前等待；法线分支不显�
   };
   const render = () => runInNewContext(helpers + renderer + '\nkraPreviewPanel(0);', { ...context }) as string;
   assert.match(render(), /等待首次保存 KRA/);
-  pipeline.previews.step01 = { path: 'shadow/mask/step01/working.kra', savedAt: '2026-10-24T00:00:00Z' };
+  pipeline.previews.step01 = { path: 'shadow/step01_mask/working.kra', savedAt: '2026-10-24T00:00:00Z' };
   const saved = render();
   assert.match(saved, /data-kra-preview="0"/); assert.match(saved, /Live2D 蒙版/);
-  assert.match(saved, /shadow\/mask\/step01\/working\.kra/);
+  assert.match(saved, /shadow\/step01_mask\/working\.kra/);
   assert.doesNotMatch(saved, /selection\.json|等待首次保存/);
   pipeline.mode = 'normal-depth';
   assert.equal(render(), '');

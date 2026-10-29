@@ -3,12 +3,12 @@ import { join, resolve } from 'node:path';
 import { readStep, type StepStatus } from '../shared/step-chain.ts';
 import { fromTaskPath, taskRootOf } from '../shared/task-paths.ts';
 import { within } from '../shared/raster/run-store.ts';
-import { clearStepSession, migrateRunFile, readStepSession } from '../shared/agents/step-session.ts';
+import { clearStepSession, readStepSession } from '../shared/agents/step-session.ts';
 import { occlusionPath } from '../shared/part/occlusion-plan.ts';
 import { artifactPath, draftPath } from '../shared/part/artifact-facts.ts';
-import { shadowMode } from '../shared/shadow.ts';
+import { partSteps, stepPattern } from '../shared/step-paths.js';
 import { pipelineIds, type PipelineId } from '../shared/paths.ts';
-import { acquireTaskLock, directoryFor, pipelineId, readRun, type TaskOptions } from './state.ts';
+import { acquireTaskLock, directoryFor, pipelineId, type TaskOptions } from './state.ts';
 
 // Per-step recovery for an interrupted or failed step, by any client (web, CLI):
 //   continue: change nothing; the next run continues the step with its
@@ -28,18 +28,19 @@ export type StepEntry = { id: string; status: Exclude<StepStatus, 'absent'>; ses
 
 const partPipelines: readonly PipelineId[] = ['part-layering', 'clothing-part-layering'];
 const safeSegment = (segment: string) => !!segment && segment !== '.' && segment !== '..' && !/[\\\0]/.test(segment);
-// Step ids are the step directories relative to the pipeline (see part-steps.ts and step-section.ts).
+// Step ids are the step directories relative to the section (see part-steps.ts and step-section.ts).
+const itemSteps: readonly string[] = [partSteps.outline, partSteps.completion, partSteps.children];
 export function validStepId(pipeline: PipelineId, id: string): boolean {
   if (typeof id !== 'string' || !id.split('/').every(safeSegment)) return false;
-  if (!partPipelines.includes(pipeline)) return /^step\d{2}$/.test(id);
-  return /^(initial\/step01|merge|occlusion|layers\/depth\d{2}|preparation\/step\d{2})$/.test(id)
-    || /^groups\/[^/]+(\/children\/[^/]+)*\/step0[123]$/.test(id);
+  const [step, ...items] = id.split('/'), item = items.join('/');
+  if (!stepPattern.test(step)) return false;
+  if (!partPipelines.includes(pipeline)) return !items.length;
+  if (itemSteps.includes(step)) return /^[^/]+(\/children\/[^/]+)*$/.test(item);
+  if (step === partSteps.reduce) return /^depth\d{2}$/.test(item);
+  return !items.length;
 }
 
-export async function pipelineRoot(directory: string, pipeline: PipelineId, name: string): Promise<string> {
-  if (pipeline !== 'shadow') return join(directory, pipeline);
-  return join(directory, pipeline, shadowMode((await readRun(directory, name))?.shadowMode));
-}
+export const pipelineRoot = (directory: string, pipeline: PipelineId): string => join(directory, pipeline);
 
 // Every marked or unmarked step directory of a pipeline, in path order.
 export async function listSteps(root: string, pipeline: PipelineId): Promise<StepEntry[]> {
@@ -66,7 +67,7 @@ export async function applyStepAction(options: Pick<TaskOptions, 'name' | 'dir'>
   // The task lock keeps a running coordinator and a second recovery out.
   const release = await acquireTaskLock(directory);
   try {
-    const root = await pipelineRoot(directory, pipeline, options.name);
+    const root = pipelineRoot(directory, pipeline);
     if (whole) return `${pipeline}：保留全部产物，下次运行续跑。`;
     return await actOnStep(root, pipeline, options.step, options.action as StepAction);
   } finally { await release(); }
@@ -82,7 +83,7 @@ export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'>
   try {
     const messages: string[] = [];
     for (const pipeline of pipelineIds) {
-      const root = await pipelineRoot(directory, pipeline, options.name);
+      const root = pipelineRoot(directory, pipeline);
       for (const step of await listSteps(root, pipeline)) {
         if (step.status === 'running') messages.push(`${pipeline}/` + await actOnStep(root, pipeline, step.id, action));
       }
@@ -100,8 +101,6 @@ async function actOnStep(root: string, pipeline: PipelineId, step: string, actio
   const { status, record } = await readStep(stepDirectory, taskRootOf(root));
   if (status === 'absent') throw new Error(`步骤 ${pipeline}/${step} 不存在，下次运行会直接执行。`);
   const part = partPipelines.includes(pipeline);
-  // A raster thread from before per-step sessions moves to its step first.
-  await migrateRunFile(root);
   if (action === 'continue') {
     if (status === 'completed') throw new Error(`步骤 ${step} 已完成；需要重做请选择重试。`);
     return `${step}：保留产物和会话，下次运行继续。`;
@@ -116,10 +115,10 @@ async function actOnStep(root: string, pipeline: PipelineId, step: string, actio
   const outputs = Object.keys(record?.outputs ?? {}).map(name => resolve(stepDirectory, name));
   // A running part step has no recorded outputs yet; its drafts and plans outside the
   // step directory are intermediate products too.
-  const group = /^groups\/(.+)\/step02$/.exec(step)?.[1]?.split('/children/').join('/');
+  const group = step.startsWith(partSteps.completion + '/') ? step.slice(partSteps.completion.length + 1).split('/children/').join('/') : undefined;
   if (part && group) outputs.push(artifactPath(root, group, 'completion'), draftPath(artifactPath(root, group, 'completion')));
-  if (part && step === 'merge') outputs.push(join(root, 'preview.svg'), join(root, 'preview.draft.svg'));
-  if (part && step === 'occlusion') outputs.push(occlusionPath(root));
+  if (part && step === partSteps.merge) outputs.push(join(root, 'preview.svg'), join(root, 'preview.draft.svg'));
+  if (part && step === partSteps.occlusion) outputs.push(occlusionPath(root));
   const outside = outputs.filter(path => !within(root, path));
   if (outside.length) throw new Error(`${step} 的产物在管线目录之外（${outside.join('、')}），不能在此重试。`);
   for (const path of outputs) await rm(path, { force: true });

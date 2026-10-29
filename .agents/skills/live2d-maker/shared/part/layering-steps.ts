@@ -16,7 +16,7 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
   // Request/session data is separate from artwork. Resetting a step clears
   // its saved session too; continuation retains both session and workspace.
   const sessions = new Map<string, AgentSession>();
-  async function stepSession(context: GroupContext, step: 1 | 2): Promise<AgentSession> {
+  async function stepSession(context: GroupContext, step: 'outline' | 'completion'): Promise<AgentSession> {
     const key = groupStepId(context.group.id, step);
     let session = sessions.get(key);
     if (!session) {
@@ -48,7 +48,7 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
     }
     return session;
   }
-  async function closeSession(context: GroupContext, step: 1 | 2) {
+  async function closeSession(context: GroupContext, step: 'outline' | 'completion') {
     const key = groupStepId(context.group.id, step), session = sessions.get(key);
     sessions.delete(key);
     await session?.close();
@@ -61,17 +61,17 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
     },
     initialGroups: async context => ({ status: 'completed', output: await recognizeInitialGroups(context, agents) }),
     drawOutline: async context => {
-      try { return { status: 'completed', output: await drawGroupOutline(context, await stepSession(context, 1)) }; }
-      catch (error) { await closeSession(context, 1); throw error; }
+      try { return { status: 'completed', output: await drawGroupOutline(context, await stepSession(context, 'outline')) }; }
+      catch (error) { await closeSession(context, 'outline'); throw error; }
     },
     reviewOutline: async context => {
-      try { return await reviewGroupOutline(context, agents, await stepSession(context, 1)); }
-      finally { await closeSession(context, 1); }
+      try { return await reviewGroupOutline(context, agents, await stepSession(context, 'outline')); }
+      finally { await closeSession(context, 'outline'); }
     },
     reduceOutlines: async context => ({ status: 'completed', output: await reduceGroupOutlines(context, agents) }),
     completeOcclusion: async context => {
-      try { return { status: 'completed', output: await completeGroupOcclusion(context, await stepSession(context, 2)) }; }
-      finally { await closeSession(context, 2); }
+      try { return { status: 'completed', output: await completeGroupOcclusion(context, await stepSession(context, 'completion')) }; }
+      finally { await closeSession(context, 'completion'); }
     },
     checkCompletion: async context => ({ status: 'completed', output: await checkGroupCompletion(context) }),
     splitChildren: async context => ({ status: 'completed', output: await analyzeChildren(context, agents) }),

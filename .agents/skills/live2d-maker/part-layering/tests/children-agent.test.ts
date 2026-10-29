@@ -146,7 +146,7 @@ test('分析期间或提交后修改父 SVG 会失败，未提交的最终文本
 test('父完成稿改变后旧分析不能放行下一层，CLI 深度输入有边界', async t => {
   const f = await fixture(t), steps = workingSteps([], [{ id: 'a' }], { a: [{ id: 'a/child', kind: 'part' }] });
   await runLayering({ ...f, groups: null, steps, maxDepth: 1 });
-  await rm(join(f.directory, groupStepId('a', 2), '.completed'));
+  await rm(join(f.directory, groupStepId('a', 'completion'), '.completed'));
   await assert.rejects(runLayering({ ...f, groups: { id: 'a/child' }, steps }), /前层尚未全部完成/);
   assert.equal(parseRunArguments(['--max-depth', '2']).maxDepth, 2);
   for (const value of ['0', '-1', '1.5', 'NaN', '9007199254740992']) assert.throws(() => parseRunArguments([`--max-depth=${value}`]), /正整数/);

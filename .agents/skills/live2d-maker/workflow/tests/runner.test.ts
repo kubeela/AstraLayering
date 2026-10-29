@@ -262,8 +262,8 @@ test('CLI 与网页操作对应：继续、恢复、重试、停止，可指定�
   assert.equal(parse('--retry').mode, 'run');
   assert.deepEqual([parse('--resume', '--background').mode, parse('--resume', '--background').action.action], ['background', 'resume']);
   assert.equal(parse('--continue', '--krita', '/opt/krita').options.krita, '/opt/krita');
-  assert.deepEqual(parse('--retry', '--pipeline', 'part-layering', '--step', 'groups/head/step02').action,
-    { action: 'retry', pipeline: 'part-layering', step: 'groups/head/step02' });
+  assert.deepEqual(parse('--retry', '--pipeline', 'part-layering', '--step', 'step11_completion/head').action,
+    { action: 'retry', pipeline: 'part-layering', step: 'step11_completion/head' });
   assert.deepEqual(parse('--continue', '--pipeline', 'shadow').action, { action: 'continue', pipeline: 'shadow', step: '' });
   assert.equal(parse('--stop').mode, 'stop');
   assert.equal(parse().action, undefined);
@@ -276,16 +276,16 @@ test('CLI 与网页操作对应：继续、恢复、重试、停止，可指定�
 
 test('CLI 恢复与重试先检查 Krita，不可用则拒绝且不改动步骤', async t => {
   const f = await fixture(t), dir = f.options.dir!;
-  const session = join(f.directory, 'part-layering/agents/steps/groups/head/step02/session.json');
-  await mkdir(join(f.directory, 'part-layering/groups/head/step02'), { recursive: true });
-  await writeFile(join(f.directory, 'part-layering/groups/head/step02/.running'), JSON.stringify({ inputs: {} }));
+  const session = join(f.directory, 'part-layering/agents/steps/step11_completion/head/session.json');
+  await mkdir(join(f.directory, 'part-layering/step11_completion/head'), { recursive: true });
+  await writeFile(join(f.directory, 'part-layering/step11_completion/head/.running'), JSON.stringify({ inputs: {} }));
   await mkdir(join(session, '..'), { recursive: true }); await writeFile(session, JSON.stringify({ threadId: 'thread-1' }));
   for (const action of ['--resume', '--retry']) {
     await assert.rejects(main(['--name', 'case', '--dir', dir, action]), /没有记录 Krita 路径[\s\S]*--krita/);
     await assert.rejects(main(['--name', 'case', '--dir', dir, action, '--krita', join(f.directory, 'missing-krita')]), /指定的 Krita 不可用[\s\S]*不存在或不可执行[\s\S]*--krita/);
   }
   assert.equal(JSON.parse(await readFile(session, 'utf8')).threadId, 'thread-1');
-  assert.equal(await readFile(join(f.directory, 'part-layering/groups/head/step02/.running'), 'utf8'), JSON.stringify({ inputs: {} }));
+  assert.equal(await readFile(join(f.directory, 'part-layering/step11_completion/head/.running'), 'utf8'), JSON.stringify({ inputs: {} }));
   await assert.rejects(main(['--name', 'case', '--dir', dir, '--stop']), /缺少总控记录/);
 });
 
@@ -297,9 +297,9 @@ test('标准化选项保持未指定、开启和关闭的区别，并继承独�
   }
   const f = await fixture(t);
   assert.equal((await configureRun(f.options, f.directory)).standard, false);
-  const refs = join(f.directory, 'part-layering/references');
-  await mkdir(refs, { recursive: true });
-  await writeFile(join(refs, 'preparation.json'), JSON.stringify({ version: 1, standard: true, files: {} }));
+  const options = join(f.directory, 'part-layering/step02_options');
+  await mkdir(options, { recursive: true });
+  await writeFile(join(options, 'options.json'), JSON.stringify({ standard: true }));
   assert.equal((await configureRun(f.options, f.directory)).standard, true);
   assert.equal((await configureRun({ ...f.options, standard: false }, f.directory)).standard, false);
   await assert.rejects(configureRun({ ...f.options, from: 'character-assembly', standard: true }, f.directory), /需要本次路线包含 part-layering/);

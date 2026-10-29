@@ -20,12 +20,12 @@ test('directory/ZIP exports retain artwork, completion facts and cited workspace
   assert.match(await readFile(join(destination, 'raster-layering/step01/report.md'), 'utf8'), /report-assets\/inspect\/cited.png/);
   assert.ok(Object.keys(manifest.files).some(path => path.endsWith('/.completed')));
   assert.ok(!Object.keys(manifest.files).some(path => /workspace|agents|unused|orphan|workflow\.log|\.runtime|physics/.test(path)));
-  assert.ok(manifest.files['shadow/mask/step01/inspection/overview.png']);
-  assert.ok(manifest.files['shadow/mask/step01/inspection/relation-000-review.png']);
+  assert.ok(manifest.files['shadow/step01_mask/inspection/overview.png']);
+  assert.ok(manifest.files['shadow/step01_mask/inspection/relation-000-review.png']);
   const run = JSON.parse(await readFile(join(destination, 'run.json'), 'utf8'));
   assert.equal(run.archive, true); assert.equal(run.krita, undefined); assert.equal(run.runner, undefined); assert.equal(run.dir, '.');
   assert.equal(JSON.stringify(run).includes(f.root), false);
-  const depth = await readFile(join(destination, 'part-layering/occlusion/preview.svg'), 'utf8');
+  const depth = await readFile(join(destination, 'part-layering/step14_occlusion/preview.svg'), 'utf8');
   assert.match(depth, /data-depth-preview="whole-parts"/);
   assert.ok(depth.indexOf('data-group-path="front"') < depth.indexOf('data-group-path="rear"'));
   const zipPath = join(f.base, 'result.zip');
@@ -66,7 +66,7 @@ test('incomplete, active, missing-delivery and missing-marker exports fail witho
   await rm(join(f.root, 'raster-layering/step02/.completed'));
   await assert.rejects(tryExport(), /\.completed/);
   await f.put('raster-layering/step02/.completed', '');
-  await rm(join(f.root, 'shadow/mask/step01/face-review.png'));
+  await rm(join(f.root, 'shadow/step01_mask/face-review.png'));
   await assert.rejects(tryExport(), /face-review\.png/);
   assert.equal((await readdir(f.base)).includes('refused'), false);
   assert.equal((await readdir(f.base)).some(path => path.startsWith('.live2d-export')), false);

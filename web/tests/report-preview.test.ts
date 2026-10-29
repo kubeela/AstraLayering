@@ -94,8 +94,8 @@ test('review 草稿展示引用图片，经 HTTP 可读，发布后采用正式�
 });
 
 test('report links try the report directory, then the task root, and only then legacy ancestors', () => {
-  const root = resolve('/task'), report = 'part-layering/groups/face/step01/review.md';
-  assert.deepEqual(reportTargets(root, report, 'evidence/a.png'), ['part-layering/groups/face/step01/evidence/a.png',
-    'evidence/a.png', 'part-layering/groups/face/evidence/a.png', 'part-layering/groups/evidence/a.png', 'part-layering/evidence/a.png'].map(path => join(root, path)));
+  const root = resolve('/task'), report = 'part-layering/step09_outline/face/review.md';
+  assert.deepEqual(reportTargets(root, report, 'evidence/a.png'), ['part-layering/step09_outline/face/evidence/a.png',
+    'evidence/a.png', 'part-layering/step09_outline/evidence/a.png', 'part-layering/evidence/a.png'].map(path => join(root, path)));
   assert.deepEqual(reportTargets(root, 'report.md', '../x.png'), []);
 });

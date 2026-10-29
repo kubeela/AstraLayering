@@ -13,10 +13,8 @@ import { pipelineIds } from './paths.ts';
 const pipelines = new Set<string>(pipelineIds);
 const inside = (root: string, path: string) => path === root || path.startsWith(root.endsWith(sep) ? root : root + sep);
 
-const shadowModes = new Set(['mask', 'normal-depth']);
-
 // The task root of a pipeline directory. Every pipeline directory is created
-// directly in the task root (shadow keeps one per mode, shadow/<mode>), so the
+// directly in the task root, so the
 // root comes from the structure rather than from searching ancestors by name: a
 // part group may be named after a pipeline. Deeper directories must be given
 // their root explicitly. A directory outside the layout (tests, ad hoc tools) is
@@ -24,7 +22,6 @@ const shadowModes = new Set(['mask', 'normal-depth']);
 export function taskRootOf(directory: string): string {
   const start = resolve(directory), parent = dirname(start);
   if (pipelines.has(basename(start))) return parent;
-  if (basename(parent) === 'shadow' && shadowModes.has(basename(start))) return dirname(parent);
   return start;
 }
 

@@ -16,7 +16,9 @@ import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclu
 import { completionReferenceGroups, dependenciesMatch } from './completion-inputs.ts';
 import { beginStep, checkStep, completeStep, readStep, resetStep, runningInputs, type ChainStep, type StepCheck } from '../step-chain.ts';
 import { taskRootOf } from '../task-paths.ts';
-import { groupDirectory, groupStep, groupStepId, initialStepId, layerStep, parentGroupId, readChildren, readGroupTree, readInitialGroups } from './part-steps.ts';
+import { groupStep, groupStepId, groupSteps, layerStep, parentGroupId, readChildren, readGroupTree, readInitialGroups } from './part-steps.ts';
+import { partSteps } from '../step-paths.js';
+import { layeringEntries } from './preparation-cache.ts';
 
 const labels = { outline: '组轮廓与自检', review: '外轮廓与去噪 review', reduction: '同层轮廓去重',
   completion: '直接遮挡补形', completionCheck: '补形自检', children: '子组分析' };
@@ -163,7 +165,7 @@ export async function runLayering(input: {
   }
   // step01: outline + review.
   async function prepare(id: string, run: boolean) {
-    const step = groupStep(directory, id, 1);
+    const step = groupStep(directory, id, 'outline');
     let check = await guard(id, 'outline', () => checkStep(step, lookup));
     const outline = artifactPath(directory, id, 'outline');
     const hidden = context(id).group.hiddenInReference === true;
@@ -202,7 +204,7 @@ export async function runLayering(input: {
     })) return;
     await guard(id, 'review', () => completeStep(step, lookup));
   }
-  // layers/depthNN: one reduction over every outline at that depth. It is reopened
+  // step10_reduce/depthNN: one reduction over every outline at that depth. It is reopened
   // in place; a group whose outline is unchanged keeps its current reduction, and
   // only the outputs whose bytes change rerun the completions that read them.
   async function reduce(depth: number, entries: ReturnType<typeof walkGroups>): Promise<boolean> {
@@ -222,7 +224,7 @@ export async function runLayering(input: {
     }
     await store.update(document => { for (const id of ids) setGroupProgress(findGroup(document, id), 'reduction', { status: 'running' }); });
     const inputs = await Promise.all(entries.map(async entry => {
-      const id = entry.group.id, outline = groupStepId(id, 1);
+      const id = entry.group.id, outline = groupStepId(id, 'outline');
       const bytes = (await readSvg(artifactPath(directory, id, 'outline')))!;
       const output = artifactPath(directory, id, 'reduction'), draft = stepDraftPath(directory, id, 'reduction');
       await mkdir(dirname(draft), { recursive: true });
@@ -267,7 +269,7 @@ export async function runLayering(input: {
   }
   // step02: completion + check; step03: children split.
   async function finish(id: string) {
-    const step = groupStep(directory, id, 2, await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
+    const step = groupStep(directory, id, 'completion', await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
     const check = await guard(id, 'completion', () => checkStep(step, lookup));
     if (check.action !== 'keep') {
       await resetProgress(id, 'completion');
@@ -295,7 +297,7 @@ export async function runLayering(input: {
       })) return;
       await guard(id, 'completionCheck', () => completeStep(step, lookup));
     }
-    const split = groupStep(directory, id, 3);
+    const split = groupStep(directory, id, 'children');
     const splitCheck = await guard(id, 'children', () => checkStep(split, lookup));
     if (splitCheck.action === 'keep') {
       // An interrupted rerun of step02 that reproduced the same part keeps the split;
@@ -329,7 +331,7 @@ export async function runLayering(input: {
       // removed children lose their step directories and parts.
       const previous = context(id).group.groups;
       for (const old of previous) if (!children.some(child => child.id === old.id)) {
-        await rm(groupDirectory(directory, old.id), { recursive: true, force: true });
+        for (const step of groupSteps) await rm(join(directory, groupStepId(old.id, step)), { recursive: true, force: true });
         for (const { group } of walkGroups([old])) await rm(artifactPath(directory, group.id, 'completion'), { force: true });
       }
       await store.update(draft => {
@@ -376,13 +378,13 @@ export async function runLayering(input: {
         if (!(await stat(resolve(directory, path))).isFile()) throw new Error(`显式 groups 缺少前置参考：${path}`);
       }
     } else {
-      const step: ChainStep = { id: initialStepId, root, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
+      const step: ChainStep = { id: partSteps.initial, root, directory: join(directory, partSteps.initial), dependsOn: [], outputs: ['groups.json'] };
       const check = await checkStep(step, lookup);
       if (check.action === 'keep') report('首次分组：沿用已有结果');
       else {
         if (check.action === 'rerun') {
           // Everything else hangs off the first grouping.
-          for (const entry of ['groups', 'layers', 'parts', 'merge', 'occlusion', 'preview.svg', 'occlusion.json']) {
+          for (const entry of layeringEntries.filter(entry => entry !== partSteps.initial)) {
             await rm(join(directory, entry), { recursive: true, force: true });
           }
           await store.update(document => { document.groups = []; delete document.subject; document.merge = { status: 'pending' }; });
@@ -423,7 +425,7 @@ export async function runLayering(input: {
       if (selected) for (const entry of entries) {
         const id = entry.group.id;
         if (scope()!.has(id)) continue;
-        const step = groupStep(directory, id, 2, await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
+        const step = groupStep(directory, id, 'completion', await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
         if ((await readStep(step.directory, root)).status === 'absent') continue;
         // Only completions whose inputs changed; an unfinished one is not a change.
         if ((await checkStep(step, lookup).catch(() => undefined))?.action === 'rerun') selected.add(id);
@@ -440,9 +442,9 @@ export async function runLayering(input: {
     }
     const document = store.snapshot(), all = walkGroups(document.groups);
     if (all.length && all.every(entry => groupCompleted(entry.group))) {
-      const step: ChainStep = { id: 'merge', root, directory: join(directory, 'merge'), outputs: ['../preview.svg'],
-        dependsOn: [...all.map(entry => groupStepId(entry.group.id, 3)),
-          ...all.filter(entry => !entry.group.groups.length).map(entry => groupStepId(entry.group.id, 2))] };
+      const step: ChainStep = { id: partSteps.merge, root, directory: join(directory, partSteps.merge), outputs: ['../preview.svg'],
+        dependsOn: [...all.map(entry => groupStepId(entry.group.id, 'children')),
+          ...all.filter(entry => !entry.group.groups.length).map(entry => groupStepId(entry.group.id, 'completion'))] };
       const output = join(directory, 'preview.svg');
       const check = await checkStep(step, lookup);
       if (check.action === 'keep') report('最终预览合并：沿用');
@@ -469,7 +471,7 @@ export async function runLayering(input: {
     const merged = store.snapshot();
     if (merged.merge.status === 'completed') {
       const context = { ...initial, groups: merged.groups, preview: merged.merge.output! };
-      const step: ChainStep = { id: 'occlusion', root, directory: join(directory, 'occlusion'), dependsOn: ['merge'] };
+      const step: ChainStep = { id: partSteps.occlusion, root, directory: join(directory, partSteps.occlusion), dependsOn: [partSteps.merge] };
       const check = await checkStep(step, lookup);
       if (check.action === 'keep' && await restoreOcclusionPlan(context)) {
         completedOcclusion = occlusionPath(directory);
