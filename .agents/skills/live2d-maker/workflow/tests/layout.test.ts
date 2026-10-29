@@ -46,7 +46,7 @@ test('a previous-layout task converts as a whole after a full backup, keeping it
   const result = await convertLayout(task);
   assert.equal(await layoutState(task), 'current');
   await requireCurrentLayout(task);
-  assert.equal((await readRun(task, 'demo'))!.sections['part-layering'].status, 'completed');
+  assert.equal((await readRun(task, 'demo'))!.sections['part-layering']?.status, 'completed');
 
   // The backup is the untouched old directory.
   assert.equal(dirname(result.backup), join(runs, '.backups'));
