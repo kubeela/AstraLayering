@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { completeStep, inspectChain, modifiedError, resetChain, startStep, type ChainPlan, type ChainStep, type StepStatus } from './step-chain.ts';
 import { stepName, stepNumber } from './step-paths.js';
 
-// A section is one part of the section: a directory of steps stepNN or
+// A section is one part of the pipeline: a directory of steps stepNN or
 // stepNN_<note> (step-paths.js) driven by the shared step chain. Numbers are
 // fixed per step, so a step that a run does not use leaves a gap, and steps
 // sharing a number are alternatives a run picks one of. Step directories left

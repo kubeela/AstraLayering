@@ -1,9 +1,0 @@
-{
-  "stamp": "fbfee9ab596efe6cb9f38fa9fbc37756290695883262a0d56da2e21b779c3962",
-  "inputs": {
-    "groups/head_accessories/children/left_hair_bow/children/white_ribbon_tail/step02": "ff591536f2789c57e90de50548e2045e1e3e504a07b442c78a56a5b36358de4d"
-  },
-  "outputs": {
-    "children.json": "c4ff8cd0be9bd85f23c457e5efd0d28ccd68a886a9d401b83ae20bda0b58bd90"
-  }
-}

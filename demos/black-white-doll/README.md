@@ -13,9 +13,9 @@
 | 衣服 step01 | [KRA](clothing-raster-layering/step01/clothing-depth.kra) · [工程预览](clothing-raster-layering/step01/clothing-depth-snapshot.png) · [报告](clothing-raster-layering/step01/report.md) |
 | 衣服 step02 | [KRA](clothing-raster-layering/step02/clothing-soft-edges.kra) · [PNG](clothing-raster-layering/step02/clothing-soft-edges.png) · [报告](clothing-raster-layering/step02/report.md) |
 | 穿戴组装 | [KRA](character-assembly/step01/character-assembled.kra) · [PNG](character-assembly/step01/character-assembled.png) · [报告](character-assembly/step01/report.md) |
-| 投影阴影 | [最终 KRA](shadow/mask/step01/character-shadowed.kra) · [最终 PNG](shadow/mask/step01/character-shadowed.png) · [面部检查](shadow/mask/step01/face-review.png) · [投影定义](shadow/mask/step01/shadows.json) · [验收](shadow/mask/step01/inspection.json) · [报告](shadow/mask/step01/report.md) |
+| 投影阴影 | [最终 KRA](shadow/step01_mask/character-shadowed.kra) · [最终 PNG](shadow/step01_mask/character-shadowed.png) · [面部检查](shadow/step01_mask/face-review.png) · [投影定义](shadow/step01_mask/shadows.json) · [验收](shadow/step01_mask/inspection.json) · [报告](shadow/step01_mask/report.md) |
 
-![最终结果](shadow/mask/step01/character-shadowed.png)
+![最终结果](shadow/step01_mask/character-shadowed.png)
 
 保留登记产物、完整 SVG 部件、分组与深度、各阶段报告及明确引用的代表性图片。图像和 KRA 逐字节保留；两张 `-snapshot.png` 直接提取对应 KRA 的 `mergedimage.png`。报告和 JSON 只在归档副本中调整路径／格式，清单同时记录改写前后的哈希。
 

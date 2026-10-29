@@ -1,9 +1,0 @@
-{
-  "stamp": "fef02e476295dba3407358b93ca0dec257f82be0c368f7c70a54d164f2c94acd",
-  "inputs": {
-    "groups/face/children/eye_right/children/sclera/step02": "3842b2b144f553d61ea067981e13d545fd9af188822e588b1903c83d9ffff7fb"
-  },
-  "outputs": {
-    "children.json": "102ffaf950484a58c14f6d861dcc721b09342e65cf1d88dcc57949c4d000372b"
-  }
-}

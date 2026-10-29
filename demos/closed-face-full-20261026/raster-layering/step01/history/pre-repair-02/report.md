@@ -62,7 +62,7 @@ R2专用素材：[灰底输入](../../repair-01-evidence/r2-back-edit-input.png)
 
 随后通过 `edit_groups` 与 `edit_occlusion` 保存完整树和深度表，均校验通过。逻辑ID、原有深度数值、普通绘画层数量和UUID不变：左侧发5/20/150，右侧发6/21/151，后发10，刘海160。没有重启上游或推进后续步骤。
 
-R2/R13续修依据及本轮自检结果已通过edit_groups/edit_occlusion更新完整数据，37个终止part与41个深度区域均校验通过；当前metadata不再标待修。结构校验只确认引用和层序，绘画结论另依据逐层看图。[形体同步](repair-01-evidence/checks/shape-sync.json)、[预览更新](repair-01-evidence/checks/preview-update.json)、[分组预览](../../../../part-layering/preview.svg)、[深度预览](../../../../part-layering/occlusion/preview.svg)。
+R2/R13续修依据及本轮自检结果已通过edit_groups/edit_occlusion更新完整数据，37个终止part与41个深度区域均校验通过；当前metadata不再标待修。结构校验只确认引用和层序，绘画结论另依据逐层看图。[形体同步](repair-01-evidence/checks/shape-sync.json)、[预览更新](repair-01-evidence/checks/preview-update.json)、[分组预览](../../../../part-layering/preview.svg)、[深度预览](../../../../part-layering/step14_occlusion/preview.svg)。
 
 ## 当前实际图层与复用
 

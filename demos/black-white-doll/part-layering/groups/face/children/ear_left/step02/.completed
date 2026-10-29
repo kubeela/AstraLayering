@@ -1,9 +1,0 @@
-{
-  "stamp": "167d44798dd0c6f0d8101304e5002492ffbdf472060615ef03b3c3f50ca7e175",
-  "inputs": {
-    "layers/depth02#face/ear_left.svg": "b2df99e1fbc798f8b3dea2c05d2d33223afea06f22c81f571c72a2bbff2253cb"
-  },
-  "outputs": {
-    "../../../../../parts/face/ear_left.svg": "839d87ecfefdd16eeca003e0c7bce2a09a62b889c3c163305627e9985a041004"
-  }
-}

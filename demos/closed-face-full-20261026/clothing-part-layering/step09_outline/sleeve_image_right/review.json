@@ -1,0 +1,43 @@
+{
+  "groupId": "sleeve_image_right",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已从纯衣服参考独立确认：本组为画面右侧肩袖接合线至腋下、右侧外缘及完整斜椭圆袖口的整只短袖。完成整图 blend、右袖全域 2 倍 edge、接缝 3 倍 edge、袖口 3 倍 blend 及 SVG 独显检查。肩袖根约 (1016,347) 至腋下约 (930,633)，以及向 (910,800) 的分界与参考相符；外侧至画布右边界、袖口下弧及两端回折均覆盖参考可见实体，主要位置与比例相符。袖口深色区域是可见内壁衣料，联合纯色覆盖合理，参考此处没有需要挖除的透空；未发现误包人体、其他衣片，或可见附件、薄纱及组件遗漏。note 已说明前后口缘相对上臂的深度、连续回折、整体共同控制及袖根隐藏搭接，无需因跨深度另拆组。本组无父范围限制。未发现确定需要修改的问题，无需重画。\n\n图像证据：\n![整体叠加](review-evidence/overall-blend.png)\n![右袖全域边缘覆盖](review-evidence/full-sleeve-edge.png)\n![肩袖接缝放大](review-evidence/seam-edge.png)\n![袖口放大叠加](review-evidence/cuff-blend.png)\n![纯色轮廓独显](review-evidence/outline.png)",
+      "candidateHash": "e09c9101400b6f8275c271029fd6493b790006a4203a0e760a3d5455fe1f5ae0",
+      "observations": [
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_right/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_right/step01/previews/2026-10-27T14-30-30-159Z-1.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_right/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_right/step01/previews/2026-10-27T14-30-30-159Z-2.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_right/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_right/step01/previews/2026-10-27T14-30-30-159Z-3.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_right/outline.svg",
+          "mode": "svg",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_right/step01/previews/2026-10-27T14-30-30-159Z-4.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_right/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_right/step01/previews/2026-10-27T14-30-30-159Z-5.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_right/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_right/step01/previews/2026-10-27T14-30-30-159Z-6.png"
+        }
+      ],
+      "updatedAt": "2026-10-27T14:32:02.088Z"
+    }
+  ]
+}

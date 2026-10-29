@@ -62,7 +62,7 @@ export async function exportFixture(t: TestContext) {
   await put('raster-layering/step01/report.md', '结论：已完成\n![检查图](workspace/inspect/cited.png)\n');
   await put('raster-layering/agents/session/auth-settings.json', '{"env":{"SECRET":"must-not-export"}}');
   await put('raster-layering/agents/session/request.json', '{"model":"configured-model"}');
-  await put('raster-layering/run.json', '{"threadId":"old-session"}');
+  await put('raster-layering/agents/steps/step01/session.json', '{"threadId":"old-session"}');
   await put('.runtime/packages/secret.txt', 'runtime-package');
   await put('workflow.log', 'verbose log');
   await put('raster-layering/step01/orphan.png', png);

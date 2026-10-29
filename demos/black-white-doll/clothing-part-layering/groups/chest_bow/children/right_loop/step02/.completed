@@ -1,9 +1,0 @@
-{
-  "stamp": "afb39b216fbaa95572e98374f681947b4369c40e498263f545a0bcdb9668c547",
-  "inputs": {
-    "layers/depth02#chest_bow/right_loop.svg": "e8df3ec02d0359a4aa6bdea74fc0d450e6111b91b09765684ae8df18d0e18a23"
-  },
-  "outputs": {
-    "../../../../../parts/chest_bow/right_loop.svg": "85ef5e199c24c96e2104f9ca614f9b83c58a39398a5fc9745942435ebdb25763"
-  }
-}

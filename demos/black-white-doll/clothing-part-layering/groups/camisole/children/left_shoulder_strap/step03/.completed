@@ -1,9 +1,0 @@
-{
-  "stamp": "76911250baba63b89ef76debd2a608886002cccb7c29bef9cb0cd1ffc37f1c81",
-  "inputs": {
-    "groups/camisole/children/left_shoulder_strap/step02": "5112dce66f8d9974f80e2e2dbd372c05f2e68e9a8ef30284b0e7e8b1482b29f0"
-  },
-  "outputs": {
-    "children.json": "952e12fefff4f4b2fca0684c323a421d482d88c484ad1d8646eeb0b044e91e0d"
-  }
-}

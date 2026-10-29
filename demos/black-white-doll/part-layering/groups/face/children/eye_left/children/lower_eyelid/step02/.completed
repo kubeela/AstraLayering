@@ -1,9 +1,0 @@
-{
-  "stamp": "46686a5f6b581eaf68a33a7d6d2697ad7c6a2edcbfb2b1145ce4f52ccdda1d6d",
-  "inputs": {
-    "layers/depth03#face/eye_left/lower_eyelid.svg": "d76189e503123373b81ba89e74f9900c70d257a30d6d6559835940eedc089df7"
-  },
-  "outputs": {
-    "../../../../../../../parts/face/eye_left/lower_eyelid.svg": "2a0e9ec958de99e03bd7ab4cbecde4663c975fc6bf93139fe06a60df5899621e"
-  }
-}

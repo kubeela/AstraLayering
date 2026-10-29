@@ -9,6 +9,7 @@ import { sectionIds, resolveInput, resolveRunsDirectory, taskDirectory, type Sec
 import { defaultAgentConcurrency } from '../shared/codex/agent-runtime.ts';
 import { readPreparationOptions } from '../shared/part/preparation-cache.ts';
 import { readTaskLog } from './log.ts';
+import { requireCurrentLayout } from './layout.ts';
 import { currentSession } from '../shared/agents/step-session.ts';
 import { installedVersion } from '../shared/version.ts';
 
@@ -56,6 +57,7 @@ export function directoryFor(options: Pick<TaskOptions, 'name' | 'dir'>): string
   return taskDirectory(options.name, resolveRunsDirectory(options.dir));
 }
 export async function readRun(directory: string, name: string): Promise<TaskRun | undefined> {
+  await requireCurrentLayout(directory);
   let contents: string;
   try { contents = await readFile(join(directory, 'run.json'), 'utf8'); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return; throw error; }

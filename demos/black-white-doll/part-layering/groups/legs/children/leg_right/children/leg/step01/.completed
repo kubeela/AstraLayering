@@ -1,9 +1,0 @@
-{
-  "stamp": "1a76d737a169cda761a2f2e9c0cc08a44b2f83cf534ba7c25a9f806833ebd500",
-  "inputs": {
-    "groups/legs/children/leg_right/step02": "108f86fa8aedbb70d6714925a7cba47e5865a0e77db1143348a4f5231ed551d9"
-  },
-  "outputs": {
-    "outline.svg": "880e3dac8fdaeeab5a6ec0cfeaaf402ce16164f57a829002b25b8238c49d5c74"
-  }
-}

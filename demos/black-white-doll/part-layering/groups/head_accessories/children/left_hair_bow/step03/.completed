@@ -1,9 +1,0 @@
-{
-  "stamp": "dd00f87181e78375d03b2e95343859f4566f6012d5bf01876bde007bb74e7f24",
-  "inputs": {
-    "groups/head_accessories/children/left_hair_bow/step02": "fd1e76e9dc96c06dfed804e504540c90f7db3546253099d589003013f9f234b4"
-  },
-  "outputs": {
-    "children.json": "a505b26b475c81bd63d958aaa028e8ea9e0091282dd34ada6af5f6f03bbf1e93"
-  }
-}

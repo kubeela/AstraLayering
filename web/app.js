@@ -99,7 +99,7 @@ function laneFailure(section){
  const reason=String(section?.summary||'').split('\n')[0].trim();
  return reason&&!Object.values(section.messages||{}).some(message=>String(message).includes(reason)||reason.startsWith(String(message)))?reason:'';
 }
-const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录'};
+const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录', layout:'需转换目录'};
 function pageHeading() {
  return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button></div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${stepToolbar()}`:''}</div></div>`;
 }
@@ -428,6 +428,7 @@ function graph() {
  <footer class="flow-footnote">人物分块准备完成后，人物线与衣服线并行，在穿戴组装合流 · 滚轮或左右拖动横向浏览 · 上下拖动、上下滑动或 Ctrl/⌘ + 滚轮切换两条线 · 点击产物放大查看</footer></div>${state.inspect?inspector():''}</section>`;
 }
 function runNotice() {
+ if(data.status==='layout')return `<div class="run-notice error"><span>${icon('info')}${esc(data.message)}</span>${data.layout==='previous'?`<button class="button" data-action="convert-layout">${icon('folder')}转换目录</button>`:''}</div>`;
  const message=data.run?.error||data.lastLogMessage||data.run?.lastMessage||'尚无总调度执行记录，可选择单条管线读取已有上游产物。';
  const stopped=data.status==='failed'||data.status==='interrupted';
  return `<details data-details="run-notice" class="run-notice ${data.status==='failed'?'error':''}" ${stopped?'open':''}><summary>${icon(data.status==='failed'?'info':'clock')}<span>${stopped?esc(taskStatusNames[data.status])+' · ':''}${esc(message.split('\n')[0])}</span><small>运行记录与日志</small></summary><div>${data.errors.length?`<pre class="status-error">${esc(data.errors.join('\n'))}</pre>`:''}<pre>${esc(message)}</pre><pre class="live-log">${esc(data.logs||'暂无日志')}</pre><small>日志：${esc(data.logPath||data.directory)}${data.logUpdatedAt?' · 日志更新：'+esc(new Date(data.logUpdatedAt).toLocaleString()):''}${data.run?.updatedAt?' · 状态保存：'+esc(new Date(data.run.updatedAt).toLocaleString()):''}</small></div></details>`;
@@ -796,6 +797,7 @@ function bind() {
   else if(action==='run')showNew(false,true);
   else if(action==='files')showFiles();
   else if(action==='stop'){b.disabled=true;post('stop',{name:state.name}).then(result=>{toast(result.message);return refreshTask(true);}).catch(error=>{toast(error.message);b.disabled=false;});}
+  else if(action==='convert-layout'){b.disabled=true;toast('正在备份并转换目录…');post('convert-layout',{name:state.name}).then(result=>{toast(`已转换，原目录备份在 ${result.backup}`);return refreshTask(true);}).catch(error=>{toast(error.message);b.disabled=false;});}
   else if(action==='directory')showDirectory();
   else if(action==='history')showHistory();
   else if(action==='dismiss-update'){try{localStorage.setItem(dismissedKey,appVersion.latest);}catch{}render();}

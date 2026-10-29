@@ -189,7 +189,7 @@ test('snapshots distinguish artifacts, real group states, missing outputs, revie
 test('real coordinator owns web execution: locking, failure diagnostics, resume, cancellation, thread preservation', async t => {
   const f = await fixture(t), task = join(f.dir, 'test');
   await f.post('tasks', { name: 'test', upload: await upload(), from: 'part-layering', to: 'part-layering' });
-  await put(task, 'raster-layering/run.json', JSON.stringify({ threadId: 'keep-me' }));
+  await put(task, 'raster-layering/agents/steps/step01/session.json', JSON.stringify({ threadId: 'keep-me' }));
   const options = { name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' } as const;
   await assert.rejects(runWebTask(options, 'failure', { execute: async (_id, _run, context) => {
     context.progress('模型最后消息：没有 image_generation 工具'); throw new Error('未交付结果');
@@ -212,13 +212,13 @@ test('real coordinator owns web execution: locking, failure diagnostics, resume,
   assert.equal((await readRun(task, 'test'))?.status, 'interrupted');
   await runWebTask(options, 'resume', { execute: async () => ({ output: join(task, 'parts'), summary: '完成' }) });
   run = await readRun(task, 'test'); assert.equal(run?.status, 'completed');
-  assert.equal((await jsonFile(task, 'raster-layering/run.json'))?.threadId, 'keep-me');
+  assert.equal((await jsonFile(task, 'raster-layering/agents/steps/step01/session.json'))?.threadId, 'keep-me');
 });
 
 test('终端总调度没有 web worker 记录仍可在网页停止；旧请求不停止新会话，产物保留且可续跑', async t => {
   const f = await fixture(t), task = join(f.dir, 'test');
   await f.post('tasks', { name: 'test', upload: await upload(), from: 'part-layering', to: 'part-layering' });
-  await put(task, 'raster-layering/run.json', JSON.stringify({ threadId: 'keep-cli-thread' }));
+  await put(task, 'raster-layering/agents/steps/step01/session.json', JSON.stringify({ threadId: 'keep-cli-thread' }));
   await atomicJSON(stopRequestPath(task), { runnerId: 'previous-runner' });
   const ready = Promise.withResolvers<void>(), entered = Promise.withResolvers<AbortSignal>();
   const options = { name: 'test', dir: f.dir, from: 'part-layering', to: 'part-layering' } as const;
@@ -241,7 +241,7 @@ test('终端总调度没有 web worker 记录仍可在网页停止；旧请求�
   assert.equal((await snapshot(task, 'test', f.dir)).canStop, false);
   assert.equal(await jsonFile(task, '.stop-request.json'), undefined);
   assert.equal(await readFile(join(task, 'part-layering/parts/face.draft.svg'), 'utf8'), 'saved draft');
-  assert.equal((await jsonFile(task, 'raster-layering/run.json'))?.threadId, 'keep-cli-thread');
+  assert.equal((await jsonFile(task, 'raster-layering/agents/steps/step01/session.json'))?.threadId, 'keep-cli-thread');
   assert.equal((await f.post('stop', { name: 'test' })).status, 400);
   await runTask(options, { execute: async () => ({ summary: '续跑完成' }) });
   assert.equal((await readRun(task, 'test'))?.status, 'completed');

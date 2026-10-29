@@ -1,9 +1,0 @@
-{
-  "stamp": "3fdad861844f501adfd106a8c2ddbf346494e23ee9a0422d1156e1e83e4f01c9",
-  "inputs": {
-    "groups/legs/children/leg_left/children/ankle_strap/step02": "cd7bc102ceea109a31c23ea4d4980c59dcdfbc51809663617b94e299817080d3"
-  },
-  "outputs": {
-    "outline.svg": "bc4cf81297a38588467247c516240ab5d431e05c5606f0238582f48e2a4d209c"
-  }
-}

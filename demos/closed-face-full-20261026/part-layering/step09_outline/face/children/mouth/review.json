@@ -1,0 +1,53 @@
+{
+  "groupId": "face/mouth",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已核对整图叠加，并以相互重叠的左区 [512,756,72,62]、右区 [572,756,72,62] 进行 8 倍 blend 与 edge 对照，另查看参考嘴部 [505,749,146,74] 及父组同部位叠加。当前联合色块覆盖两侧嘴角、闭合唇缝、上下唇、高光所在范围及唇下局部阴影；上唇中央浅凹、两侧收尖和下缘弧度与参考相符，未发现明确的组件遗漏、相邻脸部误包、无依据孔洞、碎片或孤点，不需重画。父范围检查通过，outsideSamples=0、outsidePixels=0，无上游范围限制。核对图像：workspace/previews/2026-10-26T17-06-43-815Z-2.png（整图叠加）、workspace/previews/2026-10-26T17-06-43-815Z-4.png（父组局部）、workspace/previews/2026-10-26T17-06-43-815Z-5.png 至 workspace/previews/2026-10-26T17-06-43-815Z-8.png（左右区叠加和边缘）、workspace/bitmaps/52bbcfaf-35cd-4fb7-bb97-5442f9b8278f.png（参考局部）。",
+      "candidateHash": "9d1ed55f6b99be9d05ab7429ae44dafdb5c8dbc290df283a9eb56a790b9e5636",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/mouth/step01/previews/2026-10-26T17-06-43-815Z-1.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/mouth/step01/previews/2026-10-26T17-06-43-815Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/mouth/step01/previews/2026-10-26T17-06-43-815Z-3.png"
+        },
+        {
+          "source": "part-layering/parts/face.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/mouth/step01/previews/2026-10-26T17-06-43-815Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/mouth/step01/previews/2026-10-26T17-06-43-815Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/mouth/step01/previews/2026-10-26T17-06-43-815Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/groups/face/children/mouth/step01/previews/2026-10-26T17-06-43-815Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/groups/face/children/mouth/step01/previews/2026-10-26T17-06-43-815Z-8.png"
+        }
+      ],
+      "updatedAt": "2026-10-26T17:19:44.220Z"
+    }
+  ]
+}

@@ -1,9 +1,0 @@
-{
-  "stamp": "860f38a216436b235ff9f1d3c991867fd26cd4f032bce8a62458a1abcc0341f6",
-  "inputs": {
-    "layers/depth01#hair.svg": "314782b7fda4ab8e271f302a7f08643e0f7de866857af0aedaa026b92baae723"
-  },
-  "outputs": {
-    "../../../parts/hair.svg": "9577556459ab312c849ae435b2279e36648ffa968219269857f8a8005fa040c6"
-  }
-}

@@ -1,0 +1,33 @@
+{
+  "groupId": "sleeve_image_left",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "通过。先从纯衣服参考独立确认：本组为画面左侧袖筒，自肩袖接合点约(132,348)沿接缝至腋下约(234,601)，再至袖口右端约(249,796)；左侧斜外缘与下方斜椭圆袖口及其深色可见内壁均属本组。整体、全袖3倍边缘覆盖、袖根至袖口3倍叠加及纯色独显已核对，覆盖全部可见区域。\n1. 肩袖根及腋下：候选随参考接缝走向转折，未误包肩胸衣身；内缘向袖口连续，无确定的可见遗漏。\n2. 外侧约(132,348)至(2,726)：位置、斜率及左边界附近回折吻合参考，未见须修改的外凸或内缩。\n3. 袖口约x=2–249、y=709–816：完整覆盖缝边和参考深色内壁，左右回折及底弧比例吻合。参考该区域为可见内壁衣料，没有应挖除的透明空白；联合纯色覆盖可接受，无须内部花纹或明暗路径。\n4. 参考未见本组薄纱或分离附件，无人体误包。note已交代实体范围、接缝邻接、前后口缘相对上臂关系、共同控制及必要隐藏搭接，符合当前组职责。本次parentSvg为空，无父包含范围检查项。无需重画或局部返修。\n证据：\n![整体叠加](review-evidence/overall-blend.png)\n![全袖放大边缘覆盖](review-evidence/sleeve-edge.png)\n![纯色独显](review-evidence/sleeve-solid.png)",
+      "candidateHash": "d940e0611221a800b34ca32e25641bde58cc58d0bd0aeee7b04de2c2b7f42083",
+      "observations": [
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_left/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_left/step01/previews/2026-10-27T14-29-47-402Z-1.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_left/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_left/step01/previews/2026-10-27T14-29-47-402Z-2.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_left/outline.svg",
+          "mode": "svg",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_left/step01/previews/2026-10-27T14-29-47-402Z-3.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/sleeve_image_left/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/sleeve_image_left/step01/previews/2026-10-27T14-29-47-402Z-4.png"
+        }
+      ],
+      "updatedAt": "2026-10-27T14:32:05.765Z"
+    }
+  ]
+}

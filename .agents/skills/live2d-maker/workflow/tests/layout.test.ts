@@ -1,0 +1,85 @@
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { dirname, join } from 'node:path';
+import { test } from 'node:test';
+import { convertLayout, layoutState, requireCurrentLayout } from '../layout.ts';
+import { readRun } from '../state.ts';
+
+const sha = (value: unknown) => createHash('sha256').update(typeof value === 'string' ? value : JSON.stringify(value)).digest('hex');
+async function put(root: string, path: string, value: unknown) {
+  await mkdir(dirname(join(root, path)), { recursive: true });
+  await writeFile(join(root, path), typeof value === 'string' ? value : JSON.stringify(value));
+}
+const json = async (root: string, path: string) => JSON.parse(await readFile(join(root, path), 'utf8'));
+
+// A small task in the previous layout: part preparation, a reduction, one
+// group's completion, shadow mask and the legacy run records.
+async function previousTask(t: { after(fn: () => Promise<void>): void }) {
+  const runs = await mkdtemp(join(tmpdir(), 'layout-')), task = join(runs, 'demo');
+  t.after(() => rm(runs, { recursive: true, force: true }));
+  const part = join(task, 'part-layering');
+  await put(task, 'run.json', { version: 1, name: 'demo', pipelines: { 'part-layering': { status: 'completed' } }, from: 'part-layering', to: 'shadow', jobs: 1, status: 'completed' });
+  await put(part, 'references/standard.png', 'standard');
+  const standardOutputs = { '../../references/standard.png': sha('standard') };
+  await put(part, 'preparation/step04/.completed', { stamp: sha(standardOutputs), inputs: {}, outputs: standardOutputs });
+  await put(part, 'preparation/step05/.completed', { stamp: 'retired', inputs: { step04: sha(standardOutputs) } });
+  await put(part, 'layers/depth01/a.svg', '<svg/>');
+  const layer = { 'part-layering/layers/depth01/a.svg': sha('<svg/>') };
+  await put(part, 'layers/depth01/.completed', { stamp: sha({ 'a.svg': sha('<svg/>') }), inputs: {}, outputs: layer, paths: 'task' });
+  await put(part, 'parts/a.svg', '<svg id="a"/>');
+  const completion = { '../../../parts/a.svg': sha('<svg id="a"/>') };
+  await put(part, 'groups/a/step02/.completed', { stamp: sha(completion), inputs: { 'layers/depth01#a.svg': sha('<svg/>') }, outputs: completion });
+  await put(part, 'groups/a/step02/report.md', '[layer](../../../layers/depth01/a.svg)');
+  await put(part, 'groups/a/step01/session.json', { threadId: 'outline-thread' });
+  await put(task, 'shadow/mask/step01/.completed', { stamp: 'mask', inputs: { 'part-layering/occlusion': 'x' } });
+  await put(task, 'shadow/mask/run.json', { version: 2, name: 'demo', threadId: 'shadow-thread' });
+  await put(task, 'shadow/normal-depth/step02/.previous-1/old.png', 'old');
+  return { runs, task };
+}
+
+test('a previous-layout task converts as a whole after a full backup, keeping its step records valid', async t => {
+  const { runs, task } = await previousTask(t);
+  assert.equal(await layoutState(task), 'previous');
+  await assert.rejects(readRun(task, 'demo'), /旧版目录布局/);
+  const result = await convertLayout(task);
+  assert.equal(await layoutState(task), 'current');
+  await requireCurrentLayout(task);
+  assert.equal((await readRun(task, 'demo'))!.sections['part-layering'].status, 'completed');
+
+  // The backup is the untouched old directory.
+  assert.equal(dirname(result.backup), join(runs, '.backups'));
+  assert.ok((await json(result.backup, 'part-layering/preparation/step05/.completed')).inputs);
+
+  const part = join(task, 'part-layering');
+  const standard = await json(part, 'step04_standard/.completed');
+  assert.deepEqual(standard.outputs, { '../references/standard.png': sha('standard') });
+  assert.equal(standard.stamp, sha({ '../references/standard.png': sha('standard') }));
+  await assert.rejects(readdir(join(part, 'preparation')), { code: 'ENOENT' });
+  const reduce = await json(part, 'step10_reduce/depth01/.completed');
+  assert.deepEqual(reduce.outputs, { 'part-layering/step10_reduce/depth01/a.svg': sha('<svg/>') });
+  const completion = await json(part, 'step11_completion/a/.completed');
+  assert.deepEqual(completion.inputs, { 'step10_reduce/depth01#a.svg': sha('<svg/>') });
+  assert.equal(completion.stamp, sha({ '../../parts/a.svg': sha('<svg id="a"/>') }));
+  assert.equal(await readFile(join(part, 'step11_completion/a/report.md'), 'utf8'), '[layer](../../step10_reduce/depth01/a.svg)');
+  assert.deepEqual(await json(part, 'agents/steps/step09_outline/a/session.json'), { threadId: 'outline-thread' });
+
+  const shadow = join(task, 'shadow');
+  assert.deepEqual((await json(shadow, 'step01_mask/.completed')).inputs, { 'part-layering/step14_occlusion': 'x' });
+  assert.deepEqual(await json(shadow, 'run.json'), { version: 2, name: 'demo' });
+  assert.deepEqual(await json(shadow, 'agents/steps/step01_mask/session.json'), { threadId: 'shadow-thread' });
+  assert.deepEqual((await readdir(shadow)).sort(), ['agents', 'run.json', 'step01_mask']);
+  await assert.rejects(convertLayout(task), /无需转换/);
+});
+
+test('unknown old paths abort before any change; layouts older than the previous one are refused', async t => {
+  const { runs, task } = await previousTask(t);
+  await put(task, 'part-layering/preparation/step09/x.json', {});
+  await assert.rejects(convertLayout(task), /未做任何改动/);
+  assert.ok((await json(task, 'run.json')).pipelines);
+  await assert.rejects(readdir(join(runs, '.backups')), { code: 'ENOENT' });
+
+  await put(task, 'part-layering/references/preparation.json', {});
+  await assert.rejects(layoutState(task), /早于 v0\.1\.3/);
+});

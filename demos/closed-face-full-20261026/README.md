@@ -2,7 +2,7 @@
 
 任务 `closed-face-full-20261026` 于 2026-10-28 01:19（北京时间）完成六段管线。保留原半身构图，`standard=false`、`jobs=3`、`shadow-mode=mask`；默认表情为闭眼闭嘴。
 
-![最终阴影合成](shadow/mask/step01/character-shadowed.png)
+![最终阴影合成](shadow/step01_mask/character-shadowed.png)
 
 | 阶段 | 成果入口 |
 | --- | --- |
@@ -15,7 +15,7 @@
 | 衣服分层绘制 | [KRA](clothing-raster-layering/step01/clothing-depth.kra) · [预览](clothing-raster-layering/step01/composite.png) · [报告](clothing-raster-layering/step01/report.md) |
 | 衣服边缘精修 | [KRA](clothing-raster-layering/step02/clothing-soft-edges.kra) · [PNG](clothing-raster-layering/step02/clothing-soft-edges.png) · [报告](clothing-raster-layering/step02/report.md) |
 | 穿戴组装 | [KRA](character-assembly/step01/character-assembled.kra) · [PNG](character-assembly/step01/character-assembled.png) · [报告](character-assembly/step01/report.md) |
-| 投影阴影 | [最终 KRA](shadow/mask/step01/character-shadowed.kra) · [最终 PNG](shadow/mask/step01/character-shadowed.png) · [关系表](shadow/mask/step01/shadows.json) · [原生检查](shadow/mask/step01/inspection.json) · [报告](shadow/mask/step01/report.md) |
+| 投影阴影 | [最终 KRA](shadow/step01_mask/character-shadowed.kra) · [最终 PNG](shadow/step01_mask/character-shadowed.png) · [关系表](shadow/step01_mask/shadows.json) · [原生检查](shadow/step01_mask/inspection.json) · [报告](shadow/step01_mask/report.md) |
 
 ## 验证与观察
 

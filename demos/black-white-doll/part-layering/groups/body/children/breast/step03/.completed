@@ -1,9 +1,0 @@
-{
-  "stamp": "aafd7a5eafc67304bf07d4ec988a090966788781775f9caed44da70ca59039fb",
-  "inputs": {
-    "groups/body/children/breast/step02": "a66dc9472ad57c8c190c00628fa2d68a94807992a6c578b1fd2830a599fa1e5d"
-  },
-  "outputs": {
-    "children.json": "644908f447f841792477a86c71abee2ff20d007f6e6273b6eabba6f75e5c50c0"
-  }
-}

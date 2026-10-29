@@ -1,9 +1,0 @@
-{
-  "stamp": "b32e8bd5d916151f756067e99e404fba043a485e769915f662b70a967b4c18f3",
-  "inputs": {
-    "layers/depth04#legs/leg_right/shoelace_bow/loop_left.svg": "b2ac478eebc1c5c1d44df09fece4f3ca7af118f74a62cbf693ba4c17c91f615b"
-  },
-  "outputs": {
-    "../../../../../../../../../parts/legs/leg_right/shoelace_bow/loop_left.svg": "439d6b25a17b3ea5d190640a628ee6f23a6aca73c7b45c405eb591e1af7526be"
-  }
-}

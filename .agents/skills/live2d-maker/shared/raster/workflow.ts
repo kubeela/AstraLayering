@@ -18,6 +18,7 @@ import { canonicalPath, fileInfo, initializeRun, loadConfig, newConfig, rasterSt
 import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
 import { modelHarnesses } from '../agents/models.ts';
+import { requireCurrentLayout } from '../../workflow/layout.ts';
 import { cliExecutable } from '../agents/cli.ts';
 import { validateImageSelection } from '../agents/images.ts';
 import { beginReview, finishReview, legacyEdgeDrawingReady } from './review-baseline.ts';
@@ -84,6 +85,7 @@ async function upstreamSteps(step: ChainStep | undefined): Promise<ChainStep[]> 
 export async function runWorkflow<Input>(section: KritaSection<Input>, options: WorkflowOptions, dependencies: Dependencies = {}): Promise<string> {
   const root = resolveRunsDirectory(options.dir ?? dependencies.runsDirectory);
   const requested = sectionDirectory(options.name, section.id, root);
+  await requireCurrentLayout(dirname(requested));
   const saved = await loadConfig<Input>(requested, options.name, section.validateInput);
   const directory = await canonicalPath(requested);
   const environment = dependencies.environment ?? loadWorkflowEnvironment();

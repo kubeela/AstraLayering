@@ -1,9 +1,0 @@
-{
-  "stamp": "447793873b90bb4218209b66f254652042db240479a71550affc15395bd9c6e8",
-  "inputs": {
-    "groups/face/children/eye_left/children/iris/step02": "e5a140e51f7e7106c8ff0aaed82bd36deb72a4d8f155e5f9ce43bc62f063c294"
-  },
-  "outputs": {
-    "children.json": "b0d6ab32727997d81166e9d56eaa6bc262ed2c75b4c44ee2afbb08fb80c59c49"
-  }
-}

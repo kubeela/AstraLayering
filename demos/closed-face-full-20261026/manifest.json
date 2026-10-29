@@ -193,179 +193,179 @@
       "bytes": 3114,
       "sha256": "7d6abcc149b27374cf841bf985035081ea490a0095e80e0d46f0e74ee8c971a3"
     },
-    "clothing-part-layering/groups/neckline_band/step01/.completed": {
+    "clothing-part-layering/step09_outline/neckline_band/.completed": {
       "bytes": 331,
       "sha256": "6cbd992d56a94cfce4bd18f611c0b327f533914febea5cee9e991ff58d645b91"
     },
-    "clothing-part-layering/groups/neckline_band/step01/outline.svg": {
+    "clothing-part-layering/step09_outline/neckline_band/outline.svg": {
       "bytes": 710,
       "sha256": "54f7a92c6826e145948d5b2d079a394f71777dc546738fe01d7341bb4a82afc7"
     },
-    "clothing-part-layering/groups/neckline_band/step01/review.json": {
+    "clothing-part-layering/step09_outline/neckline_band/review.json": {
       "bytes": 2276,
       "sha256": "89ba0d82c1648178abef6943979f76fc5a22b3ce6a5aa860a7f81009819dbb99"
     },
-    "clothing-part-layering/groups/neckline_band/step02/.completed": {
+    "clothing-part-layering/step11_completion/neckline_band/.completed": {
       "bytes": 333,
       "sha256": "8cea627b069e2425cd935cc8b2b04fe1050b7759f9c657e90a596b703e367bbc"
     },
-    "clothing-part-layering/groups/neckline_band/step02/check.json": {
+    "clothing-part-layering/step11_completion/neckline_band/check.json": {
       "bytes": 186,
       "sha256": "1db88876dc15b979f9e7488f1a744c018e9438837c901256db586250358fee97"
     },
-    "clothing-part-layering/groups/neckline_band/step03/.completed": {
+    "clothing-part-layering/step12_children/neckline_band/.completed": {
       "bytes": 346,
       "sha256": "0abaf04a509a6bd563b517a90e2a0eb811c99a4e777f87bf6e6ca133aff76089"
     },
-    "clothing-part-layering/groups/neckline_band/step03/children.json": {
+    "clothing-part-layering/step12_children/neckline_band/children.json": {
       "bytes": 1433,
       "sha256": "15e03280bcf7b33b93910972bf9e671a1404fe829559baaa57b7c45393d92e03"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step01/.completed": {
+    "clothing-part-layering/step09_outline/sleeve_image_left/.completed": {
       "bytes": 335,
       "sha256": "acd4100c4d7a8636527017d178b6b2789901f3ffe2a8918d3b9160bf499abf4f"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step01/outline.svg": {
+    "clothing-part-layering/step09_outline/sleeve_image_left/outline.svg": {
       "bytes": 517,
       "sha256": "d940e0611221a800b34ca32e25641bde58cc58d0bd0aeee7b04de2c2b7f42083"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step01/review-evidence/overall-blend.png": {
+    "clothing-part-layering/step09_outline/sleeve_image_left/review-evidence/overall-blend.png": {
       "bytes": 1097907,
       "sha256": "a8246c958ff3cae44016cdf30a7597dd4e313aeffb1c374e9b203096bf5ada83"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step01/review-evidence/sleeve-edge.png": {
+    "clothing-part-layering/step09_outline/sleeve_image_left/review-evidence/sleeve-edge.png": {
       "bytes": 781047,
       "sha256": "2b335d70fb68466822622c9d781e3a8b2fb8d3b68b4036a44396b9a6c7bebbda"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step01/review-evidence/sleeve-solid.png": {
+    "clothing-part-layering/step09_outline/sleeve_image_left/review-evidence/sleeve-solid.png": {
       "bytes": 20311,
       "sha256": "4af235ea5d118bfd8a2b866502aee69c68081db5197087108b00204becdafb67"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step01/review.json": {
+    "clothing-part-layering/step09_outline/sleeve_image_left/review.json": {
       "bytes": 2656,
       "sha256": "b68e77681a81779c802c5f4ddc77dc0658d9a33cd598567ab8c94dbd6e1e8517"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step02/.completed": {
+    "clothing-part-layering/step11_completion/sleeve_image_left/.completed": {
       "bytes": 341,
       "sha256": "19d58c87e526a775437fc1f6ab0f48364e6e7702b0c60b9b5bc1d01e05c5cdaf"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step02/check.json": {
+    "clothing-part-layering/step11_completion/sleeve_image_left/check.json": {
       "bytes": 190,
       "sha256": "e76c88b4e78f59382dfedef351f5ace21a2224b9a226fc798134ef4f5a092dbd"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step03/.completed": {
+    "clothing-part-layering/step12_children/sleeve_image_left/.completed": {
       "bytes": 354,
       "sha256": "3abadab4b252684806739ec94d79eeaab815526d30d2e27ed05f262c36619f84"
     },
-    "clothing-part-layering/groups/sleeve_image_left/step03/children.json": {
+    "clothing-part-layering/step12_children/sleeve_image_left/children.json": {
       "bytes": 1486,
       "sha256": "dfe30d0ba5d9c1a2151c9ff8b6aaf4a818d082bd79ffd074aa5898fb2aa553dd"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step01/.completed": {
+    "clothing-part-layering/step09_outline/sleeve_image_right/.completed": {
       "bytes": 336,
       "sha256": "701565ba5f0ca7b5689996df299344d2c463676b85560d6d580a4028c42b9d46"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step01/outline.svg": {
+    "clothing-part-layering/step09_outline/sleeve_image_right/outline.svg": {
       "bytes": 583,
       "sha256": "e09c9101400b6f8275c271029fd6493b790006a4203a0e760a3d5455fe1f5ae0"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step01/review-evidence/cuff-blend.png": {
+    "clothing-part-layering/step09_outline/sleeve_image_right/review-evidence/cuff-blend.png": {
       "bytes": 205429,
       "sha256": "dc1da5d554482cd690f6906f7526164b8db6141a41611298b9dab6c1b0f4c568"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step01/review-evidence/full-sleeve-edge.png": {
+    "clothing-part-layering/step09_outline/sleeve_image_right/review-evidence/full-sleeve-edge.png": {
       "bytes": 486013,
       "sha256": "ed59c7063ed5cc1448cceed8476f280ebcee631fb04220b1de2f2e822a3b67f3"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step01/review-evidence/outline.png": {
+    "clothing-part-layering/step09_outline/sleeve_image_right/review-evidence/outline.png": {
       "bytes": 15623,
       "sha256": "88e446090993e13eedec39e8f83656456c63ab3eaf95df78670cc3e5f451307d"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step01/review-evidence/overall-blend.png": {
+    "clothing-part-layering/step09_outline/sleeve_image_right/review-evidence/overall-blend.png": {
       "bytes": 1102661,
       "sha256": "12eb3b8ab078f81f4764917497fe8af1a3c7045dc05a7cb866b7b50abd06999c"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step01/review-evidence/seam-edge.png": {
+    "clothing-part-layering/step09_outline/sleeve_image_right/review-evidence/seam-edge.png": {
       "bytes": 358053,
       "sha256": "1b8e52008eabbab7afea017aa20c23b08ce979fb99d960ff4276d5ea90074e97"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step01/review.json": {
+    "clothing-part-layering/step09_outline/sleeve_image_right/review.json": {
       "bytes": 3008,
       "sha256": "ca5f72840da7dc2f692c01992314fb45fb6d70d223e218ae49bda3f02647d90c"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step02/.completed": {
+    "clothing-part-layering/step11_completion/sleeve_image_right/.completed": {
       "bytes": 343,
       "sha256": "868f2c6f84d0302ee94bc02df2fe348b3c82000f15cf470748de11690521a346"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step02/check.json": {
+    "clothing-part-layering/step11_completion/sleeve_image_right/check.json": {
       "bytes": 191,
       "sha256": "7df4e4d2836d978c43555b5fc1f7d8f3e428ba3cfd32797e989236930adc47e2"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step03/.completed": {
+    "clothing-part-layering/step12_children/sleeve_image_right/.completed": {
       "bytes": 356,
       "sha256": "eb1d970d9e31c8670352bc9030f5fe707bf780fe06eafc9da97a16e34ef37c46"
     },
-    "clothing-part-layering/groups/sleeve_image_right/step03/children.json": {
+    "clothing-part-layering/step12_children/sleeve_image_right/children.json": {
       "bytes": 1451,
       "sha256": "7a6002325b0ae681690e499dffc485ccce4e41980be0461caaf45c8c32e962ff"
     },
-    "clothing-part-layering/groups/tshirt_body/step01/.completed": {
+    "clothing-part-layering/step09_outline/tshirt_body/.completed": {
       "bytes": 329,
       "sha256": "60754b32cd9bf2aa401e58004b2a322104d1ca4228c471f98fd4e66b902da4df"
     },
-    "clothing-part-layering/groups/tshirt_body/step01/outline.svg": {
+    "clothing-part-layering/step09_outline/tshirt_body/outline.svg": {
       "bytes": 1170,
       "sha256": "55e072c8f3266c80e2476c7be1ef63bef230bf9409b37d8da08069fcc75cd11e"
     },
-    "clothing-part-layering/groups/tshirt_body/step01/review.json": {
+    "clothing-part-layering/step09_outline/tshirt_body/review.json": {
       "bytes": 2949,
       "sha256": "226cf8e76d80113efff1ea10f9db25959802f80835e5bc7c28710afd5e959e8e"
     },
-    "clothing-part-layering/groups/tshirt_body/step02/.completed": {
+    "clothing-part-layering/step11_completion/tshirt_body/.completed": {
       "bytes": 329,
       "sha256": "7b25f8a1196f4176b11b1ce86c69c02686aabfe8eef525693ee18054fb898d3d"
     },
-    "clothing-part-layering/groups/tshirt_body/step02/check.json": {
+    "clothing-part-layering/step11_completion/tshirt_body/check.json": {
       "bytes": 184,
       "sha256": "7d92df89b053d603cd26717357ebc7f36fcd93aac513129a4107302c7d3df1e5"
     },
-    "clothing-part-layering/groups/tshirt_body/step03/.completed": {
+    "clothing-part-layering/step12_children/tshirt_body/.completed": {
       "bytes": 342,
       "sha256": "9eee5f29b5cf0c0a2253812824a11f8cc8f2643af9b8834eee7b3d98f2e17d58"
     },
-    "clothing-part-layering/groups/tshirt_body/step03/children.json": {
+    "clothing-part-layering/step12_children/tshirt_body/children.json": {
       "bytes": 1767,
       "sha256": "fbe7b13308f79e48ea5b7d64333f5e89237de22ca32251d5880cc87772810468"
     },
-    "clothing-part-layering/initial/step01/.completed": {
+    "clothing-part-layering/step08_initial/.completed": {
       "bytes": 235,
       "sha256": "549725b2ce210c331ce08c83606b25b234b6b49841b82ddb3a3c215361be65ab"
     },
-    "clothing-part-layering/initial/step01/groups.json": {
+    "clothing-part-layering/step08_initial/groups.json": {
       "bytes": 3034,
       "sha256": "d715552576821b8c7f3399ecd09d1a8324d003ac40edcf754cf66746ab0830b7"
     },
-    "clothing-part-layering/layers/depth01/.completed": {
+    "clothing-part-layering/step10_reduce/depth01/.completed": {
       "bytes": 1017,
       "sha256": "ca729937246a96d284e61919b644b34a26182938f57f38c7a8a6ddafdb710135"
     },
-    "clothing-part-layering/layers/depth01/neckline_band.svg": {
+    "clothing-part-layering/step10_reduce/depth01/neckline_band.svg": {
       "bytes": 710,
       "sha256": "54f7a92c6826e145948d5b2d079a394f71777dc546738fe01d7341bb4a82afc7"
     },
-    "clothing-part-layering/layers/depth01/sleeve_image_left.svg": {
+    "clothing-part-layering/step10_reduce/depth01/sleeve_image_left.svg": {
       "bytes": 517,
       "sha256": "d940e0611221a800b34ca32e25641bde58cc58d0bd0aeee7b04de2c2b7f42083"
     },
-    "clothing-part-layering/layers/depth01/sleeve_image_right.svg": {
+    "clothing-part-layering/step10_reduce/depth01/sleeve_image_right.svg": {
       "bytes": 583,
       "sha256": "e09c9101400b6f8275c271029fd6493b790006a4203a0e760a3d5455fe1f5ae0"
     },
-    "clothing-part-layering/layers/depth01/tshirt_body.svg": {
+    "clothing-part-layering/step10_reduce/depth01/tshirt_body.svg": {
       "bytes": 1170,
       "sha256": "55e072c8f3266c80e2476c7be1ef63bef230bf9409b37d8da08069fcc75cd11e"
     },
-    "clothing-part-layering/merge/.completed": {
+    "clothing-part-layering/step13_merge/.completed": {
       "bytes": 1009,
       "sha256": "a0de7aa8bc178e3a300277daf7ec0c934d2971fc614cb0f37f843a066cdd6bab"
     },
@@ -373,11 +373,11 @@
       "bytes": 14670,
       "sha256": "891338fac35d50b362e591fd91cf913b9c0857e4c25c6ca31942cdf78b8c1b03"
     },
-    "clothing-part-layering/occlusion/.completed": {
+    "clothing-part-layering/step14_occlusion/.completed": {
       "bytes": 135,
       "sha256": "83ba3310e3a9c3fd84449fa779b21cb10bdc4c7af8064f4b2e003a8392ec5dc6"
     },
-    "clothing-part-layering/occlusion/preview.svg": {
+    "clothing-part-layering/step14_occlusion/preview.svg": {
       "bytes": 6759,
       "sha256": "4046579ebc84fa42fcb01f4701f1f3e4604f1b70fe7afb62b6261498e37baaab"
     },
@@ -1505,1607 +1505,1607 @@
       "bytes": 50078,
       "sha256": "c7d83bb7325e68b390c6fd392d0b17ba2a19291c1b5bdafa245042f48c4ba343"
     },
-    "part-layering/groups/arms/children/arm_left/children/forearm/step01/.completed": {
+    "part-layering/step09_outline/arms/children/arm_left/children/forearm/.completed": {
       "bytes": 287,
       "sha256": "ff0d81bb36e15c4cef2ba93dcb28a6a71dda55c91ba2395703bbb646f24e685d"
     },
-    "part-layering/groups/arms/children/arm_left/children/forearm/step01/outline.svg": {
+    "part-layering/step09_outline/arms/children/arm_left/children/forearm/outline.svg": {
       "bytes": 186,
       "sha256": "7092d96d627bd5b40286989ebe1dfb553d870d7f8c04917e05e04825bca35ffa"
     },
-    "part-layering/groups/arms/children/arm_left/children/hand/step01/.completed": {
+    "part-layering/step09_outline/arms/children/arm_left/children/hand/.completed": {
       "bytes": 287,
       "sha256": "2eccbb75b1a650ad7099682fe1513c1424856c028101fe2bc4b332850ba415c4"
     },
-    "part-layering/groups/arms/children/arm_left/children/hand/step01/outline.svg": {
+    "part-layering/step09_outline/arms/children/arm_left/children/hand/outline.svg": {
       "bytes": 183,
       "sha256": "ffbc896322ec267ac8dde886c413ae1e61e3694001d3c90e7700afb4d6274bd8"
     },
-    "part-layering/groups/arms/children/arm_left/children/upper_arm/step01/.completed": {
+    "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/.completed": {
       "bytes": 287,
       "sha256": "db27e6a356afc48c0fbab64fe8b1c97c7df581dd2f08b2a6ae093208cb1813c8"
     },
-    "part-layering/groups/arms/children/arm_left/children/upper_arm/step01/outline.svg": {
+    "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/outline.svg": {
       "bytes": 812,
       "sha256": "2f0fd512e35ff2b7dfe6f81fa2ce87aa16e473c1d4644f7f996b5315c9c640f5"
     },
-    "part-layering/groups/arms/children/arm_left/children/upper_arm/step01/review.json": {
+    "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/review.json": {
       "bytes": 3528,
       "sha256": "83bbea0346c554e4971bb8447c446799dbc00dd52aac05b1d3a7fd03cb5eafa8"
     },
-    "part-layering/groups/arms/children/arm_left/children/upper_arm/step02/.completed": {
+    "part-layering/step11_completion/arms/children/arm_left/children/upper_arm/.completed": {
       "bytes": 336,
       "sha256": "9f7d4c9cadc51c1ae6e0a61bc77c175cfd4e0492891d7d3f6f992f7d89be5a39"
     },
-    "part-layering/groups/arms/children/arm_left/children/upper_arm/step02/check.json": {
+    "part-layering/step11_completion/arms/children/arm_left/children/upper_arm/check.json": {
       "bytes": 196,
       "sha256": "5f4f7df80b26944ffb6598204e79552e372a6aae0e4c47571c6761604ac662f9"
     },
-    "part-layering/groups/arms/children/arm_left/children/upper_arm/step03/.completed": {
+    "part-layering/step12_children/arms/children/arm_left/children/upper_arm/.completed": {
       "bytes": 308,
       "sha256": "488dd386b141cc1186ad147a6a789b6474d0a5b288627b481c6a975d24639a0a"
     },
-    "part-layering/groups/arms/children/arm_left/children/upper_arm/step03/children.json": {
+    "part-layering/step12_children/arms/children/arm_left/children/upper_arm/children.json": {
       "bytes": 59,
       "sha256": "d2f4a3721aa9fb12f0bc5ed77b421ad86268a479e5e455e50a2552bcf3dfb9a5"
     },
-    "part-layering/groups/arms/children/arm_left/step01/.completed": {
+    "part-layering/step09_outline/arms/children/arm_left/.completed": {
       "bytes": 269,
       "sha256": "de89a5f494f4e206be835be855b68a36e2134d9a1fc23e2da5ed17fd111c3ba7"
     },
-    "part-layering/groups/arms/children/arm_left/step01/outline.svg": {
+    "part-layering/step09_outline/arms/children/arm_left/outline.svg": {
       "bytes": 796,
       "sha256": "f55410251368291630e9e5781ae5427868b72d3eaf6f9f82c0b218314bdf752c"
     },
-    "part-layering/groups/arms/children/arm_left/step01/review.json": {
+    "part-layering/step09_outline/arms/children/arm_left/review.json": {
       "bytes": 3911,
       "sha256": "3e90b244cc61a86e527ff266cefa2b58a7663180aaedb0b407a5fc3ac1b859d5"
     },
-    "part-layering/groups/arms/children/arm_left/step02/.completed": {
+    "part-layering/step11_completion/arms/children/arm_left/.completed": {
       "bytes": 310,
       "sha256": "b69c04e8b563014d87195ed10825901f42ce38a77e058e46b893fe48290d9c48"
     },
-    "part-layering/groups/arms/children/arm_left/step02/check.json": {
+    "part-layering/step11_completion/arms/children/arm_left/check.json": {
       "bytes": 186,
       "sha256": "df90d4642c4e250ca97455b190aa580735970a51ace8995386a59cf0286d54dc"
     },
-    "part-layering/groups/arms/children/arm_left/step03/.completed": {
+    "part-layering/step12_children/arms/children/arm_left/.completed": {
       "bytes": 289,
       "sha256": "de0939127592cf9c49ab7ac007ee6483427a6a3059ea309c849298259f996942"
     },
-    "part-layering/groups/arms/children/arm_left/step03/children.json": {
+    "part-layering/step12_children/arms/children/arm_left/children.json": {
       "bytes": 1214,
       "sha256": "e5efd0daf91c87ecebef8956cd792b96a83cbf8e941e9ff046b067c1ca844132"
     },
-    "part-layering/groups/arms/children/arm_right/children/forearm/step01/.completed": {
+    "part-layering/step09_outline/arms/children/arm_right/children/forearm/.completed": {
       "bytes": 288,
       "sha256": "ade35ca269d79017e16d413466af9e98f1cf8589f20eba9007905a5553595ec5"
     },
-    "part-layering/groups/arms/children/arm_right/children/forearm/step01/outline.svg": {
+    "part-layering/step09_outline/arms/children/arm_right/children/forearm/outline.svg": {
       "bytes": 187,
       "sha256": "5212d07967e7e959c39b51eac6206ab983a27d9a974687a888a67e0409e754fa"
     },
-    "part-layering/groups/arms/children/arm_right/children/hand/step01/.completed": {
+    "part-layering/step09_outline/arms/children/arm_right/children/hand/.completed": {
       "bytes": 288,
       "sha256": "60261165c6cc3fd5fabaf5513b6b2b2c42494ab0fd9938187db82eb4e590d170"
     },
-    "part-layering/groups/arms/children/arm_right/children/hand/step01/outline.svg": {
+    "part-layering/step09_outline/arms/children/arm_right/children/hand/outline.svg": {
       "bytes": 184,
       "sha256": "c69f27444769a99444d59819f7de4caf9d0281456ffe991c1dd06324950cec0e"
     },
-    "part-layering/groups/arms/children/arm_right/children/upper_arm/step01/.completed": {
+    "part-layering/step09_outline/arms/children/arm_right/children/upper_arm/.completed": {
       "bytes": 288,
       "sha256": "26e0ab3b65722e3e63ff26822388c08b04ecd91f48a9a223aced355ca8ff8a61"
     },
-    "part-layering/groups/arms/children/arm_right/children/upper_arm/step01/outline.svg": {
+    "part-layering/step09_outline/arms/children/arm_right/children/upper_arm/outline.svg": {
       "bytes": 776,
       "sha256": "81a98ec71dd9c576e9429fffc2a2c543f0a56cc3cdeb49def11f34527dff025a"
     },
-    "part-layering/groups/arms/children/arm_right/children/upper_arm/step01/previews/2026-10-27T04-12-29-014Z-5.png": {
+    "part-layering/step09_outline/arms/children/arm_right/children/upper_arm/previews/2026-10-27T04-12-29-014Z-5.png": {
       "bytes": 317921,
       "sha256": "45b665f513b9dec3544088a6d70fd96a036ad674b5edf4447cf3deb3be18bccb"
     },
-    "part-layering/groups/arms/children/arm_right/children/upper_arm/step01/previews/2026-10-27T04-12-29-014Z-9.png": {
+    "part-layering/step09_outline/arms/children/arm_right/children/upper_arm/previews/2026-10-27T04-12-29-014Z-9.png": {
       "bytes": 15495,
       "sha256": "6b85ae66a9f527b2f23efc63568c4832e20dfa8d4f47605c3fe1ce577cfbeb1c"
     },
-    "part-layering/groups/arms/children/arm_right/children/upper_arm/step01/review.json": {
+    "part-layering/step09_outline/arms/children/arm_right/children/upper_arm/review.json": {
       "bytes": 4227,
       "sha256": "2546d21410ac1483958fb9ff6e1376f907148b990a99a66d72549cf886cca68e"
     },
-    "part-layering/groups/arms/children/arm_right/children/upper_arm/step02/.completed": {
+    "part-layering/step11_completion/arms/children/arm_right/children/upper_arm/.completed": {
       "bytes": 338,
       "sha256": "60cdc80c72537a6f44631f97242c5ce75913e2ee9207fb4761d9b47a074beb08"
     },
-    "part-layering/groups/arms/children/arm_right/children/upper_arm/step02/check.json": {
+    "part-layering/step11_completion/arms/children/arm_right/children/upper_arm/check.json": {
       "bytes": 197,
       "sha256": "3545d9eee0f0aa393dd20a67bb8bc88216a8689f65fbcada108e70b2e59df3dd"
     },
-    "part-layering/groups/arms/children/arm_right/children/upper_arm/step03/.completed": {
+    "part-layering/step12_children/arms/children/arm_right/children/upper_arm/.completed": {
       "bytes": 309,
       "sha256": "eea1f79d835d1fc38789f7464fbf7aff8d7af72a9d031e87e995c3f8cb745f54"
     },
-    "part-layering/groups/arms/children/arm_right/children/upper_arm/step03/children.json": {
+    "part-layering/step12_children/arms/children/arm_right/children/upper_arm/children.json": {
       "bytes": 60,
       "sha256": "2eafaf99edbab64c5dafd813206ad82c8d59517f8945714a685ab46cc2f98510"
     },
-    "part-layering/groups/arms/children/arm_right/step01/.completed": {
+    "part-layering/step09_outline/arms/children/arm_right/.completed": {
       "bytes": 269,
       "sha256": "bba5b6499a494f8ce109963657b94326fb27fbf4e9721227917da1681164f5a8"
     },
-    "part-layering/groups/arms/children/arm_right/step01/outline.svg": {
+    "part-layering/step09_outline/arms/children/arm_right/outline.svg": {
       "bytes": 766,
       "sha256": "ffb5f380fbb2257787f26be11a4e63bfb71be7da3c78f254c391e2109c36930a"
     },
-    "part-layering/groups/arms/children/arm_right/step01/previews/2026-10-26T17-09-06-275Z-4.png": {
+    "part-layering/step09_outline/arms/children/arm_right/previews/2026-10-26T17-09-06-275Z-4.png": {
       "bytes": 320704,
       "sha256": "a42111ff6c3489671978a3c40172b417c3a8835f16e4db2335a700e95c3555f0"
     },
-    "part-layering/groups/arms/children/arm_right/step01/review.json": {
+    "part-layering/step09_outline/arms/children/arm_right/review.json": {
       "bytes": 3545,
       "sha256": "d587b913811438dbaea1ea0a0ba1e941ae5453489f7dff03f51903f933142e07"
     },
-    "part-layering/groups/arms/children/arm_right/step02/.completed": {
+    "part-layering/step11_completion/arms/children/arm_right/.completed": {
       "bytes": 312,
       "sha256": "6e0090c5f81d6c2df62b9196b340fa981e4b671acdaf9827a6f74174e032d130"
     },
-    "part-layering/groups/arms/children/arm_right/step02/check.json": {
+    "part-layering/step11_completion/arms/children/arm_right/check.json": {
       "bytes": 187,
       "sha256": "59ca0ae750d5b115fd157cd9e1015b6bea2581a0c3cc1bd311b1aeed47092aae"
     },
-    "part-layering/groups/arms/children/arm_right/step03/.completed": {
+    "part-layering/step12_children/arms/children/arm_right/.completed": {
       "bytes": 290,
       "sha256": "77985c1f848d8e4ad38fe4f15ba6bbd1a40a332a201ceb473aec591e2f16189e"
     },
-    "part-layering/groups/arms/children/arm_right/step03/children.json": {
+    "part-layering/step12_children/arms/children/arm_right/children.json": {
       "bytes": 1283,
       "sha256": "746adb1287324735bfebdb7b56d6f80de3b23f5ea04aca73af7b131158bcb802"
     },
-    "part-layering/groups/arms/step01/.completed": {
+    "part-layering/step09_outline/arms/.completed": {
       "bytes": 265,
       "sha256": "46bb6fcb387781bdb0fc0b5e717cf310a3d8870e60ad84cee9a150be1b6bf2da"
     },
-    "part-layering/groups/arms/step01/outline.svg": {
+    "part-layering/step09_outline/arms/outline.svg": {
       "bytes": 657,
       "sha256": "42a194ad266fa24b539ba31a156132a7e518a5c856a1064de8dc6836ec96d52d"
     },
-    "part-layering/groups/arms/step01/review.json": {
+    "part-layering/step09_outline/arms/review.json": {
       "bytes": 8783,
       "sha256": "e1a27aaf5d2b73ed0710c9b515f1c6209646d2b1a5335a07acbec03a9e3187b1"
     },
-    "part-layering/groups/arms/step02/.completed": {
+    "part-layering/step11_completion/arms/.completed": {
       "bytes": 286,
       "sha256": "e9126ef3736b6b80eaf78bc761205dd0332578c120d91e3ba4b31390c1c1c154"
     },
-    "part-layering/groups/arms/step02/check.json": {
+    "part-layering/step11_completion/arms/check.json": {
       "bytes": 177,
       "sha256": "4c95fcf01741de5a31cb24a97cc15e96767286ca97044dbdc3c1fc04e2327004"
     },
-    "part-layering/groups/arms/step03/.completed": {
+    "part-layering/step12_children/arms/.completed": {
       "bytes": 271,
       "sha256": "dab63aaaa6d2dad9b2378afa19d5fe1dc3092c1fab21eb703827189530931105"
     },
-    "part-layering/groups/arms/step03/children.json": {
+    "part-layering/step12_children/arms/children.json": {
       "bytes": 2546,
       "sha256": "e791d1715514a2dd64e764b24279a56adbc115be82ec0c38172a318b6fdc14db"
     },
-    "part-layering/groups/body/children/breast/step01/.completed": {
+    "part-layering/step09_outline/body/children/breast/.completed": {
       "bytes": 269,
       "sha256": "f5d6c0e96ca1420dda985ea6ab36161930703a588e20f93ab05874c91a7bcf9a"
     },
-    "part-layering/groups/body/children/breast/step01/outline.svg": {
+    "part-layering/step09_outline/body/children/breast/outline.svg": {
       "bytes": 526,
       "sha256": "c7f156f99fa1d312160a343c1498397e5d0421419ec59a54db0a0474117f4f06"
     },
-    "part-layering/groups/body/children/breast/step01/review.json": {
+    "part-layering/step09_outline/body/children/breast/review.json": {
       "bytes": 3320,
       "sha256": "29913497c7a8af8e1ca31f95d64d2c2ab4dcb5c80662d222d655265df96c0f7a"
     },
-    "part-layering/groups/body/children/breast/step02/.completed": {
+    "part-layering/step11_completion/body/children/breast/.completed": {
       "bytes": 306,
       "sha256": "a191d8ee57bbe9e1106f2ef1ddde3f100a4859a9e5765e7b6d6a21e2196b58d2"
     },
-    "part-layering/groups/body/children/breast/step02/check.json": {
+    "part-layering/step11_completion/body/children/breast/check.json": {
       "bytes": 184,
       "sha256": "5bc07218007c5b2af3e6d7cd8ee61c89e3c92aee34589d83991e9cf79859950f"
     },
-    "part-layering/groups/body/children/breast/step03/.completed": {
+    "part-layering/step12_children/body/children/breast/.completed": {
       "bytes": 287,
       "sha256": "5833c65486fc5c0fb6f36a145bbe72903d58741a170faeb945618a82bd824f2a"
     },
-    "part-layering/groups/body/children/breast/step03/children.json": {
+    "part-layering/step12_children/body/children/breast/children.json": {
       "bytes": 47,
       "sha256": "644908f447f841792477a86c71abee2ff20d007f6e6273b6eabba6f75e5c50c0"
     },
-    "part-layering/groups/body/children/torso/step01/.completed": {
+    "part-layering/step09_outline/body/children/torso/.completed": {
       "bytes": 269,
       "sha256": "5023431aca49daefe495620fe7c5eca9e6c242cca1c1054b300beab311e77231"
     },
-    "part-layering/groups/body/children/torso/step01/outline.svg": {
+    "part-layering/step09_outline/body/children/torso/outline.svg": {
       "bytes": 683,
       "sha256": "aa0a9b73b4fc707992722e3ae171a0e55c774ece7f2272b86f1e85542d4fa653"
     },
-    "part-layering/groups/body/children/torso/step01/review.json": {
+    "part-layering/step09_outline/body/children/torso/review.json": {
       "bytes": 11282,
       "sha256": "191f04f2a2b2ac212206d7cfc2230aa552baddc9ce6d906d2665b0bb265973ba"
     },
-    "part-layering/groups/body/children/torso/step02/.completed": {
+    "part-layering/step11_completion/body/children/torso/.completed": {
       "bytes": 304,
       "sha256": "22bbcfde7643fa45d77f1a9e214f9131475012f090dc339f30ffbb3aec68880b"
     },
-    "part-layering/groups/body/children/torso/step02/check.json": {
+    "part-layering/step11_completion/body/children/torso/check.json": {
       "bytes": 183,
       "sha256": "600dbf8602dc018da9af31e62267966f8d2a2a8f30b32888a906a2d8736c4423"
     },
-    "part-layering/groups/body/children/torso/step03/.completed": {
+    "part-layering/step12_children/body/children/torso/.completed": {
       "bytes": 286,
       "sha256": "aadbb95c7bdc6e70fed882c9c9409b08ac375dfae1d4f535c35bf05281f862ee"
     },
-    "part-layering/groups/body/children/torso/step03/children.json": {
+    "part-layering/step12_children/body/children/torso/children.json": {
       "bytes": 46,
       "sha256": "79d70c27f99d4c6b1bdd64c42148addc0fd504c5b857380517932fac2bf6932f"
     },
-    "part-layering/groups/body/step01/.completed": {
+    "part-layering/step09_outline/body/.completed": {
       "bytes": 265,
       "sha256": "43b312fc9e4c8eef94717a6f007d1843de4a8205897de59e63ea1c04f5f09d88"
     },
-    "part-layering/groups/body/step01/outline.svg": {
+    "part-layering/step09_outline/body/outline.svg": {
       "bytes": 716,
       "sha256": "9263ff02dcbfb5a7db9d67d7d1172375cc652c5e93385e683e372e1d47020169"
     },
-    "part-layering/groups/body/step01/review.json": {
+    "part-layering/step09_outline/body/review.json": {
       "bytes": 9879,
       "sha256": "d50756fe7577a4883479d4a5f09821d931187ce6dc67d7961b544833bfa8922b"
     },
-    "part-layering/groups/body/step02/.completed": {
+    "part-layering/step11_completion/body/.completed": {
       "bytes": 286,
       "sha256": "abb59a1dadf677d2a4124ab8d1e87c8cece1ec3c6378db8f7e63f681de28ab23"
     },
-    "part-layering/groups/body/step02/check.json": {
+    "part-layering/step11_completion/body/check.json": {
       "bytes": 177,
       "sha256": "59ab43ca5e14b464f8f21cb4daecc35093e229afa1555a364008f3f9b4b86e80"
     },
-    "part-layering/groups/body/step03/.completed": {
+    "part-layering/step12_children/body/.completed": {
       "bytes": 271,
       "sha256": "8448dd8a02e0b452ceabade349088e2da3f85a953ab81606afe6a6c1092492c2"
     },
-    "part-layering/groups/body/step03/children.json": {
+    "part-layering/step12_children/body/children.json": {
       "bytes": 2535,
       "sha256": "bc1449bfa1c569539c7cf9bb2f3f78b73166892e1ca2dabe146e9cd937b0acbc"
     },
-    "part-layering/groups/face/children/blush_left/step01/.completed": {
+    "part-layering/step09_outline/face/children/blush_left/.completed": {
       "bytes": 269,
       "sha256": "2e65454aba6453df441413f3c15cfbd62a6326f6aec808a05ba5003b05b6e129"
     },
-    "part-layering/groups/face/children/blush_left/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/blush_left/outline.svg": {
       "bytes": 461,
       "sha256": "094c85cd7fb5e108da3e4a7faac41a923dde38d7cff36d1f9e78c5af6d26393a"
     },
-    "part-layering/groups/face/children/blush_left/step01/review.json": {
+    "part-layering/step09_outline/face/children/blush_left/review.json": {
       "bytes": 2442,
       "sha256": "484887cfff9524d5b5d2329ee8844939b414338457760b58e08c18b1f6914547"
     },
-    "part-layering/groups/face/children/blush_left/step02/.completed": {
+    "part-layering/step11_completion/face/children/blush_left/.completed": {
       "bytes": 314,
       "sha256": "96dadbbfb89a1311d2d06d4061221561360247f4bccb92f9eca4f1e2c39dc4fb"
     },
-    "part-layering/groups/face/children/blush_left/step02/check.json": {
+    "part-layering/step11_completion/face/children/blush_left/check.json": {
       "bytes": 188,
       "sha256": "c699bbfa541d2d27775a71093350aa5579c51affbaef8cc105755ff335bc9420"
     },
-    "part-layering/groups/face/children/blush_left/step03/.completed": {
+    "part-layering/step12_children/face/children/blush_left/.completed": {
       "bytes": 291,
       "sha256": "7ff5c72c7a7381d568b29c348cf04acc965fac5f2dd7c4fe03774af91bb03fc0"
     },
-    "part-layering/groups/face/children/blush_left/step03/children.json": {
+    "part-layering/step12_children/face/children/blush_left/children.json": {
       "bytes": 51,
       "sha256": "51b8868214f2b6d7c821e5664d9773fe7d19f375cbbcf339d13d138831d06c39"
     },
-    "part-layering/groups/face/children/blush_right/step01/.completed": {
+    "part-layering/step09_outline/face/children/blush_right/.completed": {
       "bytes": 269,
       "sha256": "729bfa62de91c3b2a96a00d1f406478cfa76030cdaa1a8b2ccd8c9bbdd91a1ac"
     },
-    "part-layering/groups/face/children/blush_right/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/blush_right/outline.svg": {
       "bytes": 463,
       "sha256": "430f312b2d6ae1d4550487b1cd64f7a2c093c27095276e4fbb87082b401395a3"
     },
-    "part-layering/groups/face/children/blush_right/step01/review.json": {
+    "part-layering/step09_outline/face/children/blush_right/review.json": {
       "bytes": 2809,
       "sha256": "f999afd6e50db5be6fc7c07b4da2c2fb4ed186a4645270c751b231f61d103ef1"
     },
-    "part-layering/groups/face/children/blush_right/step02/.completed": {
+    "part-layering/step11_completion/face/children/blush_right/.completed": {
       "bytes": 316,
       "sha256": "068829ff8ba6c794f2a7e49abca2c18fa72dd89edcfe8e8b0d815c378f0c0b42"
     },
-    "part-layering/groups/face/children/blush_right/step02/check.json": {
+    "part-layering/step11_completion/face/children/blush_right/check.json": {
       "bytes": 189,
       "sha256": "f1a935efddbe19b5c5ac6f66b4830b2ab5833b0a7d7cfd52ce3631ef2832fe47"
     },
-    "part-layering/groups/face/children/blush_right/step03/.completed": {
+    "part-layering/step12_children/face/children/blush_right/.completed": {
       "bytes": 292,
       "sha256": "84f08662268907e72033eae1e62a7de6efcc0b05bfc866b590d24f8f5f95f599"
     },
-    "part-layering/groups/face/children/blush_right/step03/children.json": {
+    "part-layering/step12_children/face/children/blush_right/children.json": {
       "bytes": 52,
       "sha256": "8eef3962c5bbc20b2d6c2fdbad4436add55defe85b2a363178a70ac5dd4fd864"
     },
-    "part-layering/groups/face/children/ear_left/step01/.completed": {
+    "part-layering/step09_outline/face/children/ear_left/.completed": {
       "bytes": 269,
       "sha256": "f75c06c1b56b4bd8165a47d4d26bb7a172d88477afb490fbb5db8eece8820f00"
     },
-    "part-layering/groups/face/children/ear_left/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/ear_left/outline.svg": {
       "bytes": 606,
       "sha256": "c22b3faf3e15adc56682a2884db4c88c8648786d003dda75602055e476da575f"
     },
-    "part-layering/groups/face/children/ear_left/step01/previews/2026-10-26T17-21-59-989Z-10.png": {
+    "part-layering/step09_outline/face/children/ear_left/previews/2026-10-26T17-21-59-989Z-10.png": {
       "bytes": 350597,
       "sha256": "3594d7a1ba495af9b0a7320add8024fc32ed7ebd27505c3725e64898cb772053"
     },
-    "part-layering/groups/face/children/ear_left/step01/previews/2026-10-26T17-21-59-989Z-7.png": {
+    "part-layering/step09_outline/face/children/ear_left/previews/2026-10-26T17-21-59-989Z-7.png": {
       "bytes": 388771,
       "sha256": "52fabf5f777669d06e985567cb39e56a28eaf30f8a299b078dc2a8964db968a7"
     },
-    "part-layering/groups/face/children/ear_left/step01/previews/2026-10-26T17-21-59-989Z-8.png": {
+    "part-layering/step09_outline/face/children/ear_left/previews/2026-10-26T17-21-59-989Z-8.png": {
       "bytes": 398810,
       "sha256": "bcf40b13557725f99569b8ef9ac013b517368dbd6e715639d4688b8db5290db0"
     },
-    "part-layering/groups/face/children/ear_left/step01/review.json": {
+    "part-layering/step09_outline/face/children/ear_left/review.json": {
       "bytes": 8888,
       "sha256": "93beff8af2d14e8eab75197b8046ba1f7af695ca0b02299217e92fcd3afd61aa"
     },
-    "part-layering/groups/face/children/ear_left/step02/.completed": {
+    "part-layering/step11_completion/face/children/ear_left/.completed": {
       "bytes": 310,
       "sha256": "61f9af186d95d3aecacb06712a18635755c54ba6874874a6aa2e35738aed21e0"
     },
-    "part-layering/groups/face/children/ear_left/step02/check.json": {
+    "part-layering/step11_completion/face/children/ear_left/check.json": {
       "bytes": 186,
       "sha256": "5392ce753e4abc5aeaab17d8491ae81c987981dcad400b15a42339efb7cdfe8b"
     },
-    "part-layering/groups/face/children/ear_left/step03/.completed": {
+    "part-layering/step12_children/face/children/ear_left/.completed": {
       "bytes": 289,
       "sha256": "e0446c9c3fe16d22a8d15004f72de640211898238c9422ce8471b2ff87fe6806"
     },
-    "part-layering/groups/face/children/ear_left/step03/children.json": {
+    "part-layering/step12_children/face/children/ear_left/children.json": {
       "bytes": 49,
       "sha256": "c9e2505f59765f946d9e0e330edcb9044e4daca0c0fcc29a53c02739d97b834e"
     },
-    "part-layering/groups/face/children/ear_right/step01/.completed": {
+    "part-layering/step09_outline/face/children/ear_right/.completed": {
       "bytes": 269,
       "sha256": "0b8ba9b7778e6636a0b30435635e12e14e2c01126148b50b4fc71569a0a1372c"
     },
-    "part-layering/groups/face/children/ear_right/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/ear_right/outline.svg": {
       "bytes": 595,
       "sha256": "bbc42173a031ea8265104f610725c9d6ba95188e2e18bc7b34996d3e7caf2a80"
     },
-    "part-layering/groups/face/children/ear_right/step01/previews/2026-10-26T17-06-14-886Z-8.png": {
+    "part-layering/step09_outline/face/children/ear_right/previews/2026-10-26T17-06-14-886Z-8.png": {
       "bytes": 447810,
       "sha256": "777a6565fff4a802d1d4e4f20940f122fdc5dd1d7b4ee960953c7dc84ed53716"
     },
-    "part-layering/groups/face/children/ear_right/step01/review.json": {
+    "part-layering/step09_outline/face/children/ear_right/review.json": {
       "bytes": 3649,
       "sha256": "cf223e542a9e8ebafc17a44b8b00636a755a548a10c26ac01ce0ebe7d444a7e0"
     },
-    "part-layering/groups/face/children/ear_right/step02/.completed": {
+    "part-layering/step11_completion/face/children/ear_right/.completed": {
       "bytes": 312,
       "sha256": "a909c180ee54f2c1dd745296fc60d8a7f46d58742d5562c4ef8897093ebbce03"
     },
-    "part-layering/groups/face/children/ear_right/step02/check.json": {
+    "part-layering/step11_completion/face/children/ear_right/check.json": {
       "bytes": 187,
       "sha256": "596fbdef4b9f0c8a025873fd46b834022f0f283898dc5efdd1d9bf2c40111407"
     },
-    "part-layering/groups/face/children/ear_right/step03/.completed": {
+    "part-layering/step12_children/face/children/ear_right/.completed": {
       "bytes": 290,
       "sha256": "fd53213bfbf5c5d30867a78b611cb4636f0090e0b31d098a33aad959798f573a"
     },
-    "part-layering/groups/face/children/ear_right/step03/children.json": {
+    "part-layering/step12_children/face/children/ear_right/children.json": {
       "bytes": 50,
       "sha256": "4a7526803fd993fcac196c73991622f632c921e738eb22d8df8a787562cb08d1"
     },
-    "part-layering/groups/face/children/eye_left/children/eyelid_crease/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_left/children/eyelid_crease/.completed": {
       "bytes": 287,
       "sha256": "adec9e3db8f9955f4a2e409f250a538e0e86fbe7863288c53685122080b24879"
     },
-    "part-layering/groups/face/children/eye_left/children/eyelid_crease/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_left/children/eyelid_crease/outline.svg": {
       "bytes": 524,
       "sha256": "697a5a2461c1b5c34f59bcac6da5ac06cc5904db33413483e41f8bafac34e7d4"
     },
-    "part-layering/groups/face/children/eye_left/children/eyelid_crease/step01/review.json": {
+    "part-layering/step09_outline/face/children/eye_left/children/eyelid_crease/review.json": {
       "bytes": 3814,
       "sha256": "2d3684c5ed97a663c4dd10ec3292c3e8eefc69c876391caf53f0aa5e5d10e2af"
     },
-    "part-layering/groups/face/children/eye_left/children/eyelid_crease/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_left/children/eyelid_crease/.completed": {
       "bytes": 344,
       "sha256": "806ad116e0333d981cc171da91e4ca2210b02ff8171ad34508b7b179a0b1f85d"
     },
-    "part-layering/groups/face/children/eye_left/children/eyelid_crease/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_left/children/eyelid_crease/check.json": {
       "bytes": 200,
       "sha256": "56daac5a03a2050996ed0844c792b1f7e1923243787a776c49c81a09adbbfa30"
     },
-    "part-layering/groups/face/children/eye_left/children/eyelid_crease/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_left/children/eyelid_crease/.completed": {
       "bytes": 312,
       "sha256": "5e094aa4e3112aab464f603207565298ce540fd5c952c048c2415b085363162d"
     },
-    "part-layering/groups/face/children/eye_left/children/eyelid_crease/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_left/children/eyelid_crease/children.json": {
       "bytes": 63,
       "sha256": "ac520da79134666f00c5b5d5be52c5bc8260623296d4d00f5ba49353446043b6"
     },
-    "part-layering/groups/face/children/eye_left/children/highlight/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_left/children/highlight/.completed": {
       "bytes": 287,
       "sha256": "04bfa51ebe5c2304316f588f777c54c576092678053672b47d8a50071e27cd8e"
     },
-    "part-layering/groups/face/children/eye_left/children/highlight/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_left/children/highlight/outline.svg": {
       "bytes": 188,
       "sha256": "b55cfc316d8848e28b6bb7f34ba742cad37f9896428833848bd51349c2321936"
     },
-    "part-layering/groups/face/children/eye_left/children/highlight/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_left/children/highlight/.completed": {
       "bytes": 336,
       "sha256": "3f32db6afa1266992c8e5cb255c217a256117b4a4085bd73418d685ebab0fdb1"
     },
-    "part-layering/groups/face/children/eye_left/children/highlight/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_left/children/highlight/check.json": {
       "bytes": 196,
       "sha256": "f782d89ad53dcaa17b95d607b4ad743af1afd992d432e16b37c3ed0561203a62"
     },
-    "part-layering/groups/face/children/eye_left/children/highlight/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_left/children/highlight/.completed": {
       "bytes": 308,
       "sha256": "ba69913cea279f762ec8b7870748545432bd2039af4ae60f3f650d12f07acc19"
     },
-    "part-layering/groups/face/children/eye_left/children/highlight/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_left/children/highlight/children.json": {
       "bytes": 59,
       "sha256": "aabe7871663a48ebe338e76bde076c37f45519ab8a7a3715b2f30f9428ee07f8"
     },
-    "part-layering/groups/face/children/eye_left/children/iris/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_left/children/iris/.completed": {
       "bytes": 287,
       "sha256": "8e4f2ca961f873a5bf4ab3070f71b0216f112be1ffbd1df13381b7daa59a2892"
     },
-    "part-layering/groups/face/children/eye_left/children/iris/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_left/children/iris/outline.svg": {
       "bytes": 183,
       "sha256": "914c1dc9cf50894fd7142f3ac831bcf10d80ae6a00ba26354131d8510e7a2a64"
     },
-    "part-layering/groups/face/children/eye_left/children/iris/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_left/children/iris/.completed": {
       "bytes": 326,
       "sha256": "18a5d1ea4d9a2542d63fa970770f5d8c447f2cbed65a506df0d62681661adc90"
     },
-    "part-layering/groups/face/children/eye_left/children/iris/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_left/children/iris/check.json": {
       "bytes": 191,
       "sha256": "e1736e49663de4ed20ddba966c67d37e6c0444c88708a2accdfc36b232fbff47"
     },
-    "part-layering/groups/face/children/eye_left/children/iris/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_left/children/iris/.completed": {
       "bytes": 303,
       "sha256": "7c8f571ada42f203bf92526e6116b271a51b043bfa2ffd25b17d62fe84a8752d"
     },
-    "part-layering/groups/face/children/eye_left/children/iris/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_left/children/iris/children.json": {
       "bytes": 54,
       "sha256": "b0d6ab32727997d81166e9d56eaa6bc262ed2c75b4c44ee2afbb08fb80c59c49"
     },
-    "part-layering/groups/face/children/eye_left/children/lower_eyelid/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_left/children/lower_eyelid/.completed": {
       "bytes": 287,
       "sha256": "48ad61975d9306ca61d82e06bb0c3ab0acc8a2e808f000bd5f4d4e3396d1acf0"
     },
-    "part-layering/groups/face/children/eye_left/children/lower_eyelid/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_left/children/lower_eyelid/outline.svg": {
       "bytes": 191,
       "sha256": "6597d79761d383ac034ff2fd5753960f4ee1c01464def62fc6265e093559e3b0"
     },
-    "part-layering/groups/face/children/eye_left/children/lower_eyelid/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_left/children/lower_eyelid/.completed": {
       "bytes": 342,
       "sha256": "c4a4b088a807d660688eda70374390bd65295d37376476995522c7206967bb26"
     },
-    "part-layering/groups/face/children/eye_left/children/lower_eyelid/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_left/children/lower_eyelid/check.json": {
       "bytes": 199,
       "sha256": "e85240f64800040dabf112d45fde98dc016a05d28582139762c6143296c5265e"
     },
-    "part-layering/groups/face/children/eye_left/children/lower_eyelid/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_left/children/lower_eyelid/.completed": {
       "bytes": 311,
       "sha256": "0570baaf6ae2c7f62f9764967f0c0a0ae78268355364eca2b59941555969d152"
     },
-    "part-layering/groups/face/children/eye_left/children/lower_eyelid/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_left/children/lower_eyelid/children.json": {
       "bytes": 62,
       "sha256": "cbf438c8ea0d41124825a7760f08372065c597840f923608262493e5e6f0ab90"
     },
-    "part-layering/groups/face/children/eye_left/children/sclera/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_left/children/sclera/.completed": {
       "bytes": 287,
       "sha256": "cb8f154a22ee149bdf03d16461da86f2fbd984b7964bb6f25ac63247f9f61e9a"
     },
-    "part-layering/groups/face/children/eye_left/children/sclera/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_left/children/sclera/outline.svg": {
       "bytes": 185,
       "sha256": "e82906a137cbedf9e7e1ba8055d8d2db535c4bc02a5652373d7f1b9b5c04d7c0"
     },
-    "part-layering/groups/face/children/eye_left/children/sclera/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_left/children/sclera/.completed": {
       "bytes": 330,
       "sha256": "4401315f0a84c46b2d1efd43afd2985d0ad709e9ee700b42dc70f07d4664292d"
     },
-    "part-layering/groups/face/children/eye_left/children/sclera/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_left/children/sclera/check.json": {
       "bytes": 193,
       "sha256": "998711514e9a596898b2040685a73745f37bef7eb67c515421facb3aab1bd677"
     },
-    "part-layering/groups/face/children/eye_left/children/sclera/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_left/children/sclera/.completed": {
       "bytes": 305,
       "sha256": "ba2dbbe40c98384cf9fee729aa1f85c0a28c13953aa46148007f9677c2c44eef"
     },
-    "part-layering/groups/face/children/eye_left/children/sclera/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_left/children/sclera/children.json": {
       "bytes": 56,
       "sha256": "d6467ffd52093acb6ab9a82f87c38b1eb0b12d1c258adcb73d76fc0716954a0a"
     },
-    "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_left/children/upper_eyelid/.completed": {
       "bytes": 287,
       "sha256": "288a864088794050c216f1b504d6ccf761071d0dc6615be7d8d5a240f7ed938b"
     },
-    "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_left/children/upper_eyelid/outline.svg": {
       "bytes": 5580,
       "sha256": "184c3504c663e4cc9177800bf16e78a4db35f814e7ac67a00e7c2c2af709c87d"
     },
-    "part-layering/groups/face/children/eye_left/children/upper_eyelid/step01/review.json": {
+    "part-layering/step09_outline/face/children/eye_left/children/upper_eyelid/review.json": {
       "bytes": 5223,
       "sha256": "2da40da210c87e9e05515a1547f305dc6f7d63e51de4b41fdb14e3640298e2bf"
     },
-    "part-layering/groups/face/children/eye_left/children/upper_eyelid/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_left/children/upper_eyelid/.completed": {
       "bytes": 342,
       "sha256": "11c389f682d998fb8433102b44362f068050a512a6266ccd7a8124318421110c"
     },
-    "part-layering/groups/face/children/eye_left/children/upper_eyelid/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_left/children/upper_eyelid/check.json": {
       "bytes": 199,
       "sha256": "ee9459495390ec8bac92c84f586f14ef78291825c43e89be5d5265f6f92d7d60"
     },
-    "part-layering/groups/face/children/eye_left/children/upper_eyelid/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_left/children/upper_eyelid/.completed": {
       "bytes": 311,
       "sha256": "b6f065cf46f299135140fbdaf6545aa2dff5f34781ca08135b87846cb64276cb"
     },
-    "part-layering/groups/face/children/eye_left/children/upper_eyelid/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_left/children/upper_eyelid/children.json": {
       "bytes": 62,
       "sha256": "80fbac94d5a91f0490759ff44746dec6487fef85b8f63522c9aa4db23f23352a"
     },
-    "part-layering/groups/face/children/eye_left/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_left/.completed": {
       "bytes": 269,
       "sha256": "9ba59fe69e0c03db841e41bab2cc725cd7af779a436aed56ccf0471678a08bfc"
     },
-    "part-layering/groups/face/children/eye_left/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_left/outline.svg": {
       "bytes": 5789,
       "sha256": "b3a865b191a810a3a6dffe1dc5e450d6a191ce952c81b05bd35dd19f99591199"
     },
-    "part-layering/groups/face/children/eye_left/step01/review.json": {
+    "part-layering/step09_outline/face/children/eye_left/review.json": {
       "bytes": 8872,
       "sha256": "2b36594e58a4e8005835b7ac2a9ae1a113a8b7cfa0fde1933839f94833581574"
     },
-    "part-layering/groups/face/children/eye_left/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_left/.completed": {
       "bytes": 310,
       "sha256": "471e2ad7069b17f1d6c352c7373490858cb23117f7950690bfcd3c171bfc4d88"
     },
-    "part-layering/groups/face/children/eye_left/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_left/check.json": {
       "bytes": 186,
       "sha256": "a749dd1a196ade7229aadde111550ca00fdd92fa11f54ae49bb5179ffa22db57"
     },
-    "part-layering/groups/face/children/eye_left/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_left/.completed": {
       "bytes": 289,
       "sha256": "ea49cc0b81ab6eec2ec50736ffe1c9b540fd0236a78a1e16eaabc5d1b40da538"
     },
-    "part-layering/groups/face/children/eye_left/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_left/children.json": {
       "bytes": 5585,
       "sha256": "b04e2f4f14ec3d294b6b314432b084e1b648da527cb81e4ccfb1844f71ce34b2"
     },
-    "part-layering/groups/face/children/eye_right/children/eyelid_crease/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_right/children/eyelid_crease/.completed": {
       "bytes": 288,
       "sha256": "4e2daab2863dd2729fa085196554e4e9442f182318886ca3e66591ac13ae0d4c"
     },
-    "part-layering/groups/face/children/eye_right/children/eyelid_crease/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_right/children/eyelid_crease/outline.svg": {
       "bytes": 474,
       "sha256": "bce9e9d3d59608a1d42ab42207ffe3fdb53664e12c5e8730c617c97e3be7f824"
     },
-    "part-layering/groups/face/children/eye_right/children/eyelid_crease/step01/review.json": {
+    "part-layering/step09_outline/face/children/eye_right/children/eyelid_crease/review.json": {
       "bytes": 3586,
       "sha256": "2a0005dbd7ff59d44b494f90538d1f0d6fe372018bb3a1e923a45d1c89be4985"
     },
-    "part-layering/groups/face/children/eye_right/children/eyelid_crease/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_right/children/eyelid_crease/.completed": {
       "bytes": 346,
       "sha256": "d2c17823c45d254b98827f84564bc871bcbe981d2e53c1ecbc4744be94ea5b72"
     },
-    "part-layering/groups/face/children/eye_right/children/eyelid_crease/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_right/children/eyelid_crease/check.json": {
       "bytes": 201,
       "sha256": "dd8422531bb38be73adc7a539f02dd8551a72b4d39333dba03f09f339f604762"
     },
-    "part-layering/groups/face/children/eye_right/children/eyelid_crease/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_right/children/eyelid_crease/.completed": {
       "bytes": 313,
       "sha256": "ce4ca8f815aeaf8f7f86dc28b0b125c1fed6db80ba3dbb3235a9a5fb505f8488"
     },
-    "part-layering/groups/face/children/eye_right/children/eyelid_crease/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_right/children/eyelid_crease/children.json": {
       "bytes": 64,
       "sha256": "ff869ecc1e171ff21dc913b0364f2104bacb09dcb9cfe4fc9bb60f9383233969"
     },
-    "part-layering/groups/face/children/eye_right/children/highlight/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_right/children/highlight/.completed": {
       "bytes": 288,
       "sha256": "f1d04a4211cf83b9f75f1c8127139417f2b083df0424718c1e622a59cf7c3984"
     },
-    "part-layering/groups/face/children/eye_right/children/highlight/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_right/children/highlight/outline.svg": {
       "bytes": 189,
       "sha256": "61d2471b1994ae0f03e2553f99b94b93da4d1da836e029f08be4ee01337a815b"
     },
-    "part-layering/groups/face/children/eye_right/children/highlight/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_right/children/highlight/.completed": {
       "bytes": 338,
       "sha256": "d87aff51e67eb24bdaac4fcd8523cbde876f3e20e8cd1ba3a06b82a0cb0b9288"
     },
-    "part-layering/groups/face/children/eye_right/children/highlight/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_right/children/highlight/check.json": {
       "bytes": 197,
       "sha256": "75dcc7b4a199d354796fe20f99b3570858ffcd5893987aacde3881bbb3699955"
     },
-    "part-layering/groups/face/children/eye_right/children/highlight/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_right/children/highlight/.completed": {
       "bytes": 309,
       "sha256": "4c344d704f19f79add2ad7db8ca4886df259a3fb3469c4d2ded4f326de6acd5e"
     },
-    "part-layering/groups/face/children/eye_right/children/highlight/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_right/children/highlight/children.json": {
       "bytes": 60,
       "sha256": "a916475bbd6b4d8024afe6f665c6b24ed752486e9278154b2a8818b04a8a9b7e"
     },
-    "part-layering/groups/face/children/eye_right/children/iris/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_right/children/iris/.completed": {
       "bytes": 288,
       "sha256": "b5b96a4158caac441d145d2d5551a7da86b57be730c5baef40a5f8faf43a0e90"
     },
-    "part-layering/groups/face/children/eye_right/children/iris/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_right/children/iris/outline.svg": {
       "bytes": 184,
       "sha256": "79c73613f0d7f0e32423c92ea21ef131ff09da7111d469bb0d1ccace02e91d18"
     },
-    "part-layering/groups/face/children/eye_right/children/iris/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_right/children/iris/.completed": {
       "bytes": 328,
       "sha256": "72c8d6ab6f6b771507193f58aff599dc419793b6c589584181d6b215709b6270"
     },
-    "part-layering/groups/face/children/eye_right/children/iris/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_right/children/iris/check.json": {
       "bytes": 192,
       "sha256": "c07e811ab96f3fbdbbdfa39ba3c4f9a439fb809ad6246a10318465a5f4992819"
     },
-    "part-layering/groups/face/children/eye_right/children/iris/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_right/children/iris/.completed": {
       "bytes": 304,
       "sha256": "d79f6e41b2689c79990478d2d8744b2136d74fd3ef7ea47319ebab9d4eef9584"
     },
-    "part-layering/groups/face/children/eye_right/children/iris/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_right/children/iris/children.json": {
       "bytes": 55,
       "sha256": "efa31be2087688966d45d304f52f66adf321a831a0913d44144660e0fd186a51"
     },
-    "part-layering/groups/face/children/eye_right/children/lower_eyelid/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_right/children/lower_eyelid/.completed": {
       "bytes": 288,
       "sha256": "b30df4fd07fbc66137dfdee5fc1c4dee546ab2db10becfd6ee76a656fcb0d245"
     },
-    "part-layering/groups/face/children/eye_right/children/lower_eyelid/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_right/children/lower_eyelid/outline.svg": {
       "bytes": 192,
       "sha256": "36bb2d4e04b0280e38d36b6df5e74e344e8f979fc7c2ce0cb1754b6d350446df"
     },
-    "part-layering/groups/face/children/eye_right/children/lower_eyelid/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_right/children/lower_eyelid/.completed": {
       "bytes": 344,
       "sha256": "2bb13e5c78dc454b6815a9c6f01122b04ab850ea571b893f08c3ef47469a5ec8"
     },
-    "part-layering/groups/face/children/eye_right/children/lower_eyelid/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_right/children/lower_eyelid/check.json": {
       "bytes": 200,
       "sha256": "814d6449e08f8accf99ed23780efd73e8bc5c3f571498acfd8f2161db4a98450"
     },
-    "part-layering/groups/face/children/eye_right/children/lower_eyelid/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_right/children/lower_eyelid/.completed": {
       "bytes": 312,
       "sha256": "4bf3afaab3302be8459b8df3144a664b18d364f95bf002d35df7c192687dc237"
     },
-    "part-layering/groups/face/children/eye_right/children/lower_eyelid/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_right/children/lower_eyelid/children.json": {
       "bytes": 63,
       "sha256": "666f17d693d4fc9ca2597e9f10df55d5a94a01ef0929f85e142c6b1d05f9a652"
     },
-    "part-layering/groups/face/children/eye_right/children/sclera/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_right/children/sclera/.completed": {
       "bytes": 288,
       "sha256": "9635dba51ec7eeece3b111882f44f073cc54b543ac687c2402968a3751f2b124"
     },
-    "part-layering/groups/face/children/eye_right/children/sclera/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_right/children/sclera/outline.svg": {
       "bytes": 186,
       "sha256": "3a4fcd7191ac4eb63616416067a85672f83e4a8097be0d2a0feef4f34137cdb2"
     },
-    "part-layering/groups/face/children/eye_right/children/sclera/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_right/children/sclera/.completed": {
       "bytes": 332,
       "sha256": "4e4a8b0ee9bf99a715c53b3aedccc30c91527d32fef878c4b32a515f908ae47d"
     },
-    "part-layering/groups/face/children/eye_right/children/sclera/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_right/children/sclera/check.json": {
       "bytes": 194,
       "sha256": "9eab6a01e36d48dd8c0e73d56c1f0e6e9e5984460f97824eb2f732ecf2c231a7"
     },
-    "part-layering/groups/face/children/eye_right/children/sclera/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_right/children/sclera/.completed": {
       "bytes": 306,
       "sha256": "72d3d8ee29dd739a4ea9d956c992c8addab45c077e6361ad3f03271bcc838c2c"
     },
-    "part-layering/groups/face/children/eye_right/children/sclera/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_right/children/sclera/children.json": {
       "bytes": 57,
       "sha256": "102ffaf950484a58c14f6d861dcc721b09342e65cf1d88dcc57949c4d000372b"
     },
-    "part-layering/groups/face/children/eye_right/children/upper_eyelid/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_right/children/upper_eyelid/.completed": {
       "bytes": 288,
       "sha256": "c3561c3df93648ba4fa0b352702ff338b60765b4fbc9b2263688fe8ed9c13ba9"
     },
-    "part-layering/groups/face/children/eye_right/children/upper_eyelid/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_right/children/upper_eyelid/outline.svg": {
       "bytes": 1233,
       "sha256": "c7022e460f13b6b646e02e6ab195dd0576b7eb7bbefec863edc9ac2edc0ed8b7"
     },
-    "part-layering/groups/face/children/eye_right/children/upper_eyelid/step01/previews/2026-10-27T04-17-20-443Z-13.png": {
+    "part-layering/step09_outline/face/children/eye_right/children/upper_eyelid/previews/2026-10-27T04-17-20-443Z-13.png": {
       "bytes": 30509,
       "sha256": "d55e93d6be7bab34d5d498b52f269772bb1d0046862d0862ca71219eecba240f"
     },
-    "part-layering/groups/face/children/eye_right/children/upper_eyelid/step01/review.json": {
+    "part-layering/step09_outline/face/children/eye_right/children/upper_eyelid/review.json": {
       "bytes": 13213,
       "sha256": "3b8b84add6f539fda1d617c888349223f350f0ef48e34cdb3777e5fa5d32cf1e"
     },
-    "part-layering/groups/face/children/eye_right/children/upper_eyelid/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_right/children/upper_eyelid/.completed": {
       "bytes": 344,
       "sha256": "48af8fbc92b0506951671600717176b940ea2c150625e85ad44ae4815b6f8c44"
     },
-    "part-layering/groups/face/children/eye_right/children/upper_eyelid/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_right/children/upper_eyelid/check.json": {
       "bytes": 200,
       "sha256": "7bc735b51cd0af214721bf06b59b9280c641cd729464109b37450d54b140cacd"
     },
-    "part-layering/groups/face/children/eye_right/children/upper_eyelid/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_right/children/upper_eyelid/.completed": {
       "bytes": 312,
       "sha256": "5bfdb6be9f9e608bd3fba3b111121d37ec06bc51adaa266081aa3c94a5f9f3dd"
     },
-    "part-layering/groups/face/children/eye_right/children/upper_eyelid/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_right/children/upper_eyelid/children.json": {
       "bytes": 63,
       "sha256": "03dcad8c315cd71ae30214b1be138ab2352531d771f6e0961ced67916bd0b75c"
     },
-    "part-layering/groups/face/children/eye_right/step01/.completed": {
+    "part-layering/step09_outline/face/children/eye_right/.completed": {
       "bytes": 269,
       "sha256": "dfc17d2ff0295628d7f2224f932696b17beb91c39d02c6bda6a156e3e8bbfea9"
     },
-    "part-layering/groups/face/children/eye_right/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eye_right/outline.svg": {
       "bytes": 1347,
       "sha256": "5a28f6894bf87d55f5ac760c4d2c29a5bbb87d4838e58455bd91deaee3f7ba3e"
     },
-    "part-layering/groups/face/children/eye_right/step01/previews/2026-10-26T17-01-12-350Z-12.png": {
+    "part-layering/step09_outline/face/children/eye_right/previews/2026-10-26T17-01-12-350Z-12.png": {
       "bytes": 197242,
       "sha256": "67f72d34bbbd063422b1fd025e52d39d41ddd96472df88d91db0bc5f15d57b0c"
     },
-    "part-layering/groups/face/children/eye_right/step01/review.json": {
+    "part-layering/step09_outline/face/children/eye_right/review.json": {
       "bytes": 10409,
       "sha256": "541d4899de51c262de6176a5f03a37b2a9f161b0753cb6f163f2e92521b2d192"
     },
-    "part-layering/groups/face/children/eye_right/step02/.completed": {
+    "part-layering/step11_completion/face/children/eye_right/.completed": {
       "bytes": 312,
       "sha256": "0d07c55b7484ce0624e61f82ab88fc00d156c657cff4585565e1a998d5e6e03f"
     },
-    "part-layering/groups/face/children/eye_right/step02/check.json": {
+    "part-layering/step11_completion/face/children/eye_right/check.json": {
       "bytes": 187,
       "sha256": "3a8ced208403b45d358af3a388343695c79c050712cd57f2c81c98f59c2ed29f"
     },
-    "part-layering/groups/face/children/eye_right/step03/.completed": {
+    "part-layering/step12_children/face/children/eye_right/.completed": {
       "bytes": 290,
       "sha256": "656b26632cf24b3c4329b1f3d93ccdf2f28ad2a3ad4705ef4c0cff37502d016c"
     },
-    "part-layering/groups/face/children/eye_right/step03/children.json": {
+    "part-layering/step12_children/face/children/eye_right/children.json": {
       "bytes": 6025,
       "sha256": "6f2770b4954b416d28838f3f00fe4ee6ca788040f3072905194042ee2d9eac61"
     },
-    "part-layering/groups/face/children/eyebrow_left/step01/.completed": {
+    "part-layering/step09_outline/face/children/eyebrow_left/.completed": {
       "bytes": 269,
       "sha256": "65929ef28f2aa41bb9848348e31651fe8ac98b5aa70003dc3a1319506dfb526c"
     },
-    "part-layering/groups/face/children/eyebrow_left/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eyebrow_left/outline.svg": {
       "bytes": 810,
       "sha256": "2fc3ed359acebe45e374dcf93ed7257fa1b0e244e119f879d77ea7c855fc3653"
     },
-    "part-layering/groups/face/children/eyebrow_left/step01/review.json": {
+    "part-layering/step09_outline/face/children/eyebrow_left/review.json": {
       "bytes": 2932,
       "sha256": "e2f4543c7befc27996775e6a52bc84b998118f7d94bed5840202fa857b74ec2c"
     },
-    "part-layering/groups/face/children/eyebrow_left/step02/.completed": {
+    "part-layering/step11_completion/face/children/eyebrow_left/.completed": {
       "bytes": 318,
       "sha256": "5a9fc3cd8145394ef408d4ce869161329d521062436a6c21d49ff99a8ffa4a8e"
     },
-    "part-layering/groups/face/children/eyebrow_left/step02/check.json": {
+    "part-layering/step11_completion/face/children/eyebrow_left/check.json": {
       "bytes": 190,
       "sha256": "18fc22157a64cd03df1d4837095c2140711b2e931eec16221f4ba7da88b3c810"
     },
-    "part-layering/groups/face/children/eyebrow_left/step03/.completed": {
+    "part-layering/step12_children/face/children/eyebrow_left/.completed": {
       "bytes": 293,
       "sha256": "b1362c006b589808dda3aedfeb62a86c488ac7b34b04c7c66b8f705cebd02475"
     },
-    "part-layering/groups/face/children/eyebrow_left/step03/children.json": {
+    "part-layering/step12_children/face/children/eyebrow_left/children.json": {
       "bytes": 53,
       "sha256": "e8795f0cc818c33d72302b238fec3f527dd88c8d097f8aa3f029ec2444019462"
     },
-    "part-layering/groups/face/children/eyebrow_right/step01/.completed": {
+    "part-layering/step09_outline/face/children/eyebrow_right/.completed": {
       "bytes": 269,
       "sha256": "a376dc731ee3388ec01f8b0ca30e1675f80157f90d3d9796fe53174d3059a255"
     },
-    "part-layering/groups/face/children/eyebrow_right/step01/bitmaps/bcca705f-671c-462b-92c2-634ced24ebb3.png": {
+    "part-layering/step09_outline/face/children/eyebrow_right/bitmaps/bcca705f-671c-462b-92c2-634ced24ebb3.png": {
       "bytes": 94104,
       "sha256": "d0e1deb14a50370375a874a8859908d8f027f33996459e945ab4d01d48ead0de"
     },
-    "part-layering/groups/face/children/eyebrow_right/step01/bitmaps/f11b36f5-4be4-4438-a87a-c634524be740.png": {
+    "part-layering/step09_outline/face/children/eyebrow_right/bitmaps/f11b36f5-4be4-4438-a87a-c634524be740.png": {
       "bytes": 117829,
       "sha256": "55b7c1ac9dbcf6168b004b01ab99430a033af1a0c906032e1069f8bd3517db09"
     },
-    "part-layering/groups/face/children/eyebrow_right/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/eyebrow_right/outline.svg": {
       "bytes": 604,
       "sha256": "1eb9327ff940e438df3792eccdd2066b034da274a881a816653c1385962a3842"
     },
-    "part-layering/groups/face/children/eyebrow_right/step01/review.json": {
+    "part-layering/step09_outline/face/children/eyebrow_right/review.json": {
       "bytes": 8113,
       "sha256": "df891e70c94d27aa405c4e2850f1a132b5ac5fac43fb454fb18c2e0e2bfbd441"
     },
-    "part-layering/groups/face/children/eyebrow_right/step02/.completed": {
+    "part-layering/step11_completion/face/children/eyebrow_right/.completed": {
       "bytes": 320,
       "sha256": "74ba2852348f82dda54c5370a2aadbb2591e42c80d8ad4acc6d05b45fd0b189a"
     },
-    "part-layering/groups/face/children/eyebrow_right/step02/check.json": {
+    "part-layering/step11_completion/face/children/eyebrow_right/check.json": {
       "bytes": 191,
       "sha256": "74775b3c923d757cb2b043a44e32aa1e3d625e1083ca11e2aa8b8f579e628986"
     },
-    "part-layering/groups/face/children/eyebrow_right/step03/.completed": {
+    "part-layering/step12_children/face/children/eyebrow_right/.completed": {
       "bytes": 294,
       "sha256": "c1e3d58809976df389650d52eb16b8c4b8c5c66bcf17e8e6ab6d0c41f47c86aa"
     },
-    "part-layering/groups/face/children/eyebrow_right/step03/children.json": {
+    "part-layering/step12_children/face/children/eyebrow_right/children.json": {
       "bytes": 54,
       "sha256": "90a5b3751cf73aa8e204168de62ef27e418cdae67a3523affb0541aaba2b9075"
     },
-    "part-layering/groups/face/children/face_base/step01/.completed": {
+    "part-layering/step09_outline/face/children/face_base/.completed": {
       "bytes": 269,
       "sha256": "b7579e33ebf66d0a427ba107f6278231e734950ab2c40f2afd19a2bdb490b66f"
     },
-    "part-layering/groups/face/children/face_base/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/face_base/outline.svg": {
       "bytes": 2241,
       "sha256": "ffcdadd91f2d66b1d13ea338aa0fafeeab76de375d5ee7c032c8d0ddd1ad8a72"
     },
-    "part-layering/groups/face/children/face_base/step01/review.json": {
+    "part-layering/step09_outline/face/children/face_base/review.json": {
       "bytes": 5615,
       "sha256": "667869328876ab062ffcc8d49a0a762fbfa780ab597cd2fa63022bce4b348093"
     },
-    "part-layering/groups/face/children/face_base/step02/.completed": {
+    "part-layering/step11_completion/face/children/face_base/.completed": {
       "bytes": 312,
       "sha256": "f9b2b3fbae76465b275d0c53d4f15e27054d267fe03526c1a70c51ca40bb3650"
     },
-    "part-layering/groups/face/children/face_base/step02/check.json": {
+    "part-layering/step11_completion/face/children/face_base/check.json": {
       "bytes": 187,
       "sha256": "66eb580bc932f286edeba077ababaf986b3869c512a4001fb577023d4c9d9904"
     },
-    "part-layering/groups/face/children/face_base/step03/.completed": {
+    "part-layering/step12_children/face/children/face_base/.completed": {
       "bytes": 290,
       "sha256": "6cd55b714dfcab96366e44d81d7633692ee9f52f4b8f3b7639b805d17b845b26"
     },
-    "part-layering/groups/face/children/face_base/step03/children.json": {
+    "part-layering/step12_children/face/children/face_base/children.json": {
       "bytes": 50,
       "sha256": "63d95e7c16903c3daa99d3730f0061d6cf6f5241bead9fe2e75f5780733957ae"
     },
-    "part-layering/groups/face/children/mouth/children/lower_lip/step01/.completed": {
+    "part-layering/step09_outline/face/children/mouth/children/lower_lip/.completed": {
       "bytes": 284,
       "sha256": "2df0aae0a40193ad25d20690366279a5c818525e98ece53749e0a9de241e2c65"
     },
-    "part-layering/groups/face/children/mouth/children/lower_lip/step01/bitmaps/bfbe4cd0-5106-4488-9f47-197815f0e8ad.png": {
+    "part-layering/step09_outline/face/children/mouth/children/lower_lip/bitmaps/bfbe4cd0-5106-4488-9f47-197815f0e8ad.png": {
       "bytes": 148521,
       "sha256": "3acb777191e8d986e938060d41d2c2333c1241d211cf5951b2ef6e108228fe31"
     },
-    "part-layering/groups/face/children/mouth/children/lower_lip/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/mouth/children/lower_lip/outline.svg": {
       "bytes": 737,
       "sha256": "29e1fcbf3110f666bd5926513752ea363f2a5629abab5ecec622cb869c6cd168"
     },
-    "part-layering/groups/face/children/mouth/children/lower_lip/step01/previews/2026-10-27T04-07-47-347Z-13.png": {
+    "part-layering/step09_outline/face/children/mouth/children/lower_lip/previews/2026-10-27T04-07-47-347Z-13.png": {
       "bytes": 9251,
       "sha256": "e13b84470b77fbfd8379be94a9f389d2b2ae04f0a83421d6d0500cb348bb907f"
     },
-    "part-layering/groups/face/children/mouth/children/lower_lip/step01/review.json": {
+    "part-layering/step09_outline/face/children/mouth/children/lower_lip/review.json": {
       "bytes": 5313,
       "sha256": "88fc9e9fa4e2e4f515deda0d77cd494a684007b827268d903f00450ec56665fe"
     },
-    "part-layering/groups/face/children/mouth/children/lower_lip/step02/.completed": {
+    "part-layering/step11_completion/face/children/mouth/children/lower_lip/.completed": {
       "bytes": 330,
       "sha256": "22f372ac089b7a79bfcd428a6a6f305012e0dda64179cb150f9d3f564f2d3d2d"
     },
-    "part-layering/groups/face/children/mouth/children/lower_lip/step02/check.json": {
+    "part-layering/step11_completion/face/children/mouth/children/lower_lip/check.json": {
       "bytes": 193,
       "sha256": "fb90b985d297d59dbeec1cf3b61a7a7014b5743dd55f8a37c73737130024611d"
     },
-    "part-layering/groups/face/children/mouth/children/lower_lip/step03/.completed": {
+    "part-layering/step12_children/face/children/mouth/children/lower_lip/.completed": {
       "bytes": 305,
       "sha256": "4b61125c909ff4e2b9550e006b99b5a532a089d2f15fb94ccc1fc7de14ba3749"
     },
-    "part-layering/groups/face/children/mouth/children/lower_lip/step03/children.json": {
+    "part-layering/step12_children/face/children/mouth/children/lower_lip/children.json": {
       "bytes": 56,
       "sha256": "f9a50187e3cd89d864d34e8600e1f8f0f70fe0d7b98af58685462709bb3b9725"
     },
-    "part-layering/groups/face/children/mouth/children/lower_teeth/step01/.completed": {
+    "part-layering/step09_outline/face/children/mouth/children/lower_teeth/.completed": {
       "bytes": 284,
       "sha256": "d9696065061f586d8440050ca24c45e74fb4c2acf8fa3cbdf31169ae68e3c8e2"
     },
-    "part-layering/groups/face/children/mouth/children/lower_teeth/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/mouth/children/lower_teeth/outline.svg": {
       "bytes": 187,
       "sha256": "a81620f2313a2378f29d65dd680e8d341473eed11efa68750a96f74eedfded86"
     },
-    "part-layering/groups/face/children/mouth/children/lower_teeth/step02/.completed": {
+    "part-layering/step11_completion/face/children/mouth/children/lower_teeth/.completed": {
       "bytes": 334,
       "sha256": "d475d4de42efd7972ea4d9d807902ca73a634f675384b42ad34223708bebf092"
     },
-    "part-layering/groups/face/children/mouth/children/lower_teeth/step02/check.json": {
+    "part-layering/step11_completion/face/children/mouth/children/lower_teeth/check.json": {
       "bytes": 195,
       "sha256": "fd87e7d92c173c0034e7aaab310e18ddb961323af7052c7e3df61bc7d13fb485"
     },
-    "part-layering/groups/face/children/mouth/children/lower_teeth/step03/.completed": {
+    "part-layering/step12_children/face/children/mouth/children/lower_teeth/.completed": {
       "bytes": 307,
       "sha256": "bd2633fa967aaa95698d69badcd193d4b5ca0a72076b6bb1bb4cc720194fd9b9"
     },
-    "part-layering/groups/face/children/mouth/children/lower_teeth/step03/children.json": {
+    "part-layering/step12_children/face/children/mouth/children/lower_teeth/children.json": {
       "bytes": 58,
       "sha256": "b68dd1e93b58282d5c7e1b8906e25d3f6546c1c2cf58e5ced686f80f4882dedc"
     },
-    "part-layering/groups/face/children/mouth/children/mouth_interior/step01/.completed": {
+    "part-layering/step09_outline/face/children/mouth/children/mouth_interior/.completed": {
       "bytes": 284,
       "sha256": "2f5bf2627f50418e77262bf5a24a4ddc656c0eec33f9f5ea2c0ea34de3891d77"
     },
-    "part-layering/groups/face/children/mouth/children/mouth_interior/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/mouth/children/mouth_interior/outline.svg": {
       "bytes": 190,
       "sha256": "eac4dafbfdaf0a06c99e8c86aaac37b843881152eb41e0da9ca19e750632bd12"
     },
-    "part-layering/groups/face/children/mouth/children/mouth_interior/step02/.completed": {
+    "part-layering/step11_completion/face/children/mouth/children/mouth_interior/.completed": {
       "bytes": 340,
       "sha256": "ad9bba655d40eb5bcf7b41a8e85b1f89d7fb78833e6ae87e73e93a509339d7bb"
     },
-    "part-layering/groups/face/children/mouth/children/mouth_interior/step02/check.json": {
+    "part-layering/step11_completion/face/children/mouth/children/mouth_interior/check.json": {
       "bytes": 198,
       "sha256": "856738c3a9dc70dc48401246e9f23c212bfa04ed6a14cc233ec63c87df23b8a9"
     },
-    "part-layering/groups/face/children/mouth/children/mouth_interior/step03/.completed": {
+    "part-layering/step12_children/face/children/mouth/children/mouth_interior/.completed": {
       "bytes": 310,
       "sha256": "23db5a541395ae2b72481bee70c00f25c9559e22a945124e757a79041a70420c"
     },
-    "part-layering/groups/face/children/mouth/children/mouth_interior/step03/children.json": {
+    "part-layering/step12_children/face/children/mouth/children/mouth_interior/children.json": {
       "bytes": 61,
       "sha256": "f955c738b676d53132e0869e3be07fd5288f2e1147dc52af6f54056125dacc37"
     },
-    "part-layering/groups/face/children/mouth/children/tongue/step01/.completed": {
+    "part-layering/step09_outline/face/children/mouth/children/tongue/.completed": {
       "bytes": 284,
       "sha256": "8bcd77dc694d0cd88e985b04f1bbb30458a0faf5c54bb9b731310ac6c81928fd"
     },
-    "part-layering/groups/face/children/mouth/children/tongue/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/mouth/children/tongue/outline.svg": {
       "bytes": 182,
       "sha256": "fca6b72d69b33d4c574ed65a2f7befd0717cb5aaa52223eb38fbccf340066f9e"
     },
-    "part-layering/groups/face/children/mouth/children/tongue/step02/.completed": {
+    "part-layering/step11_completion/face/children/mouth/children/tongue/.completed": {
       "bytes": 324,
       "sha256": "1c121a1d91119d5baecfdc8ca34ed0aa336443851a7719627aab6d42f8a87037"
     },
-    "part-layering/groups/face/children/mouth/children/tongue/step02/check.json": {
+    "part-layering/step11_completion/face/children/mouth/children/tongue/check.json": {
       "bytes": 190,
       "sha256": "6decafeb926d40406b234bd0e2ad14d4604f08bbbe8f7e17c0e7829a42221dea"
     },
-    "part-layering/groups/face/children/mouth/children/tongue/step03/.completed": {
+    "part-layering/step12_children/face/children/mouth/children/tongue/.completed": {
       "bytes": 302,
       "sha256": "ba15a5c6b0211304be618ee82533498c99a5f7ba10fcb30035f9824ee61edc43"
     },
-    "part-layering/groups/face/children/mouth/children/tongue/step03/children.json": {
+    "part-layering/step12_children/face/children/mouth/children/tongue/children.json": {
       "bytes": 53,
       "sha256": "f6f84e7ffca7e553b5d7529c6d42e4822d33e00eaf4ef36e14eeeebb3307dc6a"
     },
-    "part-layering/groups/face/children/mouth/children/upper_lip/step01/.completed": {
+    "part-layering/step09_outline/face/children/mouth/children/upper_lip/.completed": {
       "bytes": 284,
       "sha256": "6ab21b0cd68dd01af79e790f74bab43f5de47334278d0a20a9e152d3b50f8a4e"
     },
-    "part-layering/groups/face/children/mouth/children/upper_lip/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/mouth/children/upper_lip/outline.svg": {
       "bytes": 775,
       "sha256": "cffc709a7c8af32a7446a99ac92395153af98850cefd825befa4ed328b48c291"
     },
-    "part-layering/groups/face/children/mouth/children/upper_lip/step01/previews/2026-10-27T04-07-45-408Z-10.png": {
+    "part-layering/step09_outline/face/children/mouth/children/upper_lip/previews/2026-10-27T04-07-45-408Z-10.png": {
       "bytes": 9208,
       "sha256": "b237853dda7be60abc664dfd6fe0e40560eb7242699039867b390d1ada87d1b2"
     },
-    "part-layering/groups/face/children/mouth/children/upper_lip/step01/review.json": {
+    "part-layering/step09_outline/face/children/mouth/children/upper_lip/review.json": {
       "bytes": 4500,
       "sha256": "e846a81bd93d90cc98c89bd9163ea3160d8ac69eab12c7fafedbf8054444846e"
     },
-    "part-layering/groups/face/children/mouth/children/upper_lip/step02/.completed": {
+    "part-layering/step11_completion/face/children/mouth/children/upper_lip/.completed": {
       "bytes": 330,
       "sha256": "54e3ae89001f25adc1ae1d5a14ef29d8db1d53cf53ab71a55277ce6baa461b88"
     },
-    "part-layering/groups/face/children/mouth/children/upper_lip/step02/check.json": {
+    "part-layering/step11_completion/face/children/mouth/children/upper_lip/check.json": {
       "bytes": 193,
       "sha256": "8c4688a0e3ab5861a515e2917d399e36df438e39c34c69279d227e1f281182bf"
     },
-    "part-layering/groups/face/children/mouth/children/upper_lip/step03/.completed": {
+    "part-layering/step12_children/face/children/mouth/children/upper_lip/.completed": {
       "bytes": 305,
       "sha256": "c9720065d64ac9cc6f3a5ca09a01c63e65bce3b2e473031ed50b531e49266307"
     },
-    "part-layering/groups/face/children/mouth/children/upper_lip/step03/children.json": {
+    "part-layering/step12_children/face/children/mouth/children/upper_lip/children.json": {
       "bytes": 56,
       "sha256": "0573c5948e48dc31612d26ea47f1c2fe4943881d6b4f48327b875f27a819d0d7"
     },
-    "part-layering/groups/face/children/mouth/children/upper_teeth/step01/.completed": {
+    "part-layering/step09_outline/face/children/mouth/children/upper_teeth/.completed": {
       "bytes": 284,
       "sha256": "01185d3fe7f59ee63e451fd7e41df8aaadee7c57fefad19989daa92894235287"
     },
-    "part-layering/groups/face/children/mouth/children/upper_teeth/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/mouth/children/upper_teeth/outline.svg": {
       "bytes": 187,
       "sha256": "32830ec3788fd7ea90010982c92697cb9d988711b538b3162309d399b3ec2023"
     },
-    "part-layering/groups/face/children/mouth/children/upper_teeth/step02/.completed": {
+    "part-layering/step11_completion/face/children/mouth/children/upper_teeth/.completed": {
       "bytes": 334,
       "sha256": "50be43fa247d260123a4c525091082b01b333ba197596fa6ec8f68a37fbd5617"
     },
-    "part-layering/groups/face/children/mouth/children/upper_teeth/step02/check.json": {
+    "part-layering/step11_completion/face/children/mouth/children/upper_teeth/check.json": {
       "bytes": 195,
       "sha256": "1db70767513f9b9c3840834a8f7159006f6d17bd329d8754e347100c8950d2e0"
     },
-    "part-layering/groups/face/children/mouth/children/upper_teeth/step03/.completed": {
+    "part-layering/step12_children/face/children/mouth/children/upper_teeth/.completed": {
       "bytes": 307,
       "sha256": "525f4e6e7c3738b589e35669cc276765874570dc15072ce5ba3eb0b03030dd3d"
     },
-    "part-layering/groups/face/children/mouth/children/upper_teeth/step03/children.json": {
+    "part-layering/step12_children/face/children/mouth/children/upper_teeth/children.json": {
       "bytes": 58,
       "sha256": "855e8956da3838e92c7ce79a09a7fe884bdc77f3a8f8eaa4ee56fdcf51d9c662"
     },
-    "part-layering/groups/face/children/mouth/step01/.completed": {
+    "part-layering/step09_outline/face/children/mouth/.completed": {
       "bytes": 269,
       "sha256": "6c651746f3ffe4e0409ed072037196ea4d766d6bdf674593cc7deaf8f577d4d7"
     },
-    "part-layering/groups/face/children/mouth/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/mouth/outline.svg": {
       "bytes": 831,
       "sha256": "9d1ed55f6b99be9d05ab7429ae44dafdb5c8dbc290df283a9eb56a790b9e5636"
     },
-    "part-layering/groups/face/children/mouth/step01/review.json": {
+    "part-layering/step09_outline/face/children/mouth/review.json": {
       "bytes": 3126,
       "sha256": "fa11621e86e117773d7f77e875656988ed88ce715e2f5add920f0abb19801a8e"
     },
-    "part-layering/groups/face/children/mouth/step02/.completed": {
+    "part-layering/step11_completion/face/children/mouth/.completed": {
       "bytes": 304,
       "sha256": "fdfdb63135e9de372eb81f583681b8ae327c590491285594a62f34b321f0aab3"
     },
-    "part-layering/groups/face/children/mouth/step02/check.json": {
+    "part-layering/step11_completion/face/children/mouth/check.json": {
       "bytes": 183,
       "sha256": "4985e9106f38f8e28c7debf9e248768a48c02c5dc223eb12e336b97e87cc1b44"
     },
-    "part-layering/groups/face/children/mouth/step03/.completed": {
+    "part-layering/step12_children/face/children/mouth/.completed": {
       "bytes": 286,
       "sha256": "bc9339607ea964fd8fdfe6ebee94074ec23f282e0c49cccfb5eba7cbfba4990a"
     },
-    "part-layering/groups/face/children/mouth/step03/children.json": {
+    "part-layering/step12_children/face/children/mouth/children.json": {
       "bytes": 5795,
       "sha256": "6751067e49f1886a416524da68dc3ab98e789893863c12df362fde63cfc5d988"
     },
-    "part-layering/groups/face/children/nose/children/tip_highlight/step01/.completed": {
+    "part-layering/step09_outline/face/children/nose/children/tip_highlight/.completed": {
       "bytes": 283,
       "sha256": "b19153b2b54fb60c4d7352b3ff4862ee95f65112e5c4bc8124ffbad1d48cf410"
     },
-    "part-layering/groups/face/children/nose/children/tip_highlight/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/nose/children/tip_highlight/outline.svg": {
       "bytes": 467,
       "sha256": "c2f9a9478ca81b95469978fe57abc2410c21b2295b7ffd5d788041033645a49f"
     },
-    "part-layering/groups/face/children/nose/children/tip_highlight/step01/previews/2026-10-27T04-09-18-084Z-3.png": {
+    "part-layering/step09_outline/face/children/nose/children/tip_highlight/previews/2026-10-27T04-09-18-084Z-3.png": {
       "bytes": 25124,
       "sha256": "625c1fda3b8e91d5106f1e10308ce87f554885acce649dead382353a76e34b45"
     },
-    "part-layering/groups/face/children/nose/children/tip_highlight/step01/review.json": {
+    "part-layering/step09_outline/face/children/nose/children/tip_highlight/review.json": {
       "bytes": 2945,
       "sha256": "25474c68bc174242fb843fde6ff7b231105a0e741f8c191361d13633fcbe7453"
     },
-    "part-layering/groups/face/children/nose/children/tip_highlight/step02/.completed": {
+    "part-layering/step11_completion/face/children/nose/children/tip_highlight/.completed": {
       "bytes": 336,
       "sha256": "fade53c090ff155ac44a5daafd3f50b20b3310adcbcebeceace5f843400b2e71"
     },
-    "part-layering/groups/face/children/nose/children/tip_highlight/step02/check.json": {
+    "part-layering/step11_completion/face/children/nose/children/tip_highlight/check.json": {
       "bytes": 196,
       "sha256": "2cc7872cd987ce62c2e03ff174fdad2a3f933fa1ddbdc321909d19c39e1d9965"
     },
-    "part-layering/groups/face/children/nose/children/tip_highlight/step03/.completed": {
+    "part-layering/step12_children/face/children/nose/children/tip_highlight/.completed": {
       "bytes": 308,
       "sha256": "eed66a92716a71ae828d472edeb2d4d7cca5d448639460dba224f2084b410d9f"
     },
-    "part-layering/groups/face/children/nose/children/tip_highlight/step03/children.json": {
+    "part-layering/step12_children/face/children/nose/children/tip_highlight/children.json": {
       "bytes": 59,
       "sha256": "fc9c0094a2e9efc89385f408ecd7232a9bf790945998262404f09f8df6fdf66d"
     },
-    "part-layering/groups/face/children/nose/children/tip_mark/step01/.completed": {
+    "part-layering/step09_outline/face/children/nose/children/tip_mark/.completed": {
       "bytes": 283,
       "sha256": "be12df1216e505a8ca9cdff1d4caa52d6177e68d1dccebdfa3d92e1448968222"
     },
-    "part-layering/groups/face/children/nose/children/tip_mark/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/nose/children/tip_mark/outline.svg": {
       "bytes": 522,
       "sha256": "1c76295d096a0591a334317a1c59d620d23333c38b35ecead7aefbea0ba84d10"
     },
-    "part-layering/groups/face/children/nose/children/tip_mark/step01/previews/2026-10-27T04-07-49-860Z-3.png": {
+    "part-layering/step09_outline/face/children/nose/children/tip_mark/previews/2026-10-27T04-07-49-860Z-3.png": {
       "bytes": 53060,
       "sha256": "e2798f49f164eef56c9eeebbda76b6e4294dbf6869474c5be8c8b4b55ec4a324"
     },
-    "part-layering/groups/face/children/nose/children/tip_mark/step01/review.json": {
+    "part-layering/step09_outline/face/children/nose/children/tip_mark/review.json": {
       "bytes": 3993,
       "sha256": "55e02765ebf4ad06c819a6ec92a0efdddd38cef240433ced52644f07f44e3971"
     },
-    "part-layering/groups/face/children/nose/children/tip_mark/step02/.completed": {
+    "part-layering/step11_completion/face/children/nose/children/tip_mark/.completed": {
       "bytes": 326,
       "sha256": "ae814d78bbab38bc70b15a61250dc10c1b53083e1b97f1cb8c0501a0bf91d2ed"
     },
-    "part-layering/groups/face/children/nose/children/tip_mark/step02/check.json": {
+    "part-layering/step11_completion/face/children/nose/children/tip_mark/check.json": {
       "bytes": 191,
       "sha256": "861a937aa5b825d1192705aa64289dd01579ae1f663dea1e1599eb9d9646276d"
     },
-    "part-layering/groups/face/children/nose/children/tip_mark/step03/.completed": {
+    "part-layering/step12_children/face/children/nose/children/tip_mark/.completed": {
       "bytes": 303,
       "sha256": "b867245070623b07dacd3f219cdb58fd026bfa70959caf6c40c7b3e851dc6b79"
     },
-    "part-layering/groups/face/children/nose/children/tip_mark/step03/children.json": {
+    "part-layering/step12_children/face/children/nose/children/tip_mark/children.json": {
       "bytes": 54,
       "sha256": "ddd1a5490905f03e0b2be083a5d0456541ef8eef3a96cb4283fb1889aadb7220"
     },
-    "part-layering/groups/face/children/nose/children/volume_shadow/step01/.completed": {
+    "part-layering/step09_outline/face/children/nose/children/volume_shadow/.completed": {
       "bytes": 283,
       "sha256": "b6c6e28c27759a17fdeedcf7f5b318c48924b954746512dadddab2d068366003"
     },
-    "part-layering/groups/face/children/nose/children/volume_shadow/step01/bitmaps/861aec56-fadd-4894-8a52-f5b205698105.png": {
+    "part-layering/step09_outline/face/children/nose/children/volume_shadow/bitmaps/861aec56-fadd-4894-8a52-f5b205698105.png": {
       "bytes": 79479,
       "sha256": "7a10a707f6d02a6404084c3963eda1209ee47c8a0d0671aef8d4b164f1350643"
     },
-    "part-layering/groups/face/children/nose/children/volume_shadow/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/nose/children/volume_shadow/outline.svg": {
       "bytes": 548,
       "sha256": "7cb97210af53e28da8f227b941b05e8503ed285f35560ea3c7561688e61c5089"
     },
-    "part-layering/groups/face/children/nose/children/volume_shadow/step01/review.json": {
+    "part-layering/step09_outline/face/children/nose/children/volume_shadow/review.json": {
       "bytes": 4206,
       "sha256": "b67da45c04b18e09ec4f158719e67826901117963934238d7b9e5ec2b5298498"
     },
-    "part-layering/groups/face/children/nose/children/volume_shadow/step02/.completed": {
+    "part-layering/step11_completion/face/children/nose/children/volume_shadow/.completed": {
       "bytes": 336,
       "sha256": "c41b65a633875fd1a6c52ce7efdd3ef5e19ee02f75703338c5c4167d5951a8b5"
     },
-    "part-layering/groups/face/children/nose/children/volume_shadow/step02/check.json": {
+    "part-layering/step11_completion/face/children/nose/children/volume_shadow/check.json": {
       "bytes": 196,
       "sha256": "5e0a823dbb07c01848f5b501b23c9859e25cfdda695eb289f04c27be4dd9b437"
     },
-    "part-layering/groups/face/children/nose/children/volume_shadow/step03/.completed": {
+    "part-layering/step12_children/face/children/nose/children/volume_shadow/.completed": {
       "bytes": 308,
       "sha256": "790adf5ea670230c6d6e8cc3385020cb465190286777c8c20a905e64b48a6b88"
     },
-    "part-layering/groups/face/children/nose/children/volume_shadow/step03/children.json": {
+    "part-layering/step12_children/face/children/nose/children/volume_shadow/children.json": {
       "bytes": 59,
       "sha256": "38382775a1cc5642b97dda5fc04bd16812b22f5de8cca95276f41b7c9ddfb39b"
     },
-    "part-layering/groups/face/children/nose/step01/.completed": {
+    "part-layering/step09_outline/face/children/nose/.completed": {
       "bytes": 269,
       "sha256": "229bd72edd550e0673b4398741726aa7586af388ad64e81895d87ead5f0a1579"
     },
-    "part-layering/groups/face/children/nose/step01/outline.svg": {
+    "part-layering/step09_outline/face/children/nose/outline.svg": {
       "bytes": 802,
       "sha256": "6b8bf80ad2f5d5a0fc786f01a4be333a5362c82faef4425b0b00352370598500"
     },
-    "part-layering/groups/face/children/nose/step01/review.json": {
+    "part-layering/step09_outline/face/children/nose/review.json": {
       "bytes": 3145,
       "sha256": "afbb1515f6ea9c7d33e2af8f7bc2716a0991a1d22d205a00a5727913c696f608"
     },
-    "part-layering/groups/face/children/nose/step02/.completed": {
+    "part-layering/step11_completion/face/children/nose/.completed": {
       "bytes": 302,
       "sha256": "66cf86ab784232c7147bc1b9df558d1d1b6beee096635054be93812519a712c9"
     },
-    "part-layering/groups/face/children/nose/step02/check.json": {
+    "part-layering/step11_completion/face/children/nose/check.json": {
       "bytes": 182,
       "sha256": "5bb6d61c2deba42188191ab29555a24c6602803cf2bfb66d45ea0c8027e4a301"
     },
-    "part-layering/groups/face/children/nose/step03/.completed": {
+    "part-layering/step12_children/face/children/nose/.completed": {
       "bytes": 285,
       "sha256": "3ad6334529a39fdb9597437a1171d03a1d5d28d74edad2660707bad3a794d7e6"
     },
-    "part-layering/groups/face/children/nose/step03/children.json": {
+    "part-layering/step12_children/face/children/nose/children.json": {
       "bytes": 2724,
       "sha256": "b87489b8f97b5792193bd0b1415d9741872f591950cb06f336fac3a53c1086a7"
     },
-    "part-layering/groups/face/step01/.completed": {
+    "part-layering/step09_outline/face/.completed": {
       "bytes": 265,
       "sha256": "83527372662087139c335fc1ac28a7f91b8bde17e3129b609fe26f17bfb5fb5d"
     },
-    "part-layering/groups/face/step01/bitmaps/6bb0d143-ae48-4296-82a7-9565a48f9f48.png": {
+    "part-layering/step09_outline/face/bitmaps/6bb0d143-ae48-4296-82a7-9565a48f9f48.png": {
       "bytes": 559615,
       "sha256": "b6ca73e1b79fdf29317575d9a26515deb159d1339287cf3ae14d916d102b5935"
     },
-    "part-layering/groups/face/step01/bitmaps/ac6ca896-b79b-4186-a812-2d7d2529301c.png": {
+    "part-layering/step09_outline/face/bitmaps/ac6ca896-b79b-4186-a812-2d7d2529301c.png": {
       "bytes": 166954,
       "sha256": "0e0cf21bbb5cc33de1dd893168fea8e57fceca44c54be99cb974664be0e89cf2"
     },
-    "part-layering/groups/face/step01/outline.svg": {
+    "part-layering/step09_outline/face/outline.svg": {
       "bytes": 2319,
       "sha256": "310b0f5803b76876f83d82313f6d1f7c49cf66419986befec11a0b553ba5e2e6"
     },
-    "part-layering/groups/face/step01/review.json": {
+    "part-layering/step09_outline/face/review.json": {
       "bytes": 12935,
       "sha256": "7e408219b41d571451cbfe7f37bb0747a1503ade4e5710e7dd5c1b7ef6663e14"
     },
-    "part-layering/groups/face/step02/.completed": {
+    "part-layering/step11_completion/face/.completed": {
       "bytes": 286,
       "sha256": "78cd24574b44fb3f96f2363d514edfec4127b6b99aa0e3ca88152284ccbc8a51"
     },
-    "part-layering/groups/face/step02/check.json": {
+    "part-layering/step11_completion/face/check.json": {
       "bytes": 177,
       "sha256": "d07e2156a1569e073156a956049f746c64126450a57f5fa188f3c6d1bb338fa6"
     },
-    "part-layering/groups/face/step03/.completed": {
+    "part-layering/step12_children/face/.completed": {
       "bytes": 271,
       "sha256": "c9df5cb3075d917798c3b6faf9b619ec9d81cbcf8bf98cf056b6e253bf988560"
     },
-    "part-layering/groups/face/step03/children.json": {
+    "part-layering/step12_children/face/children.json": {
       "bytes": 6891,
       "sha256": "b496b7a6ad5540452268b43e735e8a7471d63b9d531dfdc298ec58066174b66c"
     },
-    "part-layering/groups/hair/children/back_hair/step01/.completed": {
+    "part-layering/step09_outline/hair/children/back_hair/.completed": {
       "bytes": 269,
       "sha256": "1839954d29d1b1458e836f90c4465bf12ee89d3589380e95ec36a3fe6e2de826"
     },
-    "part-layering/groups/hair/children/back_hair/step01/outline.svg": {
+    "part-layering/step09_outline/hair/children/back_hair/outline.svg": {
       "bytes": 31216,
       "sha256": "702468627ce1c30d11a5042b8a5520c8100e3f0d80ea463e75c85a3bc470332f"
     },
-    "part-layering/groups/hair/children/back_hair/step01/previews/2026-10-26T17-29-31-433Z-27.png": {
+    "part-layering/step09_outline/hair/children/back_hair/previews/2026-10-26T17-29-31-433Z-27.png": {
       "bytes": 64432,
       "sha256": "05cd66f8f1ee0b3d6edf41d2bda660568d674c0fc9c7ab9f14514424a75dcda0"
     },
-    "part-layering/groups/hair/children/back_hair/step01/review.json": {
+    "part-layering/step09_outline/hair/children/back_hair/review.json": {
       "bytes": 17241,
       "sha256": "b12dd2933da30abfcda25426ac0c2fc1b888b4c2daba0a883d796a16170795a7"
     },
-    "part-layering/groups/hair/children/back_hair/step02/.completed": {
+    "part-layering/step11_completion/hair/children/back_hair/.completed": {
       "bytes": 312,
       "sha256": "5abca5bce2ae9bdc21d9862dd4a114eddd897fb2c2278197588d1c6fff99dd76"
     },
-    "part-layering/groups/hair/children/back_hair/step02/check.json": {
+    "part-layering/step11_completion/hair/children/back_hair/check.json": {
       "bytes": 187,
       "sha256": "abd1460d99d165fff956d04a5987d13305b3aad9b61c7a581113f830a8d2b47f"
     },
-    "part-layering/groups/hair/children/back_hair/step03/.completed": {
+    "part-layering/step12_children/hair/children/back_hair/.completed": {
       "bytes": 290,
       "sha256": "384b78490237a9b2720d8e323d59a6e9ef1a70d2a5c081b2c5ab93a5913bbc9d"
     },
-    "part-layering/groups/hair/children/back_hair/step03/children.json": {
+    "part-layering/step12_children/hair/children/back_hair/children.json": {
       "bytes": 50,
       "sha256": "6ae34dc36168a5c80981dc63434e8355c97954f63f243766522f983de48df1c5"
     },
-    "part-layering/groups/hair/children/bangs/step01/.completed": {
+    "part-layering/step09_outline/hair/children/bangs/.completed": {
       "bytes": 269,
       "sha256": "3a193e37916d387b0d9bb5de545a12ab2b609bf339cc215a65d440b8e49d2913"
     },
-    "part-layering/groups/hair/children/bangs/step01/bitmaps/bc0dc53f-0ee3-4939-a289-c74bc1452b28.png": {
+    "part-layering/step09_outline/hair/children/bangs/bitmaps/bc0dc53f-0ee3-4939-a289-c74bc1452b28.png": {
       "bytes": 488904,
       "sha256": "d5fdf771172f72527a822f5c20daa1e3cdec116844e602ca36e741da365a8aac"
     },
-    "part-layering/groups/hair/children/bangs/step01/outline.svg": {
+    "part-layering/step09_outline/hair/children/bangs/outline.svg": {
       "bytes": 1892,
       "sha256": "f4333de3595d3305b1631b1f8af141ab6305111f9accf1910facd9482b4377f9"
     },
-    "part-layering/groups/hair/children/bangs/step01/review.json": {
+    "part-layering/step09_outline/hair/children/bangs/review.json": {
       "bytes": 12755,
       "sha256": "8ae06be307709350d1f78d30fdb5a618ed972379e3f804e7d16bdc157037dc7a"
     },
-    "part-layering/groups/hair/children/bangs/step02/.completed": {
+    "part-layering/step11_completion/hair/children/bangs/.completed": {
       "bytes": 304,
       "sha256": "834e8756148399cad6ff017fd5ca9e7ffc0ec767428645bfa1211c678213d280"
     },
-    "part-layering/groups/hair/children/bangs/step02/check.json": {
+    "part-layering/step11_completion/hair/children/bangs/check.json": {
       "bytes": 183,
       "sha256": "b976a3caa6965d3bd78da925ab674909e49767a37c768d48b65c0a9c6b9f0d0e"
     },
-    "part-layering/groups/hair/children/bangs/step03/.completed": {
+    "part-layering/step12_children/hair/children/bangs/.completed": {
       "bytes": 286,
       "sha256": "4f728e6e0a9e55ceabd5d1212681adde723418cd4f52a3b06a95c52179b80ef7"
     },
-    "part-layering/groups/hair/children/bangs/step03/children.json": {
+    "part-layering/step12_children/hair/children/bangs/children.json": {
       "bytes": 46,
       "sha256": "9d87035256c6c9ee1b02b1fd74aa6ba00b5e7a0e2946835a264ae92d8a74c162"
     },
-    "part-layering/groups/hair/children/side_hair_left/step01/.completed": {
+    "part-layering/step09_outline/hair/children/side_hair_left/.completed": {
       "bytes": 269,
       "sha256": "c68b640902f99e77a3eeca723a26cf362ec93aaecbf28283759c170f2a2407bb"
     },
-    "part-layering/groups/hair/children/side_hair_left/step01/outline.svg": {
+    "part-layering/step09_outline/hair/children/side_hair_left/outline.svg": {
       "bytes": 81131,
       "sha256": "eb2bfe6245b187f8b6c937888939aaa080f59be4793cfcbf766201376d7f7957"
     },
-    "part-layering/groups/hair/children/side_hair_left/step01/previews/2026-10-26T17-35-50-589Z-21.png": {
+    "part-layering/step09_outline/hair/children/side_hair_left/previews/2026-10-26T17-35-50-589Z-21.png": {
       "bytes": 152799,
       "sha256": "91e9b1fd232a3166f9df7ee5b01aa977a0cb0ad2b7d6232f19ce42663f4bb6d7"
     },
-    "part-layering/groups/hair/children/side_hair_left/step01/previews/2026-10-26T17-35-50-589Z-22.png": {
+    "part-layering/step09_outline/hair/children/side_hair_left/previews/2026-10-26T17-35-50-589Z-22.png": {
       "bytes": 96130,
       "sha256": "ac847b069012f816b1bbb50e14f6912cb380cc6b04e303bf132ad0f37d4b6801"
     },
-    "part-layering/groups/hair/children/side_hair_left/step01/review.json": {
+    "part-layering/step09_outline/hair/children/side_hair_left/review.json": {
       "bytes": 17414,
       "sha256": "1fffcade3322778275a8071e83b5f0759ea73f6cb203ca817dedb623216928b0"
     },
-    "part-layering/groups/hair/children/side_hair_left/step02/.completed": {
+    "part-layering/step11_completion/hair/children/side_hair_left/.completed": {
       "bytes": 322,
       "sha256": "210090e3bae96519b9c3387bfb04e09cc6eddd7394b9c1f6bd2e931349ccc671"
     },
-    "part-layering/groups/hair/children/side_hair_left/step02/check.json": {
+    "part-layering/step11_completion/hair/children/side_hair_left/check.json": {
       "bytes": 192,
       "sha256": "2fc69b651a77fc65f8856497dfdac130055f8b081623906ce150f330683c6af8"
     },
-    "part-layering/groups/hair/children/side_hair_left/step03/.completed": {
+    "part-layering/step12_children/hair/children/side_hair_left/.completed": {
       "bytes": 295,
       "sha256": "1c8f8b8e2942736a787b249eef987c04c44a9584198913131b72eac18099ffb1"
     },
-    "part-layering/groups/hair/children/side_hair_left/step03/children.json": {
+    "part-layering/step12_children/hair/children/side_hair_left/children.json": {
       "bytes": 55,
       "sha256": "5d5417c54d2bf10b4a024472101953e6f8bd08479ad0fe0860542863ec387e91"
     },
-    "part-layering/groups/hair/children/side_hair_right/step01/.completed": {
+    "part-layering/step09_outline/hair/children/side_hair_right/.completed": {
       "bytes": 269,
       "sha256": "99f09218728e251b2ee300a334c6ff8cf4dbf7806cf424a7e6f15b9fd3b3bf8f"
     },
-    "part-layering/groups/hair/children/side_hair_right/step01/bitmaps/61236810-e7d6-48af-9341-9eb1361b9756.png": {
+    "part-layering/step09_outline/hair/children/side_hair_right/bitmaps/61236810-e7d6-48af-9341-9eb1361b9756.png": {
       "bytes": 390609,
       "sha256": "7293e93d9b52d725503cac5ba74cadd0469caa2d4d751acd21a83005018f91a5"
     },
-    "part-layering/groups/hair/children/side_hair_right/step01/bitmaps/61388db5-4064-45cb-b53d-a32fd7729f72.png": {
+    "part-layering/step09_outline/hair/children/side_hair_right/bitmaps/61388db5-4064-45cb-b53d-a32fd7729f72.png": {
       "bytes": 517769,
       "sha256": "8e156a5c9449e7bcf614b189608dd3f5f489c334ace3a3669e3737475d52f534"
     },
-    "part-layering/groups/hair/children/side_hair_right/step01/outline.svg": {
+    "part-layering/step09_outline/hair/children/side_hair_right/outline.svg": {
       "bytes": 13791,
       "sha256": "05072d18a6a600e2af9dc461081884ffe1d4a38ea85fdc4806868805ac34d784"
     },
-    "part-layering/groups/hair/children/side_hair_right/step01/review.json": {
+    "part-layering/step09_outline/hair/children/side_hair_right/review.json": {
       "bytes": 15321,
       "sha256": "c58599b824f948341816ef012de1667a424222046597636994deb3dc59a489b2"
     },
-    "part-layering/groups/hair/children/side_hair_right/step02/.completed": {
+    "part-layering/step11_completion/hair/children/side_hair_right/.completed": {
       "bytes": 324,
       "sha256": "863d48e3dd9693ea6accdbce1d2ecd2d9c0bd689ce97bea2f77a94148b536b2e"
     },
-    "part-layering/groups/hair/children/side_hair_right/step02/check.json": {
+    "part-layering/step11_completion/hair/children/side_hair_right/check.json": {
       "bytes": 193,
       "sha256": "0955f8f5b21a786818acbb601f3fe5f56f8522a455501b2b1f44d9f8d6c7564b"
     },
-    "part-layering/groups/hair/children/side_hair_right/step03/.completed": {
+    "part-layering/step12_children/hair/children/side_hair_right/.completed": {
       "bytes": 296,
       "sha256": "3acafd2f0ffd52284d7e53d7ff2d156116949aaabebebff49a278fcdcab0b681"
     },
-    "part-layering/groups/hair/children/side_hair_right/step03/children.json": {
+    "part-layering/step12_children/hair/children/side_hair_right/children.json": {
       "bytes": 56,
       "sha256": "317b8deb94a98b8384d8b7e635e6f0d7f8f66d525b5785c69ef4e7c2444c7774"
     },
-    "part-layering/groups/hair/step01/.completed": {
+    "part-layering/step09_outline/hair/.completed": {
       "bytes": 265,
       "sha256": "398d5145411716eae08d898230ab4cc37473a6e639cd55ea7d06b3467c2728c9"
     },
-    "part-layering/groups/hair/step01/outline.svg": {
+    "part-layering/step09_outline/hair/outline.svg": {
       "bytes": 63125,
       "sha256": "9dacb2490ecbdad078f2cde71f527f9525183b3170c9254b8d1f76c5184f0eb6"
     },
-    "part-layering/groups/hair/step01/review.json": {
+    "part-layering/step09_outline/hair/review.json": {
       "bytes": 19008,
       "sha256": "8df24c4695c706ca357d4d80338f63de0c673ceed38f374687ffd1f5afa9c560"
     },
-    "part-layering/groups/hair/step02/.completed": {
+    "part-layering/step11_completion/hair/.completed": {
       "bytes": 286,
       "sha256": "f6b3963ad8233542e7b508422e9a6a4e2a1ff4e6306a14ac61ec0e044a3e6f39"
     },
-    "part-layering/groups/hair/step02/check.json": {
+    "part-layering/step11_completion/hair/check.json": {
       "bytes": 177,
       "sha256": "fb3ef377cf8a781c14e119adf53e880fe3166eba19e73398e3cb9fb9019aa163"
     },
-    "part-layering/groups/hair/step03/.completed": {
+    "part-layering/step12_children/hair/.completed": {
       "bytes": 271,
       "sha256": "5a0314e99b2cfdae8c5b7334cf9472f5d0b40b021a3cbc71201ddc6605f332c9"
     },
-    "part-layering/groups/hair/step03/children.json": {
+    "part-layering/step12_children/hair/children.json": {
       "bytes": 6888,
       "sha256": "4776b876eff7ee53e80e03820c6b2a34be25649bfc0af8d1eea4bdd0be2f8f87"
     },
-    "part-layering/groups/neck/step01/.completed": {
+    "part-layering/step09_outline/neck/.completed": {
       "bytes": 265,
       "sha256": "2443329e2a56d77a618d089b490019b140c870882bbca3fa4fc5a18c7a7bf6dd"
     },
-    "part-layering/groups/neck/step01/outline.svg": {
+    "part-layering/step09_outline/neck/outline.svg": {
       "bytes": 520,
       "sha256": "1aeea5c38a4d29af9ae7c07f2f37df15556b9ed5a20b794c3c4cbca1bc4b9942"
     },
-    "part-layering/groups/neck/step01/review.json": {
+    "part-layering/step09_outline/neck/review.json": {
       "bytes": 3368,
       "sha256": "b4f65e56c450345cad576403f6c40c88e7304aedc305bbba68090cf6a7e9b8b6"
     },
-    "part-layering/groups/neck/step02/.completed": {
+    "part-layering/step11_completion/neck/.completed": {
       "bytes": 286,
       "sha256": "948a400a3b5b6711c099929fe0aa3c58c6f9ea280219e996d1f715b10593aa81"
     },
-    "part-layering/groups/neck/step02/check.json": {
+    "part-layering/step11_completion/neck/check.json": {
       "bytes": 177,
       "sha256": "5b6489cb6cd01bf999ca0645a44651b8480d8e6536e5f80251d7e6bb450b19ba"
     },
-    "part-layering/groups/neck/step03/.completed": {
+    "part-layering/step12_children/neck/.completed": {
       "bytes": 271,
       "sha256": "04e2362d8f4f606924764fbdb352b269740685f4e34e6487e7042cd9135ea559"
     },
-    "part-layering/groups/neck/step03/children.json": {
+    "part-layering/step12_children/neck/children.json": {
       "bytes": 900,
       "sha256": "6e9ccaeb0230ed4e48b6f35a7a3390222b105d90bf581b0c55a3bc0f45b2525d"
     },
-    "part-layering/initial/step01/.completed": {
+    "part-layering/step08_initial/.completed": {
       "bytes": 182,
       "sha256": "bafb8d845029d2f48bae70e5aee7639cd54e3dafe0c47e16bf1109a621ece4a2"
     },
-    "part-layering/initial/step01/groups.json": {
+    "part-layering/step08_initial/groups.json": {
       "bytes": 908,
       "sha256": "6f039d5d93792881d01f4984c039c4489b5506995cf9675979f49707cc47c256"
     },
-    "part-layering/layers/depth01/.completed": {
+    "part-layering/step10_reduce/depth01/.completed": {
       "bytes": 930,
       "sha256": "f178d05eeb77a20fa239ed7b9c93c549bb2ce05380ebf33c15968967ed3072d6"
     },
-    "part-layering/layers/depth01/arms.svg": {
+    "part-layering/step10_reduce/depth01/arms.svg": {
       "bytes": 657,
       "sha256": "42a194ad266fa24b539ba31a156132a7e518a5c856a1064de8dc6836ec96d52d"
     },
-    "part-layering/layers/depth01/body.svg": {
+    "part-layering/step10_reduce/depth01/body.svg": {
       "bytes": 716,
       "sha256": "9263ff02dcbfb5a7db9d67d7d1172375cc652c5e93385e683e372e1d47020169"
     },
-    "part-layering/layers/depth01/face.svg": {
+    "part-layering/step10_reduce/depth01/face.svg": {
       "bytes": 2319,
       "sha256": "310b0f5803b76876f83d82313f6d1f7c49cf66419986befec11a0b553ba5e2e6"
     },
-    "part-layering/layers/depth01/hair.svg": {
+    "part-layering/step10_reduce/depth01/hair.svg": {
       "bytes": 63125,
       "sha256": "9dacb2490ecbdad078f2cde71f527f9525183b3170c9254b8d1f76c5184f0eb6"
     },
-    "part-layering/layers/depth01/neck.svg": {
+    "part-layering/step10_reduce/depth01/neck.svg": {
       "bytes": 520,
       "sha256": "1aeea5c38a4d29af9ae7c07f2f37df15556b9ed5a20b794c3c4cbca1bc4b9942"
     },
-    "part-layering/layers/depth02/.completed": {
+    "part-layering/step10_reduce/depth02/.completed": {
       "bytes": 3801,
       "sha256": "ba61157bb8219e1db4e80310dd36109530763608e8c0226c0243242a5b79f750"
     },
-    "part-layering/layers/depth02/arms/arm_left.svg": {
+    "part-layering/step10_reduce/depth02/arms/arm_left.svg": {
       "bytes": 796,
       "sha256": "f55410251368291630e9e5781ae5427868b72d3eaf6f9f82c0b218314bdf752c"
     },
-    "part-layering/layers/depth02/arms/arm_right.svg": {
+    "part-layering/step10_reduce/depth02/arms/arm_right.svg": {
       "bytes": 766,
       "sha256": "ffb5f380fbb2257787f26be11a4e63bfb71be7da3c78f254c391e2109c36930a"
     },
-    "part-layering/layers/depth02/body/breast.svg": {
+    "part-layering/step10_reduce/depth02/body/breast.svg": {
       "bytes": 526,
       "sha256": "c7f156f99fa1d312160a343c1498397e5d0421419ec59a54db0a0474117f4f06"
     },
-    "part-layering/layers/depth02/body/torso.svg": {
+    "part-layering/step10_reduce/depth02/body/torso.svg": {
       "bytes": 683,
       "sha256": "aa0a9b73b4fc707992722e3ae171a0e55c774ece7f2272b86f1e85542d4fa653"
     },
-    "part-layering/layers/depth02/face/blush_left.svg": {
+    "part-layering/step10_reduce/depth02/face/blush_left.svg": {
       "bytes": 461,
       "sha256": "094c85cd7fb5e108da3e4a7faac41a923dde38d7cff36d1f9e78c5af6d26393a"
     },
-    "part-layering/layers/depth02/face/blush_right.svg": {
+    "part-layering/step10_reduce/depth02/face/blush_right.svg": {
       "bytes": 463,
       "sha256": "430f312b2d6ae1d4550487b1cd64f7a2c093c27095276e4fbb87082b401395a3"
     },
-    "part-layering/layers/depth02/face/ear_left.svg": {
+    "part-layering/step10_reduce/depth02/face/ear_left.svg": {
       "bytes": 606,
       "sha256": "c22b3faf3e15adc56682a2884db4c88c8648786d003dda75602055e476da575f"
     },
-    "part-layering/layers/depth02/face/ear_right.svg": {
+    "part-layering/step10_reduce/depth02/face/ear_right.svg": {
       "bytes": 595,
       "sha256": "bbc42173a031ea8265104f610725c9d6ba95188e2e18bc7b34996d3e7caf2a80"
     },
-    "part-layering/layers/depth02/face/eye_left.svg": {
+    "part-layering/step10_reduce/depth02/face/eye_left.svg": {
       "bytes": 5789,
       "sha256": "b3a865b191a810a3a6dffe1dc5e450d6a191ce952c81b05bd35dd19f99591199"
     },
-    "part-layering/layers/depth02/face/eye_right.svg": {
+    "part-layering/step10_reduce/depth02/face/eye_right.svg": {
       "bytes": 1347,
       "sha256": "5a28f6894bf87d55f5ac760c4d2c29a5bbb87d4838e58455bd91deaee3f7ba3e"
     },
-    "part-layering/layers/depth02/face/eyebrow_left.svg": {
+    "part-layering/step10_reduce/depth02/face/eyebrow_left.svg": {
       "bytes": 810,
       "sha256": "2fc3ed359acebe45e374dcf93ed7257fa1b0e244e119f879d77ea7c855fc3653"
     },
-    "part-layering/layers/depth02/face/eyebrow_right.svg": {
+    "part-layering/step10_reduce/depth02/face/eyebrow_right.svg": {
       "bytes": 604,
       "sha256": "1eb9327ff940e438df3792eccdd2066b034da274a881a816653c1385962a3842"
     },
-    "part-layering/layers/depth02/face/face_base.svg": {
+    "part-layering/step10_reduce/depth02/face/face_base.svg": {
       "bytes": 2241,
       "sha256": "ffcdadd91f2d66b1d13ea338aa0fafeeab76de375d5ee7c032c8d0ddd1ad8a72"
     },
-    "part-layering/layers/depth02/face/mouth.svg": {
+    "part-layering/step10_reduce/depth02/face/mouth.svg": {
       "bytes": 831,
       "sha256": "9d1ed55f6b99be9d05ab7429ae44dafdb5c8dbc290df283a9eb56a790b9e5636"
     },
-    "part-layering/layers/depth02/face/nose.svg": {
+    "part-layering/step10_reduce/depth02/face/nose.svg": {
       "bytes": 802,
       "sha256": "6b8bf80ad2f5d5a0fc786f01a4be333a5362c82faef4425b0b00352370598500"
     },
-    "part-layering/layers/depth02/hair/back_hair.svg": {
+    "part-layering/step10_reduce/depth02/hair/back_hair.svg": {
       "bytes": 31216,
       "sha256": "702468627ce1c30d11a5042b8a5520c8100e3f0d80ea463e75c85a3bc470332f"
     },
-    "part-layering/layers/depth02/hair/bangs.svg": {
+    "part-layering/step10_reduce/depth02/hair/bangs.svg": {
       "bytes": 1892,
       "sha256": "f4333de3595d3305b1631b1f8af141ab6305111f9accf1910facd9482b4377f9"
     },
-    "part-layering/layers/depth02/hair/side_hair_left.svg": {
+    "part-layering/step10_reduce/depth02/hair/side_hair_left.svg": {
       "bytes": 81131,
       "sha256": "eb2bfe6245b187f8b6c937888939aaa080f59be4793cfcbf766201376d7f7957"
     },
-    "part-layering/layers/depth02/hair/side_hair_right.svg": {
+    "part-layering/step10_reduce/depth02/hair/side_hair_right.svg": {
       "bytes": 13791,
       "sha256": "05072d18a6a600e2af9dc461081884ffe1d4a38ea85fdc4806868805ac34d784"
     },
-    "part-layering/layers/depth03/.completed": {
+    "part-layering/step10_reduce/depth03/.completed": {
       "bytes": 4748,
       "sha256": "83bfe75a633a2f2178dd5a1d3462b58ff73a51937f6c1ff3e434f91ac173ab20"
     },
-    "part-layering/layers/depth03/face/eye_left/eyelid_crease.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_left/eyelid_crease.svg": {
       "bytes": 524,
       "sha256": "697a5a2461c1b5c34f59bcac6da5ac06cc5904db33413483e41f8bafac34e7d4"
     },
-    "part-layering/layers/depth03/face/eye_left/highlight.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_left/highlight.svg": {
       "bytes": 188,
       "sha256": "b55cfc316d8848e28b6bb7f34ba742cad37f9896428833848bd51349c2321936"
     },
-    "part-layering/layers/depth03/face/eye_left/iris.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_left/iris.svg": {
       "bytes": 183,
       "sha256": "914c1dc9cf50894fd7142f3ac831bcf10d80ae6a00ba26354131d8510e7a2a64"
     },
-    "part-layering/layers/depth03/face/eye_left/lower_eyelid.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_left/lower_eyelid.svg": {
       "bytes": 191,
       "sha256": "6597d79761d383ac034ff2fd5753960f4ee1c01464def62fc6265e093559e3b0"
     },
-    "part-layering/layers/depth03/face/eye_left/sclera.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_left/sclera.svg": {
       "bytes": 185,
       "sha256": "e82906a137cbedf9e7e1ba8055d8d2db535c4bc02a5652373d7f1b9b5c04d7c0"
     },
-    "part-layering/layers/depth03/face/eye_left/upper_eyelid.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_left/upper_eyelid.svg": {
       "bytes": 5580,
       "sha256": "184c3504c663e4cc9177800bf16e78a4db35f814e7ac67a00e7c2c2af709c87d"
     },
-    "part-layering/layers/depth03/face/eye_right/eyelid_crease.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_right/eyelid_crease.svg": {
       "bytes": 474,
       "sha256": "bce9e9d3d59608a1d42ab42207ffe3fdb53664e12c5e8730c617c97e3be7f824"
     },
-    "part-layering/layers/depth03/face/eye_right/highlight.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_right/highlight.svg": {
       "bytes": 189,
       "sha256": "61d2471b1994ae0f03e2553f99b94b93da4d1da836e029f08be4ee01337a815b"
     },
-    "part-layering/layers/depth03/face/eye_right/iris.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_right/iris.svg": {
       "bytes": 184,
       "sha256": "79c73613f0d7f0e32423c92ea21ef131ff09da7111d469bb0d1ccace02e91d18"
     },
-    "part-layering/layers/depth03/face/eye_right/lower_eyelid.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_right/lower_eyelid.svg": {
       "bytes": 192,
       "sha256": "36bb2d4e04b0280e38d36b6df5e74e344e8f979fc7c2ce0cb1754b6d350446df"
     },
-    "part-layering/layers/depth03/face/eye_right/sclera.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_right/sclera.svg": {
       "bytes": 186,
       "sha256": "3a4fcd7191ac4eb63616416067a85672f83e4a8097be0d2a0feef4f34137cdb2"
     },
-    "part-layering/layers/depth03/face/eye_right/upper_eyelid.svg": {
+    "part-layering/step10_reduce/depth03/face/eye_right/upper_eyelid.svg": {
       "bytes": 1233,
       "sha256": "c7022e460f13b6b646e02e6ab195dd0576b7eb7bbefec863edc9ac2edc0ed8b7"
     },
-    "part-layering/layers/depth03/face/mouth/lower_lip.svg": {
+    "part-layering/step10_reduce/depth03/face/mouth/lower_lip.svg": {
       "bytes": 737,
       "sha256": "29e1fcbf3110f666bd5926513752ea363f2a5629abab5ecec622cb869c6cd168"
     },
-    "part-layering/layers/depth03/face/mouth/lower_teeth.svg": {
+    "part-layering/step10_reduce/depth03/face/mouth/lower_teeth.svg": {
       "bytes": 187,
       "sha256": "a81620f2313a2378f29d65dd680e8d341473eed11efa68750a96f74eedfded86"
     },
-    "part-layering/layers/depth03/face/mouth/mouth_interior.svg": {
+    "part-layering/step10_reduce/depth03/face/mouth/mouth_interior.svg": {
       "bytes": 190,
       "sha256": "eac4dafbfdaf0a06c99e8c86aaac37b843881152eb41e0da9ca19e750632bd12"
     },
-    "part-layering/layers/depth03/face/mouth/tongue.svg": {
+    "part-layering/step10_reduce/depth03/face/mouth/tongue.svg": {
       "bytes": 182,
       "sha256": "fca6b72d69b33d4c574ed65a2f7befd0717cb5aaa52223eb38fbccf340066f9e"
     },
-    "part-layering/layers/depth03/face/mouth/upper_lip.svg": {
+    "part-layering/step10_reduce/depth03/face/mouth/upper_lip.svg": {
       "bytes": 775,
       "sha256": "cffc709a7c8af32a7446a99ac92395153af98850cefd825befa4ed328b48c291"
     },
-    "part-layering/layers/depth03/face/mouth/upper_teeth.svg": {
+    "part-layering/step10_reduce/depth03/face/mouth/upper_teeth.svg": {
       "bytes": 187,
       "sha256": "32830ec3788fd7ea90010982c92697cb9d988711b538b3162309d399b3ec2023"
     },
-    "part-layering/layers/depth03/face/nose/tip_highlight.svg": {
+    "part-layering/step10_reduce/depth03/face/nose/tip_highlight.svg": {
       "bytes": 467,
       "sha256": "c2f9a9478ca81b95469978fe57abc2410c21b2295b7ffd5d788041033645a49f"
     },
-    "part-layering/layers/depth03/face/nose/tip_mark.svg": {
+    "part-layering/step10_reduce/depth03/face/nose/tip_mark.svg": {
       "bytes": 522,
       "sha256": "1c76295d096a0591a334317a1c59d620d23333c38b35ecead7aefbea0ba84d10"
     },
-    "part-layering/layers/depth03/face/nose/volume_shadow.svg": {
+    "part-layering/step10_reduce/depth03/face/nose/volume_shadow.svg": {
       "bytes": 548,
       "sha256": "7cb97210af53e28da8f227b941b05e8503ed285f35560ea3c7561688e61c5089"
     },
-    "part-layering/merge/.completed": {
+    "part-layering/step13_merge/.completed": {
       "bytes": 9592,
       "sha256": "d8bf9e5c519404a677ce023acbfd5ef39b53782f20c3fe238027aaaa3c4c793a"
     },
@@ -3113,11 +3113,11 @@
       "bytes": 42995,
       "sha256": "a109bc788ca71fe6a098fd0729ac1fd59bd8b4924a384461f5728c6fdd9e20df"
     },
-    "part-layering/occlusion/.completed": {
+    "part-layering/step14_occlusion/.completed": {
       "bytes": 135,
       "sha256": "7efab78c3fa1f2e4ae021f36bb990143dab9403b9a9c5df99f6903d1808bd817"
     },
-    "part-layering/occlusion/preview.svg": {
+    "part-layering/step14_occlusion/preview.svg": {
       "bytes": 162983,
       "sha256": "b20d36f5d361d30a39a3b6e48ee0660679715fd1cfe3692689d3591ec9b9ce11"
     },
@@ -3309,31 +3309,31 @@
       "bytes": 5518,
       "sha256": "979190343420e2673054fc4f1a4b68f3a89015bde52e81e143ec1f0f82b30266"
     },
-    "part-layering/preparation/step01/.completed": {
+    "part-layering/step01_original/.completed": {
       "bytes": 198,
       "sha256": "d7125e474af2d15e8c769aeac94e8f288f54ca18ff46b3ba6aa2b787a5453f2d"
     },
-    "part-layering/preparation/step02/.completed": {
+    "part-layering/step02_options/.completed": {
       "bytes": 183,
       "sha256": "dc4d5354c6b994f268b887d28553690f000393ae16a39db57aad04952b028c32"
     },
-    "part-layering/preparation/step02/options.json": {
+    "part-layering/step02_options/options.json": {
       "bytes": 24,
       "sha256": "de351adc888510e7f98b3c99f74bf0c15dcebf5fbab66727a6868e51801d2bcf"
     },
-    "part-layering/preparation/step04/.completed": {
+    "part-layering/step04_standard/.completed": {
       "bytes": 351,
       "sha256": "b072581f71287174668d506763a9a1fa3fdb32d605cdff0c1b354948991c843c"
     },
-    "part-layering/preparation/step06/.completed": {
+    "part-layering/step05_simplified/.completed": {
       "bytes": 285,
       "sha256": "e138fb41bf5f68b5c555b83797925ea40bfefac31afc1a29c3c03486fb83b28b"
     },
-    "part-layering/preparation/step07/.completed": {
+    "part-layering/step06_base/.completed": {
       "bytes": 279,
       "sha256": "9405bc75a07df53d4216facd02dc9ac46b235bd6a2dd2a58188b15f1992fa14e"
     },
-    "part-layering/preparation/step08/.completed": {
+    "part-layering/step07_ready/.completed": {
       "bytes": 212,
       "sha256": "cedc94dca52e4245e1492c37edd77ed36fe82c06746828873264cc813ec6a43e"
     },
@@ -6985,83 +6985,83 @@
       "bytes": 976,
       "sha256": "0e039fd7fe3ccd31c42ba31b9910e1cc85f1489653b699d820e899ef84445c62"
     },
-    "shadow/mask/step01/.completed": {
+    "shadow/step01_mask/.completed": {
       "bytes": 442,
       "sha256": "ebf1fae514399b8e1b38ac051e813346a61193fbfd4285f142d245124f4c5960"
     },
-    "shadow/mask/step01/98d13668a743-eyes-material-review.png": {
+    "shadow/step01_mask/98d13668a743-eyes-material-review.png": {
       "bytes": 96281,
       "sha256": "98d13668a743a9c3e145b6d269fc92728019cb977de5cd354ba604b99617285d"
     },
-    "shadow/mask/step01/bangs-offset-review.png": {
+    "shadow/step01_mask/bangs-offset-review.png": {
       "bytes": 290569,
       "sha256": "4aab0ca61571bd687112dd0509d21074d72da3b2c2c0f6f49fcacb620f936a00"
     },
-    "shadow/mask/step01/character-shadowed.kra": {
+    "shadow/step01_mask/character-shadowed.kra": {
       "bytes": 28994770,
       "sha256": "afdc817646dd44d30c0471da43206544d135d2112eb87d844512c59453407f38"
     },
-    "shadow/mask/step01/character-shadowed.png": {
+    "shadow/step01_mask/character-shadowed.png": {
       "bytes": 1543444,
       "sha256": "b5824f7b7c83ea9fec67d3307169951ad68900b65d5284bbbdb295a108035f35"
     },
-    "shadow/mask/step01/eyes-offset-review.png": {
+    "shadow/step01_mask/eyes-offset-review.png": {
       "bytes": 31508,
       "sha256": "d5867ba1a80f2f53021d9515f6167caf34808ee1be5560538c658cc8ce289e03"
     },
-    "shadow/mask/step01/face-review.png": {
+    "shadow/step01_mask/face-review.png": {
       "bytes": 1655072,
       "sha256": "e286c4a7117e00ebb7bf4bde3b0ade5c292b558ec242d99c097c0607d9512220"
     },
-    "shadow/mask/step01/inspection.json": {
+    "shadow/step01_mask/inspection.json": {
       "bytes": 26236,
       "sha256": "918e64dc0307fcdffed0c96a2ba54bc8d68c86e92afbbbc204292a2bb4e1822a"
     },
-    "shadow/mask/step01/inspection/overview.png": {
+    "shadow/step01_mask/inspection/overview.png": {
       "bytes": 332010,
       "sha256": "656765a619834984ac4507c6cc7b8551e4473a4db5a86c3f4061943af0864c71"
     },
-    "shadow/mask/step01/inspection/relation-000-review.png": {
+    "shadow/step01_mask/inspection/relation-000-review.png": {
       "bytes": 879406,
       "sha256": "cfae96666712f3ba7480b42bf0bff1e4d91289ac99f4c748fd47a97cc5175d95"
     },
-    "shadow/mask/step01/inspection/relation-001-review.png": {
+    "shadow/step01_mask/inspection/relation-001-review.png": {
       "bytes": 899830,
       "sha256": "35fdeeb02f0103da20f9d539a8e5e90ff75aadb0fce7eed57fc5b8cf9edcd092"
     },
-    "shadow/mask/step01/inspection/relation-002-review.png": {
+    "shadow/step01_mask/inspection/relation-002-review.png": {
       "bytes": 899359,
       "sha256": "b58519efe34295637a853db820827bf16957da7ae11f11f6712a452691d5bfc4"
     },
-    "shadow/mask/step01/inspection/relation-003-review.png": {
+    "shadow/step01_mask/inspection/relation-003-review.png": {
       "bytes": 678091,
       "sha256": "f8c9258cdf37f22ff82102174bfcdc87d1d47d25552da05c37d84353966abb2e"
     },
-    "shadow/mask/step01/inspection/relation-004-review.png": {
+    "shadow/step01_mask/inspection/relation-004-review.png": {
       "bytes": 678323,
       "sha256": "0299feae0fa2253310c33cbad686e1f6f58ebf30044e78180f5b007061d04516"
     },
-    "shadow/mask/step01/inspection/relation-005-review.png": {
+    "shadow/step01_mask/inspection/relation-005-review.png": {
       "bytes": 845031,
       "sha256": "0db5f1a2cfe60f7d17ed3290872e33861288199bf12343c4d922ff039dfbb58c"
     },
-    "shadow/mask/step01/neck-offset-review.png": {
+    "shadow/step01_mask/neck-offset-review.png": {
       "bytes": 128582,
       "sha256": "93961d943d31a2b55bd309cf159d733f8c9b92a40424bfdb1b12824f3ff43851"
     },
-    "shadow/mask/step01/report.md": {
+    "shadow/step01_mask/report.md": {
       "bytes": 3430,
       "sha256": "9d3ca044d600bb568e48fefa4d696abff759c9a763bc86d1f948da94deb4a770"
     },
-    "shadow/mask/step01/shadows.json": {
+    "shadow/step01_mask/shadows.json": {
       "bytes": 8925,
       "sha256": "3f3dab2663aa3ad7eea034ba8bbcbea7ce05bda1d85e72f36231172404f1204c"
     },
-    "shadow/mask/step01/side-detail-review.png": {
+    "shadow/step01_mask/side-detail-review.png": {
       "bytes": 97058,
       "sha256": "be1210aa7322d45c4e2de544374eddad409c040cc386dd0309f87357d2192c42"
     },
-    "shadow/mask/step01/source.json": {
+    "shadow/step01_mask/source.json": {
       "bytes": 256,
       "sha256": "8378f7934784436b35a51296371c11cdc77f43ed47c7b4af06a8ba9f3c009802"
     },
@@ -7069,275 +7069,275 @@
       "bytes": 2042,
       "sha256": "bee7fd2f54889bc5d1421c152a41f6c56fbd610f4b065b072e432dc8740aaa7e"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/native-final.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/native-final.png": {
       "bytes": 1543444,
       "sha256": "b5824f7b7c83ea9fec67d3307169951ad68900b65d5284bbbdb295a108035f35"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/without-shadows.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/without-shadows.png": {
       "bytes": 1512276,
       "sha256": "259d959a7aa039c63fb938d1dad4fe189dfee006d57af5bec5b35ce6bf4ebb71"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-offset-00.png": {
       "bytes": 103110,
       "sha256": "dac9111350da57221501c9e2d82470f5736b27e57d2fbb918ccb927d25540ea2"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-offset-01.png": {
       "bytes": 102574,
       "sha256": "7f708ab20ab0cd71139eea52a6fc71797dae832c631083c6ad329ea50306f5c4"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-offset-03.png": {
       "bytes": 101496,
       "sha256": "26fb95ea2c0f05481c4146615b43c21b32200f287c5bf0e67c001cd425ccbdcc"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-offset-02.png": {
       "bytes": 101335,
       "sha256": "ca85a98b1d19d21dfd273cc6f5033eb5334f723f8a0c4f0cc12ba137ae4c7cd3"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/receiver.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/receiver.png": {
       "bytes": 46648,
       "sha256": "227adf7ab870fc53b0336a6d44f27a02a62a8e23f326e783069b72cff58ec6d3"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/full-paint.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/full-paint.png": {
       "bytes": 71712,
       "sha256": "f80d689a87dcca54fb5a2631762fa13b31ae1b2a1646afc32ba7ae68fdc59939"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/offset-01.png": {
       "bytes": 1540309,
       "sha256": "97f53158eb1b016f5039fbe03a41485b7ac43d48edf3244d013c7da6f7185175"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/offset-00.png": {
       "bytes": 1540556,
       "sha256": "122cf69eef2741df82106b19e131eab0f5eb514c73ee7e5ea29ce56a95242d3d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/offset-02.png": {
       "bytes": 1539148,
       "sha256": "a9b651d500b2a7dca0d35acadc977973d8e2ca11af4033b1f657156d8c705c42"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/offset-03.png": {
       "bytes": 1541198,
       "sha256": "bbfe709c8e35301562e0bc0c3d259154872d728ecb86bc74e43864ed938ea995"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-base.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-005/clip-base.png": {
       "bytes": 46577,
       "sha256": "d6bf5a8d0ac556ec8b4d9dd3dfd03104828098317db3fd7fa6b9bf170b68c2dd"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-offset-00.png": {
       "bytes": 283268,
       "sha256": "4d4e7657f18188c708d6f8a199f7c0e557780d82a74217ac0a48122caebf0832"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-offset-01.png": {
       "bytes": 283673,
       "sha256": "86bf32747d0236699ae5f4c2e7fdb3c946454d30bb62924045c7379f5e6ae673"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-offset-03.png": {
       "bytes": 283940,
       "sha256": "ef43f5ee4345240cb64139cdf96db3a703bc89ff01b0b95709d7d01a0a75a697"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-offset-02.png": {
       "bytes": 284033,
       "sha256": "44bece72fee824a8b576c38c6e8b593344b36b5c8436a785ed775d5d9a5f6c02"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/receiver.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/receiver.png": {
       "bytes": 364706,
       "sha256": "ba6c6fb7f1602cc5489fa01bd27de8aad0e3e06cf9747b47a4843b9025acc60a"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/full-paint.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/full-paint.png": {
       "bytes": 5770,
       "sha256": "29e54cbdfaa05f2722d1f72688120591d337c72cd9f877e1356dd7b7f239d0d6"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/offset-01.png": {
       "bytes": 1540257,
       "sha256": "19e4e5f64a6ad9f5cf693b1b2d63b7aacc68c744bef770f9947a039703320701"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/offset-00.png": {
       "bytes": 1540399,
       "sha256": "7288b1a9b0b44fe337037059d22a7fb7a5f9098e1416e60d08e651943581c158"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/offset-02.png": {
       "bytes": 1540348,
       "sha256": "55cbf9755c88dd2bd891a707cc3af0b5b069c6b1016e697678023dfa62078e6e"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/offset-03.png": {
       "bytes": 1540286,
       "sha256": "ada38b4cb879c4d0782340afad2f2d48928ab2336563c5824fda705cfce73a36"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-base.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-002/clip-base.png": {
       "bytes": 364706,
       "sha256": "ba6c6fb7f1602cc5489fa01bd27de8aad0e3e06cf9747b47a4843b9025acc60a"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-offset-00.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-offset-01.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-offset-03.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-offset-02.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/receiver.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/receiver.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/full-paint.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/full-paint.png": {
       "bytes": 2015,
       "sha256": "79b46be08bc5760c74ade01164112e880e878645c5f65abbc84c3e4062761915"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/offset-01.png": {
       "bytes": 1540556,
       "sha256": "122cf69eef2741df82106b19e131eab0f5eb514c73ee7e5ea29ce56a95242d3d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/offset-00.png": {
       "bytes": 1540556,
       "sha256": "122cf69eef2741df82106b19e131eab0f5eb514c73ee7e5ea29ce56a95242d3d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/offset-02.png": {
       "bytes": 1540556,
       "sha256": "122cf69eef2741df82106b19e131eab0f5eb514c73ee7e5ea29ce56a95242d3d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/offset-03.png": {
       "bytes": 1540556,
       "sha256": "122cf69eef2741df82106b19e131eab0f5eb514c73ee7e5ea29ce56a95242d3d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-base.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-003/clip-base.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-offset-00.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-offset-01.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-offset-03.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-offset-02.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/receiver.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/receiver.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/full-paint.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/full-paint.png": {
       "bytes": 2072,
       "sha256": "aa0f61003148c335e062fd2004a0d32cfeb16d1c39121fa99f3edcc6c617d5c1"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/offset-01.png": {
       "bytes": 1540556,
       "sha256": "122cf69eef2741df82106b19e131eab0f5eb514c73ee7e5ea29ce56a95242d3d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/offset-00.png": {
       "bytes": 1540556,
       "sha256": "122cf69eef2741df82106b19e131eab0f5eb514c73ee7e5ea29ce56a95242d3d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/offset-02.png": {
       "bytes": 1540556,
       "sha256": "122cf69eef2741df82106b19e131eab0f5eb514c73ee7e5ea29ce56a95242d3d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/offset-03.png": {
       "bytes": 1540556,
       "sha256": "122cf69eef2741df82106b19e131eab0f5eb514c73ee7e5ea29ce56a95242d3d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-base.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-004/clip-base.png": {
       "bytes": 189,
       "sha256": "18fdca0352258082e186ff1ecb7eabd0efa2ab267700eabdf683e2f76918c71b"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-offset-00.png": {
       "bytes": 282317,
       "sha256": "d1365705d01255928250f989f7984be3d9ac6bd1f61ee2c91c0b2c360f20a805"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-offset-01.png": {
       "bytes": 282280,
       "sha256": "91b3aa73b2ea265d3bfcdbd3d0180ab7dade81f2af77ca7069639893bbb33496"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-offset-03.png": {
       "bytes": 282622,
       "sha256": "72e0aac293d531c4c38461f66b00b56284528893c3014c83b879beebe3a9d04d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-offset-02.png": {
       "bytes": 283037,
       "sha256": "c9775529ac966b1cdcd10d682a45cb130e377ba278238e8216a56ee86edd5cf2"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/receiver.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/receiver.png": {
       "bytes": 364706,
       "sha256": "ba6c6fb7f1602cc5489fa01bd27de8aad0e3e06cf9747b47a4843b9025acc60a"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/full-paint.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/full-paint.png": {
       "bytes": 5837,
       "sha256": "17e2238086a8d179b271cca06414b12e0be24fa9e414a057a4e0084f62d6a5a4"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/offset-01.png": {
       "bytes": 1540687,
       "sha256": "9eedee9f35f0db0043be4b8fd2f7e1e57cac79dbf5aa428cef0118587c01a7e9"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/offset-00.png": {
       "bytes": 1540833,
       "sha256": "2af96a3297b0e6ba6cbaa6562ee1f074c21fc944f97340423055e351f5f50ab4"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/offset-02.png": {
       "bytes": 1540572,
       "sha256": "49575570f049aee7330b76ba1da8fd1ce6bb2bcebd8b96416a783898cf8f5506"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/offset-03.png": {
       "bytes": 1540014,
       "sha256": "17687581801d9c8cd5ebc884971245b40c7258edc492470335994d6edafa3a3a"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-base.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-001/clip-base.png": {
       "bytes": 364706,
       "sha256": "ba6c6fb7f1602cc5489fa01bd27de8aad0e3e06cf9747b47a4843b9025acc60a"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-offset-00.png": {
       "bytes": 285692,
       "sha256": "a2d080807af98497a026df66156add4bcb7c957d20fbeea22882212891607090"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-offset-01.png": {
       "bytes": 285845,
       "sha256": "fcba25801bb1fa53ea776a21c9699f2d503b7613b2d03d613560c5ba70f4c6ab"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-offset-03.png": {
       "bytes": 283697,
       "sha256": "94ebe8b086e9305b970ad759e6fb64b1fe2efc59f76a4f1ddaf0532f953f66d4"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-offset-02.png": {
       "bytes": 285944,
       "sha256": "7602a41d0c3ef90dfbfc85c7912035f0d72794b3a91b1a7dd56c72d905d0ad7a"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/receiver.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/receiver.png": {
       "bytes": 365881,
       "sha256": "3bd85a16d362c0c845d589cca51d907402f3870d0566958659084ea6ffa64fb9"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/full-paint.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/full-paint.png": {
       "bytes": 41681,
       "sha256": "8942a7e08e9c0a7fd4fb6f74bc623fe140871648c7fed5e3fe855aa0e2c3d51d"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/offset-01.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/offset-01.png": {
       "bytes": 1540665,
       "sha256": "79f9a5fb8b2f9c004f5c9abb5154419028991462e95d5680a941486e9b3cee93"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/offset-00.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/offset-00.png": {
       "bytes": 1543444,
       "sha256": "b5824f7b7c83ea9fec67d3307169951ad68900b65d5284bbbdb295a108035f35"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/offset-02.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/offset-02.png": {
       "bytes": 1540951,
       "sha256": "b44552dbd995396188c6329b3fd935783d6861575c6077faabe59328f8dbd189"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/offset-03.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/offset-03.png": {
       "bytes": 1537466,
       "sha256": "e041e4b5ec60408954cf65c030d9677f6507937b49fe0543ade0695ce152b3cc"
     },
-    "shadow/mask/step01/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-base.png": {
+    "shadow/step01_mask/inspection/native-104d3815-012e-4bbe-94c3-1f140ba61d59/relation-000/clip-base.png": {
       "bytes": 365881,
       "sha256": "3bd85a16d362c0c845d589cca51d907402f3870d0566958659084ea6ffa64fb9"
     },

@@ -19,9 +19,9 @@
 | 衣服分层补全 | [KRA](clothing-raster-layering/step01/clothing-depth.kra) · [工程内预览](clothing-raster-layering/step01/clothing-depth-snapshot.png) · [报告](clothing-raster-layering/step01/report.md) · [首次审核](clothing-raster-layering/step01/review-01.md) · [返修](clothing-raster-layering/step01/repair-01.md) · [第二次审核](clothing-raster-layering/step01/review-02.md) |
 | 衣服边缘修画 | [KRA](clothing-raster-layering/step02/clothing-soft-edges.kra) · [PNG](clothing-raster-layering/step02/clothing-soft-edges.png) · [报告](clothing-raster-layering/step02/report.md) |
 | 穿戴组装 | [KRA](character-assembly/step01/character-assembled.kra) · [PNG](character-assembly/step01/character-assembled.png) · [整体对照](character-assembly/step01/final-overall-comparison.jpg) · [报告](character-assembly/step01/report.md) |
-| 阴影蒙版 | [最终 KRA](shadow/mask/step01/character-shadowed.kra) · [最终 PNG](shadow/mask/step01/character-shadowed.png) · [面部对照](shadow/mask/step01/face-review.png) · [投影定义](shadow/mask/step01/shadows.json) · [检查](shadow/mask/step01/inspection.json) · [报告](shadow/mask/step01/report.md) |
+| 阴影蒙版 | [最终 KRA](shadow/step01_mask/character-shadowed.kra) · [最终 PNG](shadow/step01_mask/character-shadowed.png) · [面部对照](shadow/step01_mask/face-review.png) · [投影定义](shadow/step01_mask/shadows.json) · [检查](shadow/step01_mask/inspection.json) · [报告](shadow/step01_mask/report.md) |
 
-![最终穿戴与阴影预览](shadow/mask/step01/character-shadowed.png)
+![最终穿戴与阴影预览](shadow/step01_mask/character-shadowed.png)
 
 人物 step01 由用户查看全身和拆件预览后人工接受；`review-01.md` 是维护会话根据该验收写入的记录，**不是独立 reviewer 报告**。人物 step02 绘制完成后，旧 step02 review 被移除，任务直接进入 step03。衣服 step01 则保留实际执行的两次审核及首次返修报告。归档沿用这些真实记录，不补写未执行的审核。
 

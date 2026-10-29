@@ -1,9 +1,0 @@
-{
-  "stamp": "163d4fb13f7dcf4168fe438385014f6d7d9f5a3e10f98323d3021ce20b0e2842",
-  "inputs": {
-    "groups/hair/children/ponytail_right/children/main_strand/step02": "89e3adff19c7b29e5e45a8a5844aae76224c85e24efb55fd9e6fcf94de570601"
-  },
-  "outputs": {
-    "children.json": "f5e3e6e4669f03a209df8696f78e966e43815767f94958af8bb4483092902890"
-  }
-}

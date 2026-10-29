@@ -1,0 +1,68 @@
+{
+  "groupId": "camisole",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "通过。先独立查看纯衣服参考全图及上衣局部 [335,235,435,505]×2，确认 camisole 的可见实体为左右肩带、连续荷叶领缘和胸腹衣身至裙腰头上沿；胸前结归 chest_bow，腰头与裙身归 pleated_skirt。随后完成整图 blend、SVG 独显，以及覆盖全部可见区域的局部 blend/edge；未发现确定需要修改的问题，无需重画本组。\n\n核对证据（坐标均为 1086×1448 原图坐标）：\n1. 肩带与开口：在 [375,237,355,143]×4 的原参考和 edge 中，左右肩带的顶端、弯曲侧边、宽度、长度及接入荷叶边的位置贴合。两肩带之间及衣身两侧之外保持空白，没有把人体或领口开口填入。\n2. 荷叶领缘：在 [367,357,369,95]×4 的 blend/edge 中，左右肩带根部至中央浅 V 低点的连续可见轮廓、波瓣及转折均覆盖；再以 [600,359,132,62]×6 对照原参考和 edge 核实右侧凹口，未见实体波瓣遗漏或真实开口被封闭。内部缝线、褶纹与明暗属于后续绘画，不构成本轮缺陷。\n3. 胸部与两侧轮廓：在 [332,383,436,179]×3 的 blend/edge 中核对胸部宽度、侧缘鼓出和上下连接；另以 [336,454,49,113]×6 核对画面左侧曲边，轮廓贴合。胸前结覆盖范围内保留的是结后上衣连续衣料，符合本组职责，不应挖去结形空洞；结体自身已登记另组，无可见附件遗漏。\n4. 腹部、腰侧与下摆：在 [342,538,413,197]×3 的 blend/edge 中核对两侧收腰、下端外展转角及 x385–721、y717–723 的下摆交接曲线，位置和比例贴合，未误包裙腰头或裙身。隐藏根部、结后衣料及腰头后搭接的职责已在 note 中说明，后续补全继续承担。\n5. note 已明确本组实体、邻接分界、肩部/胸腹/胸前结/裙腰头的区域前后关系、随动与必要搭接，并要求向终止 part 传递；本次无父组或父 SVG，未出现上游范围限制。\n\n图像记录位于 observations/review/camisole/：2026-10-25T23-04-37-779Z-1.png（整图 blend）、-3.png（肩带 edge）、-4.png（领缘 edge）、-6.png（SVG 独显）、-7.png（上半衣身 edge）、-8.png（腹腰与下摆 edge）、-10.png（右领缘六倍 edge）、-11.png（左侧曲边六倍 edge）。其余对应原参考与 blend 局部已同时核对。",
+      "candidateHash": "77cd557507d779088a0eab16eb78fffa429bc5054aca62450b7abbe9ad4c786f",
+      "observations": [
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-1.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-2.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-3.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-4.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-5.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "svg",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-6.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-7.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-8.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-9.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-10.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/camisole/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/camisole/step01/observations/camisole/2026-10-25T23-04-37-779Z-11.png"
+        }
+      ],
+      "updatedAt": "2026-10-25T23:06:41.292Z"
+    }
+  ]
+}

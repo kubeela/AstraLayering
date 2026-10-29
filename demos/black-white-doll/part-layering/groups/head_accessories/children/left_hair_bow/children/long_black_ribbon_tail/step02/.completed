@@ -1,9 +1,0 @@
-{
-  "stamp": "da43eccc7f0f196930f6758894f7a064ba65bed03c6fe5697b9c95696ad7d610",
-  "inputs": {
-    "layers/depth03#head_accessories/left_hair_bow/long_black_ribbon_tail.svg": "89440a98c951300084aeb72c6dacfe80ed1659010d55963c58d2d54c041143ae"
-  },
-  "outputs": {
-    "../../../../../../../parts/head_accessories/left_hair_bow/long_black_ribbon_tail.svg": "e00d1a422f27d1da488f0ce05e7450214d5b04662955fb6e8584f1bd71d116c1"
-  }
-}

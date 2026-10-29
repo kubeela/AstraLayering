@@ -1,0 +1,38 @@
+{
+  "groupId": "neckline_band",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已从纯衣服参考独立确认归属，并完成整图 blend、领口全区域 3 倍 edge、参考局部 3 倍及 SVG 独显核对。可见范围约 x=332–819、y=248–444：上方后领横弧、左右回转及下方 U 形前领包边均完整覆盖，内缘保持真实中空，外缘沿衣身接缝，位置与比例贴合；未见误包衣身或人体、可见实体遗漏或需要返修的边缘偏差。开口内零散蓝色残点无独立附件形状依据，与 note 的排除说明一致。本组无薄纱及已确认分离附件，无父 SVG 范围约束。note 已描述实体范围、接缝、共同随动、前后深度连续过渡和隐藏搭接，符合当前组职责。未发现有图像依据的必改问题，无需重画。",
+      "candidateHash": "54f7a92c6826e145948d5b2d079a394f71777dc546738fe01d7341bb4a82afc7",
+      "observations": [
+        {
+          "source": "clothing-part-layering/step09_outline/neckline_band/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/neckline_band/step01/previews/2026-10-27T14-31-23-702Z-1.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/neckline_band/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/neckline_band/step01/previews/2026-10-27T14-31-23-702Z-2.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/neckline_band/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/groups/neckline_band/step01/previews/2026-10-27T14-31-23-702Z-3.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/neckline_band/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/groups/neckline_band/step01/previews/2026-10-27T14-31-23-702Z-4.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/neckline_band/outline.svg",
+          "mode": "svg",
+          "savedPath": "clothing-part-layering/groups/neckline_band/step01/previews/2026-10-27T14-31-23-702Z-5.png"
+        }
+      ],
+      "updatedAt": "2026-10-27T14:33:49.637Z"
+    }
+  ]
+}

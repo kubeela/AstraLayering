@@ -2,20 +2,20 @@
 
 任务 `clothed-man-20261028` 于 2026-10-29 06:58（北京时间）完成六段管线：人物分件、人物分层、衣服分件、衣服分层、穿戴组装和阴影蒙版。运行参数为 `standard=false`、`jobs=3`、`shadow-mode=mask`，画布 1024×1536。
 
-![最终阴影合成](shadow/mask/step01/character-shadowed.png)
+![最终阴影合成](shadow/step01_mask/character-shadowed.png)
 
 | 阶段 | 成果入口 |
 | --- | --- |
 | 输入与参考 | [原图](input/original.png) · [姿态参考](part-layering/references/standard.png) · [简化参考](part-layering/references/simplified-subject.png) · [素体参考](part-layering/references/base-subject.png) |
-| 人物分件 | [分组](part-layering/groups.json) · [部件预览](part-layering/preview.svg) · [深度](part-layering/occlusion.json) · [深度预览](part-layering/occlusion/preview.svg) |
+| 人物分件 | [分组](part-layering/groups.json) · [部件预览](part-layering/preview.svg) · [深度](part-layering/occlusion.json) · [深度预览](part-layering/step14_occlusion/preview.svg) |
 | 人物分层绘制 | [KRA](raster-layering/step01/character-depth.kra) · [预览](raster-layering/step01/composite.png) · [报告](raster-layering/step01/report.md) |
 | 人物边缘精修 | [KRA](raster-layering/step02/character-soft-edges.kra) · [PNG](raster-layering/step02/character-soft-edges.png) · [报告](raster-layering/step02/report.md) |
 | 换装素体 | [KRA](raster-layering/step03/character-dressup-base.kra) · [PNG](raster-layering/step03/character-dressup-base.png) · [报告](raster-layering/step03/report.md) |
-| 衣服分件 | [参考](clothing-part-layering/references/clothing.png) · [分组](clothing-part-layering/groups.json) · [部件预览](clothing-part-layering/preview.svg) · [深度预览](clothing-part-layering/occlusion/preview.svg) |
+| 衣服分件 | [参考](clothing-part-layering/references/clothing.png) · [分组](clothing-part-layering/groups.json) · [部件预览](clothing-part-layering/preview.svg) · [深度预览](clothing-part-layering/step14_occlusion/preview.svg) |
 | 衣服分层绘制 | [KRA](clothing-raster-layering/step01/clothing-depth.kra) · [预览](clothing-raster-layering/step01/composite.png) · [报告](clothing-raster-layering/step01/report.md) |
 | 衣服边缘精修 | [KRA](clothing-raster-layering/step02/clothing-soft-edges.kra) · [预览](clothing-raster-layering/step02/composite.png) · [报告](clothing-raster-layering/step02/report.md) |
 | 穿戴组装 | [KRA](character-assembly/step01/character-assembled.kra) · [PNG](character-assembly/step01/character-assembled.png) · [报告](character-assembly/step01/report.md) |
-| 投影阴影 | [最终 KRA](shadow/mask/step01/character-shadowed.kra) · [最终 PNG](shadow/mask/step01/character-shadowed.png) · [关系表](shadow/mask/step01/shadows.json) · [原生检查](shadow/mask/step01/inspection.json) · [报告](shadow/mask/step01/report.md) |
+| 投影阴影 | [最终 KRA](shadow/step01_mask/character-shadowed.kra) · [最终 PNG](shadow/step01_mask/character-shadowed.png) · [关系表](shadow/step01_mask/shadows.json) · [原生检查](shadow/step01_mask/inspection.json) · [报告](shadow/step01_mask/report.md) |
 
 ## 结构与验证
 

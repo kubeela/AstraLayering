@@ -132,7 +132,7 @@ test('一条线异常只阻断汇合后的管线，另一条线做完；展示�
 test('人物准备完成即并发启动衣服线，两条线共用 agent 名额，在组装处汇合', async t => {
   const f = await fixture(t), order: string[] = [];
   let clothingStarted!: () => void;
-  const clothing = new Promise<void>(resolve => { clothingStarted = resolve; });
+  const clothing = new Promise<void>(resolve => { clothingStarted = resolve; }), checked = Promise.withResolvers<void>();
   await runTask({ ...f.options, image: 'reference.png', jobs: 3 }, { preflight, execute: async (id, run, context) => {
     order.push('start ' + id);
     assert.equal(context.slots?.limit, 3);
@@ -142,8 +142,10 @@ test('人物准备完成即并发启动衣服线，两条线共用 agent 名额�
       await clothing;
       const disk = (await readRun(f.directory, 'case'))!;
       assert.deepEqual(disk.activeSections, ['part-layering', 'clothing-part-layering']);
+      checked.resolve();
     }
-    if (id === 'clothing-part-layering') clothingStarted();
+    // The clothing lane runs until the character lane has seen both on disk.
+    if (id === 'clothing-part-layering') { clothingStarted(); await checked.promise; }
     order.push('end ' + id);
     return { summary: id };
   } });

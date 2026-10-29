@@ -1,9 +1,0 @@
-{
-  "stamp": "61ff7455ac7d7556f3ab8d812d6930c15a4f93b16127d7235c2a10be1cbe8c22",
-  "inputs": {
-    "groups/hair/step02": "860f38a216436b235ff9f1d3c991867fd26cd4f032bce8a62458a1abcc0341f6"
-  },
-  "outputs": {
-    "outline.svg": "ca430f3755d15f0ff47ed3b27c67c2dde3991729570ef968bc5cb667796b09f3"
-  }
-}

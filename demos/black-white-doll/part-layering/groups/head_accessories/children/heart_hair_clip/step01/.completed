@@ -1,9 +1,0 @@
-{
-  "stamp": "b7e5d600b4492665588a7629ea37ae645b361265cb4eab97563489610ef8fef4",
-  "inputs": {
-    "groups/head_accessories/step02": "e577ee08ea8c6ede7d2140799f5866abccc69a558c8d2205953310532b530bd1"
-  },
-  "outputs": {
-    "outline.svg": "ae343deed890414b720f39fabacc1f76325bf8dbfe9e741a5b32c7e4d8886617"
-  }
-}

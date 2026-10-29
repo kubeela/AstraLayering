@@ -1,9 +1,0 @@
-{
-  "stamp": "f783a3331dcab137f1d45e39688a1b788725c2e592597be4c5ef27cba5668a75",
-  "inputs": {
-    "layers/depth03#legs/leg_right/foot.svg": "12da555f599d602e7cef505a00bed0b4244201751ad4acaadc624e079e65f497"
-  },
-  "outputs": {
-    "../../../../../../../parts/legs/leg_right/foot.svg": "603a7281f12fd80123eff05d46b5376fb0990e9118b4fb173f69a6cfa7e65130"
-  }
-}

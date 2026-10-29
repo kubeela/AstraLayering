@@ -1,7 +1,7 @@
 {
   "updated": [
     "part-layering/preview.svg",
-    "part-layering/occlusion/preview.svg"
+    "part-layering/step14_occlusion/preview.svg"
   ],
   "affected_part_svgs": [
     "hair/back_hair",

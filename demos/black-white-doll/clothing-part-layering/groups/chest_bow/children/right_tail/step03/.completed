@@ -1,9 +1,0 @@
-{
-  "stamp": "32830b9d06de86c6ae57cac1932576b552cd402d123ba38cfc86d3257f3b3561",
-  "inputs": {
-    "groups/chest_bow/children/right_tail/step02": "4c5ea6d04313f881ddc0d6af3e672b487182061751aef530c08ca96987c64cae"
-  },
-  "outputs": {
-    "children.json": "a10e84b3d3d845e45048e987c0a4da105dcf445895d613861f545e9ffe64f1d9"
-  }
-}

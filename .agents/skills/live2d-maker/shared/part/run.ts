@@ -10,7 +10,8 @@ import { createLayeringSteps } from './layering-steps.ts';
 import { groupStages, type GroupInput, type GroupNode, type LayeringResult, type LayeringSteps, type SvgMerger } from './layering-types.ts';
 import type { PreparationInput, PreparationReferences } from './preparation-types.ts';
 import type { PartProfile } from './profile.ts';
-import { sectionDirectory, resolveInput, resolveRunsDirectory } from '../paths.ts';
+import { sectionDirectory, resolveInput, resolveRunsDirectory, taskDirectory } from '../paths.ts';
+import { requireCurrentLayout } from '../../workflow/layout.ts';
 import { toolCatalog } from '../codex/tool-config.ts';
 import { sectionAgentSteps, preflightAgentSteps } from '../agents/preflight.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
@@ -38,6 +39,7 @@ export async function runPartSection(
   if (section.profile.id === 'clothing-part-layering' && input.reference.standard !== undefined) {
     throw new Error('--standard / --no-standard 只适用于人物 part 的 preparation；衣服按 --name 读取上游简化角色。');
   }
+  await requireCurrentLayout(taskDirectory(input.reference.runName, resolveRunsDirectory(input.reference.dir)));
   const directory = section.getPreparationDirectory(input.reference.runName, input.reference.dir);
   toolCatalog(section.profile.toolsDirectory);
   const environment = agentOptions.environment ?? loadWorkflowEnvironment(agentOptions.env);

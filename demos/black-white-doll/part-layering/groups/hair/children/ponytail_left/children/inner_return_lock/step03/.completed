@@ -1,9 +1,0 @@
-{
-  "stamp": "e5ad89a2c9c6a73eb8e99eb5ea7ed4df2c00f70f6c811d9c9e9f23e7b0c4c56b",
-  "inputs": {
-    "groups/hair/children/ponytail_left/children/inner_return_lock/step02": "3893535d15cb87d7eb29285a69185e35332d642a3b9368fd83ff3a1586f320c2"
-  },
-  "outputs": {
-    "children.json": "54a4dc04b9604853faca68bff7ba4f4d818676c94b53a33961d4905c7a9c4c9a"
-  }
-}

@@ -10,6 +10,7 @@ import { shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { referenceUrl } from '../.agents/skills/live2d-maker/shadow/preparation.ts';
 import { runsDirectory, sectionIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedSections, sectionId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
+import { convertLayout } from '../.agents/skills/live2d-maker/workflow/layout.ts';
 import { applyStepAction, applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { configAPI } from './config.ts';
 import { createEnvironmentConfig, EnvironmentConflict } from './environment-config.ts';
@@ -169,6 +170,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           return;
         }
         await task(opts.name, requestDir);
+        if (path === '/api/convert-layout') { json(await convertLayout(directory)); return; }
         if (['/api/start', '/api/step-action', '/api/task-action', '/api/stop'].includes(path) && (await readRun(directory, opts.name))?.archive) {
           json({ error: '这是成果归档；请在原运行目录继续制作。' }, 409); return;
         }
