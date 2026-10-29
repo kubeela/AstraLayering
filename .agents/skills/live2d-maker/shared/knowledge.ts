@@ -106,13 +106,12 @@ export function stepKnowledge(section: string, step: string) {
     directory,
     files,
     reference: (name: string) => join(directory, 'references', name),
-    // Each file is rendered on its own so `{prompt_source}` names that file;
-    // the results are joined byte for byte.
+    // Each file is rendered on its own; the results are joined byte for byte.
     render(role: KnowledgeRole, values: KnowledgeValues, options: { taskRoot?: string; group?: string } = {}): string {
       return files(role, options.group).map(path => {
         const text = read(path);
         if (!text.trim()) throw new Error(`先验知识文件为空：${path}`);
-        return renderKnowledge(text, { ...values, prompt_source: path }, { taskRoot: options.taskRoot, section });
+        return renderKnowledge(text, values, { taskRoot: options.taskRoot, section });
       }).join('');
     },
     // agent.json decides which provided tools the agent sees and in what

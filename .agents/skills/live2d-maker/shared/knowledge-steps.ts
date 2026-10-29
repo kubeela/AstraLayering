@@ -38,6 +38,5 @@ export const knowledgeSteps: readonly KnowledgeStep[] = [
 export const runtimePrompts = [
   'agent-turn', 'interrupted-task',
   'image-blocked-multiple', 'image-blocked-placeholder', 'image-blocked-single', 'image-blocked-stop',
-  'outline-repair', 'outline-repair-resume',
-  'raster-handoff', 'raster-handoff-repair', 'raster-repair-resume',
+  'outline-repair-resume', 'raster-handoff', 'raster-repair-resume',
 ] as const;

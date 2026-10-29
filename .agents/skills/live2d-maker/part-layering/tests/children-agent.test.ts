@@ -10,7 +10,7 @@ import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
 import { parseRunArguments } from '../run.ts';
-import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
+import { fixture, publishGroups, shape, workingMerger, workingSteps } from './layering-fixture.ts';
 import { defaultKnowledgeDirectory } from '../../shared/knowledge.ts';
 import { promptInput } from '../../shared/tests/prompt-input.ts';
 
@@ -40,7 +40,7 @@ test('真实拆分适配器读取特化及操作约定，通过预览和工具�
     calls++;
     assert.equal(task.imageGeneration, false);
     assert.match(task.prompt, /face_base/);
-    assert.match(task.prompt, /10-拆分操作约定/);
+    assert.match(task.prompt, /【固定范围与操作约定】\n本轮只分析直属节点。/);
     const input = promptInput(task.prompt);
     const submit = task.tools!.find(tool => tool.name === 'submit_children')!;
     await assert.rejects(submit.execute({ children: [child('base'), child('eye', 'group')], note: '依据' }, signal), /须查看/);
@@ -70,6 +70,7 @@ test('真实拆分适配器读取特化及操作约定，通过预览和工具�
 
 test('拆分在正文里写出可选参考图的路径与用途，按需调用 view_bitmap 查看，原图保持只读', async t => {
   const f = await fixture(t);
+  await publishGroups(f.directory, [{ id: 'hair' }]);
   const source = artifactPath(f.directory, 'hair', 'completion');
   await writeAtomic(source, shape('hair'));
   const boards = join(defaultKnowledgeDirectory, 'part-layering/step12_children/references/hair');

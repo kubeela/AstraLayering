@@ -22,12 +22,12 @@
 
 只提交已经核对、确定需要修改的问题，写明位置、参考证据与具体要求。疑点先继续查看局部，不设“待确认”或等待标准维护方批准的中间态；无依据的猜测不列为缺陷。说明错误交给当前绘制 agent 修正 note。父范围限制按本阶段已有上游限制规则报告，后续绘画内容按阶段职责处理，不因此 blocked。blocked 仅用于必要输入缺失、损坏或工具故障导致无法实际检查，须给出具体路径或错误、受影响范围与恢复尝试。
 
-提示词来源：{prompt_source}
-
 【本次输入】
-{runtime_context}
 reference：{uri:part-layering/references/base-subject.png}
 groups：{uri:part-layering/groups.json}
+group：groups 中 id 为 {group_id} 的节点；kind 省略时为 group
+parentGroup：{group_id} 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
+round：第 {review_round} 轮 review
 parentSvg：{uri:part-layering/parts/}<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 canvas：{width}×{height}
 candidate：{uri:part-layering/step09_outline/{group_dir}/outline.svg}

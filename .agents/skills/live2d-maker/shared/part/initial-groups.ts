@@ -2,7 +2,7 @@ import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { partProfile } from './profile.ts';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
 import { partKnowledge } from './group-prompts.ts';
@@ -59,7 +59,7 @@ export async function recognizeInitialGroups(
   };
   const response = await agents.run({ step: partStep(partProfile(context).id, 'initial_groups'),
     name: '首次分组识别', cwd: context.directory,
-    prompt: knowledge.render('main', context.references.originalImage ? { original_image: resolve(context.references.originalImage) } : {}, { taskRoot: root }),
+    prompt: knowledge.render('main', {}, { taskRoot: root }),
     tools: knowledge.tools('main', [createBitmapTool(context.directory, join(context.directory, 'observations', 'initial-groups')), writeGroups]),
   });
   if (!submitted) throw agentOutcomeError('首次分组未通过 write_groups 保存', response);

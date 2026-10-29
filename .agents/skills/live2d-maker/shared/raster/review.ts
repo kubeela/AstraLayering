@@ -39,10 +39,8 @@ export async function nextReviewTask(directory: string): Promise<ReviewTask | un
 
 export async function buildReviewPrompt(step: StepDefinition, task: ReviewTask): Promise<string> {
   if (!step.review) throw new Error('步骤未配置 reviewer');
-  const reviewFilename = task.kind === 'review' ? `${task.filename}.tmp` : reports[task.index - 1];
-  return stepKnowledge(step.knowledge.section, step.knowledge.step).render(task.kind, {
-    review_report_filename: reviewFilename, repair_report_filename: task.filename + '.tmp',
-  });
+  // review-NN.md and repair-NN.md share their round; the prompts name the files.
+  return stepKnowledge(step.knowledge.section, step.knowledge.step).render(task.kind, { review_round: String(Math.floor(task.index / 2) + 1) });
 }
 
 export async function discardReviewReports(directory: string, from = 0): Promise<void> {

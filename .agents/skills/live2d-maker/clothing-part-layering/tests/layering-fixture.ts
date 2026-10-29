@@ -6,7 +6,7 @@ import { taskRootOf } from '../../shared/task-paths.ts';
 import type { TestContext } from 'node:test';
 import sharp from 'sharp';
 import { svgHash } from '../../shared/part/artifact-facts.ts';
-import { writeAtomic } from '../../shared/part/groups.ts';
+import { GroupStore, writeAtomic } from '../../shared/part/groups.ts';
 import type { GroupSeed, LayeringSteps, Subject, SvgMerger } from '../../shared/part/layering-types.ts';
 import { partSteps } from '../../shared/step-paths.js';
 import { beginStep, completeStep } from '../../shared/step-chain.ts';
@@ -58,4 +58,6 @@ export async function seedInitialGroups(directory: string, groups: GroupSeed[], 
   await beginStep(step.directory, {});
   await writeAtomic(join(step.directory, 'groups.json'), JSON.stringify({ ...(subject !== undefined ? { subject } : {}), groups }, null, 2) + '\n');
   await completeStep(step, id => ({ id, root, directory: join(directory, id), dependsOn: [] }));
+  // The scheduler publishes groups.json before any group agent runs; prompts name its nodes.
+  await (await GroupStore.open(directory)).update(() => {});
 }

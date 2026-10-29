@@ -3,7 +3,7 @@
     "initial": [
       "prompts/01-衣服分层与补全.md",
       "shared/prompts/raster-drawing-responsibilities.md",
-      "shared/prompts/raster-runtime.md"
+      "prompts/runtime.md"
     ],
     "tools": [
       "edit_groups",

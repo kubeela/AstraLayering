@@ -1,7 +1,7 @@
 import { profile } from '../profile.ts';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { test } from 'node:test';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
@@ -20,7 +20,8 @@ test('clothing prompt lookup is local and has no inherited body-specific prior',
 
 test('initial groups receive both clothing and clothed-character references and reject a character subject', async t => {
   const f = await fixture(t);
-  const refs = { ...f.references, originalImage: f.references.simplifiedSubject };
+  // The clothed character is the upstream simplified subject at its fixed task path.
+  const refs = { ...f.references, originalImage: join(dirname(f.directory), 'part-layering/references/simplified-subject.png') };
   const adapter = createLayeringSteps({ async run(task) {
     for (const path of [refs.baseSubject, refs.originalImage]) assert.ok(task.prompt.includes(`参考图绝对路径：${path}`));
     const tool = task.tools!.find(tool => tool.name === 'write_groups')!;
@@ -38,7 +39,8 @@ test('initial groups receive both clothing and clothed-character references and 
 
 test('wrapping garments can become distinct front/back parts even when they move together', async t => {
   const f = await fixture(t), events: string[] = [];
-  const refs = { ...f.references, originalImage: f.references.simplifiedSubject };
+  // The clothed character is the upstream simplified subject at its fixed task path.
+  const refs = { ...f.references, originalImage: join(dirname(f.directory), 'part-layering/references/simplified-subject.png') };
   const adapter = createLayeringSteps({ async run(task) {
     assert.equal(task.imageGeneration, false);
     const input = promptInput(task.prompt);

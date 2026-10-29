@@ -12,7 +12,7 @@ import { svgHash } from './artifact-facts.ts';
 import { assertCompletionPreserves, composeCompletion, completionPaths } from './completion-svg.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { groupValues, partKnowledge } from './group-prompts.ts';
-import { nodeSeed, writeAtomic } from './groups.ts';
+import { writeAtomic } from './groups.ts';
 import { dependenciesMatch, fileDependency } from './completion-inputs.ts';
 import type { DrawingContext, GroupContext, SvgArtifact, CompletionCheck } from './layering-types.ts';
 import { taskRootOf, toAgentPath } from '../task-paths.ts';
@@ -95,8 +95,6 @@ export async function completeGroupOcclusion(context: DrawingContext & { reviewe
   const response = await agents.run({ step: partStep(partProfile(context).id, 'completion'), name: `正面遮挡补全-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'completion')), imageGeneration: true,
     tools: knowledge.tools('main', [preview, set, submit, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'completion', context.group.id, 'bitmaps'))]), prompt: knowledge.render('main', {
-      // Paths are spelled in the prompt with {uri:}; the runtime input keeps the group's data.
-      runtime_context: JSON.stringify({ group: nodeSeed(context.group), parentGroup: context.parent?.id ?? null }, null, 2),
       ...groupValues(context.group.id, canvas),
     }, { taskRoot: root, group: context.group.id }) });
   if (!submitted) throw agentOutcomeError('补全未通过 submit_completion 提交', response);

@@ -13,7 +13,7 @@ import { partKnowledge } from '../../shared/part/group-prompts.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
-import { fixture, linkedFixture, shape, workingSteps } from './layering-fixture.ts';
+import { fixture, linkedFixture, publishGroups, shape, workingSteps } from './layering-fixture.ts';
 import { promptInput } from '../../shared/tests/prompt-input.ts';
 
 const signal = new AbortController().signal;
@@ -98,9 +98,9 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
     assert.ok(task.tools!.some(tool => tool.name === 'view_bitmap'));
     assert.match(task.prompt, /部件完全被遮挡.*必须先.*结构辅助图并查看/);
     assert.match(task.prompt, /不设计侧面、背面/);
-    const rules = (await readFile(partKnowledge(profile, 'completion').files('main')[1], 'utf8')).replace('{prompt_source}', partKnowledge(profile, 'completion').files('main')[1]);
+    const rules = (await readFile(partKnowledge(profile, 'completion').files('main')[1], 'utf8'));
     assert.ok(task.prompt.includes(`【固定范围与操作约定】\n${rules}`));
-    assert.match(task.prompt, /固定约定提示词来源：.*9-补全操作约定\.md/);
+    assert.doesNotMatch(task.prompt, /提示词来源：/);
     const input = promptInput(task.prompt);
     await tool(task, 'preview_svg').execute({ path: input.sourceSvg, mode: 'blend' }, signal);
     await tool(task, 'set_completion_paths').execute({ paths }, signal);
@@ -164,7 +164,8 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     const input = promptInput(task.prompt);
     const id = input.group.id;
     calls.push(id);
-    assert.ok(task.prompt.includes(`step11_completion/prompts/groups/${id}/9-正面遮挡补全.md`));
+    // The finger override replaces the default completion text.
+    assert.ok(task.prompt.includes('为当前整根手指补齐正面遮挡下的隐藏指身、指根及与手掌连接所需的局部胶水余量'));
     assert.match(task.prompt, /仅延伸到邻指下面不等于接到了手掌/);
     assert.match(task.prompt, /拇指按其自身根部与鱼际附近/);
     const palm = `${id.slice(0, id.lastIndexOf('/'))}/palm`;
@@ -199,6 +200,7 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
 
 test('新增路径修正后必须重看当前候选；没有工具提交不能交付', async t => {
   const f = await fixture(t), group = normalizeGroups([{ id: 'face' }])[0];
+  await publishGroups(f.directory, [{ id: 'face' }]);
   const source = join(f.directory, 'source.svg'), outputPath = join(f.directory, 'face.draft.svg');
   await writeFile(source, shape('face'));
   const context = { ...f, group, reviewed: { path: source }, outputPath };
@@ -265,6 +267,7 @@ test('补全 threadId 记在 agents/steps：中断后续跑恢复同一会话，
 
 test('续跑补全沿用保留原形的草稿，提示词只给固定的先读草稿规则；原形已变的草稿或非续跑从原形开始', async t => {
   const f = await fixture(t), group = normalizeGroups([{ id: 'face' }])[0];
+  await publishGroups(f.directory, [{ id: 'face' }]);
   const source = join(f.directory, 'source.svg'), outputPath = join(f.directory, 'face.draft.svg');
   await writeFile(source, shape('face'));
   const drawn = composeCompletion(shape('face'), paths);
@@ -291,6 +294,7 @@ test('续跑补全沿用保留原形的草稿，提示词只给固定的先读�
 test('不可见部件直接绘制非空 SVG，分别完成生成图 edge、原图 blend 和独显后提交', async t => {
   const f = await fixture(t), group = normalizeGroups([{ id: 'face/eye_left/iris', kind: 'part',
     allowOutsideParent: true, hiddenInReference: true }])[0];
+  await publishGroups(f.directory, [{ id: group.id, kind: 'part', allowOutsideParent: true, hiddenInReference: true }]);
   const source = join(f.directory, 'source.svg'), outputPath = join(f.directory, 'iris.draft.svg');
   const generated = join(f.directory, 'generated.png');
   await writeFile(source, shape(group.id, 10, 90, true));
