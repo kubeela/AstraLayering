@@ -31,7 +31,7 @@ test('旧任务没有判断记录时，按素体参考是否与简化参考像�
   await markBaseStep(f.task);
   assert.equal(await readDressup(f.task), undefined);
   await mkdir(references, { recursive: true });
-  await writeFile(join(references, 'simplified-subject.webp'), await sharp(await png(200)).webp({ lossless: true }).toBuffer());
+  await writeFile(join(references, 'simplified-subject.png'), await png(200));
   await writeFile(join(references, 'base-subject.png'), await png(200));
   assert.equal(await readDressup(f.task), false);
   await writeFile(join(references, 'base-subject.png'), await png(10));

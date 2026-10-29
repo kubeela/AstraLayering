@@ -11,6 +11,7 @@ import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { type AgentRequest } from '../../shared/raster/agent.ts';
 import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
+import sharp from 'sharp';
 
 async function fixture(t: TestContext) {
   const root = await realpath(await mkdtemp(join(tmpdir(), 'character-assembly-')));
@@ -158,11 +159,12 @@ test('素体未换装时不需要衣服 KRA，不调用 agent，直接复制人�
   const f = await fixture(t);
   await markBaseStep(f.task, false);
   await rm(dirname(dirname(f.inputs.clothingKra)), { recursive: true });
-  await writeFile(f.inputs.characterKra.replace(/\.kra$/, '.png'), 'character png');
+  const characterPng = await sharp({ create: { width: 2, height: 2, channels: 4, background: '#8040c0' } }).png().toBuffer();
+  await writeFile(f.inputs.characterKra.replace(/\.kra$/, '.png'), characterPng);
   const agent = async () => assert.fail('no clothing: assembly must not call agent');
   await runWorkflow(f.options, { ...f.deps, agent });
   assert.equal(await readFile(join(f.output, 'step01/character-assembled.kra'), 'utf8'), 'characterKra');
-  assert.equal(await readFile(join(f.output, 'step01/character-assembled.png'), 'utf8'), 'character png');
+  assert.deepEqual(await readFile(join(f.output, 'step01/character-assembled.png')), characterPng);
   assert.match(await readFile(join(f.output, 'step01/report.md'), 'utf8'), /没有衣服需要组装/);
   await stat(join(f.output, 'step01/.completed'));
   await runWorkflow(f.options, { ...f.deps, agent });

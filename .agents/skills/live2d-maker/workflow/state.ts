@@ -1,9 +1,9 @@
 import { shadowMode, type ShadowMode } from '../shared/shadow.ts';
 import { stepPattern } from '../shared/step-paths.js';
-import { randomUUID, createHash } from 'node:crypto';
-import { copyFile, mkdir, readFile, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import { mkdir, readFile, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { setTimeout as delay } from 'node:timers/promises';
-import { extname, join } from 'node:path';
+import { join } from 'node:path';
 import lockfile from 'proper-lockfile';
 import { sectionIds, resolveInput, resolveRunsDirectory, taskDirectory, type SectionId } from '../shared/paths.ts';
 import { defaultAgentConcurrency } from '../shared/codex/agent-runtime.ts';
@@ -11,6 +11,7 @@ import { readTaskLog } from './log.ts';
 import { requireCurrentLayout } from './layout.ts';
 import { currentSession } from '../shared/agents/step-session.ts';
 import { installedVersion } from '../shared/version.ts';
+import { copyAsPng, pngBytes } from '../shared/png.ts';
 
 export type TaskOptions = {
   name: string; dir?: string; image?: string; krita?: string; knowledge?: string;
@@ -125,13 +126,12 @@ async function keepOriginal(directory: string, input?: string): Promise<void> {
   if (!(await stat(input)).isFile()) throw new Error('输入图像不是文件：' + input);
   const retained = await taskOriginal(directory);
   if (retained) {
-    const hash = (data: Buffer) => createHash('sha256').update(data).digest('hex');
-    if (hash(await readFile(input)) !== hash(await readFile(retained))) {
+    if (!(await pngBytes(input)).equals(await pngBytes(retained))) {
       throw new Error('任务已有不同的原图：' + retained + '。制作另一张图请使用新的 --name。');
     }
   } else {
     await mkdir(join(directory, 'input'), { recursive: true });
-    await copyFile(input, join(directory, 'input', 'original' + (extname(input) || '.png')));
+    await copyAsPng(input, join(directory, 'input', 'original.png'));
   }
 }
 export const usesKrita = (selected: SectionId[]) => selected.some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow');

@@ -8,7 +8,8 @@ import { readStep, type ChainStep } from '../shared/step-chain.ts';
 import { clothingPreparationStep, partSteps, stepNumber } from '../shared/step-paths.js';
 import { requireUpstream, simplifiedCharacter } from '../shared/upstream.ts';
 import { randomUUID } from 'node:crypto';
-import { copyFile, mkdir, readFile, rename, rm } from 'node:fs/promises';
+import { mkdir, readFile, rename, rm } from 'node:fs/promises';
+import { copyAsPng } from '../shared/png.ts';
 import { dirname, join } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../shared/codex/agents.ts';
@@ -50,7 +51,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     const imageResult = result.images.at(-1);
     if (!imageResult) throw new Error('imagegen 未返回生成图片。');
     await sharp(imageResult.savedPath).metadata();
-    await copyFile(imageResult.savedPath, output);
+    await copyAsPng(imageResult.savedPath, output);
     });
   } };
 }

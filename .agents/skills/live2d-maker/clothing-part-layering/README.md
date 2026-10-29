@@ -25,7 +25,7 @@ preparation 使用当前配置的生图工具，将两张参考按顺序放入�
 
 ## 参考与拆分
 
-1. 按 `--name` 读取同名人物 part 的 `references/simplified-subject.*`（PNG、JPEG、WebP）与 `references/base-subject.png`，以及 `references/standard.png`（决定统一画布尺寸并用于生成图后处理，其指纹写入 preparation.json），不保存输入副本。缺少时明确提示上游命令与手动放置的路径。使用 [preparation 提示词](prompts/preparation.md) 提取两图之间的换装衣物，生成统一画布尺寸的透明 `references/clothing.png`。保留衣料、衣服自身附件、薄纱及正常开口，补全遮住的衣料；允许整套衣装等比缩放和移动，衣片间的相对比例与连接保持一致。
+1. 按 `--name` 读取同名人物 part 的 `references/simplified-subject.png`与 `references/base-subject.png`，以及 `references/standard.png`（决定统一画布尺寸并用于生成图后处理，其指纹写入 preparation.json），不保存输入副本。缺少时明确提示上游命令与手动放置的路径。使用 [preparation 提示词](prompts/preparation.md) 提取两图之间的换装衣物，生成统一画布尺寸的透明 `references/clothing.png`。保留衣料、衣服自身附件、薄纱及正常开口，补全遮住的衣料；允许整套衣装等比缩放和移动，衣片间的相对比例与连接保持一致。
 2. 查看纯衣服图与原穿衣角色，按外到内检查结构、建立初始 group。纯衣服图是衣片轮廓与绘画标准，原角色用于判断穿插与随动关系。group 表示结构归属，包含关系和数组顺序不代表绘制深度。
 3. 逐层执行轮廓绘制、review / 返修、同层去重、遮挡补全、自检及直属 group / part 分析。完成当前层后继续下一层，实际结构决定拆分深度。
 4. 合成 `preview.svg`，为所有终止 part 规划并逐件、逐区域检查深度，保存 `occlusion.json`。

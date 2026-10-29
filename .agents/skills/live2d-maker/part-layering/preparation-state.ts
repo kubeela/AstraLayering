@@ -1,7 +1,6 @@
-import { copyFile, lstat, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
+import { lstat, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
-import { dirname, extname, join, relative } from 'node:path';
-import sharp from 'sharp';
+import { dirname, join, relative } from 'node:path';
 import { type SectionStep } from '../shared/step-section.ts';
 import { preparationOptionsPath } from '../shared/part/preparation-cache.ts';
 import type { PreparationReferences } from '../shared/part/preparation-types.ts';
@@ -47,11 +46,6 @@ export async function produce(output: string, generate: (temporary: string) => P
 }
 export const writeJson = (output: string, value: unknown) => produce(output, temporary =>
   writeFile(temporary, JSON.stringify(value, null, 2) + '\n', 'utf8'));
-export async function copyAsPng(source: string, output: string): Promise<void> {
-  const bytes = await readFile(source);
-  if (bytes.subarray(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex'))) await copyFile(source, output);
-  else await sharp(bytes).autoOrient().png().toFile(output);
-}
 
 // Preparation is the first stage of the part section, with fixed step
 // numbers; pose keeps its number when a run does not standardize.
@@ -66,7 +60,7 @@ export const poseJudgmentPath = (references: string) => join(sectionOf(reference
 export async function preparationSteps(refs: PreparationReferences, standard: boolean, inputDirectory: string, source?: string): Promise<SectionStep[]> {
   const root = sectionOf(refs.directory);
   const original = refs.originalImage ?? (source || await present(join(root, stageStep('original')))
-    ? join(inputDirectory, `original${extname(source ?? '') || '.png'}`) : undefined);
+    ? join(inputDirectory, 'original.png') : undefined);
   const withStandard = !!original || !!refs.standardImage || await present(join(root, stageStep('standard')));
   const steps: [PreparationStage, PreparationStage[], string[]?][] = [];
   if (original) steps.push(['original', [], [original]]);

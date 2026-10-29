@@ -9,6 +9,7 @@ import { join } from 'node:path';
 // Prompt paths are relative to the task root.
 import { fileURLToPath } from 'node:url';
 import { test, type TestContext } from 'node:test';
+import sharp from 'sharp';
 import { rasterAppServer } from '../../shared/tests/raster-app-server.ts';
 import { runAgent, type AgentRequest, type StepResult } from '../../shared/raster/agent.ts';
 import { checkKrita } from '../../shared/raster/krita.ts';
@@ -436,15 +437,19 @@ test('旧 step02 已完成绘制但停在移除的 review，新版本补 step01 
 });
 
 test('素体未换装时 step03 不调用 agent，直接沿用 step02 交付并标记完成', async t => {
+  const image = await sharp({ create: { width: 2, height: 2, channels: 4, background: '#f00' } }).png().toBuffer();
   const f = await fixture(t), deps = { ...f.deps, steps: f.definitions }, calls: string[] = [];
   await markBaseStep(join(f.directory, 'runs', 'test'), false);
   await runWorkflow(f.options, { ...deps, agent: async request => {
     const step = f.definitions.find(step => request.step === 'raster_' + step.id)!;
-    calls.push(step.id); return deliver(request, step);
+    calls.push(step.id); const result = await deliver(request, step);
+    // The passthrough copies the PNG through the image converter, so it must be a real image.
+    if (step.id === 'step02') await writeFile(join(request.directory, 'step02/character-soft-edges.png'), image);
+    return result;
   } });
   assert.deepEqual(calls, ['step01', 'step02']);
-  for (const extension of ['kra', 'png']) assert.equal(await readFile(join(f.output, `step03/character-dressup-base.${extension}`), 'utf8'),
-    `fixture step02/character-soft-edges.${extension}`);
+  assert.equal(await readFile(join(f.output, 'step03/character-dressup-base.kra'), 'utf8'), 'fixture step02/character-soft-edges.kra');
+  assert.deepEqual(await readFile(join(f.output, 'step03/character-dressup-base.png')), image);
   assert.match(await readFile(join(f.output, 'step03/report.md'), 'utf8'), /直接沿用上游结果[\s\S]*raster-layering\/step02\/character-soft-edges\.kra/);
   await readFile(join(f.output, 'step03/.completed'));
   await runWorkflow(f.resume, { ...deps, agent: forbidden });

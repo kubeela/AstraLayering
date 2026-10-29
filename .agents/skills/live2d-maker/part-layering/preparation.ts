@@ -1,14 +1,15 @@
 import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
 import type { ImageProcessingOptions } from '../shared/image-processing.ts';
 import { sectionDirectory, resolveInput, taskDirectory } from '../shared/paths.ts';
-import { copyFile, mkdir, readFile } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
+import { copyAsPng, pngBytes } from '../shared/png.ts';
 import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
-import { clearPreparedParts, fileHash, readPreparationOptions } from '../shared/part/preparation-cache.ts';
+import { clearPreparedParts, readPreparationOptions } from '../shared/part/preparation-cache.ts';
 import { modifiedError, type ChainPlan, type ChainStep } from '../shared/step-chain.ts';
 import { inspectSection, runSection } from '../shared/step-section.ts';
 import type { PreparationInput, PreparationReferences } from '../shared/part/preparation-types.ts';
-import { checkStandardJudgment, copyAsPng, exists, findImage, poseJudgmentPath, preparationSteps, present, produce,
+import { checkStandardJudgment, exists, findImage, poseJudgmentPath, preparationSteps, present, produce,
   sectionOf, stageNumber, stageStep, stepStage, writeJson, type PreparationStage, type StandardJudgment } from './preparation-state.ts';
 import { stepKnowledge } from '../shared/knowledge.ts';
 import { taskRootOf } from '../shared/task-paths.ts';
@@ -41,7 +42,7 @@ async function references(runName: string, root?: string): Promise<PreparationRe
   const standard = join(directory, 'standard.png');
   return { directory, originalImage: await findImage(inputDirectory(runName, root), 'original'),
     ...(await exists(standard) ? { standardImage: standard } : {}),
-    simplifiedSubject: await findImage(directory, 'simplified-subject') ?? join(directory, 'simplified-subject.png'),
+    simplifiedSubject: join(directory, 'simplified-subject.png'),
     baseSubject: join(directory, 'base-subject.png') };
 }
 const output = (step: ChainStep) => resolve(step.directory, step.outputs![0]);
@@ -76,7 +77,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   if (source) {
     if (!await exists(source)) throw new Error(`Input image is missing: ${source}`);
     const original = await findImage(inputs, 'original');
-    if (original && await fileHash(source) !== await fileHash(original)) {
+    if (original && !(await pngBytes(source)).equals(await pngBytes(original))) {
       throw new Error(`任务已有不同的原图：${original}。制作另一张图请使用新的 --name。`);
     }
   }
@@ -126,7 +127,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     switch (id) {
       case 'original':
         await mkdir(inputs, { recursive: true });
-        if (!await exists(output(step))) await produce(output(step), temporary => copyFile(source!, temporary));
+        if (!await exists(output(step))) await produce(output(step), temporary => copyAsPng(source!, temporary));
         return;
       case 'options': return writeJson(output(step), { standard });
       case 'pose': {
