@@ -100,14 +100,16 @@ import { createInterface } from 'node:readline';
 import { appendFileSync } from 'node:fs';
 const send = value => process.stdout.write(JSON.stringify(value) + '\\n');
 if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))}); process.exit(0); }
+let turns = 0;
 for await (const line of createInterface({ input: process.stdin })) {
   const message = JSON.parse(line);
   appendFileSync(${JSON.stringify(requests)}, JSON.stringify(message) + '\\n');
   if (message.method === 'initialize') send({ id: message.id, result: {} });
   if (message.method === 'thread/start') send({ id: message.id, result: { thread: { id: 'drawing-thread' } } });
   if (message.method === 'turn/start') {
-    send({ id: message.id, result: {} });
-    send({ method: 'turn/completed', params: { turn: { status: 'completed' } } });
+    const turn = { id: 'turn-' + ++turns, status: 'inProgress' };
+    send({ id: message.id, result: { turn } });
+    send({ method: 'turn/completed', params: { threadId: 'drawing-thread', turn: { ...turn, status: 'completed' } } });
   }
 }
 `, 'utf8');
