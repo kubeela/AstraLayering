@@ -19,7 +19,7 @@ export const help = `character-assembly — 单 agent 组装人物与衣服 KRA
 从同名任务读取：
   raster-layering/step03/character-dressup-base.kra
   clothing-raster-layering/step02/clothing-soft-edges.kra
-  part-layering/references/simplified-subject.*
+  part-layering/references/simplified-subject.png
 交付到 <运行根目录>/<name>/character-assembly/step01/：
   character-assembled.kra、character-assembled.png、report.md
 使用 layering_agent_assembly_model 配置，默认 gpt-6.1-sol / xhigh；只有一个绘制 agent，不设 reviewer。

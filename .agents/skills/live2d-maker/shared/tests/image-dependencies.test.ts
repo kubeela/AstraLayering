@@ -27,7 +27,7 @@ test('透明图后处理与已完成参考不要求 外部图片程序，缺参�
   const report = await normalizeReference(input, input, output, { env: { PATH: '' } });
   assert.equal(report.method, null); assert.deepEqual(await readFile(output), await readFile(input));
   for (const [id, names] of [
-    ['part-layering', ['base-subject.png', 'judgment.json', 'simplified-subject.jpg']],
+    ['part-layering', ['base-subject.png', 'judgment.json', 'simplified-subject.png']],
     ['clothing-part-layering', ['clothing.png', '../step01_preparation/.completed']],
   ] as const) {
     const references = join(f.directory, 'case', id, 'references');

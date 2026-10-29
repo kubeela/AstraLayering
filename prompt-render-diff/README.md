@@ -15,9 +15,12 @@
 步骤提示词只使用 `{group_id}`、`{group_dir}`、`{layer_depth}`、`{review_round}`、`{width}`、`{height}` 和 `{input}`：
 
 - `{input}` 只指用户上传的原图；
-- 其余图片都是框架写出的 `.png`，用固定的 `{uri:…png}`；其他路径也用相对任务根目录的固定 `{uri:}`。
+- 其余图片都是框架写出的 `.png`，用固定的 `{uri:…png}`；其他路径也用相对任务根目录 `<name>` 的固定 `{uri:}`；
+- `{reference:…}`（本 section 的 knowledge references）与 `{shared_reference:…}`（`knowledge/shared/references`）按约定替换为 knowledge 内文件的绝对路径，只给链接、不附图片。
 
-例外：图片被拦截时的三份运行时模板（`image-blocked-*.md`）和 `raster-handoff.md` 保留原有变量。
+不计入上述变量：图片被拦截时的 `image-blocked-*.md` 不属于流程，由程序直接引用；交接笔记按约定机制原样保留，只把模板移到 `knowledge/shared/prompts/runtime/`。
+
+框架复制的图片一律转为 PNG 并以 `.png` 命名（原图 `input/original.png`、复用参考、直接沿用的交付等），查找简化参考也只认 `simplified-subject.png`，保证 `{uri:…png}` 与实际文件一致。
 
 ## 变化清单
 

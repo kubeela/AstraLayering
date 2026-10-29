@@ -22,13 +22,6 @@ export async function requireUpstream(name: string, section: SectionId, entries:
 }
 
 export async function simplifiedCharacter(name: string, root?: string): Promise<string> {
-  const directory = join(sectionDirectory(name, 'part-layering', root), 'references');
-  let names: string[] = [];
-  try { names = await readdir(directory); }
-  catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-  const matches = names.filter(file => /^simplified-subject\.(png|jpe?g|webp)$/i.test(file));
-  if (matches.length > 1) throw new Error(`上游简化角色参考不唯一：${matches.map(file => join(directory, file)).join(', ')}`);
-  if (!matches.length) throw missingUpstream(name, 'part-layering', [join(directory, 'simplified-subject.png')], root);
-  await requireUpstream(name, 'part-layering', [{ path: `references/${matches[0]}` }], root);
-  return join(directory, matches[0]);
+  const directory = await requireUpstream(name, 'part-layering', [{ path: 'references/simplified-subject.png' }], root);
+  return join(directory, 'references/simplified-subject.png');
 }

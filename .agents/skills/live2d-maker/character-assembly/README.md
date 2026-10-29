@@ -23,7 +23,7 @@ pnpm character-assembly --name jianma --dir /绝对路径/运行根目录 --krit
 | --- | --- |
 | 人物素体 | `raster-layering/step03/character-dressup-base.kra` |
 | 衣服终稿 | `clothing-raster-layering/step02/clothing-soft-edges.kra` |
-| 简化穿衣参考 | `part-layering/references/simplified-subject.*`，自动定位 PNG/JPEG/WebP |
+| 简化穿衣参考 | `part-layering/references/simplified-subject.png` |
 
 素体未换装时不需要衣服终稿：step01 不调用 agent，直接复制人物 KRA 与 PNG 为 `character-assembled.*`；旧任务若已画出衣服，仍按原输入组装。
 

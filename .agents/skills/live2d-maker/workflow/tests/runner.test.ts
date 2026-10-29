@@ -3,6 +3,7 @@ import { cp, mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'no
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
+import sharp from 'sharp';
 import { sectionIds, type SectionId } from '../../shared/paths.ts';
 import { runTask } from '../runner.ts';
 import { preflightKrita } from '../krita.ts';
@@ -17,13 +18,16 @@ import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
 // Real background workers inherit this and pass the Codex startup check without a build.
 process.env.layering_codex_path = await fakePatchedCodex();
 
+const png = (background: string) => sharp({ create: { width: 2, height: 2, channels: 4, background } }).png().toBuffer();
+const originalImage = await png('#f00');
+
 async function fixture(t: TestContext) {
   const dir = await mkdtemp(join(tmpdir(), 'live2d-runner-'));
   t.after(() => rm(dir, { recursive: true, force: true }));
   const options = { name: 'case', dir, krita: process.execPath };
   const directory = directoryFor(options);
   await mkdir(directory);
-  await writeFile(join(directory, 'reference.png'), 'original-image');
+  await writeFile(join(directory, 'reference.png'), originalImage);
   return { options, directory };
 }
 const preflight = async (executable: string) => ({ executable, version: 'test' });
@@ -91,7 +95,7 @@ test('总控保留输入与配置，按依赖推进；后续仅用 name 和 dir 
     ['clothing-raster-layering', 'character-assembly'], ['character-assembly', 'shadow']] as const) assert.ok(first.indexOf(before) < first.indexOf(after), before + ' → ' + after);
   // The delivery is the furthest section's, whichever lane finished last.
   assert.equal((await readRun(f.directory))!.output, 'shadow/output');
-  assert.equal(await readFile(join(f.directory, 'input/original.png'), 'utf8'), 'original-image');
+  assert.deepEqual(await readFile(join(f.directory, 'input/original.png')), originalImage);
   await rm(join(f.directory, 'reference.png'));
   await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async (id, run) => {
     second.push(id); assert.equal(run.jobs, 2); assert.equal(run.krita, process.execPath);
@@ -180,9 +184,9 @@ test('手动上游可从组装开始，不伪造此前进度；更换原图不�
   assert.deepEqual(calls, ['character-assembly', 'shadow']);
   assert.deepEqual(Object.keys((await readRun(f.directory))!.sections), ['character-assembly', 'shadow']);
   await runTask({ ...f.options, image: 'reference.png' }, { preflight, execute: async () => ({ summary: 'ok' }) });
-  await writeFile(join(f.directory, 'different.png'), 'different image');
+  await writeFile(join(f.directory, 'different.png'), await png('#00f'));
   await assert.rejects(runTask({ ...f.options, image: 'different.png' }), /已有不同的原图/);
-  assert.equal(await readFile(join(f.directory, 'input/original.png'), 'utf8'), 'original-image');
+  assert.deepEqual(await readFile(join(f.directory, 'input/original.png')), originalImage);
 });
 
 test('Krita 不可用时拒绝启动且不改动任务记录；用 --krita 重新指定后继续', async t => {

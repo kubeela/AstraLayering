@@ -14,6 +14,7 @@ import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { readDressup } from '../../shared/part/dressup.ts';
 import { partSteps } from '../../shared/step-paths.js';
 import { referencePaths } from '../../shared/tests/prompt-input.ts';
+import { pngBytes } from '../../shared/png.ts';
 
 // The part section holds the preparation steps beside the references directory.
 const section = (refs: { directory: string } | string) => dirname(typeof refs === 'string' ? refs : refs.directory);
@@ -222,14 +223,14 @@ test('删除产物即重试该步骤；无效 PNG 明确报错，不留下正式
   await assert.rejects(readFile(refs.baseSubject), { code: 'ENOENT' });
 });
 
-test('原图不是 PNG 时保留原始字节，standard 和不简化的参考都是真实 PNG', async t => {
+test('原图不是 PNG 时复制为 original.png，standard 和不简化的参考都是真实 PNG', async t => {
   const f = await fixture(t, false);
   const jpeg = f.original.replace('.png', '.jpg');
-  const bytes = await sharp(f.original).jpeg().toBuffer();
-  await writeFile(jpeg, bytes);
+  await writeFile(jpeg, await sharp(f.original).jpeg().toBuffer());
   const refs = await prepareReferences({ runName: f.runName, image: jpeg }, f.steps);
-  assert.deepEqual(await readFile(refs.originalImage!), bytes);
-  assert.ok(refs.originalImage!.endsWith('.jpg'));
+  assert.deepEqual(await readFile(refs.originalImage!), await pngBytes(jpeg));
+  assert.ok(refs.originalImage!.endsWith('original.png'));
+  await prepareReferences({ runName: f.runName, image: jpeg }, f.steps);
   for (const path of [refs.standardImage!, refs.simplifiedSubject]) assert.equal((await sharp(path).metadata()).format, 'png');
   assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
 });

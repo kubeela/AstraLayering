@@ -1,4 +1,4 @@
-import { readdir, readFile, stat } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import { readStep } from '../step-chain.ts';
@@ -29,10 +29,9 @@ export async function readDressup(taskRoot: string): Promise<boolean | undefined
   } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
   // Runs from before the decision was recorded: a reused reference is a pixel copy.
   const references = join(taskRoot, 'part-layering', 'references');
-  const simplified = (await readdir(references).catch(() => [] as string[])).find(file => /^simplified-subject\.(png|jpe?g|webp)$/i.test(file));
-  const base = join(references, 'base-subject.png');
-  if (!simplified || !await stat(base).catch(() => undefined)) return;
-  const [a, b] = await Promise.all([join(references, simplified), base].map(path =>
+  const simplified = join(references, 'simplified-subject.png'), base = join(references, 'base-subject.png');
+  if (!await stat(simplified).catch(() => undefined) || !await stat(base).catch(() => undefined)) return;
+  const [a, b] = await Promise.all([simplified, base].map(path =>
     sharp(path).autoOrient().ensureAlpha().raw().toBuffer({ resolveWithObject: true })));
   return !(a!.info.width === b!.info.width && a!.info.height === b!.info.height && a!.data.equals(b!.data));
 }
