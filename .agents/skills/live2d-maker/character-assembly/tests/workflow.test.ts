@@ -19,7 +19,7 @@ async function fixture(t: TestContext) {
   const inputs = {
     characterKra: join(task, 'raster-layering/step03/character-dressup-base.kra'),
     clothingKra: join(task, 'clothing-raster-layering/step02/clothing-soft-edges.kra'),
-    simplifiedCharacter: join(task, 'part-layering/references/simplified-subject.webp'),
+    simplifiedCharacter: join(task, 'part-layering/references/simplified-subject.png'),
   };
   for (const [kind, path] of Object.entries(inputs)) {
     await mkdir(dirname(path), { recursive: true }); await writeFile(path, kind);

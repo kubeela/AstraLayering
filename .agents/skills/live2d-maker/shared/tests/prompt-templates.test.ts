@@ -13,14 +13,14 @@ test('姿态与衣服提示词明确声明共享规则位置，展开后没有�
     ['part-layering','step04_standard'],
     ['clothing-part-layering','step01_preparation'],
   ] as const){
-    const prompt=stepKnowledge(section,step).render('main',{width:'24',height:'32',input:'/task/input.png',original_image:'/task/input.png'},{taskRoot:'/task'});
+    const prompt=stepKnowledge(section,step).render('main',{width:'24',height:'32',input:'/task/input.png'},{taskRoot:'/task'});
     assert.ok(!/\{[a-z_]+\}/.test(prompt));assert.match(prompt,/生图工具 imagegen（Codex 为内置 image_gen\.imagegen/);
     assert.equal(prompt.split('【执行规则】').length,2);
   }
 });
 test('外层 CLI、交接与背景适配也由 Markdown 声明替换位置',()=>{
-  const cli=runtimePrompt('agent-turn',{task_prompt:'task',task_root:'/runs/case',workspace:'request dir',workspace_absolute:'/runs/case/request dir',section_directory:'task dir',output_directory:'output dir'});
-  assert.match(cli,/task[\s\S]*\/runs\/case[\s\S]*request dir[\s\S]*task dir/);
+  const cli=runtimePrompt('agent-turn',{},{taskRoot:'/runs/case'});
+  assert.match(cli,/任务根目录：\/runs\/case。[\s\S]*当前工作区：当前目录/);
   const image=renderPromptFile(new URL('../prompts/image-request.md',import.meta.url),{drawing_prompt:'原绘图要求',background_instructions:'背景要求'});
   assert.ok(image.startsWith('原绘图要求\n\n背景要求'));
 });

@@ -104,7 +104,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
         const baseImage = await characterBase(input.runName, input.dir);
         const meta = await sharp(standard).metadata();
         const prompt = stepKnowledge('clothing-part-layering', 'step01_preparation')
-          .render('main', { original_image: image, width: String(meta.autoOrient.width), height: String(meta.autoOrient.height) }, { taskRoot: taskDirectory(input.runName, input.dir) });
+          .render('main', { width: String(meta.autoOrient.width), height: String(meta.autoOrient.height) }, { taskRoot: taskDirectory(input.runName, input.dir) });
         progress?.('preparation：使用已配置生图工具生成纯衣服参考。');
         const temporary = `${refs.baseSubject}.${randomUUID()}.tmp`;
         try {

@@ -26,10 +26,10 @@ export type PreparationSteps = {
   baseSubject(inputImage: string, outputImage: string, prompt: string, processGenerated?: ProcessGenerated): Promise<ReferenceChoice | void>;
 };
 
-// {input} is the user's original image and {simplified_subject} the prepared one, whose
-// extension varies; other references sit at fixed task paths.
+// {input} is the user's original image, whose extension varies; the prepared
+// references sit at fixed task paths.
 const readPrompt = (step: string, refs: PreparationReferences): string => stepKnowledge('part-layering', step)
-  .render('main', { ...(refs.originalImage ? { input: resolve(refs.originalImage) } : {}), simplified_subject: resolve(refs.simplifiedSubject) },
+  .render('main', { ...(refs.originalImage ? { input: resolve(refs.originalImage) } : {}) },
     { taskRoot: taskRootOf(dirname(refs.directory)) });
 const readJson = async (path: string): Promise<unknown> => JSON.parse(await readFile(path, 'utf8'));
 export function getPreparationDirectory(runName: string, root?: string): string {

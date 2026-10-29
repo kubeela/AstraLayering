@@ -1,55 +1,38 @@
+===== 91 files; e.g. clothing-part-layering__tests__agents.test.ts/任务显式要求时一次性回合可开放_shell/transport.transport..01.md
+-- 当前工作区：/tmp/<TMP>/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
 ===== 41 files; e.g. raster-layering__tests__review.test.ts/reviewer_中断不留下正式报告_再启动使用新上下文检查同一个环节/raster.raster_step01..01.md
+-- 完成拆层与核对后，用 edit_occlusion 更新 occlusion.json 的深度及区域说明；逻辑部件发生拆分时，保存对应 SVG，再用 edit_groups 同步分组与深度记录。在 raster-layering/step01/report.md 记录原 part ID、实际图层名、区域、最终深度与原因，区分预先标注及组装中新发现的拆层。
++- 完成拆层与核对后，用 edit_occlusion 更新 occlusion.json 的深度及区域说明；逻辑部件发生拆分时，保存对应 SVG，再用 edit_groups 同步分组与深度记录。在 raster-layering/step01/report.md.tmp 记录原 part ID、实际图层名、区域、最终深度与原因，区分预先标注及组装中新发现的拆层。
 +
 +报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
-
-===== 30 files; e.g. clothing-raster-layering__tests__review.test.ts/step01_返修修改分层文件后中断_续跑保留结构且保留未改动的_KRA/raster.clothing_raster_step01_repair..01.md
-+原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
-+
-+报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
-+
--- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
-+- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
--- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
-+- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。
-
-===== 29 files; e.g. raster-layering__tests__review.test.ts/step01_返修修改分层文件后中断_续跑保留结构且保留未改动的_KRA/raster.raster_step01_repair..01.md
-+报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
-+
--- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
+-- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md"。
 +- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
-===== 26 files; e.g. part-layering__tests__completion-agent.test.ts/完全遮挡节点可提交空可见轮廓_经独立_review_后补出形体_续跑保留原稿与事实/run.part_outline.组轮廓绘制-face.01.md
--  "reference": "/tmp/<TMP>/references/base.png",
--  "groups": "/tmp/<TMP>/groups.json",
--  "parentGroup": null,
--  "parentSvg": null,
--  "canvas": {
--    "width": 100,
--    "height": 100
--  },
--  "outputSvg": "/tmp/<TMP>/step09_outline/face/workspace/outline.draft.svg"
-+  "parentGroup": null
-+reference：<TASK>/part-layering/references/base-subject.png
-+groups：<TASK>/part-layering/groups.json
-+parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+canvas：100×100
-+outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
--
-+outputSvg 已有上次中断前画到的草稿时，先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。
-+本组的素体参考图，沿用其画布与可见形状。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
--
--======== image ========
--{
-- "description": "本组的素体参考图，沿用其画布与可见形状。",
-- "path": "P"
--}
+===== 37 files; e.g. shared__tests__providers.test.ts/AGV_receives_native_key_protocol_and_comma_model_list_in_its_controlled_workspace_with_both_protocols_resumable/transport-cli.transport-cli..01.md
+-- 当前工作区：<TASK>/part-layering/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/.run/case/part-layering。正式输出目录：/tmp/<TMP>/.run/case/part-layering。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 27 files; e.g. clothing-raster-layering__tests__review.test.ts/reviewer_中断不留下正式报告_再启动使用新上下文检查同一个环节/raster.clothing_raster_step01_review..01.md
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 26 files; e.g. part-layering__tests__preparation.test.ts/--standard_先判断_已标准仅复制_需要调整才传一张原图给原生生图_后续引用新图/run.part_base_subject.素体换装.01.md
 -选定的复制或生图工具只调用一次，完成后直接交付，不检查、不返修。工具使用范围为本次复制或已配置生图，图片和判断依据直接来自本次输入。成功返回 JSON：{"savedPath":"工具返回的真实路径","error":null,"reason":"复用或换装的具体依据"}；失败时 savedPath 为 null，error 和 reason 说明原因。
 +选定的复制或生图工具只调用一次，完成后直接交付，不检查、不返修。工具使用范围为查看本次参考图、本次复制或已配置生图，图片和判断依据直接来自本次输入。成功返回 JSON：{"savedPath":"工具返回的真实路径","error":null,"reason":"复用或换装的具体依据"}；失败时 savedPath 为 null，error 和 reason 说明原因。
 +图 1：已准备的角色参考图。
-+参考图绝对路径：<REPO>/.run/test-<UUID>/part-layering/references/simplified-subject.png
++参考图绝对路径：/data/home/lockliu/workspaces/AstraLayering-knowledge-20261029/.run/test-<UUID>/part-layering/references/simplified-subject.png
 -======== image ========
 -{
 - "description": "图 1：已准备的角色参考图。",
@@ -63,11 +46,17 @@
 - "path": "P"
 -}
 
+===== 26 files; e.g. raster-layering__tests__review.test.ts/reviewer_中断不留下正式报告_再启动使用新上下文检查同一个环节/raster.raster_step01_review..01.md
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
 ===== 25 files; e.g. part-layering__tests__preparation.test.ts/--standard_先判断_已标准仅复制_需要调整才传一张原图给原生生图_后续引用新图/run.part_simplify.参考判断与简化.01.md
 -选定的复制或生图工具只调用一次，完成后直接交付，不检查、不返修。工具使用范围为本次复制或已配置生图，图片和判断依据直接来自本次输入。成功返回 JSON：{"savedPath":"工具返回的真实路径","error":null,"reason":"复制或转换画风的具体依据"}；失败时 savedPath 为 null，error 和 reason 说明原因。
 +选定的复制或生图工具只调用一次，完成后直接交付，不检查、不返修。工具使用范围为查看本次参考图、本次复制或已配置生图，图片和判断依据直接来自本次输入。成功返回 JSON：{"savedPath":"工具返回的真实路径","error":null,"reason":"复制或转换画风的具体依据"}；失败时 savedPath 为 null，error 和 reason 说明原因。
 +图 1：角色原始参考图。
-+参考图绝对路径：<REPO>/.run/test-<UUID>/part-layering/references/standard.png
++参考图绝对路径：/data/home/lockliu/workspaces/AstraLayering-knowledge-20261029/.run/test-<UUID>/part-layering/references/standard.png
 -======== image ========
 -{
 - "description": "图 1：角色原始参考图。",
@@ -81,29 +70,48 @@
 - "path": "P"
 -}
 
-===== 22 files; e.g. part-layering__tests__completion-agent.test.ts/完全遮挡节点可提交空可见轮廓_经独立_review_后补出形体_续跑保留原稿与事实/run.part_outline_review.组轮廓review-face.01.md
+===== 22 files; e.g. part-layering__tests__outline-agent.test.ts/blocked_不返修也不放行_只有最终回复没有提交工具时不能记为通过/run.part_outline.组轮廓绘制-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "note": "脸部与耳朵，不画头顶或后脑",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
 -  "parentSvg": null,
 -  "canvas": {
 -    "width": 100,
 -    "height": 100
 -  },
--  "candidate": "/tmp/<TMP>/step09_outline/face/outline.svg",
+-  "outputSvg": "/tmp/<TMP>/step09_outline/face/workspace/outline.draft.svg"
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
-+candidate：<TASK>/part-layering/step09_outline/face/outline.svg
--审查报告：/tmp/<TMP>/step09_outline/face/review.json
-+审查报告：<TASK>/part-layering/step09_outline/face/review.json
-+用于独立核对本组可见外轮廓的素体参考图。
++outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
+-
++outputSvg 已有上次中断前画到的草稿时，先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。
++本组的素体参考图，沿用其画布与可见形状。
 +参考图绝对路径：<TASK>/part-layering/references/base-subject.png
+-
 -======== image ========
 -{
-- "description": "用于独立核对本组可见外轮廓的素体参考图。",
+- "description": "本组的素体参考图，沿用其画布与可见形状。",
 - "path": "P"
 -}
+
+===== 22 files; e.g. shared__tests__agent-errors.test.ts/Codex_App_Server_eof_preserve_payloads_and_wait_for_terminal_status/transport.transport..01.md
+-- 当前工作区：/tmp/<TMP>/case/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case。正式输出目录：/tmp/<TMP>/case。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 18 files; e.g. part-layering__tests__initial-groups.test.ts/null_且组为空接入真实识别适配器_结果原子保存_旧文件续跑不再识别/run.part_initial_groups.首次分组识别.01.md
 -本次运行目录：/tmp/<TMP>
@@ -113,17 +121,25 @@
 +素体参考图：<TASK>/part-layering/references/base-subject.png
 +分组文件：<TASK>/part-layering/step08_initial/groups.json
 
-===== 15 files; e.g. clothing-raster-layering__tests__review.test.ts/reviewer_中断不留下正式报告_再启动使用新上下文检查同一个环节/raster.clothing_raster_step01..01.md
+===== 14 files; e.g. clothing-raster-layering__tests__review.test.ts/reviewer_中断不留下正式报告_再启动使用新上下文检查同一个环节/raster.clothing_raster_step01..01.md
+-完成拆层与核对后，用 edit_occlusion 更新上游 occlusion.json，将对应 part 更新为 levels，逐区域写清深度、范围、连续分界和前后对象，不要求像素线条。逻辑部件发生拆分时，保存对应 SVG，再用 edit_groups 同步分组与深度记录；在 clothing-raster-layering/step01/report.md 记录原 part ID、实际图层名、区域、最终深度和拆层原因，区分已有标注及组装中新发现的拆层。
++完成拆层与核对后，用 edit_occlusion 更新上游 occlusion.json，将对应 part 更新为 levels，逐区域写清深度、范围、连续分界和前后对象，不要求像素线条。逻辑部件发生拆分时，保存对应 SVG，再用 edit_groups 同步分组与深度记录；在 clothing-raster-layering/step01/report.md.tmp 记录原 part ID、实际图层名、区域、最终深度和拆层原因，区分已有标注及组装中新发现的拆层。
++
 +原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
 +
 +报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
-+
 -- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
 +- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
+-- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md"。
++- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 14 files; e.g. part-layering__tests__outline-agent.test.ts/revise_由原绘制会话返修_每次_review_新会话_报告保留各轮意见/run.part_outline_repair.组轮廓返修-face.01.md
 +【独立 review 的返修意见】
-+对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。
++见 <TASK>/part-layering/step09_outline/face/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
 +
 +【返修要求】
 +按上述意见修改当前草稿，保留可靠的可见边缘，清理噪音；微小缺口按参考和形体关系补成连续的局部形状，不用孤点或碎片代替形体。
@@ -140,10 +156,16 @@
 +
 +若反馈要求恢复配色、纹样、明暗、材质或半透明表现，逐项说明它们属于后续栅格绘制；保留正确色块，仍须修正真实轮廓、开口、覆盖和归属问题。发现本组说明有误时可使用 update_group_note 修正说明；仅有说明问题时保留正确轮廓，不改父组、其他组或分组树。
 +
-+提示词来源：P
-+
 +
 +======== recoveryPrompt ========
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "note": "脸部与耳朵，不画头顶或后脑",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -153,9 +175,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/face/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
@@ -169,6 +193,11 @@
 +
 +---
 +原绘制会话不可用，上方是本组原绘制任务；草稿已载入独立 review 的候选。本次只继续下方返修任务，不从头重画。
+-对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。
++见 <TASK>/part-layering/step09_outline/face/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
+-提示词来源：P
+-
+-
 -发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
 -
 -
@@ -179,11 +208,71 @@
 - "path": "P"
 -}
 
+===== 14 files; e.g. raster-layering__tests__review.test.ts/step01_返修修改分层文件后中断_续跑保留结构且保留未改动的_KRA/raster.raster_step01_repair..01.md
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++
+-- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。
+-已有交付与报告均保留。本次只继续下方修复任务，不重新提交首次绘制报告。
++上方原绘制任务用于恢复背景；本次只接续下方修复任务，不重新提交首次绘制报告。
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+-
+
+===== 13 files; e.g. part-layering__tests__outline-agent.test.ts/blocked_不返修也不放行_只有最终回复没有提交工具时不能记为通过/run.part_outline_review.组轮廓review-face.01.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 1 轮 review
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/part-layering/step09_outline/face/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "face",
+-    "note": "脸部与耳朵，不画头顶或后脑",
+-    "kind": "group"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
+-  "parentSvg": null,
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "candidate": "/tmp/<TMP>/step09_outline/face/outline.svg",
+-  "review": {
+-    "round": 1,
+-    "candidateHash": "2af7a7559f3939bc0b90cbad5ab35998e78cb9143e60ed013136bad2a0fecfd8"
+-  }
+-}
+-
+-审查报告：/tmp/<TMP>/step09_outline/face/review.json
++审查报告：<TASK>/part-layering/step09_outline/face/review.json
++用于独立核对本组可见外轮廓的素体参考图。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
+-======== image ========
+-{
+- "description": "用于独立核对本组可见外轮廓的素体参考图。",
+- "path": "P"
+-}
+
 ===== 12 files; e.g. clothing-part-layering__tests__preparation.test.ts/changed_cached_references_are_not_silently_reused_loading_missing_references_does_not_write/run.clothing_preparation.纯衣服参考准备.01.md
 +图 1：简化后的穿衣角色原稿，提供待提取衣装的款式、比例和画风。
-+参考图绝对路径：<REPO>/.run/fixture-<UUID>/part-layering/references/simplified-subject.png
++参考图绝对路径：/data/home/lockliu/workspaces/AstraLayering-knowledge-20261029/.run/fixture-<UUID>/part-layering/references/simplified-subject.png
 +图 2：同一角色的素体参考，用于确认换装范围；人物及随人物保留的外观由素体自身提供。
-+参考图绝对路径：<REPO>/.run/fixture-<UUID>/part-layering/references/base-subject.png
++参考图绝对路径：/data/home/lockliu/workspaces/AstraLayering-knowledge-20261029/.run/fixture-<UUID>/part-layering/references/base-subject.png
 -======== image ========
 -{
 - "description": "图 1：简化后的穿衣角色原稿，提供待提取衣装的款式、比例和画风。",
@@ -196,15 +285,56 @@
 - "path": "P"
 -}
 
-===== 8 files; e.g. clothing-raster-layering__tests__workflow.test.ts/clothing-part-layering_occlusion_重做后_step01_及后续重跑并换新_thread/raster.clothing_raster_step02..01.md
+===== 12 files; e.g. clothing-raster-layering__tests__review.test.ts/step01_返修修改分层文件后中断_续跑保留结构且保留未改动的_KRA/raster.clothing_raster_step01_repair..01.md
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++
 +原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
 +
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
 -- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
 +- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
+-- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。
+-已有交付与报告均保留。本次只继续下方修复任务，不重新提交首次绘制报告。
++上方原绘制任务用于恢复背景；本次只接续下方修复任务，不重新提交首次绘制报告。
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+-
+
+===== 10 files; e.g. raster-layering__tests__workflow.test.ts/part_终止步骤_occlusion_重做后_step01_及后续重跑并换新_thread_上游未完成时拒绝且不动本管线/raster.raster_step02..01.md
+-- 当前工作区：<TASK>/raster-layering/step02/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/raster-layering。正式输出目录：<TASK>/raster-layering/step02。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 10 files; e.g. shadow__tests__workflow.test.ts/character-assembly_重做后所选_step01_删除旧产物_新建_thread_重做_另一模式产物不动/raster.shadow_mask..01.md
+-- simplified 参考（分析画法与投影范围，只读）："<TASK>/part-layering/references/simplified-subject.webp"。
+-- part 分组与遮挡顺序：["<TASK>/part-layering/groups.json","<TASK>/part-layering/occlusion.json","<TASK>/clothing-part-layering/groups.json","<TASK>/clothing-part-layering/occlusion.json"]。人物 ID 记为 character:<原 part ID>，衣服 ID 记为 clothing:<原 part ID>。
++- simplified 参考（分析画法与投影范围，只读）："<TASK>/part-layering/references/simplified-subject.png"。
++- part 分组与遮挡顺序：["<TASK>/part-layering/groups.json","<TASK>/part-layering/occlusion.json","<TASK>/clothing-part-layering/groups.json","<TASK>/clothing-part-layering/occlusion.json"]；未穿衣、没有衣服 part 时只有前两项。人物 ID 记为 character:<原 part ID>，衣服 ID 记为 clothing:<原 part ID>。
+-- 当前工作区：/tmp/<TMP>/case/shadow/step01_mask/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/shadow。正式输出目录：/tmp/<TMP>/case/shadow/step01_mask。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 10 files; e.g. shared__tests__environment.test.ts/两套_raster_续跑读取当前环境模型_仍恢复原_threadId_缺产物诊断带最后消息/raster.raster_step01..01.md
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++
+-- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 8 files; e.g. part-layering__tests__outline-agent.test.ts/两次_review_都_revise_时落实两次返修并进入下一步_不做第三次_review/run.part_outline_repair.组轮廓返修-face.03.md
 +【独立 review 的返修意见】
-+对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 2 轮反馈。
++见 <TASK>/part-layering/step09_outline/face/review.json 中 reviews 最后一条（第 2 轮 review）的 feedback。
 +
 +【返修要求】
 +按上述意见修改当前草稿，保留可靠的可见边缘，清理噪音；微小缺口按参考和形体关系补成连续的局部形状，不用孤点或碎片代替形体。
@@ -221,10 +351,16 @@
 +
 +若反馈要求恢复配色、纹样、明暗、材质或半透明表现，逐项说明它们属于后续栅格绘制；保留正确色块，仍须修正真实轮廓、开口、覆盖和归属问题。发现本组说明有误时可使用 update_group_note 修正说明；仅有说明问题时保留正确轮廓，不改父组、其他组或分组树。
 +
-+提示词来源：P
-+
 +
 +======== recoveryPrompt ========
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "note": "脸部与耳朵，不画头顶或后脑",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -234,9 +370,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/face/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
@@ -250,6 +388,11 @@
 +
 +---
 +原绘制会话不可用，上方是本组原绘制任务；草稿已载入独立 review 的候选。本次只继续下方返修任务，不从头重画。
+-对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 2 轮反馈。
++见 <TASK>/part-layering/step09_outline/face/review.json 中 reviews 最后一条（第 2 轮 review）的 feedback。
+-提示词来源：P
+-
+-
 -发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
 -
 -
@@ -260,7 +403,78 @@
 - "path": "P"
 -}
 
+===== 8 files; e.g. shared__tests__environment.test.ts/两套_raster_续跑读取当前环境模型_仍恢复原_threadId_缺产物诊断带最后消息/raster.raster_step01_review..01.md
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 8 files; e.g. shared__tests__environment.test.ts/两套_raster_续跑读取当前环境模型_仍恢复原_threadId_缺产物诊断带最后消息/raster.clothing_raster_step01..01.md
++原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++
+-- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
+-- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 7 files; e.g. clothing-raster-layering__tests__review.test.ts/重新进入初次绘制时清除旧_review_结论_不把修改前的通过报告复用到新交付/raster.clothing_raster_step01..02.md
++原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++
+-- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
+-- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 7 files; e.g. raster-layering__tests__workflow.test.ts/part_终止步骤_occlusion_重做后_step01_及后续重跑并换新_thread_上游未完成时拒绝且不动本管线/raster.raster_step03..01.md
+-- 当前工作区：<TASK>/raster-layering/step03/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/raster-layering。正式输出目录：<TASK>/raster-layering/step03。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 7 files; e.g. workflow__tests__background.test.ts/_/raster.assembly..01.md
+-- 当前工作区：/tmp/<TMP>/case/character-assembly/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/character-assembly。正式输出目录：/tmp/<TMP>/case/character-assembly/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 6 files; e.g. character-assembly__tests__workflow.test.ts/medium_从环境配置读取_不使用_high_配置或上游绘制_thread/raster.assembly..01.md
+-- 简化穿衣角色参考图："<TASK>/part-layering/references/simplified-subject.webp"。
++- 简化穿衣角色参考图："<TASK>/part-layering/references/simplified-subject.png"。
+-- 当前工作区：/tmp/<TMP>/case/character-assembly/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/character-assembly。正式输出目录：/tmp/<TMP>/case/character-assembly/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 6 files; e.g. clothing-raster-layering__tests__workflow.test.ts/clothing-part-layering_occlusion_重做后_step01_及后续重跑并换新_thread/raster.clothing_raster_step02..01.md
++原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++
+-- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
+-- 当前工作区：<TASK>/clothing-raster-layering/step02/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step02。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
 ===== 6 files; e.g. part-layering__tests__completion-agent.test.ts/补全_threadId_记在_agents_steps_中断后续跑恢复同一会话_step02_重做时一并重置/run.part_completion.正面遮挡补全-head.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "head",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -270,21 +484,24 @@
 -  "outputDraft": "/tmp/<TMP>/step11_completion/head/workspace/completion.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 head 的节点；kind 省略时为 group
++parentGroup：head 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth01/head.svg
 +outputDraft：<TASK>/part-layering/step11_completion/head/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
-+
-+正面素体参考；只补当前正面被遮住的轮廓。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -======== image ========
 -{
 - "description": "正面素体参考；只补当前正面被遮住的轮廓。",
 - "path": "P"
 -}
++正面素体参考；只补当前正面被遮住的轮廓。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++
 
 ===== 6 files; e.g. part-layering__tests__outline-reduce.test.ts/真实去重适配器的工具交付与校验_changed/run.part_reduce.同层轮廓去重-0.01.md
 -增量续跑时，sourceSvg 是该件当前有效底稿：reusedReduction 为 true 表示已有输入一致的去重结果，originalOutline 保留最初轮廓供核对。未重画且不需要实际修改的部件保持 sourceSvg 原样；不因同层有其他部件重画就重做所有部件。只有发现真实重复并需要改变该件输出时才提交它的 changed。
@@ -318,7 +535,7 @@
 -    }
 -  ]
 -}
-+depth：0
++depth：01
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +mergedPreview：<TASK>/part-layering/step10_reduce/depth01/workspace/merged.draft.svg
@@ -329,14 +546,77 @@
 
 ===== 6 files; e.g. part-layering__tests__preparation.test.ts/--standard_先判断_已标准仅复制_需要调整才传一张原图给原生生图_后续引用新图/run.part_pose_judgment.姿态判断.01.md
 +角色原始参考图。
-+参考图绝对路径：<REPO>/.run/test-<UUID>/input/original.png
++参考图绝对路径：/data/home/lockliu/workspaces/AstraLayering-knowledge-20261029/.run/test-<UUID>/input/original.png
 -======== image ========
 -{
 - "description": "角色原始参考图。",
 - "path": "P"
 -}
 
+===== 6 files; e.g. shared__tests__environment.test.ts/两套_raster_续跑读取当前环境模型_仍恢复原_threadId_缺产物诊断带最后消息/raster.clothing_raster_step01_review..01.md
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 5 files; e.g. part-layering__tests__outline-agent.test.ts/revise_由原绘制会话返修_每次_review_新会话_报告保留各轮意见/run.part_outline_review.组轮廓review-face.02.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 2 轮 review
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/part-layering/step09_outline/face/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "face",
+-    "note": "脸部与耳朵，不画头顶或后脑",
+-    "kind": "group"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
+-  "parentSvg": null,
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "candidate": "/tmp/<TMP>/step09_outline/face/outline.svg",
+-  "review": {
+-    "round": 2,
+-    "candidateHash": "10b56fbc1a3658e12a280673f2c4a73286bd23ed2e30c1b51a81b2986ff7f9b5"
+-  }
+-}
+-
+-审查报告：/tmp/<TMP>/step09_outline/face/review.json
++审查报告：<TASK>/part-layering/step09_outline/face/review.json
++用于独立核对本组可见外轮廓的素体参考图。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
+-======== image ========
+-{
+- "description": "用于独立核对本组可见外轮廓的素体参考图。",
+- "path": "P"
+-}
+
+===== 5 files; e.g. shared__tests__codex-images.test.ts/raster_自定义框选工具与原生生图兼容_保留配置与会话/transport.transport..01.md
+-- 当前工作区：/tmp/<TMP>/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
 ===== 4 files; e.g. part-layering__tests__outline-agent.test.ts/绘制_ID_在中断前落盘_重启调度后恢复同一会话_reviewer_仍独立/run.part_outline.组轮廓绘制-face.03.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "note": "脸部与耳朵，不画头顶或后脑",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -347,9 +627,11 @@
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/face/workspace/outline.draft.svg",
 -  "resumedDraft": "outputSvg 已有上次中断前画到的草稿：先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
@@ -366,7 +648,7 @@
 
 ===== 4 files; e.g. part-layering__tests__preparation.test.ts/--standard_先判断_已标准仅复制_需要调整才传一张原图给原生生图_后续引用新图/run.part_standardize.标准姿态.01.md
 +角色原始参考图。
-+参考图绝对路径：<REPO>/.run/test-<UUID>/input/original.png
++参考图绝对路径：/data/home/lockliu/workspaces/AstraLayering-knowledge-20261029/.run/test-<UUID>/input/original.png
 -
 -======== image ========
 -{
@@ -374,33 +656,27 @@
 - "path": "P"
 -}
 
-===== 3 files; e.g. part-layering__tests__completion-agent.test.ts/新增路径修正后必须重看当前候选_没有工具提交不能交付/run.part_completion.正面遮挡补全-face.01.md
--  "reference": "/tmp/<TMP>/references/base.png",
--  "canvas": {
--    "width": 100,
--    "height": 100
--  },
--  "sourceSvg": "/tmp/<TMP>/source.svg",
--  "outputDraft": "/tmp/<TMP>/face.draft.svg",
--  "additionalReferences": [],
--  "parentSvg": null
-+  "parentGroup": null
-+reference：<TASK>/part-layering/references/base-subject.png
-+canvas：100×100
-+sourceSvg：<TASK>/part-layering/step10_reduce/depth01/face.svg
-+outputDraft：<TASK>/part-layering/step11_completion/face/workspace/completion.draft.svg
-+parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
-+
-+正面素体参考；只补当前正面被遮住的轮廓。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
--======== image ========
--{
-- "description": "正面素体参考；只补当前正面被遮住的轮廓。",
-- "path": "P"
--}
+===== 4 files; e.g. shadow__tests__workflow.test.ts/character-assembly_重做后所选_step01_删除旧产物_新建_thread_重做_另一模式产物不动/raster.shadow_maps..01.md
+-- simplified 参考（分析画法与投影范围，只读）："<TASK>/part-layering/references/simplified-subject.webp"。
+-- part 分组与遮挡顺序：["<TASK>/part-layering/groups.json","<TASK>/part-layering/occlusion.json","<TASK>/clothing-part-layering/groups.json","<TASK>/clothing-part-layering/occlusion.json"]。人物 ID 记为 character:<原 part ID>，衣服 ID 记为 clothing:<原 part ID>。
++- simplified 参考（分析画法与投影范围，只读）："<TASK>/part-layering/references/simplified-subject.png"。
++- part 分组与遮挡顺序：["<TASK>/part-layering/groups.json","<TASK>/part-layering/occlusion.json","<TASK>/clothing-part-layering/groups.json","<TASK>/clothing-part-layering/occlusion.json"]；未穿衣、没有衣服 part 时只有前两项。人物 ID 记为 character:<原 part ID>，衣服 ID 记为 clothing:<原 part ID>。
+-- 当前工作区：/tmp/<TMP>/case/shadow/step01_normal-depth/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/shadow。正式输出目录：/tmp/<TMP>/case/shadow/step01_normal-depth。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 3 files; e.g. part-layering__tests__occlusion.test.ts/多深度保留逻辑_part_必须检查全部区域_完成后可恢复而不重画_SVG/run.part_occlusion.最终遮挡层级规划.01.md
+-提示词来源：P
++【本次输入】
++preview：<TASK>/part-layering/preview.svg
++reference：<TASK>/part-layering/references/base-subject.png
++canvas：100×100
++groups：<TASK>/part-layering/groups.json；完整部件树与节点说明，其中全部终止叶节点即本次需要规划的终止 part
++完整 SVG：<TASK>/part-layering/parts/<完整ID>.svg
++outline-reduce 轮廓：<TASK>/part-layering/step10_reduce/depthNN/<完整ID>.svg；NN 为完整 ID 的段数，补足两位（如 arms/arm_left 为 02）
++candidate：<TASK>/part-layering/step14_occlusion/workspace/candidate.svg
+-【本次输入】
 -{
 -  "preview": "/tmp/<TMP>/preview.svg",
 -  "reference": "/tmp/<TMP>/references/base.png",
@@ -437,15 +713,9 @@
 -    }
 -  ]
 -}
-+preview：<TASK>/part-layering/preview.svg
-+reference：<TASK>/part-layering/references/base-subject.png
-+canvas：100×100
-+groups：<TASK>/part-layering/groups.json；完整部件树与节点说明，其中全部终止叶节点即本次需要规划的终止 part
-+完整 SVG：<TASK>/part-layering/parts/<完整ID>.svg
-+outline-reduce 轮廓：<TASK>/part-layering/step10_reduce/depthNN/<完整ID>.svg；NN 为完整 ID 的段数，补足两位（如 arms/arm_left 为 02）
-+candidate：<TASK>/part-layering/step14_occlusion/workspace/candidate.svg
 +本次角色原姿势参考，用于确定每个完整 part 的固定前后深度。
 +参考图绝对路径：<TASK>/part-layering/references/base-subject.png
+-
 -======== image ========
 -{
 - "description": "本次角色原姿势参考，用于确定每个完整 part 的固定前后深度。",
@@ -453,6 +723,13 @@
 -}
 
 ===== 3 files; e.g. part-layering__tests__outline-agent.test.ts/子组绘制收到父组完成_SVG_越界由写入工具当回合退回_不能进入_review_父组文件保持原样/run.part_outline.组轮廓绘制-face_eye.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face/eye",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": "face",
@@ -462,9 +739,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/child.draft.svg"
-+  "parentGroup": "face"
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face/eye 的节点；kind 省略时为 group
++parentGroup：face/eye 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/face/children/eye/workspace/outline.draft.svg
@@ -479,12 +758,31 @@
 - "path": "P"
 -}
 
+===== 3 files; e.g. shared__tests__providers.test.ts/explicit_Claude_Messages_connection_rejects_native_cloud_routes_while_inherited_routes_remain_supported/transport-cli.transport-cli..01.md
+-- 当前工作区：/tmp/<TMP>/.run/case/shadow/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/.run/case/shadow。正式输出目录：/tmp/<TMP>/.run/case/shadow。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
 ===== 2 files; e.g. clothing-part-layering__tests__agents.test.ts/无工具一次性回合走_app-server_只读_关闭_shell_记录输入与结果和绝对_savedPath/transport.transport..01.md
+-- 当前工作区：/tmp/<TMP>/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -图 1：测试图片
 -======== image /tmp/<TMP>/reference.png ========
 
 ===== 2 files; e.g. clothing-part-layering__tests__outline-note-repair.test.ts/initial_drawing_and_repair_reuse_one_actual_app-server_session_with_stable_tool_definitions/run.clothing_outline.组轮廓绘制-band.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "band",
+-    "kind": "group",
+-    "name": "band",
+-    "note": "原说明"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -494,9 +792,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/band/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 band 的节点；kind 省略时为 group
++parentGroup：band 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/clothing-part-layering/step09_outline/band/workspace/outline.draft.svg
@@ -511,31 +811,14 @@
 - "path": "P"
 -}
 
-===== 2 files; e.g. clothing-part-layering__tests__outline-note-repair.test.ts/note-only_feedback_is_persisted_and_visible_to_the_next_reviewer_without_changing_correct_geometry/run.clothing_outline_review.组轮廓review-band.01.md
--  "reference": "/tmp/<TMP>/references/base.png",
--  "groups": "/tmp/<TMP>/groups.json",
--  "parentSvg": null,
--  "canvas": {
--    "width": 100,
--    "height": 100
--  },
--  "candidate": "/tmp/<TMP>/step09_outline/band/outline.svg",
-+reference：<TASK>/clothing-part-layering/references/clothing.png
-+groups：<TASK>/clothing-part-layering/groups.json
-+parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+canvas：100×100
-+candidate：<TASK>/clothing-part-layering/step09_outline/band/outline.svg
--审查报告：/tmp/<TMP>/step09_outline/band/review.json
-+审查报告：<TASK>/clothing-part-layering/step09_outline/band/review.json
-+用于独立核对本组可见外轮廓的纯衣服参考图。
-+参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
--======== image ========
--{
-- "description": "用于独立核对本组可见外轮廓的纯衣服参考图。",
-- "path": "P"
--}
-
 ===== 2 files; e.g. part-layering__tests__children-agent.test.ts/分析期间或提交后修改父_SVG_会失败_未提交的最终文本不是分析事实/run.part_children.直属结构拆分-neck.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "neck",
+-    "kind": "group"
+-  },
 -  "sourceSvg": "/tmp/<TMP>/source.svg",
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "additionalReferences": [],
@@ -543,11 +826,16 @@
 -    "width": 100,
 -    "height": 100
 -  },
+-  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 neck 的节点；kind 省略时为 group
++parentGroup：neck 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +sourceSvg：<TASK>/part-layering/parts/neck.svg
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 -本轮只分析直属节点。查看源 SVG 的独显与原图叠加，并局部放大核对参考；SVG、groups.json 和事实文件由程序管理，保持只读。additionalReferences 是本次显式提供的可选图片及用途，按需要查看其中明确提供的图片；没有相关疑问不必逐张查看，图片只说明结构先验，当前角色造型仍以本次参考为准。只执行本轮分析，使用本次给定参考。
 +本轮只分析直属节点。查看源 SVG 的独显与原图叠加，并局部放大核对参考；SVG、groups.json 和事实文件由程序管理，保持只读。本次输入列出 additionalReferences 时，它们是本次显式提供的可选图片及用途，按需要查看其中明确提供的图片；没有相关疑问不必逐张查看，图片只说明结构先验，当前角色造型仍以本次参考为准。只执行本轮分析，使用本次给定参考。
+-固定约定提示词来源：P
 +角色正面参考；结合当前父组完成轮廓分析直属结构。
 +参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -======== image ========
@@ -560,7 +848,7 @@
 -选定的复制或生图工具只调用一次，完成后直接交付，不检查、不返修。工具使用范围为本次复制或已配置生图，图片和判断依据直接来自本次输入。成功返回 JSON：{"savedPath":"工具返回的真实路径","error":null,"reason":"复制或转换画风的具体依据"}；失败时 savedPath 为 null，error 和 reason 说明原因。
 +选定的复制或生图工具只调用一次，完成后直接交付，不检查、不返修。工具使用范围为查看本次参考图、本次复制或已配置生图，图片和判断依据直接来自本次输入。成功返回 JSON：{"savedPath":"工具返回的真实路径","error":null,"reason":"复制或转换画风的具体依据"}；失败时 savedPath 为 null，error 和 reason 说明原因。
 +图 1：角色原始参考图。
-+参考图绝对路径：<REPO>/.run/test-cli-<UUID>/part-layering/references/standard.png
++参考图绝对路径：/data/home/lockliu/workspaces/AstraLayering-knowledge-20261029/.run/test-cli-<UUID>/part-layering/references/standard.png
 -======== image ========
 -{
 - "description": "图 1：角色原始参考图。",
@@ -578,7 +866,7 @@
 -选定的复制或生图工具只调用一次，完成后直接交付，不检查、不返修。工具使用范围为本次复制或已配置生图，图片和判断依据直接来自本次输入。成功返回 JSON：{"savedPath":"工具返回的真实路径","error":null,"reason":"复用或换装的具体依据"}；失败时 savedPath 为 null，error 和 reason 说明原因。
 +选定的复制或生图工具只调用一次，完成后直接交付，不检查、不返修。工具使用范围为查看本次参考图、本次复制或已配置生图，图片和判断依据直接来自本次输入。成功返回 JSON：{"savedPath":"工具返回的真实路径","error":null,"reason":"复用或换装的具体依据"}；失败时 savedPath 为 null，error 和 reason 说明原因。
 +图 1：已准备的角色参考图。
-+参考图绝对路径：<REPO>/.run/test-cli-<UUID>/part-layering/references/simplified-subject.png
++参考图绝对路径：/data/home/lockliu/workspaces/AstraLayering-knowledge-20261029/.run/test-cli-<UUID>/part-layering/references/simplified-subject.png
 -======== image ========
 -{
 - "description": "图 1：已准备的角色参考图。",
@@ -593,6 +881,13 @@
 -}
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/任务根经软链接打开时_预览记录的真实路径仍认作当前补全草稿/run.part_completion.正面遮挡补全-head.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "head",
+-    "kind": "group"
+-  },
 -  "reference": "<TASK>/part-layering/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -602,23 +897,71 @@
 -  "outputDraft": "<TASK>/part-layering/step11_completion/head/workspace/completion.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 head 的节点；kind 省略时为 group
++parentGroup：head 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth01/head.svg
 +outputDraft：<TASK>/part-layering/step11_completion/head/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
-+
-+正面素体参考；只补当前正面被遮住的轮廓。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -======== image ========
 -{
 - "description": "正面素体参考；只补当前正面被遮住的轮廓。",
 - "path": "P"
 -}
++正面素体参考；只补当前正面被遮住的轮廓。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++
+
+===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/完全遮挡节点可提交空可见轮廓_经独立_review_后补出形体_续跑保留原稿与事实/run.part_outline.组轮廓绘制-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group",
+-    "note": "参考中被完全遮挡的真实脸部节点"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
+-  "parentSvg": null,
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "outputSvg": "/tmp/<TMP>/step09_outline/face/workspace/outline.draft.svg"
+-}
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
+-
++outputSvg 已有上次中断前画到的草稿时，先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。
++本组的素体参考图，沿用其画布与可见形状。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
+-
+-======== image ========
+-{
+- "description": "本组的素体参考图，沿用其画布与可见形状。",
+- "path": "P"
+-}
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/完全遮挡节点可提交空可见轮廓_经独立_review_后补出形体_续跑保留原稿与事实/run.part_completion.正面遮挡补全-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group",
+-    "note": "参考中被完全遮挡的真实脸部节点"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -628,21 +971,60 @@
 -  "outputDraft": "/tmp/<TMP>/step11_completion/face/workspace/completion.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth01/face.svg
 +outputDraft：<TASK>/part-layering/step11_completion/face/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
-+
-+正面素体参考；只补当前正面被遮住的轮廓。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -======== image ========
 -{
 - "description": "正面素体参考；只补当前正面被遮住的轮廓。",
 - "path": "P"
 -}
++正面素体参考；只补当前正面被遮住的轮廓。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++
+
+===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/新增路径修正后必须重看当前候选_没有工具提交不能交付/run.part_completion.正面遮挡补全-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "sourceSvg": "/tmp/<TMP>/source.svg",
+-  "outputDraft": "/tmp/<TMP>/face.draft.svg",
+-  "additionalReferences": [],
+-  "parentSvg": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++reference：<TASK>/part-layering/references/base-subject.png
++canvas：100×100
++sourceSvg：<TASK>/part-layering/step10_reduce/depth01/face.svg
++outputDraft：<TASK>/part-layering/step11_completion/face/workspace/completion.draft.svg
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
++outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
+-======== image ========
+-{
+- "description": "正面素体参考；只补当前正面被遮住的轮廓。",
+- "path": "P"
+-}
++正面素体参考；只补当前正面被遮住的轮廓。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_left_hand_thumb.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -652,7 +1034,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_left/hand/thumb",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -675,15 +1064,16 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_left/hand.svg"
-+  "parentGroup": "arms/arm_left/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_left/hand/thumb 的节点；kind 省略时为 group
++parentGroup：arms/arm_left/hand/thumb 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/thumb.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_left/children/hand/children/thumb/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complete-fingers.png：Milly 与樱桃的完整指体图例；上排含掌片，下排为图
++- <TASK>/part-layering/step10_reduce/
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_left_hand_index_finger.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -693,7 +1083,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_left/hand/index_finger",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -716,15 +1113,15 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_left/hand.svg"
-+  "parentGroup": "arms/arm_left/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_left/hand/index_finger 的节点；kind 省略时为 group
++parentGroup：arms/arm_left/hand/index_finger 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/index_finger.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_left/children/hand/children/index_finger/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complete-fingers.png
++additionalR
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_left_hand_middle_finger.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -734,7 +1131,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_left/hand/middle_finger",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -757,15 +1161,15 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_left/hand.svg"
-+  "parentGroup": "arms/arm_left/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_left/hand/middle_finger 的节点；kind 省略时为 group
++parentGroup：arms/arm_left/hand/middle_finger 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/middle_finger.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_left/children/hand/children/middle_finger/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complete-fingers
++addi
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_left_hand_little_finger.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -775,7 +1179,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_left/hand/little_finger",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -798,15 +1209,15 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_left/hand.svg"
-+  "parentGroup": "arms/arm_left/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_left/hand/little_finger 的节点；kind 省略时为 group
++parentGroup：arms/arm_left/hand/little_finger 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/little_finger.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_left/children/hand/children/little_finger/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complete-fingers
++addi
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_left_hand_ring_finger.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -816,7 +1227,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_left/hand/ring_finger",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -839,15 +1257,15 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_left/hand.svg"
-+  "parentGroup": "arms/arm_left/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_left/hand/ring_finger 的节点；kind 省略时为 group
++parentGroup：arms/arm_left/hand/ring_finger 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/ring_finger.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_left/children/hand/children/ring_finger/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_left/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complete-fingers.png：Mil
++additionalReferenc
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_right_hand_index_finger.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -857,7 +1275,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_right/hand/index_finger",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -880,15 +1305,15 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_right/hand.svg"
-+  "parentGroup": "arms/arm_right/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_right/hand/index_finger 的节点；kind 省略时为 group
++parentGroup：arms/arm_right/hand/index_finger 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/index_finger.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_right/children/hand/children/index_finger/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complete-fi
++a
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_right_hand_thumb.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -898,7 +1323,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_right/hand/thumb",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -921,15 +1353,16 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_right/hand.svg"
-+  "parentGroup": "arms/arm_right/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_right/hand/thumb 的节点；kind 省略时为 group
++parentGroup：arms/arm_right/hand/thumb 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/thumb.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_right/children/hand/children/thumb/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complete-fingers.png：Milly 与樱桃的完整指体图例；上
++- <TASK>/part-layering/step
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_right_hand_little_finger.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -939,7 +1372,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_right/hand/little_finger",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -962,15 +1402,14 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_right/hand.svg"
-+  "parentGroup": "arms/arm_right/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_right/hand/little_finger 的节点；kind 省略时为 group
++parentGroup：arms/arm_right/hand/little_finger 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/little_finger.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_right/children/hand/children/little_finger/workspace/completion.draft.svg
-+parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complet
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_right_hand_middle_finger.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -980,7 +1419,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_right/hand/middle_finger",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -1003,15 +1449,14 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_right/hand.svg"
-+  "parentGroup": "arms/arm_right/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_right/hand/middle_finger 的节点；kind 省略时为 group
++parentGroup：arms/arm_right/hand/middle_finger 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/middle_finger.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_right/children/hand/children/middle_finger/workspace/completion.draft.svg
-+parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complet
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/正式调度中左右十指附加实际掌片与完整指体图片_part_不再分析子组/run.part_completion.正面遮挡补全-arms_arm_right_hand_ring_finger.01.md
 -palm 参考是本次角色已经过轮廓审查和同层去重的实际掌片，图片与 sourceSvg 均在本次 additionalReferences 中声明。用它确认掌片真实覆盖的位置；整手父轮廓和原图中的肤色不能代替实际掌片。掌片承担覆盖侧，当前手指承担伸入侧，不要求掌片为每根手指外扩。
@@ -1021,7 +1466,14 @@
 -从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 +从当前手指的指尖沿指身追踪到指根，核对它是否已经进入实际掌片。如果相邻手指遮住中间一段，沿本指已有走向、宽度及屈指姿态连续补出隐藏近端；仅延伸到邻指下面不等于接到了手掌。需要补根时，将近端伸入实际掌片内部，用平顺圆弧收口并保留局部重叠，使手指小幅移动时有连接余量。与 palm 相接处，按两边合起来组成一个圆来想：掌片已有边缘是圆的一部分，本指伸入端补出其余圆弧，拼合后是完整平顺的近似圆形搭接区，不画成相切、截断或孤立圆帽。已有轮廓已完整且具备合理搭接时无需新增，不为套用先验重复加形。
 -先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片图片与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-
+-提示词来源：P
 +先用 sourceSvg 的 blend 对照角色姿态，再结合实际掌片 SVG 与 sourceSvg 核对根端位置。补全后查看整根手指独显，并放大检查原指身到新增近端的连续性、根端进入实际掌片的位置、圆弧余量及真实指缝。自检要确认实际搭接，不能只以圆帽存在或已进入整手父范围作为完成依据；提交时说明隐藏段由谁遮挡、如何接入掌片，或为何已有范围无需新增。
+-{
+-  "group": {
+-    "id": "arms/arm_right/hand/ring_finger",
+-    "kind": "part"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -1044,17 +1496,24 @@
 -    }
 -  ],
 -  "parentSvg": "/tmp/<TMP>/parts/arms/arm_right/hand.svg"
-+  "parentGroup": "arms/arm_right/hand"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 arms/arm_right/hand/ring_finger 的节点；kind 省略时为 group
++parentGroup：arms/arm_right/hand/ring_finger 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/ring_finger.svg
 +outputDraft：<TASK>/part-layering/step11_completion/arms/children/arm_right/children/hand/children/ring_finger/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+additionalReferences：
-+- <TASK>/part-layering/step10_reduce/depth04/arms/arm_right/hand/palm.svg：同手 palm 的实际掌片轮廓，沿用完整画布坐标；核对本指隐藏根端进入掌片的真实位置及局部连接余量，不用整手父轮廓代替掌片。
-+- <SKILL>/knowledge/part-layering/step11_completion/references/fingers/complete-finger
++addition
 
 ===== 2 files; e.g. part-layering__tests__completion-agent.test.ts/补全_threadId_记在_agents_steps_中断后续跑恢复同一会话_step02_重做时一并重置/run.part_completion.正面遮挡补全-head.03.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "head",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -1065,23 +1524,69 @@
 -  "additionalReferences": [],
 -  "parentSvg": null,
 -  "resumedDraft": "outputDraft 已含上次中断前补上的形状：先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。"
-+  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 head 的节点；kind 省略时为 group
++parentGroup：head 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth01/head.svg
 +outputDraft：<TASK>/part-layering/step11_completion/head/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
-+
-+正面素体参考；只补当前正面被遮住的轮廓。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -======== image ========
 -{
 - "description": "正面素体参考；只补当前正面被遮住的轮廓。",
 - "path": "P"
 -}
++正面素体参考；只补当前正面被遮住的轮廓。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++
+
+===== 2 files; e.g. part-layering__tests__outline-agent.test.ts/并发组各自保留绘制会话和独立审查记录_返修不会串到另一组/run.part_outline.组轮廓绘制-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
+-  "parentSvg": null,
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "outputSvg": "/tmp/<TMP>/step09_outline/face/workspace/outline.draft.svg"
+-}
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
+-
++outputSvg 已有上次中断前画到的草稿时，先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。
++本组的素体参考图，沿用其画布与可见形状。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
+-
+-======== image ========
+-{
+- "description": "本组的素体参考图，沿用其画布与可见形状。",
+- "path": "P"
+-}
 
 ===== 2 files; e.g. part-layering__tests__outline-agent.test.ts/并发组各自保留绘制会话和独立审查记录_返修不会串到另一组/run.part_outline.组轮廓绘制-hair.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "hair",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1091,9 +1596,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/hair/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 hair 的节点；kind 省略时为 group
++parentGroup：hair 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/hair/workspace/outline.draft.svg
@@ -1110,7 +1617,7 @@
 
 ===== 2 files; e.g. part-layering__tests__outline-agent.test.ts/并发组各自保留绘制会话和独立审查记录_返修不会串到另一组/run.part_outline_repair.组轮廓返修-hair.01.md
 +【独立 review 的返修意见】
-+对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 2 轮反馈。
++见 <TASK>/part-layering/step09_outline/hair/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
 +
 +【返修要求】
 +按上述意见修改当前草稿，保留可靠的可见边缘，清理噪音；微小缺口按参考和形体关系补成连续的局部形状，不用孤点或碎片代替形体。
@@ -1127,10 +1634,15 @@
 +
 +若反馈要求恢复配色、纹样、明暗、材质或半透明表现，逐项说明它们属于后续栅格绘制；保留正确色块，仍须修正真实轮廓、开口、覆盖和归属问题。发现本组说明有误时可使用 update_group_note 修正说明；仅有说明问题时保留正确轮廓，不改父组、其他组或分组树。
 +
-+提示词来源：P
-+
 +
 +======== recoveryPrompt ========
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "hair",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1140,9 +1652,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/hair/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 hair 的节点；kind 省略时为 group
++parentGroup：hair 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/hair/workspace/outline.draft.svg
@@ -1157,7 +1671,10 @@
 +---
 +原绘制会话不可用，上方是本组原绘制任务；草稿已载入独立 review 的候选。本次只继续下方返修任务，不从头重画。
 -对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。
-+对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 2 轮反馈。
++见 <TASK>/part-layering/step09_outline/hair/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
+-提示词来源：P
+-
+-
 -发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
 -
 -
@@ -1170,7 +1687,7 @@
 
 ===== 2 files; e.g. part-layering__tests__outline-agent.test.ts/并发组各自保留绘制会话和独立审查记录_返修不会串到另一组/run.part_outline_repair.组轮廓返修-face.01.md
 +【独立 review 的返修意见】
-+对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。
++见 <TASK>/part-layering/step09_outline/face/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
 +
 +【返修要求】
 +按上述意见修改当前草稿，保留可靠的可见边缘，清理噪音；微小缺口按参考和形体关系补成连续的局部形状，不用孤点或碎片代替形体。
@@ -1187,10 +1704,15 @@
 +
 +若反馈要求恢复配色、纹样、明暗、材质或半透明表现，逐项说明它们属于后续栅格绘制；保留正确色块，仍须修正真实轮廓、开口、覆盖和归属问题。发现本组说明有误时可使用 update_group_note 修正说明；仅有说明问题时保留正确轮廓，不改父组、其他组或分组树。
 +
-+提示词来源：P
-+
 +
 +======== recoveryPrompt ========
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1200,9 +1722,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/face/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
@@ -1217,7 +1741,10 @@
 +---
 +原绘制会话不可用，上方是本组原绘制任务；草稿已载入独立 review 的候选。本次只继续下方返修任务，不从头重画。
 -对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 2 轮反馈。
-+对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。
++见 <TASK>/part-layering/step09_outline/face/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
+-提示词来源：P
+-
+-
 -发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
 -
 -
@@ -1225,6 +1752,49 @@
 -======== image ========
 -{
 - "description": "本组的素体参考图，沿用其画布与可见形状。",
+- "path": "P"
+-}
+
+===== 2 files; e.g. part-layering__tests__outline-agent.test.ts/缺少自检不能提交轮廓_返修回合失败保留此前已登记_SVG_并关闭会话/run.part_outline_review.组轮廓review-face.02.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 2 轮 review
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/part-layering/step09_outline/face/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "face",
+-    "note": "脸部与耳朵，不画头顶或后脑",
+-    "kind": "group"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
+-  "parentSvg": null,
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "candidate": "/tmp/<TMP>/step09_outline/face/outline.svg",
+-  "review": {
+-    "round": 2,
+-    "candidateHash": "2af7a7559f3939bc0b90cbad5ab35998e78cb9143e60ed013136bad2a0fecfd8"
+-  }
+-}
+-
+-审查报告：/tmp/<TMP>/step09_outline/face/review.json
++审查报告：<TASK>/part-layering/step09_outline/face/review.json
++用于独立核对本组可见外轮廓的素体参考图。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
+-======== image ========
+-{
+- "description": "用于独立核对本组可见外轮廓的素体参考图。",
 - "path": "P"
 -}
 
@@ -1242,7 +1812,24 @@
 - "path": "P"
 -}
 
+===== 2 files; e.g. raster-layering__tests__review.test.ts/重新进入初次绘制时清除旧_review_结论_不把修改前的通过报告复用到新交付/raster.raster_step01..02.md
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++
+-- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/runs/test/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
 ===== 2 files; e.g. shared__tests__part-image-roles.test.ts/agv_character_only_completion_can_generate_and_view_references_original_SVG_remains_intact/run.part_outline.组轮廓绘制-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1252,9 +1839,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/stages/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
@@ -1276,6 +1865,13 @@
 +首次绘制及返修均可调用。oldText 必须唯一匹配当前 note；newText 是替换后的非空文本。成功后须核对返回的、持久化后的完整 note。只更新当前组说明，不接受组 ID 或文件路径。仅有说明问题时保留正确轮廓。
 
 ===== 2 files; e.g. shared__tests__part-image-roles.test.ts/agv_character_only_completion_can_generate_and_view_references_original_SVG_remains_intact/run.part_completion.正面遮挡补全-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -1285,23 +1881,33 @@
 -  "outputDraft": "/tmp/<TMP>/stages/complete.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth01/face.svg
 +outputDraft：<TASK>/part-layering/step11_completion/face/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
-+
-+正面素体参考；只补当前正面被遮住的轮廓。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -======== image ========
 -{
 - "description": "正面素体参考；只补当前正面被遮住的轮廓。",
 - "path": "P"
 -}
++正面素体参考；只补当前正面被遮住的轮廓。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++
 
 ===== 2 files; e.g. shared__tests__part-image-roles.test.ts/agv_clothing_only_completion_can_generate_and_view_references_original_SVG_remains_intact/run.clothing_outline.组轮廓绘制-outerwear.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "outerwear",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1311,9 +1917,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/stages/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 outerwear 的节点；kind 省略时为 group
++parentGroup：outerwear 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/clothing-part-layering/step09_outline/outerwear/workspace/outline.draft.svg
@@ -1335,6 +1943,13 @@
 +首次绘制及返修均可调用。oldText 必须唯一匹配当前 note；newText 是替换后的非空文本。成功后须核对返回的、持久化后的完整 note。只更新当前组说明，不接受组 ID 或文件路径。仅有说明问题时保留正确轮廓。
 
 ===== 2 files; e.g. shared__tests__part-image-roles.test.ts/agv_clothing_only_completion_can_generate_and_view_references_original_SVG_remains_intact/run.clothing_completion.正面遮挡补全-outerwear.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "outerwear",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -1344,21 +1959,84 @@
 -  "outputDraft": "/tmp/<TMP>/stages/complete.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/clothing-part-layering/groups.json 中 id 为 outerwear 的节点；kind 省略时为 group
++parentGroup：outerwear 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +canvas：100×100
 +sourceSvg：<TASK>/clothing-part-layering/step10_reduce/depth01/outerwear.svg
 +outputDraft：<TASK>/clothing-part-layering/step11_completion/outerwear/workspace/completion.draft.svg
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
-+
-+纯衣服参考；只补当前衣片被遮住的轮廓，不填入人体或相邻衣片。
-+参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
 -======== image ========
 -{
 - "description": "纯衣服参考；只补当前衣片被遮住的轮廓，不填入人体或相邻衣片。",
 - "path": "P"
 -}
++纯衣服参考；只补当前衣片被遮住的轮廓，不填入人体或相邻衣片。
++参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
++
+
+===== 2 files; e.g. shared__tests__providers.test.ts/Claude_private_settings_apply_model_lists_and_explicit_credentials_preserving_host_settings_session_data_and_artifacts/transport-cli.transport-cli..01.md
+-- 当前工作区：<TASK>/raster-layering/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/.run/case/raster-layering。正式输出目录：/tmp/<TMP>/.run/case/raster-layering。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 2 files; e.g. shared__tests__structure-tools.test.ts/两套_step01_结束时结构诊断仅记日志_保留完成状态并推进下一步/raster.raster_step02..01.md
+-- 当前工作区：<TASK>/raster-layering/step02/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/raster-layering。正式输出目录：<TASK>/raster-layering/step02。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 2 files; e.g. shared__tests__structure-tools.test.ts/两套_step01_结束时结构诊断仅记日志_保留完成状态并推进下一步/raster.clothing_raster_step02..01.md
++原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++
+-- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
+-- 当前工作区：<TASK>/clothing-raster-layering/step02/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step02。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 2 files; e.g. workflow__tests__recovery.test.ts/clothing-raster-layering_换_thread_接续修复包含原任务_reviewer_仍全新且第二轮修完结束/raster.clothing_raster_step01_repair..01.md
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++
++原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
+-- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
+-- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。
+-已有交付与报告均保留。本次只继续下方修复任务，不重新提交首次绘制报告。
++上方原绘制任务用于恢复背景；本次只接续下方修复任务，不重新提交首次绘制报告。
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+-
+
+===== 2 files; e.g. workflow__tests__recovery.test.ts/raster-layering_换_thread_接续修复包含原任务_reviewer_仍全新且第二轮修完结束/raster.raster_step01_repair..01.md
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++
+-- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。
+-已有交付与报告均保留。本次只继续下方修复任务，不重新提交首次绘制报告。
++上方原绘制任务用于恢复背景；本次只接续下方修复任务，不重新提交首次绘制报告。
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+-
 
 ===== 1 files; e.g. clothing-part-layering__tests__clothing-groups.test.ts/initial_groups_receive_both_clothing_and_clothed-character_references_and_reject_a_character_subject/run.clothing_initial_groups.首次分组识别.01.md
 -本次运行目录：/tmp/<TMP>
@@ -1375,7 +2053,7 @@
 - "path": "P"
 -}
 +原穿衣角色：只辅助判断衣物环绕身体的结构和随动关系，不是输出内容。
-+参考图绝对路径：<TASK>/clothing-part-layering/references/simplified-subject.png
++参考图绝对路径：<TASK>/part-layering/references/simplified-subject.png
 -======== image ========
 -{
 - "description": "原穿衣角色：只辅助判断衣物环绕身体的结构和随动关系，不是输出内容。",
@@ -1383,6 +2061,14 @@
 -}
 
 ===== 1 files; e.g. clothing-part-layering__tests__clothing-groups.test.ts/wrapping_garments_can_become_distinct_front_back_parts_even_when_they_move_together/run.clothing_children.直属结构拆分-collar.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "collar",
+-    "kind": "group",
+-    "note": "随躯干运动，但需要容纳颈部穿过"
+-  },
 -  "sourceSvg": "/tmp/<TMP>/parts/collar.svg",
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "additionalReferences": [
@@ -1395,11 +2081,16 @@
 -    "width": 100,
 -    "height": 100
 -  },
+-  "parentGroup": null
+-}
++group：<TASK>/clothing-part-layering/groups.json 中 id 为 collar 的节点；kind 省略时为 group
++parentGroup：collar 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +sourceSvg：<TASK>/clothing-part-layering/parts/collar.svg
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +additionalReferences：
-+- <TASK>/clothing-part-layering/references/simplified-subject.png：原穿衣角色：用于辨认衣物与身体的穿插和随动，衣片形状以纯衣服图为准。
++- <TASK>/part-layering/references/simplified-subject.png：原穿衣角色：用于辨认衣物与身体的穿插和随动，衣片形状以纯衣服图为准。
 +canvas：100×100
+-固定约定提示词来源：P
 +纯衣服参考；结合父组完成轮廓分析直属衣片。
 +参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
 -======== image ========
@@ -1408,7 +2099,7 @@
 - "path": "P"
 -}
 +原穿衣角色：用于辨认衣物与身体的穿插和随动，衣片形状以纯衣服图为准。
-+参考图绝对路径：<TASK>/clothing-part-layering/references/simplified-subject.png
++参考图绝对路径：<TASK>/part-layering/references/simplified-subject.png
 -======== image ========
 -{
 - "description": "原穿衣角色：用于辨认衣物与身体的穿插和随动，衣片形状以纯衣服图为准。",
@@ -1416,6 +2107,15 @@
 -}
 
 ===== 1 files; e.g. clothing-part-layering__tests__outline-note-repair.test.ts/initial_drawing_and_repair_reuse_one_actual_app-server_session_with_stable_tool_definitions/transport.transport..01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "band",
+-    "kind": "group",
+-    "name": "band",
+-    "note": "原说明"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1425,9 +2125,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/band/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 band 的节点；kind 省略时为 group
++parentGroup：band 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/clothing-part-layering/step09_outline/band/workspace/outline.draft.svg
@@ -1437,33 +2139,35 @@
 +参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
 -- 当前工作区：/tmp/<TMP>/step09_outline/band/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step09_outline/band。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/clothing-part-layering/step09_outline/band/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/clothing-part-layering。正式输出目录：<TASK>/clothing-part-layering/step09_outline/band。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -本组的纯衣服参考图，沿用其画布与可见形状。
 -======== image /tmp/<TMP>/references/base.png ========
 
 ===== 1 files; e.g. clothing-part-layering__tests__outline-note-repair.test.ts/initial_drawing_and_repair_reuse_one_actual_app-server_session_with_stable_tool_definitions/run.clothing_outline_repair.组轮廓返修-band.01.md
-+【独立 review 的返修意见】
-+只修正说明，保留轮廓
-+
-+【返修要求】
-+逐项落实上述反馈，保留可靠边缘与正确形体。检查职责而非只看像素交集；同一环绕衣物的前后衣片不能误当重复物合并。保留真实开口、薄纱和固定装饰，修正实际遗漏。有父组时，group.allowOutsideParent=true 允许按 note 的完整衣片职责修正父轮廓外的形体；省略或为 false 时，在父范围内返修，将只能通过扩大父稿解决的缺漏单列说明。两种情况都保持父稿只读、原画布坐标和衣片归属。
-+
-+先重新核对原参考中的衣片归属和主要形体；归属、整体形状或位置比例错误时，可以重画当前组草稿，不限于微调边缘。反馈的部件识别也须核实，不能沿错误归属继续扩画。先复查整体，再检查细边；隐藏衣片仍交给补全。
-+
-+保持一种纯色的轮廓控制图。若反馈误把它当作成品画，要求恢复配色、花纹、明暗、材质或半透明表现，逐项说明这些要求与本阶段规范冲突、属于后续栅格绘制，保留正确色块；不要因此添加渐变、纹理或明暗路径。实际轮廓、开口、覆盖、归属及职责说明的问题仍须修正。最终逐项说明已修正的问题和不适用要求的原因，不能悄悄略过反馈。
-+
-+以局部原图叠加和边缘图检查每处修改及邻接区域，再看整体，确认没有引入错位或缺损。SVG 只修改指定草稿。发现当前组说明有误时可使用 update_group_note 修正本组说明；不改父组、其他组或分组树。只有说明问题时保留正确轮廓，不用改形状代替修正说明。不开始其他流程。
-+
-+衣服拆分以独立运动、变形、显隐及控制需要为核心。同一衣物环绕或夹住身体／其他部件时，不同区域可能需要位于被夹部件前后。若这些区域属于同一完整运动单元，可以保留一个逻辑 part，在 note 中描述区域、连续分界和前后关系；最终深度规划用多个深度区域表达，raster step01 再拆实际绘画层，不仅因跨深度就继续拆组。袖口夹手臂、衣领夹脖子只是例子；逐处检查真实穿插，不套固定清单，不把所有开口机械拆两半。贴合结构无需插层时保持完整。前／后是相对被夹部件的深度，不是另外绘制衣服背视图。
-+
-+纯衣服图决定衣片形状、坐标和实体归属。本流程的 SVG 只用纯色表达轮廓与覆盖范围，衣料颜色、纹样、明暗和质感由后续栅格绘制处理；原穿衣角色只辅助判断穿插及随动关系。人体不属于输出，不创建人体占位 part、不把皮肤填入开口。note 须明确每片的实体范围、相邻分界、位于哪个身体部位或其他部件之前／之后、与哪些衣片共同随动，以及必要的隐藏搭接。父组的这些职责继续传给子节点直至终止 part，不能只留在祖先说明里。
-+
-+提示词来源：P
-+
-+
-+======== recoveryPrompt ========
+-对照纯衣服参考与本组 note，绘制当前 group/part 的轮廓色块。有父组时，先查看其完成 SVG：group.allowOutsideParent=true 时，按 note 的完整衣片职责绘制，允许伸出父轮廓；省略或为 false 时，路径须在父完成范围内。父稿始终只读，保持同一画布坐标和衣片归属。只画当前实体职责；group 是直属内容的联合覆盖，不要求先分出内部边界，part 则严格遵守已指定的前后衣片职责。
+-
+-先确认可见衣片与相邻衣片、人体及装饰的真实归属，保持主要形状、位置和比例，再描局部边缘；不能仅凭颜色或一条褶皱认定衣片边界。已登记但完全被遮挡的衣片保留节点和空轮廓，说明遮挡依据，隐藏形状由后续补全，不提前猜画。
+-
+-衣料、薄纱和细边都属于结构。保留真实开口，不把透明纱当作不存在，也不把纹样、褶皱或普通颜色变化当外轮廓。饰件覆盖不等于本体挖洞；合理隐藏延续可保留，大块遮挡留给后续补全。
+-
+-用一个有唯一 id 的 g 容器，data-group-path 为当前完整 ID；一种纯色、闭合填充、stroke="none"、透明背景、不嵌入位图。分离区域可有多个路径。写入指定草稿。对照整体及局部叠加和边缘图逐块自检边缘、孔洞、接缝及归属，修正后复查。受父范围约束时，将只能由上游扩充父稿的缺漏单列说明。只执行本轮，不编辑正式文件或分组树。
+-
+-衣服拆分以独立运动、变形、显隐及控制需要为核心。同一衣物环绕或夹住身体／其他部件时，不同区域可能需要位于被夹部件前后。若这些区域属于同一完整运动单元，可以保留一个逻辑 part，在 note 中描述区域、连续分界和前后关系；最终深度规划用多个深度区域表达，raster step01 再拆实际绘画层，不仅因跨深度就继续拆组。袖口夹手臂、衣领夹脖子只是例子；逐处检查真实穿插，不套固定清单，不把所有开口机械拆两半。贴合结构无需插层时保持完整。前／后是相对被夹部件的深度，不是另外绘制衣服背视图。
+-
+-纯衣服图决定衣片形状、坐标和实体归属。本流程的 SVG 只用纯色表达轮廓与覆盖范围，衣料颜色、纹样、明暗和质感由后续栅格绘制处理；原穿衣角色只辅助判断穿插及随动关系。人体不属于输出，不创建人体占位 part、不把皮肤填入开口。note 须明确每片的实体范围、相邻分界、位于哪个身体部位或其他部件之前／之后、与哪些衣片共同随动，以及必要的隐藏搭接。父组的这些职责继续传给子节点直至终止 part，不能只留在祖先说明里。
+-
+-提示词来源：P
+-
+-【本次输入】
+-{
+-  "group": {
+-    "id": "band",
+-    "kind": "group",
+-    "name": "band",
+-    "note": "原说明"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1473,31 +2177,32 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/band/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
+-
+-仅写 outputSvg 草稿，正式 SVG 和 JSON 由程序保存。必须先看整图与原图的叠加，再裁剪放大，以原图叠加和边缘图逐块自检所有可见区域；修正形状、边缘及接缝问题后再提交。
+-
+-只修正说明，保留轮廓
++见 <TASK>/clothing-part-layering/step09_outline/band/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
+-提示词来源：P
++======== recoveryPrompt ========
++对照纯衣服参考与本组 note，绘制当前 group/part 的轮廓色块。有父组时，先查看其完成 SVG：group.allowOutsideParent=true 时，按 note 的完整衣片职责绘制，允许伸出父轮廓；省略或为 false 时，路径须在父完成范围内。父稿始终只读，保持同一画布坐标和衣片归属。只画当前实体职责；group 是直属内容的联合覆盖，不要求先分出内部边界，part 则严格遵守已指定的前后衣片职责。
++
++先确认可见衣片与相邻衣片、人体及装饰的真实归属，保持主要形状、位置和比例，再描局部边缘；不能仅凭颜色或一条褶皱认定衣片边界。已登记但完全被遮挡的衣片保留节点和空轮廓，说明遮挡依据，隐藏形状由后续补全，不提前猜画。
++
++衣料、薄纱和细边都属于结构。保留真实开口，不把透明纱当作不存在，也不把纹样、褶皱或普通颜色变化当外轮廓。饰件覆盖不等于本体挖洞；合理隐藏延续可保留，大块遮挡留给后续补全。
++
++用一个有唯一 id 的 g 容器，data-group-path 为当前完整 ID；一种纯色、闭合填充、stroke="none"、透明背景、不嵌入位图。分离区域可有多个路径。写入指定草稿。对照整体及局部叠加和边缘图逐块自检边缘、孔洞、接缝及归属，修正后复查。受父范围约束时，将只能由上游扩充父稿的缺漏单列说明。只执行本轮，不编辑正式文件或分组树。
++
++衣服拆分以独立运动、变形、显隐及控制需要为核心。同一衣物环绕或夹住身体／其他部件时，不同区域可能需要位于被夹部件前后。若这些区域属于同一完整运动单元，可以保留一个逻辑 part，在 note 中描述区域、连续分界和前后关系；最终深度规划用多个深度区域表达，raster step01 再拆实际绘画层，不仅因跨深度就继续拆组。袖口夹手臂、衣领夹脖子只是例子；逐处检查真实穿插，不套固定清单，不把所有开口机械拆两半。贴合结构无需插层时保持完整。前／后是相对被夹部件的深度，不是另外绘制衣服背视图。
++
++纯衣服图决定衣片形状、坐标和实体归属。本流程的 SVG 只用纯色表达轮廓与覆盖范围，衣料颜色、纹样、明暗和质感由后续栅格绘制处理；原穿衣角色只辅助判断穿插及随动关系。人体不属于输出，不创建人体占位 part、不把皮肤填入开口。note 须明确每片的实体范围、相邻分界、位于哪个身体部位或其他部件之前／之后、与哪些衣片共同随动，以及必要的隐藏搭接。父组的这些职责继续传给子节点直至终止 part，不能只留在祖先说明里。
++
++【本次输入】
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +groups：<TASK>/clothing-part-layering/groups.json
-+parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+canvas：100×100
-+outputSvg：<TASK>/clothing-part-layering/step09_outline/band/workspace/outline.draft.svg
-+outputSvg 已有上次中断前画到的草稿时，先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。
-+
-+发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
-+
-+本组的纯衣服参考图，沿用其画布与可见形状。
-+参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
-+
-+
-+---
-+原绘制会话不可用，上方是本组原绘制任务；草稿已载入独立 review 的候选。本次只继续下方返修任务，不从头重画。
--发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
--
--
--
--======== image ========
--{
-- "description": "本组的纯衣服参考图，沿用其画布与可见形状。",
-- "path": "P"
--}
++group：groups 中 id 为 band 的节点；kind 省略时为 group
++parentGroup：band 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++parentSvg：<
 
 ===== 1 files; e.g. clothing-part-layering__tests__outline-note-repair.test.ts/initial_drawing_and_repair_reuse_one_actual_app-server_session_with_stable_tool_definitions/transport.transport..02.md
 -对照纯衣服参考与本组 note，绘制当前 group/part 的轮廓色块。有父组时，先查看其完成 SVG：group.allowOutsideParent=true 时，按 note 的完整衣片职责绘制，允许伸出父轮廓；省略或为 false 时，路径须在父完成范围内。父稿始终只读，保持同一画布坐标和衣片归属。只画当前实体职责；group 是直属内容的联合覆盖，不要求先分出内部边界，part 则严格遵守已指定的前后衣片职责。
@@ -1535,39 +2240,45 @@
 -
 -仅写 outputSvg 草稿，正式 SVG 和 JSON 由程序保存。必须先看整图与原图的叠加，再裁剪放大，以原图叠加和边缘图逐块自检所有可见区域；修正形状、边缘及接缝问题后再提交。
 -
--发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
+-只修正说明，保留轮廓
++见 <TASK>/clothing-part-layering/step09_outline/band/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
+-提示词来源：P
 -
+-
+-发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
 -
 -
 -- 当前工作区：/tmp/<TMP>/step09_outline/band/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step09_outline/band。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/clothing-part-layering/step09_outline/band/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/clothing-part-layering。正式输出目录：<TASK>/clothing-part-layering/step09_outline/band。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -本组的纯衣服参考图，沿用其画布与可见形状。
 -======== image /tmp/<TMP>/references/base.png ========
 
 ===== 1 files; e.g. clothing-part-layering__tests__outline-note-repair.test.ts/note_repair_is_bound_to_one_group_requires_a_unique_match_and_preserves_concurrent_updates/run.clothing_outline_repair.组轮廓返修-band.01.md
-+【独立 review 的返修意见】
-+修正层序说明
-+
-+【返修要求】
-+逐项落实上述反馈，保留可靠边缘与正确形体。检查职责而非只看像素交集；同一环绕衣物的前后衣片不能误当重复物合并。保留真实开口、薄纱和固定装饰，修正实际遗漏。有父组时，group.allowOutsideParent=true 允许按 note 的完整衣片职责修正父轮廓外的形体；省略或为 false 时，在父范围内返修，将只能通过扩大父稿解决的缺漏单列说明。两种情况都保持父稿只读、原画布坐标和衣片归属。
-+
-+先重新核对原参考中的衣片归属和主要形体；归属、整体形状或位置比例错误时，可以重画当前组草稿，不限于微调边缘。反馈的部件识别也须核实，不能沿错误归属继续扩画。先复查整体，再检查细边；隐藏衣片仍交给补全。
-+
-+保持一种纯色的轮廓控制图。若反馈误把它当作成品画，要求恢复配色、花纹、明暗、材质或半透明表现，逐项说明这些要求与本阶段规范冲突、属于后续栅格绘制，保留正确色块；不要因此添加渐变、纹理或明暗路径。实际轮廓、开口、覆盖、归属及职责说明的问题仍须修正。最终逐项说明已修正的问题和不适用要求的原因，不能悄悄略过反馈。
-+
-+以局部原图叠加和边缘图检查每处修改及邻接区域，再看整体，确认没有引入错位或缺损。SVG 只修改指定草稿。发现当前组说明有误时可使用 update_group_note 修正本组说明；不改父组、其他组或分组树。只有说明问题时保留正确轮廓，不用改形状代替修正说明。不开始其他流程。
-+
-+衣服拆分以独立运动、变形、显隐及控制需要为核心。同一衣物环绕或夹住身体／其他部件时，不同区域可能需要位于被夹部件前后。若这些区域属于同一完整运动单元，可以保留一个逻辑 part，在 note 中描述区域、连续分界和前后关系；最终深度规划用多个深度区域表达，raster step01 再拆实际绘画层，不仅因跨深度就继续拆组。袖口夹手臂、衣领夹脖子只是例子；逐处检查真实穿插，不套固定清单，不把所有开口机械拆两半。贴合结构无需插层时保持完整。前／后是相对被夹部件的深度，不是另外绘制衣服背视图。
-+
-+纯衣服图决定衣片形状、坐标和实体归属。本流程的 SVG 只用纯色表达轮廓与覆盖范围，衣料颜色、纹样、明暗和质感由后续栅格绘制处理；原穿衣角色只辅助判断穿插及随动关系。人体不属于输出，不创建人体占位 part、不把皮肤填入开口。note 须明确每片的实体范围、相邻分界、位于哪个身体部位或其他部件之前／之后、与哪些衣片共同随动，以及必要的隐藏搭接。父组的这些职责继续传给子节点直至终止 part，不能只留在祖先说明里。
-+
-+提示词来源：P
-+
-+
-+======== recoveryPrompt ========
+-对照纯衣服参考与本组 note，绘制当前 group/part 的轮廓色块。有父组时，先查看其完成 SVG：group.allowOutsideParent=true 时，按 note 的完整衣片职责绘制，允许伸出父轮廓；省略或为 false 时，路径须在父完成范围内。父稿始终只读，保持同一画布坐标和衣片归属。只画当前实体职责；group 是直属内容的联合覆盖，不要求先分出内部边界，part 则严格遵守已指定的前后衣片职责。
+-
+-先确认可见衣片与相邻衣片、人体及装饰的真实归属，保持主要形状、位置和比例，再描局部边缘；不能仅凭颜色或一条褶皱认定衣片边界。已登记但完全被遮挡的衣片保留节点和空轮廓，说明遮挡依据，隐藏形状由后续补全，不提前猜画。
+-
+-衣料、薄纱和细边都属于结构。保留真实开口，不把透明纱当作不存在，也不把纹样、褶皱或普通颜色变化当外轮廓。饰件覆盖不等于本体挖洞；合理隐藏延续可保留，大块遮挡留给后续补全。
+-
+-用一个有唯一 id 的 g 容器，data-group-path 为当前完整 ID；一种纯色、闭合填充、stroke="none"、透明背景、不嵌入位图。分离区域可有多个路径。写入指定草稿。对照整体及局部叠加和边缘图逐块自检边缘、孔洞、接缝及归属，修正后复查。受父范围约束时，将只能由上游扩充父稿的缺漏单列说明。只执行本轮，不编辑正式文件或分组树。
+-
+-衣服拆分以独立运动、变形、显隐及控制需要为核心。同一衣物环绕或夹住身体／其他部件时，不同区域可能需要位于被夹部件前后。若这些区域属于同一完整运动单元，可以保留一个逻辑 part，在 note 中描述区域、连续分界和前后关系；最终深度规划用多个深度区域表达，raster step01 再拆实际绘画层，不仅因跨深度就继续拆组。袖口夹手臂、衣领夹脖子只是例子；逐处检查真实穿插，不套固定清单，不把所有开口机械拆两半。贴合结构无需插层时保持完整。前／后是相对被夹部件的深度，不是另外绘制衣服背视图。
+-
+-纯衣服图决定衣片形状、坐标和实体归属。本流程的 SVG 只用纯色表达轮廓与覆盖范围，衣料颜色、纹样、明暗和质感由后续栅格绘制处理；原穿衣角色只辅助判断穿插及随动关系。人体不属于输出，不创建人体占位 part、不把皮肤填入开口。note 须明确每片的实体范围、相邻分界、位于哪个身体部位或其他部件之前／之后、与哪些衣片共同随动，以及必要的隐藏搭接。父组的这些职责继续传给子节点直至终止 part，不能只留在祖先说明里。
+-
+-提示词来源：P
+-
+-【本次输入】
+-{
+-  "group": {
+-    "id": "band",
+-    "kind": "group",
+-    "name": "band",
+-    "note": "重复；重复；原层序"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1577,53 +2288,100 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/band/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
+-
+-仅写 outputSvg 草稿，正式 SVG 和 JSON 由程序保存。必须先看整图与原图的叠加，再裁剪放大，以原图叠加和边缘图逐块自检所有可见区域；修正形状、边缘及接缝问题后再提交。
+-
+-修正层序说明
++见 <TASK>/clothing-part-layering/step09_outline/band/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
+-提示词来源：P
++======== recoveryPrompt ========
++对照纯衣服参考与本组 note，绘制当前 group/part 的轮廓色块。有父组时，先查看其完成 SVG：group.allowOutsideParent=true 时，按 note 的完整衣片职责绘制，允许伸出父轮廓；省略或为 false 时，路径须在父完成范围内。父稿始终只读，保持同一画布坐标和衣片归属。只画当前实体职责；group 是直属内容的联合覆盖，不要求先分出内部边界，part 则严格遵守已指定的前后衣片职责。
++
++先确认可见衣片与相邻衣片、人体及装饰的真实归属，保持主要形状、位置和比例，再描局部边缘；不能仅凭颜色或一条褶皱认定衣片边界。已登记但完全被遮挡的衣片保留节点和空轮廓，说明遮挡依据，隐藏形状由后续补全，不提前猜画。
++
++衣料、薄纱和细边都属于结构。保留真实开口，不把透明纱当作不存在，也不把纹样、褶皱或普通颜色变化当外轮廓。饰件覆盖不等于本体挖洞；合理隐藏延续可保留，大块遮挡留给后续补全。
++
++用一个有唯一 id 的 g 容器，data-group-path 为当前完整 ID；一种纯色、闭合填充、stroke="none"、透明背景、不嵌入位图。分离区域可有多个路径。写入指定草稿。对照整体及局部叠加和边缘图逐块自检边缘、孔洞、接缝及归属，修正后复查。受父范围约束时，将只能由上游扩充父稿的缺漏单列说明。只执行本轮，不编辑正式文件或分组树。
++
++衣服拆分以独立运动、变形、显隐及控制需要为核心。同一衣物环绕或夹住身体／其他部件时，不同区域可能需要位于被夹部件前后。若这些区域属于同一完整运动单元，可以保留一个逻辑 part，在 note 中描述区域、连续分界和前后关系；最终深度规划用多个深度区域表达，raster step01 再拆实际绘画层，不仅因跨深度就继续拆组。袖口夹手臂、衣领夹脖子只是例子；逐处检查真实穿插，不套固定清单，不把所有开口机械拆两半。贴合结构无需插层时保持完整。前／后是相对被夹部件的深度，不是另外绘制衣服背视图。
++
++纯衣服图决定衣片形状、坐标和实体归属。本流程的 SVG 只用纯色表达轮廓与覆盖范围，衣料颜色、纹样、明暗和质感由后续栅格绘制处理；原穿衣角色只辅助判断穿插及随动关系。人体不属于输出，不创建人体占位 part、不把皮肤填入开口。note 须明确每片的实体范围、相邻分界、位于哪个身体部位或其他部件之前／之后、与哪些衣片共同随动，以及必要的隐藏搭接。父组的这些职责继续传给子节点直至终止 part，不能只留在祖先说明里。
++
++【本次输入】
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 band 的节点；kind 省略时为 group
++parentGroup：band 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++parentSvg
+
+===== 1 files; e.g. clothing-part-layering__tests__outline-note-repair.test.ts/note-only_feedback_is_persisted_and_visible_to_the_next_reviewer_without_changing_correct_geometry/run.clothing_outline_review.组轮廓review-band.01.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/clothing-part-layering/references/clothing.png
++groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 band 的节点；kind 省略时为 group
++parentGroup：band 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 1 轮 review
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
-+outputSvg：<TASK>/clothing-part-layering/step09_outline/band/workspace/outline.draft.svg
-+outputSvg 已有上次中断前画到的草稿时，先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。
-+
-+发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
-+
-+本组的纯衣服参考图，沿用其画布与可见形状。
++candidate：<TASK>/clothing-part-layering/step09_outline/band/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "band",
+-    "kind": "group",
+-    "name": "band",
+-    "note": "束带随腰运动。前结及长幅根部位于前带之前。保留隐藏搭接。"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
+-  "parentSvg": null,
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "candidate": "/tmp/<TMP>/step09_outline/band/outline.svg",
+-  "review": {
+-    "round": 1,
+-    "candidateHash": "b30140480526b0455d8dd2d365bcb6bf7ec1a6f40c7526cc15372220db563f06"
+-  }
+-}
+-
+-审查报告：/tmp/<TMP>/step09_outline/band/review.json
++审查报告：<TASK>/clothing-part-layering/step09_outline/band/review.json
++用于独立核对本组可见外轮廓的纯衣服参考图。
 +参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
-+
-+
-+---
-+原绘制会话不可用，上方是本组原绘制任务；草稿已载入独立 review 的候选。本次只继续下方返修任务，不从头重画。
--发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
--
--
--
 -======== image ========
 -{
-- "description": "本组的纯衣服参考图，沿用其画布与可见形状。",
+- "description": "用于独立核对本组可见外轮廓的纯衣服参考图。",
 - "path": "P"
 -}
 
 ===== 1 files; e.g. clothing-part-layering__tests__outline-note-repair.test.ts/note-only_feedback_is_persisted_and_visible_to_the_next_reviewer_without_changing_correct_geometry/run.clothing_outline_repair.组轮廓返修-band.01.md
-+【独立 review 的返修意见】
-+只修正 note 的长幅根部层序；轮廓正确，保持不变。
-+
-+【返修要求】
-+逐项落实上述反馈，保留可靠边缘与正确形体。检查职责而非只看像素交集；同一环绕衣物的前后衣片不能误当重复物合并。保留真实开口、薄纱和固定装饰，修正实际遗漏。有父组时，group.allowOutsideParent=true 允许按 note 的完整衣片职责修正父轮廓外的形体；省略或为 false 时，在父范围内返修，将只能通过扩大父稿解决的缺漏单列说明。两种情况都保持父稿只读、原画布坐标和衣片归属。
-+
-+先重新核对原参考中的衣片归属和主要形体；归属、整体形状或位置比例错误时，可以重画当前组草稿，不限于微调边缘。反馈的部件识别也须核实，不能沿错误归属继续扩画。先复查整体，再检查细边；隐藏衣片仍交给补全。
-+
-+保持一种纯色的轮廓控制图。若反馈误把它当作成品画，要求恢复配色、花纹、明暗、材质或半透明表现，逐项说明这些要求与本阶段规范冲突、属于后续栅格绘制，保留正确色块；不要因此添加渐变、纹理或明暗路径。实际轮廓、开口、覆盖、归属及职责说明的问题仍须修正。最终逐项说明已修正的问题和不适用要求的原因，不能悄悄略过反馈。
-+
-+以局部原图叠加和边缘图检查每处修改及邻接区域，再看整体，确认没有引入错位或缺损。SVG 只修改指定草稿。发现当前组说明有误时可使用 update_group_note 修正本组说明；不改父组、其他组或分组树。只有说明问题时保留正确轮廓，不用改形状代替修正说明。不开始其他流程。
-+
-+衣服拆分以独立运动、变形、显隐及控制需要为核心。同一衣物环绕或夹住身体／其他部件时，不同区域可能需要位于被夹部件前后。若这些区域属于同一完整运动单元，可以保留一个逻辑 part，在 note 中描述区域、连续分界和前后关系；最终深度规划用多个深度区域表达，raster step01 再拆实际绘画层，不仅因跨深度就继续拆组。袖口夹手臂、衣领夹脖子只是例子；逐处检查真实穿插，不套固定清单，不把所有开口机械拆两半。贴合结构无需插层时保持完整。前／后是相对被夹部件的深度，不是另外绘制衣服背视图。
-+
-+纯衣服图决定衣片形状、坐标和实体归属。本流程的 SVG 只用纯色表达轮廓与覆盖范围，衣料颜色、纹样、明暗和质感由后续栅格绘制处理；原穿衣角色只辅助判断穿插及随动关系。人体不属于输出，不创建人体占位 part、不把皮肤填入开口。note 须明确每片的实体范围、相邻分界、位于哪个身体部位或其他部件之前／之后、与哪些衣片共同随动，以及必要的隐藏搭接。父组的这些职责继续传给子节点直至终止 part，不能只留在祖先说明里。
-+
-+提示词来源：P
-+
-+
-+======== recoveryPrompt ========
+-对照纯衣服参考与本组 note，绘制当前 group/part 的轮廓色块。有父组时，先查看其完成 SVG：group.allowOutsideParent=true 时，按 note 的完整衣片职责绘制，允许伸出父轮廓；省略或为 false 时，路径须在父完成范围内。父稿始终只读，保持同一画布坐标和衣片归属。只画当前实体职责；group 是直属内容的联合覆盖，不要求先分出内部边界，part 则严格遵守已指定的前后衣片职责。
+-
+-先确认可见衣片与相邻衣片、人体及装饰的真实归属，保持主要形状、位置和比例，再描局部边缘；不能仅凭颜色或一条褶皱认定衣片边界。已登记但完全被遮挡的衣片保留节点和空轮廓，说明遮挡依据，隐藏形状由后续补全，不提前猜画。
+-
+-衣料、薄纱和细边都属于结构。保留真实开口，不把透明纱当作不存在，也不把纹样、褶皱或普通颜色变化当外轮廓。饰件覆盖不等于本体挖洞；合理隐藏延续可保留，大块遮挡留给后续补全。
+-
+-用一个有唯一 id 的 g 容器，data-group-path 为当前完整 ID；一种纯色、闭合填充、stroke="none"、透明背景、不嵌入位图。分离区域可有多个路径。写入指定草稿。对照整体及局部叠加和边缘图逐块自检边缘、孔洞、接缝及归属，修正后复查。受父范围约束时，将只能由上游扩充父稿的缺漏单列说明。只执行本轮，不编辑正式文件或分组树。
+-
+-衣服拆分以独立运动、变形、显隐及控制需要为核心。同一衣物环绕或夹住身体／其他部件时，不同区域可能需要位于被夹部件前后。若这些区域属于同一完整运动单元，可以保留一个逻辑 part，在 note 中描述区域、连续分界和前后关系；最终深度规划用多个深度区域表达，raster step01 再拆实际绘画层，不仅因跨深度就继续拆组。袖口夹手臂、衣领夹脖子只是例子；逐处检查真实穿插，不套固定清单，不把所有开口机械拆两半。贴合结构无需插层时保持完整。前／后是相对被夹部件的深度，不是另外绘制衣服背视图。
+-
+-纯衣服图决定衣片形状、坐标和实体归属。本流程的 SVG 只用纯色表达轮廓与覆盖范围，衣料颜色、纹样、明暗和质感由后续栅格绘制处理；原穿衣角色只辅助判断穿插及随动关系。人体不属于输出，不创建人体占位 part、不把皮肤填入开口。note 须明确每片的实体范围、相邻分界、位于哪个身体部位或其他部件之前／之后、与哪些衣片共同随动，以及必要的隐藏搭接。父组的这些职责继续传给子节点直至终止 part，不能只留在祖先说明里。
+-
+-提示词来源：P
+-
+-【本次输入】
+-{
+-  "group": {
+-    "id": "band",
+-    "kind": "group",
+-    "name": "band",
+-    "note": "束带随腰运动。前结及长幅根部位于前带之前。保留隐藏搭接。"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1633,33 +2391,84 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/step09_outline/band/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
+-
+-仅写 outputSvg 草稿，正式 SVG 和 JSON 由程序保存。必须先看整图与原图的叠加，再裁剪放大，以原图叠加和边缘图逐块自检所有可见区域；修正形状、边缘及接缝问题后再提交。
+-
+-只修正 note 的长幅根部层序；轮廓正确，保持不变。
++见 <TASK>/clothing-part-layering/step09_outline/band/review.json 中 reviews 最后一条（第 1 轮 review）的 feedback。
+-提示词来源：P
++======== recoveryPrompt ========
++对照纯衣服参考与本组 note，绘制当前 group/part 的轮廓色块。有父组时，先查看其完成 SVG：group.allowOutsideParent=true 时，按 note 的完整衣片职责绘制，允许伸出父轮廓；省略或为 false 时，路径须在父完成范围内。父稿始终只读，保持同一画布坐标和衣片归属。只画当前实体职责；group 是直属内容的联合覆盖，不要求先分出内部边界，part 则严格遵守已指定的前后衣片职责。
++
++先确认可见衣片与相邻衣片、人体及装饰的真实归属，保持主要形状、位置和比例，再描局部边缘；不能仅凭颜色或一条褶皱认定衣片边界。已登记但完全被遮挡的衣片保留节点和空轮廓，说明遮挡依据，隐藏形状由后续补全，不提前猜画。
++
++衣料、薄纱和细边都属于结构。保留真实开口，不把透明纱当作不存在，也不把纹样、褶皱或普通颜色变化当外轮廓。饰件覆盖不等于本体挖洞；合理隐藏延续可保留，大块遮挡留给后续补全。
++
++用一个有唯一 id 的 g 容器，data-group-path 为当前完整 ID；一种纯色、闭合填充、stroke="none"、透明背景、不嵌入位图。分离区域可有多个路径。写入指定草稿。对照整体及局部叠加和边缘图逐块自检边缘、孔洞、接缝及归属，修正后复查。受父范围约束时，将只能由上游扩充父稿的缺漏单列说明。只执行本轮，不编辑正式文件或分组树。
++
++衣服拆分以独立运动、变形、显隐及控制需要为核心。同一衣物环绕或夹住身体／其他部件时，不同区域可能需要位于被夹部件前后。若这些区域属于同一完整运动单元，可以保留一个逻辑 part，在 note 中描述区域、连续分界和前后关系；最终深度规划用多个深度区域表达，raster step01 再拆实际绘画层，不仅因跨深度就继续拆组。袖口夹手臂、衣领夹脖子只是例子；逐处检查真实穿插，不套固定清单，不把所有开口机械拆两半。贴合结构无需插层时保持完整。前／后是相对被夹部件的深度，不是另外绘制衣服背视图。
++
++纯衣服图决定衣片形状、坐标和实体归属。本流程的 SVG 只用纯色表达轮廓与覆盖范围，衣料颜色、纹样、明暗和质感由后续栅格绘制处理；原穿衣角色只辅助判断穿插及随动关系。人体不属于输出，不创建人体占位 part、不把皮肤填入开口。note 须明确每片的实体范围、相邻分界、位于哪个身体部位或其他部件之前／之后、与哪些衣片共同随动，以及必要的隐藏搭接。父组的这些职责继续传给子节点直至终止 part，不能只留在祖先说明里。
++
++【本次输入】
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 band 的节点；kind 省略时为 group
++parentGroup：band 去掉
+
+===== 1 files; e.g. clothing-part-layering__tests__outline-note-repair.test.ts/note-only_feedback_is_persisted_and_visible_to_the_next_reviewer_without_changing_correct_geometry/run.clothing_outline_review.组轮廓review-band.02.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/clothing-part-layering/references/clothing.png
++groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 band 的节点；kind 省略时为 group
++parentGroup：band 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 2 轮 review
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
-+outputSvg：<TASK>/clothing-part-layering/step09_outline/band/workspace/outline.draft.svg
-+outputSvg 已有上次中断前画到的草稿时，先用 read_svg 读取、preview_svg 对照，在其基础上继续完成，不要从头重画。
-+
-+发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
-+
-+本组的纯衣服参考图，沿用其画布与可见形状。
++candidate：<TASK>/clothing-part-layering/step09_outline/band/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "band",
+-    "kind": "group",
+-    "name": "band",
+-    "note": "束带随腰运动。前结在前带之前，长幅根部在前带之后。保留隐藏搭接。"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
+-  "parentSvg": null,
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "candidate": "/tmp/<TMP>/step09_outline/band/outline.svg",
+-  "review": {
+-    "round": 2,
+-    "candidateHash": "b30140480526b0455d8dd2d365bcb6bf7ec1a6f40c7526cc15372220db563f06"
+-  }
+-}
+-
+-审查报告：/tmp/<TMP>/step09_outline/band/review.json
++审查报告：<TASK>/clothing-part-layering/step09_outline/band/review.json
++用于独立核对本组可见外轮廓的纯衣服参考图。
 +参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
-+
-+
-+---
-+原绘制会话不可用，上方是本组原绘制任务；草稿已载入独立 review 的候选。本次只继续下方返修任务，不从头重画。
--发现本组说明有误时可以修正说明；仅有说明问题时保留正确轮廓。
--
--
--
 -======== image ========
 -{
-- "description": "本组的纯衣服参考图，沿用其画布与可见形状。",
+- "description": "用于独立核对本组可见外轮廓的纯衣服参考图。",
 - "path": "P"
 -}
 
 ===== 1 files; e.g. part-layering__tests__children-agent.test.ts/真实拆分适配器读取特化及操作约定_通过预览和工具交付_类型事实可恢复/run.part_children.直属结构拆分-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "sourceSvg": "/tmp/<TMP>/parts/face.svg",
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "additionalReferences": [],
@@ -1667,11 +2476,16 @@
 -    "width": 100,
 -    "height": 100
 -  },
+-  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +sourceSvg：<TASK>/part-layering/parts/face.svg
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 -本轮只分析直属节点。查看源 SVG 的独显与原图叠加，并局部放大核对参考；SVG、groups.json 和事实文件由程序管理，保持只读。additionalReferences 是本次显式提供的可选图片及用途，按需要查看其中明确提供的图片；没有相关疑问不必逐张查看，图片只说明结构先验，当前角色造型仍以本次参考为准。只执行本轮分析，使用本次给定参考。
 +本轮只分析直属节点。查看源 SVG 的独显与原图叠加，并局部放大核对参考；SVG、groups.json 和事实文件由程序管理，保持只读。本次输入列出 additionalReferences 时，它们是本次显式提供的可选图片及用途，按需要查看其中明确提供的图片；没有相关疑问不必逐张查看，图片只说明结构先验，当前角色造型仍以本次参考为准。只执行本轮分析，使用本次给定参考。
+-固定约定提示词来源：P
 +角色正面参考；结合当前父组完成轮廓分析直属结构。
 +参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -======== image ========
@@ -1681,6 +2495,15 @@
 -}
 
 ===== 1 files; e.g. part-layering__tests__completion-agent.test.ts/不可见部件直接绘制非空_SVG_分别完成生成图_edge_原图_blend_和独显后提交/run.part_completion.正面遮挡补全-face_eye_left_iris.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face/eye_left/iris",
+-    "kind": "part",
+-    "allowOutsideParent": true,
+-    "hiddenInReference": true
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -1690,23 +2513,113 @@
 -  "outputDraft": "/tmp/<TMP>/iris.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 face/eye_left/iris 的节点；kind 省略时为 group
++parentGroup：face/eye_left/iris 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth03/face/eye_left/iris.svg
 +outputDraft：<TASK>/part-layering/step11_completion/face/children/eye_left/children/iris/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
-+
-+正面素体参考；只补当前正面被遮住的轮廓。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -======== image ========
 -{
 - "description": "正面素体参考；只补当前正面被遮住的轮廓。",
 - "path": "P"
 -}
++正面素体参考；只补当前正面被遮住的轮廓。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++
+
+===== 1 files; e.g. part-layering__tests__completion-agent.test.ts/完全遮挡节点可提交空可见轮廓_经独立_review_后补出形体_续跑保留原稿与事实/run.part_outline_review.组轮廓review-face.01.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 1 轮 review
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/part-layering/step09_outline/face/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group",
+-    "note": "参考中被完全遮挡的真实脸部节点"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
+-  "parentSvg": null,
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "candidate": "/tmp/<TMP>/step09_outline/face/outline.svg",
+-  "review": {
+-    "round": 1,
+-    "candidateHash": "237173633b6254168f7b273f75ad5e00bf12abeb93c02de809ae06b4b7480e7b"
+-  }
+-}
+-
+-审查报告：/tmp/<TMP>/step09_outline/face/review.json
++审查报告：<TASK>/part-layering/step09_outline/face/review.json
++用于独立核对本组可见外轮廓的素体参考图。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
+-======== image ========
+-{
+- "description": "用于独立核对本组可见外轮廓的素体参考图。",
+- "path": "P"
+-}
+
+===== 1 files; e.g. part-layering__tests__completion-agent.test.ts/生成图在检查后变化须重新_edge_查看_更新的观察可正常提交/run.part_completion.正面遮挡补全-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "hiddenInReference": true,
+-    "kind": "group"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "sourceSvg": "/tmp/<TMP>/source.svg",
+-  "outputDraft": "/tmp/<TMP>/face.draft.svg",
+-  "additionalReferences": [],
+-  "parentSvg": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++reference：<TASK>/part-layering/references/base-subject.png
++canvas：100×100
++sourceSvg：<TASK>/part-layering/step10_reduce/depth01/face.svg
++outputDraft：<TASK>/part-layering/step11_completion/face/workspace/completion.draft.svg
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
++outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
+-======== image ========
+-{
+- "description": "正面素体参考；只补当前正面被遮住的轮廓。",
+- "path": "P"
+-}
++正面素体参考；只补当前正面被遮住的轮廓。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++
 
 ===== 1 files; e.g. part-layering__tests__completion-agent.test.ts/补全子组必须在父完成范围内_即使原形保留也不能越界/run.part_completion.正面遮挡补全-head_child.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "head/child",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -1716,36 +2629,99 @@
 -  "outputDraft": "/tmp/<TMP>/child.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": "/tmp/<TMP>/parent.svg"
-+  "parentGroup": "head"
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 head/child 的节点；kind 省略时为 group
++parentGroup：head/child 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth02/head/child.svg
 +outputDraft：<TASK>/part-layering/step11_completion/head/children/child/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
-+
-+正面素体参考；只补当前正面被遮住的轮廓。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -======== image ========
 -{
 - "description": "正面素体参考；只补当前正面被遮住的轮廓。",
 - "path": "P"
 -}
++正面素体参考；只补当前正面被遮住的轮廓。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++
 
-===== 1 files; e.g. part-layering__tests__outline-agent.test.ts/并发组各自保留绘制会话和独立审查记录_返修不会串到另一组/run.part_outline_review.组轮廓review-hair.01.md
+===== 1 files; e.g. part-layering__tests__outline-agent.test.ts/并发组各自保留绘制会话和独立审查记录_返修不会串到另一组/run.part_outline_review.组轮廓review-face.01.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 1 轮 review
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/part-layering/step09_outline/face/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
+-  "parentSvg": null,
+-  "canvas": {
+-    "width": 100,
+-    "height": 100
+-  },
+-  "candidate": "/tmp/<TMP>/step09_outline/face/outline.svg",
+-  "review": {
+-    "round": 1,
+-    "candidateHash": "2af7a7559f3939bc0b90cbad5ab35998e78cb9143e60ed013136bad2a0fecfd8"
+-  }
+-}
+-
+-审查报告：/tmp/<TMP>/step09_outline/face/review.json
++审查报告：<TASK>/part-layering/step09_outline/face/review.json
++用于独立核对本组可见外轮廓的素体参考图。
++参考图绝对路径：<TASK>/part-layering/references/base-subject.png
+-======== image ========
+-{
+- "description": "用于独立核对本组可见外轮廓的素体参考图。",
+- "path": "P"
+-}
+
+===== 1 files; e.g. part-layering__tests__outline-agent.test.ts/并发组各自保留绘制会话和独立审查记录_返修不会串到另一组/run.part_outline_review.组轮廓review-hair.01.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 hair 的节点；kind 省略时为 group
++parentGroup：hair 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 1 轮 review
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/part-layering/step09_outline/hair/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "hair",
+-    "kind": "group"
+-  },
+-  "reference": "/tmp/<TMP>/references/base.png",
+-  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
 -  "parentSvg": null,
 -  "canvas": {
 -    "width": 100,
 -    "height": 100
 -  },
 -  "candidate": "/tmp/<TMP>/step09_outline/hair/outline.svg",
-+reference：<TASK>/part-layering/references/base-subject.png
-+groups：<TASK>/part-layering/groups.json
-+parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+canvas：100×100
-+candidate：<TASK>/part-layering/step09_outline/hair/outline.svg
+-  "review": {
+-    "round": 1,
+-    "candidateHash": "d049c8915bc3c27d8e7a6ddb51cb42f21f889821adc2b263d2e8029a237b2c87"
+-  }
+-}
+-
 -审查报告：/tmp/<TMP>/step09_outline/hair/review.json
 +审查报告：<TASK>/part-layering/step09_outline/hair/review.json
 +用于独立核对本组可见外轮廓的素体参考图。
@@ -1757,21 +2733,37 @@
 -}
 
 ===== 1 files; e.g. part-layering__tests__outline-agent.test.ts/并发组各自保留绘制会话和独立审查记录_返修不会串到另一组/run.part_outline_review.组轮廓review-hair.02.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 hair 的节点；kind 省略时为 group
++parentGroup：hair 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 2 轮 review
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/part-layering/step09_outline/hair/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "hair",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
 -  "parentSvg": null,
 -  "canvas": {
 -    "width": 100,
 -    "height": 100
 -  },
 -  "candidate": "/tmp/<TMP>/step09_outline/hair/outline.svg",
+-  "review": {
+-    "round": 2,
 -    "candidateHash": "ffee44ed65b1678acf092d65c64ff3439d246c2fc279d2fcbd1330ed385ac167"
-+    "candidateHash": "b216e978ff93f86c5ead3acde364539fa19a2930bd612c8c1a6e6a8280d6edff"
-+reference：<TASK>/part-layering/references/base-subject.png
-+groups：<TASK>/part-layering/groups.json
-+parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+canvas：100×100
-+candidate：<TASK>/part-layering/step09_outline/hair/outline.svg
+-  }
+-}
+-
 -审查报告：/tmp/<TMP>/step09_outline/hair/review.json
 +审查报告：<TASK>/part-layering/step09_outline/hair/review.json
 +用于独立核对本组可见外轮廓的素体参考图。
@@ -1783,21 +2775,37 @@
 -}
 
 ===== 1 files; e.g. part-layering__tests__outline-agent.test.ts/并发组各自保留绘制会话和独立审查记录_返修不会串到另一组/run.part_outline_review.组轮廓review-face.02.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 2 轮 review
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/part-layering/step09_outline/face/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
 -  "parentSvg": null,
 -  "canvas": {
 -    "width": 100,
 -    "height": 100
 -  },
 -  "candidate": "/tmp/<TMP>/step09_outline/face/outline.svg",
+-  "review": {
+-    "round": 2,
 -    "candidateHash": "1d6c2b0cce56b280c1808f3b2fbdc2e3cd8a97a0a4f9e9e1d7b9cb0bafdc41b4"
-+    "candidateHash": "5004ce6e92504ef7ba26f94153558b269c636cb7b5b530a27676ada8c506f5b4"
-+reference：<TASK>/part-layering/references/base-subject.png
-+groups：<TASK>/part-layering/groups.json
-+parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+canvas：100×100
-+candidate：<TASK>/part-layering/step09_outline/face/outline.svg
+-  }
+-}
+-
 -审查报告：/tmp/<TMP>/step09_outline/face/review.json
 +审查报告：<TASK>/part-layering/step09_outline/face/review.json
 +用于独立核对本组可见外轮廓的素体参考图。
@@ -1809,6 +2817,14 @@
 -}
 
 ===== 1 files; e.g. part-layering__tests__outline-agent.test.ts/轮廓写入工具在终端不可用时完成草稿_拒绝路径注入及错误归属且仍须预览/run.part_outline.组轮廓绘制-face.01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "note": "脸部与耳朵，不画头顶或后脑",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1818,9 +2834,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/face.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
@@ -1867,7 +2885,7 @@
 -    }
 -  ]
 -}
-+depth：0
++depth：01
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +mergedPreview：<TASK>/part-layering/step10_reduce/depth01/workspace/merged.draft.svg
@@ -1893,10 +2911,14 @@
 +分组文件：<TASK>/part-layering/step08_initial/groups.json
 -- 当前工作区：/tmp/<TMP>/step08_initial/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step08_initial。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/part-layering/step08_initial/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/part-layering。正式输出目录：<TASK>/part-layering/step08_initial。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 1 files; e.g. part-layering__tests__tool-agent.test.ts/图片被内容策略拦截_本批图片换成文字后在新会话继续_多张图引导逐张读取/transport.transport..01.md
+-- 当前工作区：/tmp/<TMP>/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -a.png
 -======== image /tmp/<TMP>/a.png ========
@@ -1909,35 +2931,61 @@
 -- 输入图片 /tmp/<TMP>/b.png
 +- 工具 probe 的返回（参数：{}）
 +- 工具 probe 的返回（参数：{}）
-
-===== 1 files; e.g. raster-layering__tests__workflow.test.ts/续跑失败或_SDK_返回不同_thread_ID_时保留原会话_不静默新开/transport.transport..01.md
-+报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
-+
+-- 当前工作区：/tmp/<TMP>/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 1 files; e.g. shared__tests__agv-turn.test.ts/retry-header-timeout_an_exhausted_AGV_timeout_automatically_resumes_the_same_session_and_keeps_its_artifacts/transport-cli.transport-cli..02.md
 -
 -【本次中断调用的原始任务】
 -retry-header-timeout
+-- 当前工作区：/tmp/<TMP>/case/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case。正式输出目录：/tmp/<TMP>/case。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 1 files; e.g. shared__tests__agv-turn.test.ts/retry-idle-timeout_an_exhausted_AGV_timeout_automatically_resumes_the_same_session_and_keeps_its_artifacts/transport-cli.transport-cli..02.md
 -
 -【本次中断调用的原始任务】
 -retry-idle-timeout
+-- 当前工作区：/tmp/<TMP>/case/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case。正式输出目录：/tmp/<TMP>/case。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 1 files; e.g. shared__tests__input-validation.test.ts/review_拒绝非字符串结论_允许修正参数后正常提交且不写坏报告/run.part_outline_review.组轮廓review-head.01.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/part-layering/references/base-subject.png
++groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 head 的节点；kind 省略时为 group
++parentGroup：head 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 1 轮 review
++parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/part-layering/step09_outline/head/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "head",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
 -  "parentSvg": null,
 -  "canvas": {
 -    "width": 100,
 -    "height": 100
 -  },
 -  "candidate": "/tmp/<TMP>/head.svg",
-+reference：<TASK>/part-layering/references/base-subject.png
-+groups：<TASK>/part-layering/groups.json
-+parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+canvas：100×100
-+candidate：<TASK>/part-layering/step09_outline/head/outline.svg
+-  "review": {
+-    "round": 1,
+-    "candidateHash": "0bd771b077796173e2046fdfac2ff053c90a2a00fe29d0e36200729f9b420d09"
+-  }
+-}
+-
 -审查报告：/tmp/<TMP>/review.json
 +审查报告：<TASK>/part-layering/step09_outline/head/review.json
 +用于独立核对本组可见外轮廓的素体参考图。
@@ -1949,19 +2997,37 @@
 -}
 
 ===== 1 files; e.g. shared__tests__input-validation.test.ts/review_拒绝非字符串结论_允许修正参数后正常提交且不写坏报告/run.clothing_outline_review.组轮廓review-head.01.md
+-提示词来源：P
++【本次输入】
++reference：<TASK>/clothing-part-layering/references/clothing.png
++groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 head 的节点；kind 省略时为 group
++parentGroup：head 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
++round：第 1 轮 review
++parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
++canvas：100×100
++candidate：<TASK>/clothing-part-layering/step09_outline/head/outline.svg
+-【本次输入】
+-{
+-  "group": {
+-    "id": "head",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
+-  "parentGroup": null,
 -  "parentSvg": null,
 -  "canvas": {
 -    "width": 100,
 -    "height": 100
 -  },
 -  "candidate": "/tmp/<TMP>/head.svg",
-+reference：<TASK>/clothing-part-layering/references/clothing.png
-+groups：<TASK>/clothing-part-layering/groups.json
-+parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
-+canvas：100×100
-+candidate：<TASK>/clothing-part-layering/step09_outline/head/outline.svg
+-  "review": {
+-    "round": 1,
+-    "candidateHash": "0bd771b077796173e2046fdfac2ff053c90a2a00fe29d0e36200729f9b420d09"
+-  }
+-}
+-
 -审查报告：/tmp/<TMP>/review.json
 +审查报告：<TASK>/clothing-part-layering/step09_outline/head/review.json
 +用于独立核对本组可见外轮廓的纯衣服参考图。
@@ -1973,6 +3039,13 @@
 -}
 
 ===== 1 files; e.g. shared__tests__part-image-roles.test.ts/agv_character_only_completion_can_generate_and_view_references_original_SVG_remains_intact/transport-cli.transport-cli..01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -1982,9 +3055,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/stages/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
@@ -1995,13 +3070,20 @@
 +参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -- 当前工作区：/tmp/<TMP>/step09_outline/face/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step09_outline/face。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/part-layering/step09_outline/face/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/part-layering。正式输出目录：<TASK>/part-layering/step09_outline/face。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -本组的素体参考图，沿用其画布与可见形状。
 -参考图绝对路径：/tmp/<TMP>/references/base.png
 
 ===== 1 files; e.g. shared__tests__part-image-roles.test.ts/agv_character_only_completion_can_generate_and_view_references_original_SVG_remains_intact/transport-cli.transport-cli..02.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -2011,12 +3093,15 @@
 -  "outputDraft": "/tmp/<TMP>/stages/complete.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth01/face.svg
 +outputDraft：<TASK>/part-layering/step11_completion/face/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
 +
 +
@@ -2024,13 +3109,20 @@
 +参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -- 当前工作区：/tmp/<TMP>/step11_completion/face/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step11_completion/face。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/part-layering/step11_completion/face/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/part-layering。正式输出目录：<TASK>/part-layering/step11_completion/face。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -正面素体参考；只补当前正面被遮住的轮廓。
 -参考图绝对路径：/tmp/<TMP>/references/base.png
 
 ===== 1 files; e.g. shared__tests__part-image-roles.test.ts/agv_clothing_only_completion_can_generate_and_view_references_original_SVG_remains_intact/transport-cli.transport-cli..01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "outerwear",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -2040,9 +3132,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/stages/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 outerwear 的节点；kind 省略时为 group
++parentGroup：outerwear 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/clothing-part-layering/step09_outline/outerwear/workspace/outline.draft.svg
@@ -2053,13 +3147,20 @@
 +参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
 -- 当前工作区：/tmp/<TMP>/step09_outline/outerwear/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step09_outline/outerwear。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/clothing-part-layering/step09_outline/outerwear/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/clothing-part-layering。正式输出目录：<TASK>/clothing-part-layering/step09_outline/outerwear。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -本组的纯衣服参考图，沿用其画布与可见形状。
 -参考图绝对路径：/tmp/<TMP>/references/base.png
 
 ===== 1 files; e.g. shared__tests__part-image-roles.test.ts/agv_clothing_only_completion_can_generate_and_view_references_original_SVG_remains_intact/transport-cli.transport-cli..02.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "outerwear",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -2069,12 +3170,15 @@
 -  "outputDraft": "/tmp/<TMP>/stages/complete.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/clothing-part-layering/groups.json 中 id 为 outerwear 的节点；kind 省略时为 group
++parentGroup：outerwear 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +canvas：100×100
 +sourceSvg：<TASK>/clothing-part-layering/step10_reduce/depth01/outerwear.svg
 +outputDraft：<TASK>/clothing-part-layering/step11_completion/outerwear/workspace/completion.draft.svg
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
 +
 +
@@ -2082,13 +3186,20 @@
 +参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
 -- 当前工作区：/tmp/<TMP>/step11_completion/outerwear/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step11_completion/outerwear。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/clothing-part-layering/step11_completion/outerwear/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/clothing-part-layering。正式输出目录：<TASK>/clothing-part-layering/step11_completion/outerwear。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -纯衣服参考；只补当前衣片被遮住的轮廓，不填入人体或相邻衣片。
 -参考图绝对路径：/tmp/<TMP>/references/base.png
 
 ===== 1 files; e.g. shared__tests__part-image-roles.test.ts/claude_character_only_completion_can_generate_and_view_references_original_SVG_remains_intact/transport-cli.transport-cli..01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -2098,9 +3209,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/stages/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/part-layering/references/base-subject.png
 +groups：<TASK>/part-layering/groups.json
++group：groups 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/part-layering/step09_outline/face/workspace/outline.draft.svg
@@ -2111,13 +3224,20 @@
 +参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -- 当前工作区：/tmp/<TMP>/step09_outline/face/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step09_outline/face。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/part-layering/step09_outline/face/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/part-layering。正式输出目录：<TASK>/part-layering/step09_outline/face。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -本组的素体参考图，沿用其画布与可见形状。
 -======== image True ========
 
 ===== 1 files; e.g. shared__tests__part-image-roles.test.ts/claude_character_only_completion_can_generate_and_view_references_original_SVG_remains_intact/transport-cli.transport-cli..02.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "face",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -2127,12 +3247,15 @@
 -  "outputDraft": "/tmp/<TMP>/stages/complete.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/part-layering/groups.json 中 id 为 face 的节点；kind 省略时为 group
++parentGroup：face 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/part-layering/references/base-subject.png
 +canvas：100×100
 +sourceSvg：<TASK>/part-layering/step10_reduce/depth01/face.svg
 +outputDraft：<TASK>/part-layering/step11_completion/face/workspace/completion.draft.svg
 +parentSvg：<TASK>/part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
 +
 +
@@ -2140,13 +3263,20 @@
 +参考图绝对路径：<TASK>/part-layering/references/base-subject.png
 -- 当前工作区：/tmp/<TMP>/step11_completion/face/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step11_completion/face。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/part-layering/step11_completion/face/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/part-layering。正式输出目录：<TASK>/part-layering/step11_completion/face。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -正面素体参考；只补当前正面被遮住的轮廓。
 -======== image True ========
 
 ===== 1 files; e.g. shared__tests__part-image-roles.test.ts/claude_clothing_only_completion_can_generate_and_view_references_original_SVG_remains_intact/transport-cli.transport-cli..01.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "outerwear",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "groups": "/tmp/<TMP>/groups.json",
 -  "parentGroup": null,
@@ -2156,9 +3286,11 @@
 -    "height": 100
 -  },
 -  "outputSvg": "/tmp/<TMP>/stages/workspace/outline.draft.svg"
-+  "parentGroup": null
+-}
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +groups：<TASK>/clothing-part-layering/groups.json
++group：groups 中 id 为 outerwear 的节点；kind 省略时为 group
++parentGroup：outerwear 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
 +canvas：100×100
 +outputSvg：<TASK>/clothing-part-layering/step09_outline/outerwear/workspace/outline.draft.svg
@@ -2169,13 +3301,20 @@
 +参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
 -- 当前工作区：/tmp/<TMP>/step09_outline/outerwear/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step09_outline/outerwear。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/clothing-part-layering/step09_outline/outerwear/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/clothing-part-layering。正式输出目录：<TASK>/clothing-part-layering/step09_outline/outerwear。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -本组的纯衣服参考图，沿用其画布与可见形状。
 -======== image True ========
 
 ===== 1 files; e.g. shared__tests__part-image-roles.test.ts/claude_clothing_only_completion_can_generate_and_view_references_original_SVG_remains_intact/transport-cli.transport-cli..02.md
+-提示词来源：P
+-
+-{
+-  "group": {
+-    "id": "outerwear",
+-    "kind": "group"
+-  },
 -  "reference": "/tmp/<TMP>/references/base.png",
 -  "canvas": {
 -    "width": 100,
@@ -2185,12 +3324,15 @@
 -  "outputDraft": "/tmp/<TMP>/stages/complete.draft.svg",
 -  "additionalReferences": [],
 -  "parentSvg": null
-+  "parentGroup": null
+-}
++group：<TASK>/clothing-part-layering/groups.json 中 id 为 outerwear 的节点；kind 省略时为 group
++parentGroup：outerwear 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null
 +reference：<TASK>/clothing-part-layering/references/clothing.png
 +canvas：100×100
 +sourceSvg：<TASK>/clothing-part-layering/step10_reduce/depth01/outerwear.svg
 +outputDraft：<TASK>/clothing-part-layering/step11_completion/outerwear/workspace/completion.draft.svg
 +parentSvg：<TASK>/clothing-part-layering/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG
+-固定约定提示词来源：P
 +outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时，先用 read_svg 读取、preview_svg 对照；set_completion_paths 会替换全部新增形状，需保留的已有形状要一并提交。
 +
 +
@@ -2198,8 +3340,8 @@
 +参考图绝对路径：<TASK>/clothing-part-layering/references/clothing.png
 -- 当前工作区：/tmp/<TMP>/step11_completion/outerwear/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
 -- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step11_completion/outerwear。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
-+- 当前工作区：<TASK>/clothing-part-layering/step11_completion/outerwear/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
-+- 本管线目录：/tmp/<TMP>/clothing-part-layering。正式输出目录：<TASK>/clothing-part-layering/step11_completion/outerwear。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 -======== text ========
 -纯衣服参考；只补当前衣片被遮住的轮廓，不填入人体或相邻衣片。
 -======== image True ========
@@ -2208,6 +3350,10 @@
 -
 -【本次中断调用的原始任务】
 -按原图继续修边
+-- 当前工作区：/tmp/<TMP>/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 1 files; e.g. shared__tests__refactor-regressions.test.ts/首次分组拒绝非字符串_subject_错误参数不能写坏首次分组记录/run.clothing_initial_groups.首次分组识别.01.md
 -本次运行目录：/tmp/<TMP>
@@ -2224,12 +3370,94 @@
 - "path": "P"
 -}
 +原穿衣角色：只辅助判断衣物环绕身体的结构和随动关系，不是输出内容。
-+参考图绝对路径：<TASK>/part-layering/references/base-subject.png
++参考图绝对路径：<TASK>/part-layering/references/simplified-subject.png
 +
+
+===== 1 files; e.g. shared__tests__step-models.test.ts/CLI_cancellation_and_early_failures_finish_logs_and_stop_the_request_process/transport-cli.transport-cli..01.md
+-- 当前工作区：/tmp/<TMP>/.run/case/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/.run/case。正式输出目录：/tmp/<TMP>/.run/case。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 1 files; e.g. shared__tests__step-models.test.ts/raster_CLI_service_retries_retain_the_session_and_report_retry_progress/transport-cli.transport-cli..01.md
+-- 当前工作区：<TASK>/raster-layering/step02/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/.run/case/raster-layering。正式输出目录：<TASK>/raster-layering/step02。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
 ===== 1 files; e.g. shared__tests__step-models.test.ts/raster_CLI_service_retries_retain_the_session_and_report_retry_progress/transport-cli.transport-cli..02.md
 -
 -【本次中断调用的原始任务】
 -continue
+-- 当前工作区：<TASK>/raster-layering/step02/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/.run/case/raster-layering。正式输出目录：<TASK>/raster-layering/step02。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
 
-83 clusters
+===== 1 files; e.g. shared__tests__step-models.test.ts/raster_custom_image_tools_accept_upstream_and_other_local_reference_paths/transport-cli.transport-cli..01.md
+-- 当前工作区：<TASK>/raster-layering/step01/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：<TASK>/raster-layering/step01。正式输出目录：<TASK>/raster-layering/step01/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 1 files; e.g. shared__tests__structure-tools.test.ts/两套_step01_结束时结构诊断仅记日志_保留完成状态并推进下一步/raster.raster_step01..01.md
+-- 完成拆层与核对后，用 edit_occlusion 更新 occlusion.json 的深度及区域说明；逻辑部件发生拆分时，保存对应 SVG，再用 edit_groups 同步分组与深度记录。在 raster-layering/step01/report.md 记录原 part ID、实际图层名、区域、最终深度与原因，区分预先标注及组装中新发现的拆层。
++- 完成拆层与核对后，用 edit_occlusion 更新 occlusion.json 的深度及区域说明；逻辑部件发生拆分时，保存对应 SVG，再用 edit_groups 同步分组与深度记录。在 raster-layering/step01/report.md.tmp 记录原 part ID、实际图层名、区域、最终深度与原因，区分预先标注及组装中新发现的拆层。
++
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
+-- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md"。
++- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 1 files; e.g. shared__tests__structure-tools.test.ts/两套_step01_结束时结构诊断仅记日志_保留完成状态并推进下一步/raster.clothing_raster_step01..01.md
+-完成拆层与核对后，用 edit_occlusion 更新上游 occlusion.json，将对应 part 更新为 levels，逐区域写清深度、范围、连续分界和前后对象，不要求像素线条。逻辑部件发生拆分时，保存对应 SVG，再用 edit_groups 同步分组与深度记录；在 clothing-raster-layering/step01/report.md 记录原 part ID、实际图层名、区域、最终深度和拆层原因，区分已有标注及组装中新发现的拆层。
++完成拆层与核对后，用 edit_occlusion 更新上游 occlusion.json，将对应 part 更新为 levels，逐区域写清深度、范围、连续分界和前后对象，不要求像素线条。逻辑部件发生拆分时，保存对应 SVG，再用 edit_groups 同步分组与深度记录；在 clothing-raster-layering/step01/report.md.tmp 记录原 part ID、实际图层名、区域、最终深度和拆层原因，区分已有标注及组装中新发现的拆层。
++
++原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
+-- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
+-- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md"。
++- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 1 files; e.g. shared__tests__workspace.test.ts/Codex_changes_tools_by_reconnecting_to_the_same_thread_and_keeps_formal_write_access/transport.transport..02.md
+-- 当前工作区：/tmp/<TMP>/step02/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>。正式输出目录：/tmp/<TMP>/step02。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 1 files; e.g. workflow__tests__recovery.test.ts/clothing-raster-layering_换_thread_接续修复包含原任务_reviewer_仍全新且第二轮修完结束/raster.clothing_raster_step01_repair..02.md
++原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++
+-- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。原穿衣角色辅助参考："<TASK>/part-layering/references/simplified-subject.png"。
++- 参考图目录："<TASK>/clothing-part-layering/references"。读取上游 groups.json、occlusion.json；parts/ 是主要部件产物，单深度用 level，多深度按 levels 的区域说明与实际拼层核对。
+-- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/clothing-raster-layering/step01/clothing-depth.kra","<TASK>/clothing-raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/clothing-raster-layering/step01/report.md.tmp"。
+-
+-- 当前工作区：<TASK>/clothing-raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/clothing-raster-layering。正式输出目录：<TASK>/clothing-raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+===== 1 files; e.g. workflow__tests__recovery.test.ts/raster-layering_换_thread_接续修复包含原任务_reviewer_仍全新且第二轮修完结束/raster.raster_step01_repair..02.md
++报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++
+-- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。报告先写暂存文件，调度器检查通过后发布为 report.md；不要自行写入正式报告或 review / repair 报告。
++- 本步必须交付：["<TASK>/raster-layering/step01/character-depth.kra","<TASK>/raster-layering/step01/report.md.tmp"]。按本步正文逐层验收、重开核对，并将修改、偏差和未解决问题写入 "<TASK>/raster-layering/step01/report.md.tmp"。
+-
+-- 当前工作区：<TASK>/raster-layering/step01/workspace。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
+-- 本管线目录：/tmp/<TMP>/case/raster-layering。正式输出目录：<TASK>/raster-layering/step01。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
++- 当前工作区：当前目录（shell 的初始工作目录）。草稿、中间图片、临时脚本及其他中间文件都放在此目录内，子目录按需要自由组织。
++- 本管线目录：任务根目录下本次 section 的一级目录。正式输出目录：当前工作区的上一级目录。完整产物、报告及报告引用的图片放在正式输出目录；报告图片的位置自行选择，引用需能从报告解析。
+
+122 clusters

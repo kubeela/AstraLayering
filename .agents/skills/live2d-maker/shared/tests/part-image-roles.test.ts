@@ -28,6 +28,7 @@ const prompt=JSON.parse(raw).message.content[0].text;
 const body=prompt.split('【本次输入】\\n')[1].split('\\n\\n')[0],json=/^\\{[\\s\\S]*?\\n\\}(?=\\n|$)/.exec(body)?.[0];
 const input=json?JSON.parse(json):{};
 for(const line of body.slice(json?.length??0).split('\\n')){const field=/^([A-Za-z]+)：(.+)$/.exec(line);if(field)input[field[1]]=field[2];}
+const groupId=/ 中 id 为 (.+?) 的节点/.exec(input.group)[1];
 const config=claude?args[args.indexOf('--mcp-config')+1]:join(process.env.ANTIGRAVITY_GEMINI_DIR,'config/mcp_config.json');
 const env=JSON.parse(await readFile(config,'utf8')).mcpServers.layering.env;
 const rpc=async(method,params)=>{
@@ -39,11 +40,11 @@ const call=(name,arguments_)=>rpc('tools/call',{name,arguments:arguments_});
 const id=randomUUID();console.log(JSON.stringify(claude?{type:'system',subtype:'init',session_id:id}:{event:'init',conversation_id:id}));
 if(input.outputSvg){
  assert.ok(!names.includes('imagegen'));assert.ok(!prompt.includes('imagegen'));
- await call('write_outline_svg',{svg:'<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g id="shape" data-group-path="'+input.group.id+'"><path fill="#55b9ad" d="M10 10H90V90H10Z"/></g></svg>'});
+ await call('write_outline_svg',{svg:'<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g id="shape" data-group-path="'+groupId+'"><path fill="#55b9ad" d="M10 10H90V90H10Z"/></g></svg>'});
  await call('preview_svg',{path:input.outputSvg,mode:'blend'});
 }else{
  assert.ok(names.includes('imagegen'));assert.ok(names.includes('view_bitmap'));
- assert.ok(prompt.includes('必须先基于本次参考生成露出该'+(input.group.id==='face'?'部件':'衣片')+'的结构辅助图并查看'));
+ assert.ok(prompt.includes('必须先基于本次参考生成露出该'+(groupId==='face'?'部件':'衣片')+'的结构辅助图并查看'));
  const crop=await call('view_bitmap',{path:input.reference,crop:[10,10,20,20],scale:2});
  const cropPath=JSON.parse(crop.content.find(item=>item.type==='text').text).savedPath;
  const generated=await call('imagegen',{prompt:'Reveal the hidden structure while retaining visible shapes.',input_images:[cropPath],background:'auto'});

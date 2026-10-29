@@ -10,7 +10,7 @@ import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { groupValues, partKnowledge } from './group-prompts.ts';
-import { nodeSeed, normalizeGroups } from './groups.ts';
+import { normalizeGroups } from './groups.ts';
 import type { ChildrenAnalysis, GroupContext, GroupSeed, SvgArtifact } from './layering-types.ts';
 import { createSvgPreviewTool, type SvgObservation } from './svg-tools.ts';
 import { taskRootOf } from '../task-paths.ts';
@@ -70,10 +70,7 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
     tools: knowledge.tools('main', [createBitmapTool(context.directory, directory), createSvgPreviewTool({ directory: context.directory, reference, canvas,
       observationDirectory: directory, observed: entry => observations.push(entry) }), submit]),
     prompt: knowledge.render('main', {
-      // Paths are spelled in the prompt with {uri:}; the runtime input keeps the group's data.
-      runtime_context: JSON.stringify({ group: nodeSeed(context.group), parentGroup: context.parent?.id ?? null }, null, 2),
       ...groupValues(context.group.id, canvas),
-      ...(context.references.originalImage ? { original_image: resolve(context.references.originalImage) } : {}),
     }, { taskRoot: root, group: context.group.id }),
   });
   await verifySource();

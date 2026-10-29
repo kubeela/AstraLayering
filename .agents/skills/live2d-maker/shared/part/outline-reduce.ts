@@ -110,7 +110,7 @@ export async function reduceGroupOutlines(context: OutlineReductionContext, agen
   const response = await agents.run({ step: partStep(partProfile(context).id, 'reduce'), name: `同层轮廓去重-${context.depth}`, cwd: context.directory, outputDirectory: join(context.directory, layerStepId(context.depth)),
     imageGeneration: false, tools: knowledge.tools('main', [list, preview, write, submit, createSvgReadTool(context.directory)]),
     // Fixed paths are spelled in the prompt; the groups come from list_reduction_groups.
-    prompt: knowledge.render('main', { depth: String(context.depth), layer_depth: layerItem(context.depth).slice('depth'.length),
+    prompt: knowledge.render('main', { layer_depth: layerItem(context.depth).slice('depth'.length),
       width: String(canvas.width), height: String(canvas.height) }, { taskRoot: root }),
   });
   if (!submitted) throw agentOutcomeError('同层去重未通过 submit_reduction 提交', response);

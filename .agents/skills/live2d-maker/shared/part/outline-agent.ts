@@ -12,7 +12,7 @@ import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
 import { groupValues, partKnowledge } from './group-prompts.ts';
-import { findGroup, nodeSeed, writeAtomic } from './groups.ts';
+import { findGroup, writeAtomic } from './groups.ts';
 import type { DrawingContext, GroupContext, ReviewContext, ReviewedSvgArtifact, StepResult, SvgArtifact } from './layering-types.ts';
 import { createSvgPreviewTool, createSvgReadTool, parentBoundsSource, taskObservation, validateGroupSvg, type Canvas, type SvgObservation } from './svg-tools.ts';
 import { taskRootOf, toAgentPath } from '../task-paths.ts';
@@ -20,7 +20,7 @@ import { completedReviewCount, draftPath, matchesHash, publishSvg, readReviewRep
 
 const maxOutlineReviews = 2;
 
-async function recordRepair(output: string, feedback: string, prompt: string) {
+async function recordRepair(output: string, round: number, prompt: string) {
   const directory = output.replace(/\.svg$/, '.repairs');
   await mkdir(directory, { recursive: true });
   const entries = await readdir(directory, { withFileTypes: true });
@@ -35,7 +35,7 @@ async function recordRepair(output: string, feedback: string, prompt: string) {
       sequence++;
     }
   }
-  await writeAtomic(join(attempt, 'feedback.txt'), feedback + '\n');
+  await writeAtomic(join(attempt, 'round.txt'), `${round}\n`);
   await writeAtomic(join(attempt, 'prompt.txt'), prompt);
 }
 
@@ -51,12 +51,9 @@ async function inputs(context: GroupContext) {
   return { reference, canvas, parent };
 }
 
-// Paths are spelled in the prompt with {uri:}; the runtime input keeps the group's data.
-function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, review?: { round: number; candidateHash: string }) {
-  return {
-    runtime_context: JSON.stringify({ group: nodeSeed(context.group), parentGroup: context.parent?.id ?? null, ...(review ? { review } : {}) }, null, 2),
-    ...groupValues(context.group.id, input.canvas),
-  };
+// Paths, including groups.json for the group's node, are spelled in the prompt with {uri:}.
+function runtime(context: GroupContext, input: Awaited<ReturnType<typeof inputs>>, round?: number) {
+  return { ...groupValues(context.group.id, input.canvas), ...(round ? { review_round: String(round) } : {}) };
 }
 
 function groupNoteTool(context: GroupContext): FunctionTool {
@@ -90,7 +87,7 @@ function groupNoteTool(context: GroupContext): FunctionTool {
 
 export async function drawGroupOutline(
   context: DrawingContext, agents: Pick<CodexAgents, 'run'>,
-  repair?: { candidate: string; feedback: string },
+  repair?: { candidate: string; round: number },
 ): Promise<SvgArtifact> {
   const profile = partProfile(context);
   const knowledge = partKnowledge(profile, 'outline');
@@ -121,12 +118,10 @@ export async function drawGroupOutline(
     },
   };
   const drawingPrompt = knowledge.render('main', runtime(context, input), { taskRoot: taskRootOf(context.directory), group: context.group.id });
-  // 返修是绘制 thread 的下一轮，只发送意见与返修要求；本次输入已在绘制轮给出。
+  // 返修是绘制 thread 的下一轮，只给出 review 报告与返修要求；本次输入已在绘制轮给出。
   // 原 thread 不可用时 recoveryPrompt 在新会话中补上原绘制任务。
-  const repairPrompt = repair && runtimePrompt('outline-repair', {
-    feedback:repair.feedback, repair_rules:knowledge.render('repair', {}), repair_source:knowledge.files('repair')[0],
-  });
-  if (repairPrompt) await recordRepair(output, repair.feedback, repairPrompt);
+  const repairPrompt = repair && knowledge.render('repair', runtime(context, input, repair.round), { taskRoot: taskRootOf(context.directory), group: context.group.id });
+  if (repairPrompt) await recordRepair(output, repair.round, repairPrompt);
   const response = await agents.run({
     step: partStep(profile.id, repair ? 'outline_repair' : 'outline'),
     name: `${repair ? '组轮廓返修' : '组轮廓绘制'}-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'outline')),
@@ -134,9 +129,7 @@ export async function drawGroupOutline(
       createBitmapTool(context.directory, join(context.directory, 'observations', 'outline', context.group.id)),
       noteRepair]), imageGeneration: false,
     prompt: repairPrompt || drawingPrompt,
-    ...(repairPrompt ? { recoveryPrompt: runtimePrompt('outline-repair-resume', {
-      drawing_prompt:drawingPrompt, repair_prompt:repairPrompt,
-    }) } : {}),
+    ...(repairPrompt ? { recoveryPrompt: `${drawingPrompt}\n\n${runtimePrompt('outline-repair-resume')}${repairPrompt}` } : {}),
   });
   const actualDraft = await validateAgentOutcome(response, async () => {
     try { return await realpath(draft); }
@@ -195,7 +188,7 @@ async function reviewOnce(
     step: partStep(profile.id, 'outline_review'), name: `组轮廓review-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'outline')),
     tools: knowledge.tools('review', [preview, submit, createSvgReadTool(context.directory),
       createBitmapTool(context.directory, join(context.directory, 'observations', 'review', context.group.id))]), imageGeneration: false,
-    prompt: knowledge.render('review', runtime(context, input, { round, candidateHash }), { taskRoot: taskRootOf(context.directory), group: context.group.id }),
+    prompt: knowledge.render('review', runtime(context, input, round), { taskRoot: taskRootOf(context.directory), group: context.group.id }),
   });
   if (!submitted) throw agentOutcomeError('独立 review 未通过 submit_review 保存结论', response);
   if (hash(await readFile(candidate)) !== candidateHash) throw agentOutcomeError('独立 review 修改了候选 SVG', response);
@@ -213,7 +206,8 @@ export async function reviewGroupOutline(
   async function repair(review: Review) {
     // 记录实际完成返修的文件；续跑不能仅凭 SVG 变过就认定意见已落实。
     if (matchesHash(await readFile(candidate), review.repairedCandidateHash)) return;
-    await drawGroupOutline({ ...context, outputPath: candidate }, drawing, { candidate, feedback: review.feedback });
+    // The repair reads the review from its report; it is the report's latest entry.
+    await drawGroupOutline({ ...context, outputPath: candidate }, drawing, { candidate, round: completedReviewCount(report) });
     review.repairedCandidateHash = hash(await readFile(candidate));
     await writeAtomic(reportPath, JSON.stringify(report, null, 2) + '\n');
   }

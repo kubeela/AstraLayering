@@ -205,18 +205,20 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
         await saveSession({ handoff: session.handoff }, '模型配置切换 CLI');
       }
       const handoff = !fresh && !session.threadId ? session.handoff : undefined;
-      if (!fresh && phase !== 'draw' && !session.threadId && !handoff) prompt = runtimePrompt('raster-repair-resume',{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
+      // A repair in a new thread also needs the original drawing task and inputs.
+      const repairPrompt = prompt;
+      const resumeRepair = async (repair: string) => `${await section.buildPrompt(step, reference, output, previous)}\n\n${runtimePrompt('raster-repair-resume')}${repair}`;
+      if (!fresh && phase !== 'draw' && !session.threadId) prompt = await resumeRepair(prompt);
       if (handoff) {
         const notes = await readFile(fromTaskPath(taskRoot, handoff.notes), 'utf8');
         if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
-        // A new repair thread also needs the original drawing task and inputs.
-        if (phase !== 'draw') prompt = runtimePrompt('raster-handoff-repair',{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
         prompt = runtimePrompt('raster-handoff',{
           task_prompt:prompt, previous_thread_id:handoff.previousThreadId, reason:handoff.reason,
           step_id:step.id, phase, notes,
         });
       }
-      prompt = workspacePrompt(prompt, await prepareWorkspace({ cwd: directory, outputDirectory: output }, directory));
+      const paths = await prepareWorkspace({ cwd: directory, outputDirectory: output }, directory);
+      prompt = workspacePrompt(prompt, paths);
       await writeFile(join(records, phase === 'draw' ? 'prompt.md' : `${phase}.prompt.txt`), prompt);
       await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ attempt, phase, startedAt: new Date().toISOString(),
         model: selected.model, effort: selected.effort, krita, ...(fresh ? {} : { threadId: session.threadId ?? null }) }) + '\n');
@@ -232,7 +234,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
           // and share its Krita; a fresh reviewer thread is still the same section.
           ...(step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])]),
         imageNormalization: { env: environment.codex.env, runsRoot: root, progress: options.progress },
-        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? runtimePrompt('raster-repair-resume',{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt}) : undefined,
+        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? workspacePrompt(await resumeRepair(repairPrompt), paths) : undefined,
         threadId: fresh ? undefined : session.threadId, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
           await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');

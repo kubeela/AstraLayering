@@ -38,30 +38,34 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 
 ## 提示词模板与动态位置
 
-工作流自己提供的任务文字以 Markdown 为来源。动态内容只能填入模板声明的 `{变量名}`；代码不能在阶段正文后临时拼接制作要求。实际顺序由 Markdown 中的位置决定。占位符采用单次替换：输入正文或 JSON 数据里的花括号不会再次求值；缺少变量时明确报错。分组自定义模板还必须保留对应通用模板的必要占位符，不会静默追加缺失的运行信息。
+工作流自己提供的任务文字以 `knowledge/` 下的 Markdown 为来源，每步由 `agent.json` 声明拼接的文件与工具。代码不在正文后临时拼接制作要求；占位符单次替换，输入正文或 JSON 数据里的花括号不会再次求值。
 
-### 各阶段源文件
+### 动态位置
 
-| 阶段 Markdown | 显式位置 | 内容来源 |
-| --- | --- | --- |
-| 人物 `0-标准姿态.md`、`2-简化图片.md`、`3-素体参考.md`，衣服 `preparation.md` | `{image_execution_rules}`；衣服另有 `{width}`、`{height}` | [人物生图规则](prompts/preparation-image-rules.md)、[标准化规则](prompts/preparation-standardize-rules.md)、[衣服生图规则](prompts/preparation-clothing-rules.md)；尺寸来自原图。只给绘制正文的 API 调用者使用[同样可见的外层模板](prompts/preparation-image-task.md)中的 `{drawing_prompt}`。 |
-| 两套 part 的 `4-初始分组.md` | `{run_directory}`、`{reference_label}`、`{reference_path}`、`{groups_path}` | 本次目录、人物／衣服参考类型及输入路径。 |
-| 两套 part 的 `5-组轮廓.md`、`6-轮廓review.md`、`8-同层轮廓去重.md`、`9-正面遮挡补全.md`、`10-直属结构拆分.md`、`11-遮挡层级规划.md`，及 `prompts/groups/**` 覆盖文件 | `{prompt_source}`、`{runtime_context}`；按职责声明 `{report_path}`、`{fixed_rules}`、`{fixed_rules_source}` | `runtime_context` 是当前组、画布、绑定草稿／候选、父组、同级件和参考图等 JSON 数据；补全、拆分的固定规则来自各自 `9-补全操作约定.md`／`10-拆分操作约定.md`；轮廓返修是绘制 thread 的下一轮，只发送[返修意见与要求](prompts/outline-repair.md)；原 thread 不可用时以[返修续接](prompts/outline-repair-resume.md)补上原绘制任务。 |
-| 两套 raster 的所有绘制、review、repair Markdown | `{drawing_responsibilities}`、`{runtime_context}`；首步另有 `{drawing_report_filename}`，检查／返修有 `{review_report_filename}`、`{repair_report_filename}` | [绘制职责](raster/drawing-responsibilities.md)按职责填入或留空；运行信息来自[绘制模板](prompts/raster-runtime.md)或[检查模板](prompts/raster-review-runtime.md)，内部路径、版本、交付文件等也逐项声明占位符；衣服 raster 的绘制正文另有 `{original_character_path}`。报告暂存发布、原穿衣角色参考等步骤固有的说明直接写在对应步骤正文中。 |
-| [组装](../character-assembly/prompts/01-人物与衣服组装.md)、[阴影蒙版](../shadow/prompts/mask.md)、[法线／深度](../shadow/prompts/normal-depth.md) | `{runtime_context}` | [组装运行信息](prompts/assembly-runtime.md)、[阴影运行信息](prompts/shadow-runtime.md)；蒙版分支在阴影运行信息的 `{inspection_instructions}` 处插入[检查说明模板](prompts/shadow-inspection.md)（`{reference_files}`、`{inspection_receipt}`、`{inspection_directory}`），要求调用 `inspect_shadow_mask` 工具检查，交付不核对检查回执；normal-depth 此处为空。 |
+步骤提示词只使用以下变量：
 
-### 请求、恢复与生图适配
-
-这些是独立的外层模板，不改变阶段自己的绘制要求，也必须在 Markdown 中声明插入位置。
-
-| 模板 | 动态位置与用途 |
+| 变量 | 含义 |
 | --- | --- |
-| [Agent 请求](prompts/agent-turn.md) | `{task_prompt}`、`{task_root}`、`{workspace}`、`{section_directory}`、`{output_directory}`。所有 CLI 共用路径约定、工作区、输入与正式交付说明。 |
-| [中断继续](prompts/interrupted-task.md) | 无动态位置。会话仍可接上时只发这一句，原任务与已有产物都在会话里。 |
-| [恢复返修](prompts/raster-repair-resume.md)、[交接返修](prompts/raster-handoff-repair.md)、[会话交接](prompts/raster-handoff.md) | `{drawing_prompt}`、`{repair_prompt}` 或 `{task_prompt}`，以及旧会话、原因、当前阶段和交接记录。 |
-| [生图请求](prompts/image-request.md)、[Nano 纯色背景](prompts/nano-solid-background.md) | `{drawing_prompt}`、`{background_instructions}`、`{background_hex}`。原始绘制要求保留，Nano 透明后处理补充独立的背景要求。 |
-| [单张图片被拦截](prompts/image-blocked-single.md)、[多张图片被拦截](prompts/image-blocked-multiple.md)、[无法继续](prompts/image-blocked-stop.md)、[移除占位](prompts/image-blocked-placeholder.md) | `{images}`、`{count}`、`{stop}`、`{origin}`。图片被内容策略拦截时，从会话历史移除该图并以占位文字替代，提示换方式读取或说明后结束回合。 |
-| [Nano 仅换背景](prompts/nano-background-replacement.md) | `{background_hex}`、`{width}`、`{height}`。第二次请求仅附第一张原始 RGB 图，保持前景与画布，用双背景差分恢复透明 PNG。 |
+| `{input}` | 用户上传的原图（扩展名不固定）。 |
+| `{group_id}`、`{group_dir}`、`{layer_depth}` | 当前组 ID、组在产物中的目录（含 `children/`）、层号。 |
+| `{review_round}` | 当前 review 轮次；返修据此读取对应 review 文件。 |
+| `{width}`、`{height}` | 画布尺寸。 |
+
+其余路径一律写成相对任务根目录的 `{uri:…}`，渲染为绝对路径；框架写出的参考图都是固定的 `.png` 路径。`{reference:…}`、`{shared_reference:…}` 指向 knowledge 自带的参考文件。轮廓返修是绘制 thread 的下一轮，指向 `review.json` 中最后一条 review；raster 返修指向对应轮次的 `review-NN.md`。
+
+### 恢复与生图适配
+
+`knowledge/shared/prompts/runtime/` 中的模板是恢复或外层固定句：
+
+| 模板 | 用途 |
+| --- | --- |
+| `agent-turn.md` | 所有 CLI 共用的路径约定与工作区说明，无变量。 |
+| `interrupted-task.md` | 会话仍可接上时只发这一句。 |
+| `outline-repair-resume.md`、`raster-repair-resume.md` | 原 thread 不可用时，代码拼接原绘制任务、这一句固定提示与返修任务。 |
+| `raster-handoff.md` | 替代 thread 的会话交接，保留原机制：`{task_prompt}`、旧会话、原因、阶段与交接记录。 |
+| `image-blocked-*.md` | agent 内部遇到图片被内容策略拦截时的恢复策略：`{images}`、`{count}`、`{stop}`、`{origin}`。 |
+
+生图 API 的外层模板在 `shared/prompts/`：[生图请求](prompts/image-request.md)与 [Nano 纯色背景](prompts/nano-solid-background.md)（`{drawing_prompt}`、`{background_instructions}`、`{background_hex}`）保留原始绘制要求，并为 Nano 透明后处理补充独立的背景要求；[Nano 仅换背景](prompts/nano-background-replacement.md)（`{background_hex}`、`{width}`、`{height}`）在第二次请求仅附第一张原始 RGB 图，保持前景与画布，用双背景差分恢复透明 PNG。
 
 工具说明和参数仍来自 共享的 `shared/tools/<工具名>/` 或所属管线的 `tools/<工具名>/`（`description.md`／`schema.json`）；宿主原生工具的定义由宿主提供。模型、API 凭据和构建环境不写进这些制作提示词。
 

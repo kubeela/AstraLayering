@@ -11,7 +11,7 @@ import type { AgentSession, AgentTask } from '../../shared/codex/agents.ts';
 import { GroupStore, normalizeGroups } from '../../shared/part/groups.ts';
 import { createLayeringSteps as createDefaultLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
-import { seedInitialGroups } from './layering-fixture.ts';
+import { publishGroups, seedInitialGroups } from './layering-fixture.ts';
 import { partKnowledge } from '../../shared/part/group-prompts.ts';
 import { temporaryKnowledge } from '../../shared/tests/knowledge-fixture.ts';
 import { drawGroupOutline } from '../../shared/part/outline-agent.ts';
@@ -25,7 +25,7 @@ function createLayeringSteps(agents: Parameters<typeof createDefaultLayeringStep
     ({ status: 'pending' as const, message: '轮廓测试结束，补全另行测试' }) };
 }
 type Runtime = { group: { id: string }; parentGroup: string | null; outputSvg?: string; candidate?: string;
-  review?: { round: number; candidateHash: string } };
+  round?: string };
 // A repair turn carries no input of its own: the drawing turn of the same thread gave it.
 // The mock holds no thread, so it reads that input from the recovery text's drawing task.
 function runtime(task: AgentTask): Runtime {
@@ -188,18 +188,19 @@ test('revise 由原绘制会话返修，每次 review 新会话，报告保留�
   assert.deepEqual(mock.calls.map(call => call.task.name.split('-')[0]), ['组轮廓绘制', '组轮廓review', '组轮廓返修', '组轮廓review']);
   assert.equal(mock.calls[0].session, mock.calls[2].session);
   assert.notEqual(mock.calls[1].session, mock.calls[3].session);
-  assert.match(mock.calls[2].task.prompt, /左侧可见边界 x=10/);
+  // The repair names the review file and round; the feedback stays in review.json.
+  assert.match(mock.calls[2].task.prompt, /step09_outline\/face\/review\.json 中 reviews 最后一条（第 1 轮 review）的 feedback/);
+  assert.doesNotMatch(mock.calls[2].task.prompt, /左侧可见边界 x=10/);
   assert.doesNotMatch(mock.calls[2].task.prompt, /imagegen|生成.*辅助图/);
-  assert.equal(await readFile(join(f.directory, 'step09_outline/face/outline.repairs/1/feedback.txt'), 'utf8'),
-    '对照左侧可见边界 x=10；主要结构和宽度的具体意见。第 1 轮反馈。\n');
+  assert.equal(await readFile(join(f.directory, 'step09_outline/face/outline.repairs/1/round.txt'), 'utf8'), '1\n');
   assert.equal(await readFile(join(f.directory, 'step09_outline/face/outline.repairs/1/prompt.txt'), 'utf8'), mock.calls[2].task.prompt);
   assert.doesNotMatch(mock.calls[2].task.prompt, /会话|窗口|thread|最多.*返修/);
   assert.deepEqual(mock.calls[2].task.tools!.map(tool => tool.name), ['preview_svg', 'write_outline_svg', 'read_svg', 'view_bitmap', 'update_group_note']);
   const report = JSON.parse(await readFile(join(f.directory, 'step09_outline/face/review.json'), 'utf8'));
   assert.deepEqual(report.reviews.map((review: { verdict: string }) => review.verdict), ['revise', 'pass']);
   assert.notEqual(report.reviews[0].candidateHash, report.reviews[1].candidateHash);
-  assert.deepEqual(runtime(mock.calls[1].task).review, { round: 1, candidateHash: report.reviews[0].candidateHash });
-  assert.deepEqual(runtime(mock.calls[3].task).review, { round: 2, candidateHash: report.reviews[1].candidateHash });
+  assert.equal(runtime(mock.calls[1].task).round, '第 1 轮 review');
+  assert.equal(runtime(mock.calls[3].task).round, '第 2 轮 review');
   const state = (await GroupStore.open(f.directory)).snapshot();
   assert.equal(state.groups[0].steps.review.output!.path, state.groups[0].steps.outline.output!.path);
   assert.equal(await readFile(state.groups[0].steps.review.output!.path, 'utf8'), svg('face', 11));
@@ -223,8 +224,7 @@ test('第二轮缺少提交时拒绝旧报告，续跑只复核返修后的候�
   const resumed = agents(['pass']);
   await runLayering({ ...f, groups: null, steps: createLayeringSteps(resumed) });
   assert.deepEqual(resumed.calls.map(call => call.task.name), ['组轮廓review-face']);
-  assert.deepEqual(runtime(resumed.calls[0].task).review,
-    { round: 2, candidateHash: before.reviews[0].repairedCandidateHash });
+  assert.equal(runtime(resumed.calls[0].task).round, '第 2 轮 review');
   const after = JSON.parse(await readFile(path, 'utf8'));
   assert.deepEqual(after.reviews.map((review: { verdict: string }) => review.verdict), ['revise', 'pass']);
   assert.equal(after.reviews[1].candidateHash, before.reviews[0].repairedCandidateHash);
@@ -280,11 +280,11 @@ test('两次 review 都 revise 时落实两次返修并进入下一步，不做�
   assert.deepEqual((await readdir(repairDirectory)).sort(), ['1', '2']);
   for (const [index, repair] of repairs.entries()) {
     const directory = join(repairDirectory, String(index + 1));
-    const feedback = await readFile(join(directory, 'feedback.txt'), 'utf8');
+    const round = await readFile(join(directory, 'round.txt'), 'utf8');
     const prompt = await readFile(join(directory, 'prompt.txt'), 'utf8');
-    assert.match(feedback, new RegExp(`第 ${index + 1} 轮反馈`));
+    assert.equal(round, `${index + 1}\n`);
     assert.equal(prompt, repair.task.prompt);
-    assert.ok(prompt.includes(feedback.trim()));
+    assert.ok(prompt.includes(`第 ${index + 1} 轮 review`));
   }
   const state = (await GroupStore.open(f.directory)).snapshot();
   assert.equal(state.groups[0].steps.outline.status, 'completed');
@@ -311,7 +311,7 @@ test('第二轮返修失败后续跑只完成返修，不增加 review；进度�
   const resumed = agents(['pass']);
   await runLayering({ ...f, groups: null, steps: createLayeringSteps(resumed) });
   assert.deepEqual(resumed.calls.map(call => call.task.name), ['组轮廓返修-face']);
-  assert.match(resumed.calls[0].task.prompt, /第 2 轮反馈/);
+  assert.match(resumed.calls[0].task.prompt, /第 2 轮 review/);
   const report = JSON.parse(await readFile(join(f.directory, 'step09_outline/face/review.json'), 'utf8'));
   assert.equal(report.reviews.length, 2);
   const store = await GroupStore.open(f.directory);
@@ -374,6 +374,7 @@ test('子组绘制收到父组完成 SVG；越界由写入工具当回合退回�
   await mkdir(dirname(parent), { recursive: true });
   await writeFile(parent, before);
   const group = normalizeGroups([{ id: 'face/eye' }])[0];
+  await publishGroups(f.directory, [{ id: 'face', groups: [{ id: 'face/eye' }] }]);
   const parentGroup = normalizeGroups([{ id: 'face', steps: { completion: { status: 'completed', output: { path: parent } } } }])[0];
   const calls: AgentTask[] = [];
   await assert.rejects(drawGroupOutline({ ...f, group, parent: parentGroup, outputPath: artifactPath(f.directory, 'face/eye', 'outline') }, { async run(task) {
@@ -393,6 +394,7 @@ test('终端不可用时可读取父 SVG 复用共享曲线，源码读取不能
   await mkdir(dirname(parent), { recursive: true });
   await writeFile(parent, before);
   const group = normalizeGroups([{ id: 'face/eye' }])[0];
+  await publishGroups(f.directory, [{ id: 'face', groups: [{ id: 'face/eye' }] }]);
   const parentGroup = normalizeGroups([{ id: 'face', steps: { completion: { status: 'completed', output: { path: parent } } } }])[0];
   let preview = false;
   const mock = { async run(task: AgentTask) {

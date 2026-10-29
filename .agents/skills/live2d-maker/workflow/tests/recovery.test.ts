@@ -148,8 +148,7 @@ for (const [section, execute, definitions, upstream] of [
       resumed++;
       if (resumed === 1) {
         assert.equal(request.threadId, undefined);
-        const original = (await readFile(mainPrompt(definitions[0]), 'utf8')).replaceAll('step01/report.md', 'step01/report.md.tmp');
-        assert.ok(request.prompt.startsWith(staticPromptPrefix(original)));
+        assert.ok(request.prompt.startsWith(staticPromptPrefix(await readFile(mainPrompt(definitions[0]), 'utf8'))));
         assert.match(request.prompt, /repair-01.md.tmp/); assert.match(request.prompt, /保留绘制/);
         await request.onEvent({ type: 'thread.started', thread_id: 'replacement-draw' });
         await writeFile(join(output, 'step01/repair-01.md.tmp'), '结论：已修复\n袖口已修画。');

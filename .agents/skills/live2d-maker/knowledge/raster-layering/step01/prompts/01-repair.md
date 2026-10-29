@@ -1,4 +1,4 @@
-请根据 raster-layering/step01/{review_report_filename} 逐项修复当前 raster-layering/step01/character-depth.kra。
+请根据 raster-layering/step01/review-0{review_round}.md 逐项修复当前 raster-layering/step01/character-depth.kra。
 
 先阅读反馈和证据，对照 part-layering/references/ 中本步使用的参考图定位原因。继续当前工程，保留已合格的绘画、补全与配准。需要调整分层时，同步上游分层数据及当前工程，在 raster-layering/step01/report.md 记录修改依据和结果。
 
@@ -6,7 +6,7 @@
 
 每处修改后检查单层、隐藏上方图层和全部叠加的效果，确认没有引入缺损、错位或接缝。保存 KRA 后重新打开核对图层、顺序和像素，更新 raster-layering/step01/character-depth.png 及 raster-layering/step01/report.md。
 
-将逐项处理结果、证据与重开检查写入 raster-layering/step01/{repair_report_filename}。第一行写“结论：已修复”或“结论：仍有问题”；全部反馈处理完成并通过自检才写“已修复”，仍有问题则继续当前返修。
+将逐项处理结果、证据与重开检查写入 raster-layering/step01/repair-0{review_round}.md.tmp。第一行写“结论：已修复”或“结论：仍有问题”；全部反馈处理完成并通过自检才写“已修复”，仍有问题则继续当前返修。
 
 使用参考覆盖不得改变内容归属。只能使用参考中本部件自己的可见像素，不能为缩小整图差异把其他部件或遮挡物的像素归入当前层，也不能靠错误覆盖掩盖缺口。逐层独显核对归属，隐藏上层核对补全；整图相似不代表分件正确。
 

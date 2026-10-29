@@ -5,7 +5,7 @@ import type { FunctionTool } from '../codex/function-tools.ts';
 import { runtimePrompt } from '../knowledge.ts';
 import { stageStep, type PreparationStage } from '../part/preparation-steps.ts';
 import { clothingPreparationStep, partSteps, shadowStep } from '../step-paths.js';
-import { fromTaskPath, taskRootOf } from '../task-paths.ts';
+import { taskRootOf } from '../task-paths.ts';
 
 // root is the single base of every relative path an agent reads or writes.
 export type ExecutionPaths = { root: string; directory: string; outputDirectory: string; workspace: string };
@@ -39,13 +39,9 @@ export async function prepareWorkspace(task: Pick<AgentTask, 'cwd' | 'outputDire
 }
 
 export function workspacePrompt(prompt: string, paths: ExecutionPaths): string {
-  // Directories are shown absolute; relative paths still mean the task root.
-  const at = (path: string) => fromTaskPath(paths.root, path);
-  if (prompt.includes(`- 任务根目录：${paths.root}。`) && prompt.includes(`- 当前工作区：${at(paths.workspace)}。`)) return prompt;
-  return runtimePrompt('agent-turn', {
-    task_prompt: prompt, task_root: paths.root, workspace: at(paths.workspace),
-    section_directory: at(paths.directory), output_directory: at(paths.outputDirectory),
-  });
+  // The path conventions follow the task once; the CLI works in the workspace.
+  const conventions = runtimePrompt('agent-turn', {}, { taskRoot: paths.root });
+  return prompt.includes(conventions) ? prompt : `${prompt}\n\n${conventions}`;
 }
 
 export function workspaceTools(tools: readonly FunctionTool[], paths: ExecutionPaths): FunctionTool[] {
