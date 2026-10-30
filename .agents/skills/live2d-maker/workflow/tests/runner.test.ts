@@ -103,7 +103,7 @@ test('总控保留输入与配置，按依赖推进；后续仅用 name 和 dir 
     return { summary: '管线自身检查并跳过', output: 'retained' };
   } });
   // Re-enter the section's own authoritative checks, never trust a stale top-level completion alone.
-  assert.deepEqual([...second].sort(), [...sectionIds].sort());
+  assert.deepEqual([...second].sort(), sectionIds.filter(id => !['part-layering', 'clothing-part-layering'].includes(id)).sort());
   const status = await taskStatus(f.options);
   assert.equal(status.status, 'completed'); assert.equal(status.runnerAlive, false); assert.equal(status.lockHeld, false);
   assert.equal(status.output, 'retained');
@@ -318,7 +318,7 @@ test('标准化选项保持未指定、开启和关闭的区别，只由总控�
 });
 
 
-test('绘画中断后总控重进 part 管线由其自身沿用，不覆盖绘画阶段的新增结构', async t => {
+test('绘画中断后总控不重进已完成 part 管线，沿用新增结构', async t => {
   for (const [part, raster] of [['part-layering', 'raster-layering'], ['clothing-part-layering', 'clothing-raster-layering']] as const) {
     const f = await fixture(t);
     const options = { ...f.options, from: part, to: raster };
@@ -334,7 +334,7 @@ test('绘画中断后总控重进 part 管线由其自身沿用，不覆盖绘�
       assert.equal(await readFile(file, 'utf8'), 'drawing corrected structure');
       return { summary: 'complete' };
     } });
-    assert.deepEqual(calls, [part, raster]);
+    assert.deepEqual(calls, [raster]);
   }
 });
 
@@ -356,6 +356,7 @@ test('素体未换装时跳过衣服拆分与衣服绘制，记为已完成后�
   executed.length = 0;
   await markBaseStep(f.directory, true);
   const dressed = await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async id => { executed.push(id); return { summary: id }; } });
-  assert.deepEqual(executed, [...sectionIds]);
+  // part-layering stays as drawn: its raster stage has started.
+  assert.deepEqual(executed, sectionIds.slice(1));
   assert.equal(dressed.sections['clothing-part-layering']?.skipped, undefined);
 });
