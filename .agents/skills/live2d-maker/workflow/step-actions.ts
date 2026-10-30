@@ -10,7 +10,8 @@ import { partSteps, stepPattern } from '../shared/step-paths.js';
 import { sectionIds, type SectionId } from '../shared/paths.ts';
 import { acquireTaskLock, directoryFor, sectionId, type TaskOptions } from './state.ts';
 
-// Per-step recovery for an interrupted or failed step, by any client (web, CLI):
+// Step recovery, for one step (CLI --section/--step) or for every step still
+// marked .running (web toolbar and CLI, applyTaskAction):
 //   continue: change nothing; the next run continues the step with its
 //             products and session.
 //   resume:   drop the step's session and keep its products, so the next run
@@ -73,9 +74,10 @@ export async function applyStepAction(options: Pick<TaskOptions, 'name' | 'dir'>
   } finally { await release(); }
 }
 
-// The task-wide form the web toolbar uses: the action applies to every
-// interrupted or failed step of every section. Continue with no such step
-// just runs the task on from where it stopped.
+// The task-wide form the web toolbar uses: the action applies to every step
+// still marked .running in every section; interrupted and failed steps both
+// keep that marker. Continue with no such step just runs the task on from
+// where it stopped.
 export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'> & { action: string }): Promise<string> {
   if (!(stepActions as readonly string[]).includes(options.action)) throw new Error('未知操作：' + options.action + '；可选：' + stepActions.join(', '));
   const action = options.action as StepAction, directory = directoryFor(options);

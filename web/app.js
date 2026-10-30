@@ -212,7 +212,7 @@ function svgPreviewPanel(index,group,phase,phaseFiles) {
  return `<section class="kra-preview-panel svg-preview-panel" data-svg-preview="${index}:${phase}" aria-label="${esc(group.id)} ${title}"><h3>${icon('layers')}${title}</h3><p class="preview-source" title="${esc(items[0]?.path||group.id)}">${esc(items[0]?.label||group.id)}</p>${items.length?artifacts(items,index,phase,'live-kra-artifacts'):'<p class="archive-gap">等待首次保存 SVG</p>'}</section>`;
 }
 // Task recovery: 继续 keeps products and sessions, 恢复 drops the sessions and keeps
-// products, 重试 deletes the step products, sessions and agent attempt records; dependents rerun with them.
+// products, 重试 deletes the step products, sessions and agent attempt records.
 // Each acts on every interrupted or failed step of the task at once, then runs the
 // task again. Without any step record 继续 opens the run dialog instead. While the
 // task runs they cannot apply, so the toolbar holds the stop button in their place.
@@ -221,7 +221,7 @@ const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
 const stepActionHelp={
  continue:['保留已有产物和 agent 会话，让原来的 agent 从中断处接着做。','适合：手动停止或意外中断后，想沿着刚才的进度继续。'],
  resume:['保留已有产物，但丢掉旧会话；新 agent 读取这些产物，在新会话中接着做。','适合：产物可用，但旧会话卡住、上下文过长或换了模型。'],
- retry:['删除这些步骤的产物、会话和 agent 尝试记录，从干净状态重做；依赖它们的后续步骤也会重跑。','适合：结果方向不对，需要从头再来。'],
+ retry:['删除这些步骤的产物、会话和 agent 尝试记录，从干净状态重做。','适合：结果方向不对，需要从头再来。'],
 };
 function stepTargets() {
  return (data.sections||[]).flatMap((section,index)=>[
@@ -357,7 +357,7 @@ function processArtifacts(index, step) {
  const known=new Set([...Object.values(stepArtifacts[index]).flat(),...shadowInspectionArtifacts(data.files)].map(item=>item.path));
  const roots=[directory+'/workspace'];
  const filtered=data.files.filter(path=>path.startsWith(prefix)&&!known.has(path)
-  && (roots.some(root=>path.startsWith(root+'/'))||!path.includes('/agents/')&&!/(?:^|\/)(?:prompt\.md|[^/]+\.prompt\.txt|(?:[^/]+\.)?result\.json|attempts\.jsonl|events\.jsonl|error\.txt|review-baseline\.json)$/.test(path)));
+  && (roots.some(root=>path.startsWith(root+'/'))||!path.includes('/agents/')&&!/(?:^|\/)(?:prompt\.md|[^/]+\.prompt\.txt|(?:[^/]+\.)?result\.json|attempts\.jsonl|events\.jsonl|error\.txt)$/.test(path)));
  const items=filtered.filter(path=>roots.some(root=>path.startsWith(root+'/')));
  // Outside workspace only fixed results and report-cited evidence are shown; the step's own report already shows its images.
  const reports=data.sections[index]?.reports||{}, own=reportEvidence(index,step.id)?reports[step.id].images.map(image=>image.path):[];
@@ -768,7 +768,7 @@ function bind() {
  document.querySelectorAll('[data-step-toolbar]').forEach(b=>b.onclick=async()=>{
   const targets=stepTargets(),broken=brokenSteps(targets),action=b.dataset.stepToolbar;
   if(!targets.length){if(action==='continue')showNew(false,true);return;}
-  if(action==='retry'&&!confirm(`重试：删除以下步骤的产物、会话与 agent 尝试记录并重新运行，依赖它们的后续步骤会随之重跑。\n${broken.map(stepLabel).join('\n')}\n确定吗？`))return;
+  if(action==='retry'&&!confirm(`重试：删除以下步骤的产物、会话与 agent 尝试记录并重新运行。\n${broken.map(stepLabel).join('\n')}\n确定吗？`))return;
   b.disabled=true;
   try{const result=await settings.withKrita(()=>post('task-action',{name:state.name,action}));toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
   catch(error){toast(error.message);b.disabled=false;}

@@ -4,7 +4,7 @@ import { lstat, mkdir, readFile, rm, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
 import { checkSubject, findGroup, groupCompleted, GroupStore, nodeSeed, normalizeGroups, setGroupProgress, walkGroups, writeAtomic } from './groups.ts';
-import { artifactPath, draftPath, stepDraftPath, mergeSourceHash, publishSvg, readReviewReport, readSvg, reportPath, reviewedArtifact, svgHash } from './artifact-facts.ts';
+import { artifactPath, draftPath, stepDraftPath, publishSvg, readReviewReport, readSvg, reportPath, reviewedArtifact } from './artifact-facts.ts';
 import { mergePartSvgs } from './merge-svg.ts';
 import { publishDepthPreview } from './depth-preview.ts';
 import { type GroupContext, type GroupInput, type GroupNode, type GroupSeed, type GroupStage, type GroupStageOutputs, type LayeringResult, type LayeringSteps, type StepResult, type SvgArtifact, type SvgMerger } from './layering-types.ts';
@@ -123,10 +123,6 @@ export async function runLayering(input: {
       const output = artifactPath(directory, id, stage), draft = stepDraftPath(directory, id, stage);
       const before = stage === 'completion' ? (await readSvg(artifact(id, 'reduction').path))! : undefined;
       await mkdir(dirname(draft), { recursive: true });
-      if (continued && !await readSvg(draft)) {
-        const legacy = await readSvg(output.replace(/\.svg$/, '.draft.svg'));
-        if (legacy) await writeAtomic(draft, legacy);
-      }
       const resumeDraft = continued && !!await readSvg(draft);
       if (!resumeDraft) await rm(draft, { force: true });
       if (resumeDraft) report(`[${id}] ${labels[stage]}：沿用上次的草稿继续`);
@@ -146,7 +142,7 @@ export async function runLayering(input: {
         throw new Error('补全输入已变化，不能发布');
       }
       if (candidate !== draft) await writeAtomic(draft, await readFile(candidate));
-      await publishSvg(draft, output, source ? svgHash((await readSvg(source))!) : undefined);
+      await publishSvg(draft, output);
       return { status: 'completed', output: { ...result.output, path: output } };
     });
   }
@@ -390,7 +386,7 @@ export async function runLayering(input: {
         if (result.status === 'completed') {
           const candidate = resolve(directory, result.output.path);
           if (candidate !== draft) await writeAtomic(draft, await readFile(candidate));
-          await publishSvg(draft, output, await mergeSourceHash(directory, document));
+          await publishSvg(draft, output);
           await completeStep(step.directory);
           report(`最终预览合并：完成 ${output}`);
         } else report(result.message);

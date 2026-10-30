@@ -139,7 +139,7 @@ export async function drawGroupOutline(
     throw agentOutcomeError('轮廓绘制未通过 preview_svg 完成混合叠加自检', response);
   }
   const bytes = await validateAgentOutcome(response, () => validateGroupSvg(draft, context.group.id, input.canvas, undefined, true));
-  if (draft !== output) await publishSvg(draft, output, input.parent ? hash(await readFile(input.parent)) : undefined);
+  if (draft !== output) await publishSvg(draft, output);
   return { path: output };
 }
 

@@ -116,7 +116,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
       const values = phases.map(phase => states[phase]);
       states.layers = values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.includes('failed') ? 'failed' : values.includes('unconfirmed') ? 'unconfirmed'
         : values.every(v => v === 'done') ? 'done' : all.length ? 'available' : 'pending';
-      // Legacy completed sections can lack individual reference fingerprints.
+      // A completed section shows its prepared stages as done even where a step lacks its own marker.
       if (saved?.status === 'completed') {
         for (const key of ['initial', 'preparation', 'standard', 'simplified', 'base', 'clothing']) {
           if (states[key] === 'available') states[key] = 'done';

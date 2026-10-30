@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { snapshot } from '../snapshot.ts';
 import { acquireTaskLock, configureRun, saveRun } from '../../.agents/skills/live2d-maker/workflow/state.ts';
-import { stampedSvg, svgHash } from '../../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
+import { svgHash } from '../../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
 
 const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0L10 10Z"/></svg>');
 async function fixture(t: any, section = 'part-layering') {
@@ -58,7 +58,7 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
   await f.put('step10_reduce/depth01/body.svg', svg);
   assert.equal((await f.get()).part.groups[0].webPhases.reduction, 'available');
   await f.mark('step10_reduce/depth01');
-  const completed = stampedSvg(svg, svgHash(svg));
+  const completed = svg;
   await f.put('parts/body.svg', completed);
   await f.put('step11_completion/body/check.json', { groupId: 'body', passed: true });
   await f.mark('step11_completion/body');
@@ -85,7 +85,7 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
     { verdict: 'pass', candidateHash: svgHash(svg), feedback: '通过', observations: [] },
   ] });
   await f.put(`step10_reduce/depth03/${id}.svg`, svg);
-  await f.put(`parts/${id}.svg`, stampedSvg(svg, svgHash(svg)));
+  await f.put(`parts/${id}.svg`, svg);
   await f.put(`step11_completion/${item}/check.json`, { groupId: id, passed: true });
   for (const step of [`step09_outline/${item}`, 'step10_reduce/depth03', `step11_completion/${item}`, `step12_children/${item}`]) await f.mark(step);
   const value = await f.get(), node = value.part.groups[0].groups[0].groups[0];
@@ -216,7 +216,7 @@ test('a completed merge step is complete before the whole part section finishes'
   await f.put('step09_outline/body/outline.svg', svg);
   await f.put('step09_outline/body/review.json', { groupId: 'body', reviews: [{ verdict: 'pass', candidateHash: svgHash(svg), feedback: 'ok', observations: [] }] });
   await f.put('step10_reduce/depth01/body.svg', svg);
-  await f.put('parts/body.svg', stampedSvg(svg, svgHash(svg)));
+  await f.put('parts/body.svg', svg);
   await f.put('step11_completion/body/check.json', { groupId: 'body', passed: true });
   for (const step of ['step08_initial', 'step09_outline/body', 'step10_reduce/depth01', 'step11_completion/body', 'step12_children/body']) await f.mark(step);
   await f.put('preview.svg', svg);
