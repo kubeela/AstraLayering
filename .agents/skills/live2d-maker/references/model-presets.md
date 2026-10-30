@@ -179,7 +179,7 @@ AGV 的 GenAI 网关 base URL 可以包含 `/v1beta`，转发会保留供应商�
 
 Codex 的自定义生图请求通过[原生补丁](../patches/README.md)接入；启动会核对补丁的 `image_provider_version: 2`，为本次请求准备本地生图路由。原生 imagegen 负责工具调用、保存图片与事件，路由复用共享 OpenAI／Google 适配器，模型与凭据通过运行配置传递。`codex-native` 直接使用宿主生图能力。
 
-Claude／AGV 注册与 Codex 原生工具同名的共享 `imagegen` 函数工具，其 [description.md](../shared/tools/imagegen/description.md) 与 [schema.json](../shared/tools/imagegen/schema.json) 保持统一；Codex 使用原生工具定义。两条路径共用底层接口实现，绘图任务与验收要求由各管线自己的提示词约定。
+Claude／AGV 注册与 Codex 原生工具同名的共享 `imagegen` 函数工具，其 [description.md](../knowledge/shared/tools/imagegen/description.md) 与 [schema.json](../shared/tools/imagegen/schema.json) 保持统一；Codex 使用原生工具定义。两条路径共用底层接口实现，绘图任务与验收要求由各管线自己的提示词约定。
 
 参考图按顺序传入，生成结果保存在任务请求目录。共享函数工具返回 `hasAlpha`，原生工具路径也检查实际 PNG 的透明通道，并结合看图验收。
 

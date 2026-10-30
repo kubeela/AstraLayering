@@ -37,6 +37,7 @@
    - `parentGroup：X 去掉最后一段 /<名称> 后的 ID；不含 / 时为 null`，代替原 JSON 中的 parentGroup 值。
    - `parentSvg：…/parts/<parentGroup>.svg；parentGroup 为 null 时没有父组 SVG`。
    - review 与返修用 `round：第 N 轮 review` 代替 `candidateHash`；候选由 `candidate：` 行指出。
+   - `submit_review` 工具说明同步改为「本次输入的 round 行标识本轮，candidate 行指出当前候选。」（原为「运行输入中的 review.round 和 review.candidateHash 标识本轮与当前候选。」）；`clusters.txt` 采集于这次修改之前。
    - 测试 fixture 改用真实任务布局（如 `part-layering/references/base-subject.png`、`clothing-part-layering/references/clothing.png`），所以示例路径不同。
 3. **删除运行时附加的 `runtime_context` 与 `prompt_source`。**
    - `提示词来源：…` 和 `固定约定提示词来源：…9-补全操作约定.md` 两行不再出现。

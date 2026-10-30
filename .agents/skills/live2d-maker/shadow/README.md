@@ -40,7 +40,7 @@ Krita 阴影采用隔离组和透明度继承，JSON 保存真实 part ID 与最
 
 ## 制作参考与原生检查
 
-开工前在 `step01_mask/workspace/references/` 生成 `inputs.json`：真实 part、单深度／多深度区域、KRA UUID 和明确的名称归属。未匹配的层仍需查看像素确认。随后把 [制作格式](references/production.md)、[裙影示意](references/skirt.png) 与 [发影示意](references/hair.png) 复制到同一目录。两图是依据原模型结构绘制的原创示意，不再分发模型原画。
+开工前在 `step01_mask/workspace/references/` 生成 `inputs.json`：真实 part、单深度／多深度区域、KRA UUID 和明确的名称归属。未匹配的层仍需查看像素确认。随后把 [制作格式](../knowledge/shadow/step01_mask/references/production.md)、[裙影示意](../knowledge/shadow/step01_mask/references/skirt.png) 与 [发影示意](../knowledge/shadow/step01_mask/references/hair.png) 复制到同一目录。两图是依据原模型结构绘制的原创示意，不再分发模型原画。
 
 保存后，agent 调用本 section 专属的 `inspect_shadow_mask` 工具检查，检查时机和次数由 agent 决定。工具使用本 section 的 Krita，未启动时自动启动，并把问题、提示和检查图路径直接返回给 agent。
 
