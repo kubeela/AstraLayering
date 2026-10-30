@@ -43,9 +43,6 @@
               </button>
             </div>
             <p id="document-meta" class="muted"></p>
-            <button id="download-document" class="text-button">
-              下载源文件 ↗
-            </button>
             <button
               id="refresh-project"
               class="text-button"
@@ -95,8 +92,7 @@
             >
               ↷
             </button>
-            <button id="layer-restore">还原</button
-            ><button id="layer-save">保存 KRA</button>
+            <button id="layer-restore">还原</button>
           </div>
           <div id="layers" role="list" aria-label="图层与蒙版"></div>
           <div id="layer-properties" hidden>
@@ -164,13 +160,6 @@
           </div>
           <span class="divider"></span><button id="fit">适应</button
           ><button id="actual">100%</button><span id="zoom">100%</span>
-          <button
-            id="export-image"
-            class="right"
-            title="透明背景，按原图完整分辨率导出"
-          >
-            导出 PNG ↗
-          </button>
         </div>
         <div class="viewport" id="drop-zone">
           <canvas id="stage" aria-label="角色光照预览"></canvas>
@@ -269,7 +258,6 @@
               <label class="toggle"><input id="physics-guides" type="checkbox" checked>显示网格与活动边界</label>
               <p class="muted">绿色为固定区，虚线为活动边界。选择“扰动”后，鼠标划过即可施力。</p>
             </section>
-            <section class="panel"><div class="file-actions"><button id="physics-export">导出配置</button></div></section>
           </div>
         </div>
         <div id="nine-axis-workspace" role="tabpanel" hidden>
@@ -307,7 +295,7 @@
             </section>
             <section class="panel">
               <p id="nine-axis-dirty" class="nine-dirty" hidden></p>
-              <div class="file-actions"><button id="nine-axis-export">导出 JSON</button><label class="button">导入 JSON<input id="nine-axis-import" type="file" accept=".json" hidden></label><button id="nine-axis-restore">恢复项目数据</button></div>
+              <div class="file-actions"><button id="nine-axis-restore">恢复项目数据</button></div>
             </section>
           </div>
         </div>
@@ -406,11 +394,8 @@
               type="color"
               id="background"
               value="#c9c9ce"
-              title="仅改变预览背景，不写入 PNG"
+              title="仅改变预览背景"
           /></label>
-          <div class="recipe-actions">
-            <button id="export-recipe">保存参数</button>
-          </div>
         </section>
       </aside>
     </main>

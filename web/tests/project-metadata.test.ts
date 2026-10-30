@@ -34,8 +34,8 @@ test('Chinese project names persist across views and restarts without changing a
   const listed = (await tasks()).tasks[0];
   assert.equal(listed.name, name); assert.equal(listed.displayName, '粉色人偶');
   assert.equal(listed.runnerAlive, true); assert.equal(listed.lockHeld, true);
-  for (const route of ['task', 'studio/project']) {
-    const value = await fetch(base + '/api/' + route + '?' + new URLSearchParams({ name, dir })).then(r => r.json());
+  for (const query of ['task?' + new URLSearchParams({ name, dir }), 'studio/project?' + new URLSearchParams({ folder })]) {
+    const value = await fetch(base + '/api/' + query).then(r => r.json());
     assert.equal(value.displayName, '粉色人偶'); assert.equal(value.name, name);
   }
   assert.equal(await readFile(join(folder, 'run.json'), 'utf8'), run);

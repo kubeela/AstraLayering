@@ -8,8 +8,8 @@ const specs = {
   stretch: ['最大拉伸', .5, 8, .5, '%', 100], stiffness: ['回弹速度', 1, 25, .5, '', 1], damping: ['衰减速度', .5, 12, .5, '', 1],
 };
 export class PhysicsPanel {
-  constructor({ stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer }) {
-    Object.assign(this, { stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, download, selectLayer });
+  constructor({ stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, selectLayer }) {
+    Object.assign(this, { stage, surfaces, source, fingerprint, workspace, tool, busy, error, changed, selectLayer });
     this.bindings = new Map(); this.bodies = new Map(); this.pending = new Map(); this.issues = []; this.epoch = 0; this.paused = false; this.enabled = false;
     this.radius = 90; this.force = .7; this.showGuides = true; this.scope = 'current';
     for (const [key, [label, min, max, step, unit]] of Object.entries(specs)) {
@@ -37,7 +37,6 @@ export class PhysicsPanel {
     $('#physics-scope').onchange = e => { this.scope = e.target.value; this.pointer = null; };
     $('#physics-radius').oninput = e => { this.radius = e.target.valueAsNumber; $('#physics-radius-value').textContent = this.radius + ' px'; this.overlay(); };
     $('#physics-force').oninput = e => { this.force = e.target.valueAsNumber / 100; $('#physics-force-value').textContent = e.target.value + '%'; };
-    $('#physics-export').onclick = () => this.download(new Blob([JSON.stringify(this.recipe(), null, 2) + '\n'], { type: 'application/json' }), 'character.physics.json');
     this.onBlur = () => { this.pointer = null; this.lastTime = 0; this.accumulator = 0; this.overlay(); };
     window.addEventListener('blur', this.onBlur); document.addEventListener('visibilitychange', this.onBlur);
     this.sync();
