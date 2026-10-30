@@ -18,8 +18,8 @@ export const help = `clothing-raster-layering — 按顺序执行 Krita 栅格�
 --knowledge 同样每次都须提供：该目录完整替换 skill 自带的 knowledge/，启动前检查全部文件，缺失即拒绝运行。
 按 --name 直接读取同名 clothing-part-layering/ 的 parts、参考、groups.json 与 occlusion.json，无需指定输入路径。缺少产物时提示上游命令与手动放置路径。
 不复制上游输入，不保存配置；各步 thread 记在 agents/steps/<stepNN>/session.json，步骤状态由 .running / .completed 决定。
-中断保留 .running 并继续原 thread；删除某步 .completed 后，下次启动清空该步及后续目录，开启新 thread；上游 occlusion.json 的修正保留。
-step01 依赖上游 part 的最后一步 occlusion：part 重做后 step01 及后续重跑、开启新 thread；上游该步未完成时拒绝运行。
+中断保留 .running 并继续原 thread；用总入口 pnpm start --name <任务名> --retry --section clothing-raster-layering --step <stepNN>（或网页「重试」）只重做该步骤并开启新 thread，已完成的后续步骤沿用；上游 occlusion.json 的修正保留。
+step01 依赖上游 part 的最后一步 occlusion：该步未完成时拒绝运行；part 重做后本管线已完成步骤沿用，不自动重跑，需要时对相应步骤重试。
 两步绘制及 reviewer 与人物共用 .env 的 layering_agent_raster_step01_model、_step02_model 与 _step01_review_model，默认值见 example.env。
 第一步 reviewer 每次新会话；反馈由原绘制 thread 全部修完。最多检查两次，无问题即结束，第二次修完不再检查。
 第二步边缘精修和自检后结束，交付 step02/clothing-soft-edges.kra 和验收记录，不制作身体装配或身体插层说明。
