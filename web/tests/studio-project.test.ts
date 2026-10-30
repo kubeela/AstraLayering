@@ -188,3 +188,11 @@ test('Unified studio discovers pending maps and prefers formal delivery', async 
   data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.previewDraft, false); assert.equal(data.files.normal.path, studioArtifacts.normal);
 });
+test('Project reports the head nine-axis document when it is present', async (t) => {
+  const f = await fixture(t);
+  let data = (await (await f.get()).json()) as any;
+  assert.deepEqual([data.nineAxis.path, data.nineAxis.available], ['nine-axis/head/deformers.json', false]);
+  await f.put('nine-axis/head/deformers.json', '{}');
+  data = (await (await f.get()).json()) as any;
+  assert.equal(data.nineAxis.available, true);
+});

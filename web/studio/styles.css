@@ -1004,7 +1004,7 @@ dialog select {
   color: #dde1e8;
   font: inherit;
 }
-.workspace-tabs { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; }
+.workspace-tabs { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; }
 .workspace-tabs button { padding: 7px 4px; }
 #physics-overlay { position: absolute; inset: 0; pointer-events: none; overflow: hidden; fill: none; stroke-width: 1; }
 .physics-mesh { stroke: #5066a899; }
@@ -1024,3 +1024,29 @@ canvas.disturb { cursor: crosshair; }
 .projection-select { text-align: left; flex: 1; min-width: 0; border: 0; background: transparent; padding: 5px 3px; }
 .projection-select b, .projection-select small { display: block; overflow-wrap: anywhere; }
 .projection-select small { margin-top: 4px; font-size: 10px; color: var(--muted); }
+/* Head nine-axis: Cubism-style deformer editor over its own canvas. */
+#nine-axis-view { position: absolute; inset: 0; background: #2b2e35; background-image: linear-gradient(45deg,#30333a 25%,transparent 25%,transparent 75%,#30333a 75%),linear-gradient(45deg,#30333a 25%,transparent 25%,transparent 75%,#30333a 75%); background-size: 24px 24px; background-position: 0 0,12px 12px; z-index: 2; }
+#nine-axis-view canvas { position: absolute; inset: 0; }
+#nine-axis-overlay { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.nine-grid { fill: none; stroke: #6fd1ff; stroke-width: 1; opacity: .75; }
+.nine-points circle { fill: #1d3a4a; stroke: #6fd1ff; stroke-width: 1; }
+.nine-points.editable circle { fill: #e9f7ff; stroke: #1f7fb4; pointer-events: all; cursor: move; }
+.nine-points.editable circle:hover { fill: #ffcf5a; }
+#nine-axis-hud { position: absolute; left: 10px; top: 8px; padding: 3px 7px; border-radius: 4px; background: #000a; color: #cfe3ff; font-variant-numeric: tabular-nums; pointer-events: none; }
+.nine-levels { display: grid; grid-template-columns: repeat(3,1fr); }
+.nine-levels button.active, #nine-axis-keys button.active { background: #414b66; border-color: #596e97; }
+.nine-param { display: grid; grid-template-columns: 48px 1fr 64px; gap: 6px; align-items: center; margin: 6px 0; }
+.nine-keys { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+#nine-axis-keys { display: flex; gap: 4px; }
+#nine-axis-keys button { min-width: 38px; }
+#nine-axis-tree { max-height: 340px; overflow: auto; border: 1px solid var(--line); border-radius: 4px; padding: 4px; }
+#nine-axis-tree summary { cursor: pointer; padding: 2px 0; color: #c3cad8; }
+#nine-axis-tree .nine-group { margin-left: 12px; }
+.nine-part { display: flex; align-items: center; gap: 6px; margin-left: 14px; padding: 2px 4px; border-radius: 3px; cursor: pointer; }
+.nine-part:hover { background: #2f3440; }
+.nine-part.selected { background: #36435f; }
+.nine-part.outside { opacity: .4; }
+.nine-part.edited span::after { content: ' ●'; color: #ffcf5a; }
+.nine-part em { margin-left: auto; font-style: normal; font-size: 10px; color: #c49a52; }
+.nine-dirty { color: #ffcf5a; }
+#nine-axis-reset { margin-top: 4px; }
