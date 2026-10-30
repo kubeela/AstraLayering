@@ -234,3 +234,20 @@ test('An imported task folder outside the run directory opens; only studio outpu
   const listed = await (await f.get()).json() as any;
   assert.equal(listed.inDirectory, true);
 });
+test('The project list reads task folders under a chosen base folder, the run directory by default', async t => {
+  const f = await fixture(t), base = join(f.root, 'elsewhere');
+  await mkdir(join(base, 'task'), { recursive: true }); await mkdir(join(base, 'notes'));
+  await mkdir(join(base, '.hidden')); await writeFile(join(base, '.hidden', 'run.json'), '{}');
+  await writeFile(join(base, 'task', 'run.json'), '{}');
+  await writeFile(join(f.project, 'run.json'), '{}');
+  const list = (dir?: string) => fetch(f.base + '/api/studio/projects?' + new URLSearchParams(dir ? { dir } : {}));
+  const fallback = await (await list()).json() as any;
+  assert.equal(fallback.directory, f.dir); assert.equal(fallback.default, f.dir);
+  assert.deepEqual(fallback.projects.map((project: any) => project.folder), [f.project]);
+  const chosen = await (await list(base)).json() as any;
+  assert.equal(chosen.directory, base);
+  assert.deepEqual(chosen.projects, [{ name: 'task', folder: join(base, 'task'), displayName: 'task' }]);
+  const missing = await list(join(f.root, 'gone'));
+  assert.equal(missing.status, 404); assert.equal((await missing.json() as any).missing, true);
+  assert.equal((await list('relative')).status, 400);
+});
