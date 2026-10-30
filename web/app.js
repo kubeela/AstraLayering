@@ -229,7 +229,8 @@ function stepTargets() {
 }
 const brokenSteps=(targets=stepTargets())=>targets.filter(target=>target.status==='running');
 const stepLabel=target=>`${stages[target.index].name} ${target.id}`;
-const visibleStage=index=>!data.archived||Object.hasOwn(data.run?.sections||{},stages[index].id);
+// The snapshot lists an archive's exported sections, and a later section made on top of it.
+const visibleStage=index=>!data.archived||Object.hasOwn(data.run?.sections||{},stages[index].id)||(data.files||[]).some(path=>path.startsWith(stages[index].id+'/'));
 function stepToolbar() {
  if(!state.name)return '';
  const exportButton=data.canExport?`<a class="button" data-export href="./api/export?${taskParams()}" title="下载正式产物、完整流程预览与报告；不包含过程文件">导出成果</a>`:'';
