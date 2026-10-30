@@ -8,6 +8,7 @@ import { createWorkbench } from "../server.ts";
 import { studioArtifacts } from "../../.agents/skills/live2d-maker/shared/studio-artifacts.ts";
 import { steps } from "../../.agents/skills/live2d-maker/character-assembly/steps.ts";
 import { shadowArtifacts } from '../../.agents/skills/live2d-maker/shared/shadow.ts';
+import { nineAxisArtifacts } from '../../.agents/skills/live2d-maker/shared/nine-axis.ts';
 import sharp from 'sharp';
 
 async function fixture(t: any) {
@@ -191,6 +192,29 @@ test('Unified studio discovers pending maps and prefers formal delivery', async 
   await f.put('shadow/step01_normal-depth/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
   data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.previewDraft, false); assert.equal(data.files.normal.path, studioArtifacts.normal);
+});
+test('Project reports the head nine-axis document and prefers its KRA while the source is unchanged', async (t) => {
+  const f = await fixture(t), a = nineAxisArtifacts;
+  let data = (await (await f.get()).json()) as any;
+  assert.deepEqual([data.nineAxis.path, data.nineAxis.available], [a.headDeformers, false]);
+  await f.put(a.headDeformers, '{}');
+  data = (await (await f.get()).json()) as any;
+  assert.equal(data.nineAxis.available, true);
+  // The deformers and their numbered layer textures read through the studio route.
+  await f.put('nine-axis/step01_head/layers/005.png', 'layer');
+  const read = (path: string) => fetch(f.base + '/studio-artifact?' + new URLSearchParams({ folder: f.project, path }));
+  assert.equal(await (await read('nine-axis/step01_head/layers/005.png')).text(), 'layer');
+  assert.equal((await read('nine-axis/step01_head/layers/../source.json')).status, 400);
+  await f.put(studioArtifacts.document, 'kra'); await f.put(studioArtifacts.color, 'png');
+  await f.put(a.headDocument, 'nine kra'); await f.put(a.headColor, 'nine png');
+  const hash = (s: string) => createHash('sha256').update(s).digest('hex');
+  await f.put(a.headSource, JSON.stringify({ version: 1, sourceDocument: studioArtifacts.document, sourceColor: studioArtifacts.color, sourceKraHash: hash('kra'), sourceColorHash: hash('png'), updatedAt: 'x' }));
+  data = (await (await f.get()).json()) as any;
+  assert.deepEqual([data.files.document.path, data.files.color.path, data.nineAxisDocument], [a.headDocument, a.headColor, true]);
+  // A changed source KRA falls back to it and marks the nine-axis KRA stale.
+  await f.put(studioArtifacts.document, 'kra 2');
+  data = (await (await f.get()).json()) as any;
+  assert.deepEqual([data.files.document.path, data.nineAxisDocument, data.nineAxisStale], [studioArtifacts.document, false, true]);
 });
 test('An imported task folder outside the run directory opens; only studio outputs are readable', async t => {
   const f = await fixture(t), folder = join(f.root, 'elsewhere', 'imported');

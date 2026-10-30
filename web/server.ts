@@ -27,7 +27,7 @@ import { MissingDependencyError } from '../.agents/skills/live2d-maker/shared/mi
 import { checkKnowledge, defaultKnowledgeDirectory } from '../.agents/skills/live2d-maker/shared/knowledge.ts';
 import { exportCompletedRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { LayerCompositor } from './layer-compositor.ts';
-import { studioPaths, studioProject } from './studio-project.ts';
+import { isStudioPath, studioProject } from './studio-project.ts';
 import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
 import { createUpdateCheck } from './update-check.ts';
 import { installedVersion } from '../.agents/skills/live2d-maker/shared/version.ts';
@@ -348,7 +348,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         }
         // Only the studio's fixed outputs are readable, wherever the folder is.
         const selected = url.searchParams.get('path') ?? '';
-        if (!studioPaths.has(selected)) throw new Error('工作台只读取角色组装、光照与投影产物');
+        if (!isStudioPath(selected)) throw new Error('工作台只读取角色组装、光照、投影与九轴产物');
         const file = await safePath(directory, selected);
         if (!(await lstat(file)).isFile()) throw new Error('产物不是文件');
         response.writeHead(200, { 'Content-Type': extname(file).toLowerCase() === '.png' ? 'image/png' : extname(file).toLowerCase() === '.json' ? 'application/json' : 'application/octet-stream' });
@@ -382,7 +382,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/process-files.js': 'process-files.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/env-editor.js': 'env-editor.js', '/settings-dialog.js': 'settings-dialog.js', '/server-picker.js': 'server-picker.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
       staticFiles['/report-links.js'] = '../.agents/skills/live2d-maker/shared/report-links.js';
       staticFiles['/step-paths.js'] = '../.agents/skills/live2d-maker/shared/step-paths.js';
-      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js']) staticFiles['/studio/' + name] = 'studio/' + name;
+      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js', 'nine-axis-model.js', 'nine-axis-panel.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';
       response.writeHead(200, { 'Content-Type': type + '; charset=utf-8' });
