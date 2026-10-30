@@ -27,15 +27,9 @@
       <aside class="sources">
         <section class="panel">
           <h1>角色文件</h1>
-          <label class="button primary open-file"
-            >打开 KRA / PSD<input
-              id="file-document"
-              type="file"
-              accept=".kra,.psd,.png"
-              hidden
-          /></label>
           <div class="file-actions">
-            <button id="open-task">从项目加载</button>
+            <button id="open-task" class="primary">打开项目</button>
+            <button id="import-folder" title="选择服务器上任意位置的任务文件夹">导入文件夹</button>
           </div>
           <div id="document-info" hidden>
             <div class="document-heading">
@@ -153,7 +147,7 @@
             重新读取图层
           </button>
           <p class="muted layer-note" id="layer-note">
-            打开 KRA / PSD 以编辑图层
+            打开项目以编辑图层
           </p>
         </section>
       </aside>
@@ -181,9 +175,9 @@
           <canvas id="stage" aria-label="角色光照预览"></canvas>
           <div id="empty-state">
             <div class="file-symbol">＋</div>
-            <b>打开角色文件</b>
-            <p>KRA / PSD · 拖放到此处</p>
-            <label class="button" for="file-document">选择文件</label>
+            <b>打开项目</b>
+            <p>从运行目录选择项目，或导入服务器上的任务文件夹</p>
+            <div class="file-actions"><button data-open-task>打开项目</button><button data-import-folder>导入文件夹</button></div>
           </div>
           <div id="project-empty" hidden>
             <b id="project-empty-name"></b>
@@ -216,7 +210,6 @@
             </button>
             <div class="light-guide">拖动灯位 · Alt + 滚轮调整前后</div>
           </div>
-          <div id="drop-hint" hidden>松开以打开角色文件</div>
           <svg id="physics-overlay" width="100%" height="100%" aria-hidden="true" hidden>
             <path class="physics-mesh"/><path class="physics-fixed"/>
             <polyline class="physics-boundary"/><polyline class="physics-boundary"/>
@@ -270,13 +263,13 @@
               <label class="toggle"><input id="physics-guides" type="checkbox" checked>显示网格与活动边界</label>
               <p class="muted">绿色为固定区，虚线为活动边界。选择“扰动”后，鼠标划过即可施力。</p>
             </section>
-            <section class="panel"><div class="file-actions"><button id="physics-export">导出配置</button><label class="button">导入配置<input id="physics-import" type="file" accept=".json" hidden></label></div></section>
+            <section class="panel"><div class="file-actions"><button id="physics-export">导出配置</button></div></section>
           </div>
         </div>
         <div id="projection-workspace" role="tabpanel" hidden>
           <div class="panel-heading"><h2>贴图投影</h2><span id="projection-count" class="muted"></span></div>
           <section class="panel">
-            <p id="projection-status" class="muted">从项目加载投影蒙版</p>
+            <p id="projection-status" class="muted">打开项目以加载投影蒙版</p>
             <div id="projection-list" aria-label="投影蒙版"></div>
           </section>
         </div>
@@ -324,40 +317,10 @@
           <div class="map-row">
             <span class="map-icon">N</span>
             <div><b>法线</b><small id="normal-status">未绑定</small></div>
-            <label class="button small map-bind" title="绑定原尺寸法线 PNG"
-              >绑定<input
-                id="file-normal"
-                type="file"
-                accept="image/png"
-                hidden /></label
-            ><button
-              id="remove-normal"
-              class="remove"
-              aria-label="移除法线"
-              hidden
-            >
-              ×
-            </button>
           </div>
           <div class="map-row">
             <span class="map-icon">D</span>
             <div><b>深度</b><small id="depth-status">未绑定</small></div>
-            <label
-              class="button small map-bind"
-              title="绑定白近黑远的原尺寸深度 PNG"
-              >绑定<input
-                id="file-depth"
-                type="file"
-                accept="image/png"
-                hidden /></label
-            ><button
-              id="remove-depth"
-              class="remove"
-              aria-label="移除深度"
-              hidden
-            >
-              ×
-            </button>
           </div>
           <p class="muted" id="map-validity" hidden>
             图层已更改，请为当前合成图更新贴图
@@ -401,26 +364,22 @@
               title="仅改变预览背景，不写入 PNG"
           /></label>
           <div class="recipe-actions">
-            <button id="export-recipe">保存参数</button
-            ><label class="button"
-              >载入参数<input
-                type="file"
-                id="import-recipe"
-                accept="application/json"
-                hidden
-            /></label>
+            <button id="export-recipe">保存参数</button>
           </div>
         </section>
       </aside>
     </main>
     <dialog id="task-dialog">
       <form method="dialog">
-        <h2>从项目加载</h2>
+        <h2>打开项目</h2>
         <button class="dialog-close" aria-label="关闭">×</button>
       </form>
+      <p id="project-directory" class="muted"></p>
       <div id="project-list" aria-label="项目列表"></div>
       <p id="project-status" class="muted" role="status"></p>
+      <button id="project-import" class="text-button">导入其他位置的任务文件夹…</button>
     </dialog>
+    <dialog id="picker-dialog"></dialog>
     <dialog id="project-name-dialog">
       <form id="project-name-form">
         <div class="section-heading"><h2>项目显示名称</h2><button type="button" id="project-name-close" class="dialog-close" aria-label="关闭">×</button></div>

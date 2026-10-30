@@ -7,6 +7,9 @@ import { safePath } from './files.ts';
 
 type Selection = { version: number; mode: 'mask' | 'normal-depth'; sourceKraHash: string; sourceColorHash: string };
 const previewModes = ['mask', 'normal-depth', 'mixed'] as const;
+const { selection: _selection, ...shadowOutputs } = shadowArtifacts;
+// Every output the studio may read from a project folder.
+export const studioPaths = new Set<string>([...Object.values(studioArtifacts), ...Object.values(shadowOutputs)]);
 
 export async function studioProject(directory: string, name: string, dir: string, preview?: string | null) {
   if (preview && !previewModes.includes(preview as any)) throw Error('预览方式必须为 mask、normal-depth 或 mixed');

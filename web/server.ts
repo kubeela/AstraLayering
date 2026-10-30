@@ -3,7 +3,7 @@ import { readFile, readdir, mkdir, mkdtemp, lstat, rm, writeFile, realpath } fro
 import { tmpdir } from 'node:os';
 import { createReadStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { extname, resolve, join, isAbsolute, dirname } from 'node:path';
+import { basename, extname, resolve, join, isAbsolute, dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 import { shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
@@ -27,7 +27,7 @@ import { MissingDependencyError } from '../.agents/skills/live2d-maker/shared/mi
 import { checkKnowledge, defaultKnowledgeDirectory } from '../.agents/skills/live2d-maker/shared/knowledge.ts';
 import { exportCompletedRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { LayerCompositor } from './layer-compositor.ts';
-import { studioProject } from './studio-project.ts';
+import { studioPaths, studioProject } from './studio-project.ts';
 import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
 import { createUpdateCheck } from './update-check.ts';
 import { installedVersion } from '../.agents/skills/live2d-maker/shared/version.ts';
@@ -126,6 +126,19 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
     if (!(await lstat(path)).isDirectory() || (await lstat(path)).isSymbolicLink()) throw new Error('任务必须是运行目录下的普通文件夹');
     await safePath(dir, name);
     return path;
+  }
+  // The studio opens a whole task folder: one under the run directory, or one imported from
+  // elsewhere on the server, which must be a task (it has run.json).
+  async function studioFolder(folder: string) {
+    if (!isAbsolute(folder)) throw new Error('项目文件夹必须是绝对路径');
+    const info = await lstat(resolve(folder)).catch(() => { throw new Error('项目文件夹不存在：' + folder); });
+    if (!info.isDirectory() || info.isSymbolicLink()) throw new Error('请选择项目文件夹（不能是文件或符号链接）');
+    const directory = await realpath(folder), name = basename(directory), dir = dirname(directory);
+    if (dir === settings.directory) { await task(name, dir); return { directory, name, dir }; }
+    directoryFor({ name, dir });
+    // Only marks it as a task; the studio reads fixed outputs, whatever the run's layout version.
+    if (!(await lstat(join(directory, 'run.json')).catch(() => undefined))?.isFile()) throw new Error('不是 AstraLayering 任务文件夹（缺少 run.json）：' + directory);
+    return { directory, name, dir };
   }
   const compositor = new LayerCompositor(root);
   const thumbnails = new SVGThumbnails();
@@ -327,11 +340,19 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         response.writeHead(200, { 'Content-Type': kind === 'png' ? 'image/png' : 'application/octet-stream' });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
-      if (path === '/api/studio/project') {
-        if (url.searchParams.get('dir') !== requestDir) { json({ error: '项目目录已改变，请刷新后重新打开' }, 409); return; }
-        const name = url.searchParams.get('name') ?? '';
-        const directory = await task(name, requestDir);
-        json({ ...await studioProject(directory, name, requestDir, url.searchParams.get('preview')), displayName: await projectDisplayName(directory, name) }); return;
+      if (path === '/api/studio/project' || path === '/studio-artifact') {
+        const { directory, name, dir } = await studioFolder(url.searchParams.get('folder') ?? '');
+        if (path === '/api/studio/project') {
+          json({ ...await studioProject(directory, name, dir, url.searchParams.get('preview')), folder: directory, displayName: await projectDisplayName(directory, name),
+            inDirectory: dir === settings.directory }); return;
+        }
+        // Only the studio's fixed outputs are readable, wherever the folder is.
+        const selected = url.searchParams.get('path') ?? '';
+        if (!studioPaths.has(selected)) throw new Error('工作台只读取角色组装、光照与投影产物');
+        const file = await safePath(directory, selected);
+        if (!(await lstat(file)).isFile()) throw new Error('产物不是文件');
+        response.writeHead(200, { 'Content-Type': extname(file).toLowerCase() === '.png' ? 'image/png' : extname(file).toLowerCase() === '.json' ? 'application/json' : 'application/octet-stream' });
+        createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
       if (path === '/api/studio/samples') { json(await studioCatalog(root)); return; }
       if (path === '/studio-document') {
@@ -358,7 +379,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         '/vendor/fflate.js': 'node_modules/fflate/umd/index.js',
       };
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
-      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/process-files.js': 'process-files.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/env-editor.js': 'env-editor.js', '/settings-dialog.js': 'settings-dialog.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
+      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/process-files.js': 'process-files.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/env-editor.js': 'env-editor.js', '/settings-dialog.js': 'settings-dialog.js', '/server-picker.js': 'server-picker.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
       staticFiles['/report-links.js'] = '../.agents/skills/live2d-maker/shared/report-links.js';
       staticFiles['/step-paths.js'] = '../.agents/skills/live2d-maker/shared/step-paths.js';
       for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js']) staticFiles['/studio/' + name] = 'studio/' + name;

@@ -38,11 +38,6 @@ export class PhysicsPanel {
     $('#physics-radius').oninput = e => { this.radius = e.target.valueAsNumber; $('#physics-radius-value').textContent = this.radius + ' px'; this.overlay(); };
     $('#physics-force').oninput = e => { this.force = e.target.valueAsNumber / 100; $('#physics-force-value').textContent = e.target.value + '%'; };
     $('#physics-export').onclick = () => this.download(new Blob([JSON.stringify(this.recipe(), null, 2) + '\n'], { type: 'application/json' }), 'character.physics.json');
-    $('#physics-import').onchange = async e => {
-      const f = e.target.files[0]; if (!f) return;
-      try { if (f.size > 1024 * 1024) throw Error('物理配置过大'); this.restore(JSON.parse(await f.text())); this.rebuild(); this.save(); this.sync(); }
-      catch (error) { this.error(error.message); } finally { e.target.value = ''; }
-    };
     this.onBlur = () => { this.pointer = null; this.lastTime = 0; this.accumulator = 0; this.overlay(); };
     window.addEventListener('blur', this.onBlur); document.addEventListener('visibilitychange', this.onBlur);
     this.sync();
