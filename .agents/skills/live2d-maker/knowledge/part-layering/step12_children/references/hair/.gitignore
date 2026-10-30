@@ -1,7 +1,9 @@
-# Keep the three recovered reference boards in Git. Other local derivatives stay ignored.
+# Keep the tracked reference boards in Git. Other local derivatives stay ignored.
 *
 !.gitignore
 !README.md
 !01-发区组织与前侧发拆分-Milly.png
 !02-长发主束与细束的粒度对照-莉尔.png
 !03-长卷发整束与多尖发面-樱桃蛋糕天使.png
+!04-侧发与后发按脸前后深度区分-Hiyori-Mao.png
+!05-前发覆盖额角-后发外壳与呆毛-Ren-Haru-Tsumiki.png

@@ -140,6 +140,22 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
     if (!(await lstat(join(directory, 'run.json')).catch(() => undefined))?.isFile()) throw new Error('不是 AstraLayering 任务文件夹（缺少 run.json）：' + directory);
     return { directory, name, dir };
   }
+  // The studio lists task folders (with run.json) under a base folder the browser chose,
+  // or under the run directory by default. A base that is gone answers 404, so the
+  // browser drops its stored choice and falls back to the default.
+  async function studioProjects(base: string | null) {
+    const folder = base || settings.directory;
+    if (!isAbsolute(folder)) throw new Error('基准文件夹必须是绝对路径');
+    const info = await lstat(resolve(folder)).catch(() => undefined);
+    if (!info?.isDirectory() || info.isSymbolicLink()) return;
+    const directory = await realpath(folder), projects = [];
+    for (const entry of (await readdir(directory, { withFileTypes: true })).filter(entry => entry.isDirectory() && !entry.name.startsWith('.'))) {
+      const project = join(directory, entry.name);
+      if (!(await lstat(join(project, 'run.json')).catch(() => undefined))?.isFile()) continue;
+      projects.push({ name: entry.name, folder: project, displayName: await projectDisplayName(project, entry.name).catch(() => entry.name) });
+    }
+    return { directory, default: settings.directory, projects };
+  }
   const compositor = new LayerCompositor(root);
   const thumbnails = new SVGThumbnails();
   const kraPreviews = new KRAPreviews();
@@ -353,6 +369,11 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         if (!(await lstat(file)).isFile()) throw new Error('产物不是文件');
         response.writeHead(200, { 'Content-Type': extname(file).toLowerCase() === '.png' ? 'image/png' : extname(file).toLowerCase() === '.json' ? 'application/json' : 'application/octet-stream' });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
+      if (path === '/api/studio/projects') {
+        const list = await studioProjects(url.searchParams.get('dir'));
+        if (!list) { json({ error: '基准文件夹不存在或不是文件夹：' + url.searchParams.get('dir'), missing: true }, 404); return; }
+        json(list); return;
       }
       if (path === '/api/studio/samples') { json(await studioCatalog(root)); return; }
       if (path === '/studio-document') {

@@ -1,0 +1,131 @@
+[
+  {
+    "file": "04-侧发与后发按脸前后深度区分-Hiyori-Mao.png",
+    "title": "侧发与后发按脸前后深度区分",
+    "use": [
+      "按发面压在脸前还是在脸轮廓之后归类，不按正面露出的宽窄。",
+      "Mao 横髪是覆盖额角至脸侧的脸前宽发面；Hiyori 横髪只是脸前两缕细发，对应鬓发。",
+      "脸轮廓之后的脸框长发属后发；发面完整画到脸后（半透明脸下可见），转头才有内容露出。"
+    ],
+    "limit": "Hiyori 的呆毛画在後ろ髪内；本项目需单独摆动时列为 ahoge。",
+    "scale": {
+      "hiyori": 0.49783549783549785,
+      "mao": 0.6036745406824147
+    },
+    "cards": [
+      {
+        "model": "hiyori",
+        "piece": "front",
+        "label": "Hiyori 前髪",
+        "note": "脸前 · 额前发面"
+      },
+      {
+        "model": "hiyori",
+        "piece": "side",
+        "label": "Hiyori 横髪",
+        "note": "脸前细缕 · 相当于鬓发 sidelock"
+      },
+      {
+        "model": "hiyori",
+        "piece": "back",
+        "label": "Hiyori 後ろ髪",
+        "note": "脸后 · 脸框长发、侧扎发与呆毛同属"
+      },
+      {
+        "model": "mao",
+        "piece": "front",
+        "label": "Mao 前髪",
+        "note": "脸前 · 额前发面"
+      },
+      {
+        "model": "mao",
+        "piece": "side",
+        "label": "Mao 横髪",
+        "note": "脸前宽发面 · 覆盖额角至脸侧 = side_hair"
+      },
+      {
+        "model": "mao",
+        "piece": "back",
+        "label": "Mao 後ろ髪",
+        "note": "脸后 · 外壳 + 内侧面"
+      }
+    ],
+    "sources": {
+      "hiyori": {
+        "model": "hiyori_pro_t11.model3.json",
+        "mocSha256": "608d62c9a65cf537ac25ca9e710e687dbef98ee0a0575e0ee8e27bfdc446cd5e"
+      },
+      "mao": {
+        "model": "mao_pro.model3.json",
+        "mocSha256": "247d028f9900be2a46e4530816ece5749524d35013ba77424bd943598e0e54ff"
+      }
+    }
+  },
+  {
+    "file": "05-前发覆盖额角-后发外壳与呆毛-Ren-Haru-Tsumiki.png",
+    "title": "前发覆盖额角、后发外壳与呆毛",
+    "use": [
+      "Ren 前髪从额前盖过太阳穴到耳前，是一整片脸前发面，随脸透视。",
+      "后发是脸后外壳加内侧深色面，几乎不动；与侧发相接处带延续发流的发片。",
+      "头顶独立翘起的呆毛单列（Tsumiki あほ毛）；脸前细缕可单列鬓发（Haru 横髪）。"
+    ],
+    "limit": "各样例的分组服务于其自身控制需求；当前角色按其结构与控制需要取舍，不照搬部件数量。",
+    "scale": {
+      "haru": 0.4364326375711575,
+      "ren": 0.782312925170068,
+      "tsumiki": 0.7098765432098766
+    },
+    "cards": [
+      {
+        "model": "ren",
+        "piece": "front",
+        "label": "Ren 前髪",
+        "note": "脸前 · 刘海与额角侧发合为一面"
+      },
+      {
+        "model": "ren",
+        "piece": "back",
+        "label": "Ren 後ろ髪",
+        "note": "脸后 · 脸框长发与内侧深色面"
+      },
+      {
+        "model": "haru",
+        "piece": "side",
+        "label": "Haru 横髪",
+        "note": "脸前细缕 · 鬓发"
+      },
+      {
+        "model": "haru",
+        "piece": "back",
+        "label": "Haru 後ろ髪",
+        "note": "脸后外壳 · 双马尾同属，几乎不动"
+      },
+      {
+        "model": "tsumiki",
+        "piece": "aho",
+        "label": "Tsumiki あほ毛",
+        "note": "头顶独立小件 · ahoge"
+      },
+      {
+        "model": "tsumiki",
+        "piece": "back",
+        "label": "Tsumiki 後ろ髪",
+        "note": "脸后外壳 · 内侧深色面无后视发丝"
+      }
+    ],
+    "sources": {
+      "haru": {
+        "model": "haru.model3.json",
+        "mocSha256": "6b1076c2ca8bcc18f680c13c8cb76c713f1a64c5d3767a71c73dc5107c618149"
+      },
+      "ren": {
+        "model": "ren.model3.json",
+        "mocSha256": "a9ccf7d6b2f4f16c8b13da29b9b4f34dc865ba9c8ad88a0388530e7f2d6cc533"
+      },
+      "tsumiki": {
+        "model": "tsumiki.model3.json",
+        "mocSha256": "a3d5f2aa73caffaa6889fb3e341f072a3e2bd0cb5d4da14c03aa0b912fd8026e"
+      }
+    }
+  }
+]

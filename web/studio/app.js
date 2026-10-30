@@ -333,7 +333,7 @@ function sync() {
   $("#actual").disabled = !state.source || state.busy || state.layerBusy;
   $("#refresh-project").disabled = $("#retry-project").disabled =
     state.busy || state.layerBusy;
-  for (const el of document.querySelectorAll('#open-task, #import-folder, [data-open-task], [data-import-folder]'))
+  for (const el of document.querySelectorAll('#open-task, [data-open-task], #project-base-choose, #project-base-reset'))
     el.disabled = state.busy || state.layerBusy;
   $(".layer-panel").inert = state.projectOpening || state.surfaceActive && !physics?.ready;
 
@@ -833,18 +833,25 @@ function projectURL(project) {
   if (project.previewMode) u.searchParams.set('preview', project.previewMode);
   history.replaceState(null, '', u);
 }
-async function importFolder() {
+// The base folder the project list reads lives in this browser only; without one, or once
+// it no longer exists on the server, the list follows the run directory from settings.
+const projectBaseKey = 'astra-studio-project-base';
+function projectBase() { try { return localStorage.getItem(projectBaseKey) || ''; } catch { return ''; } }
+function setProjectBase(folder) {
+  try { if (folder) localStorage.setItem(projectBaseKey, folder); else localStorage.removeItem(projectBaseKey); } catch {}
+}
+async function chooseProjectBase() {
   if (state.busy || state.layerBusy) return;
   const folder = await pickServerPath({ get, esc, icon: (name) => name === 'folder' ? '▸' : name === 'close' ? '×' : '·', kind: 'dir',
-    path: state.source?.project?.folder ? state.source.project.folder.replace(/[\\/][^\\/]+$/, '') : '',
-    title: '导入任务文件夹', note: '选择服务器上的一个任务文件夹（含 run.json），进入后点「选择此目录」。' });
-  if (folder) await openProject(folder);
+    path: $('#project-directory').textContent, title: '选择基准文件夹', note: '列出该文件夹下的任务（含 run.json），进入后点「选择此目录」。' });
+  if (!folder) return;
+  setProjectBase(folder);
+  void chooseProject();
 }
 async function chooseProject() {
   const generation = ++projectListGeneration;
   if (!$("#task-dialog").open) $("#task-dialog").showModal();
   $("#project-list").replaceChildren();
-  $("#project-directory").textContent = '';
   $("#project-status").textContent = "正在读取项目…";
   const addProject = (label, open, rename) => {
     const button = document.createElement('button');
@@ -863,15 +870,25 @@ async function chooseProject() {
   for (const [name, project] of Object.entries(physicsProjects))
     addProject(project.label, () => void openExampleProject(project.caseId)).dataset.project = name;
   try {
-    const data = await get("./api/tasks");
+    let base = projectBase(), response = await fetch('./api/studio/projects?' + new URLSearchParams(base ? { dir: base } : {}));
+    let data = await response.json();
+    if (response.status === 404 && data.missing && base) {
+      // The stored base is gone: forget it and fall back to the run directory.
+      setProjectBase(''); base = '';
+      toast(data.error + '，已恢复默认基准文件夹');
+      response = await fetch('./api/studio/projects'); data = await response.json();
+    }
     if (generation !== projectListGeneration) return;
-    $("#project-directory").textContent = '运行目录 ' + data.directory;
-    $("#project-status").textContent = data.tasks.length ? "选择项目，加载图层和贴图" : "运行目录中还没有项目";
-    const separator = data.directory.includes('\\') && !data.directory.includes('/') ? '\\' : '/';
-    for (const project of data.tasks) {
+    if (!response.ok) throw Error(data.error || response.statusText);
+    const isDefault = data.directory === data.default;
+    $("#project-directory").textContent = data.directory;
+    $("#project-base-reset").hidden = !base;
+    $("#project-status").textContent = data.projects.length ? "选择项目，加载图层和贴图" : "该文件夹中还没有任务";
+    for (const project of data.projects) {
       const label = project.displayName || project.name;
-      addProject(label, () => void openProject(data.directory.replace(/[\\/]$/, '') + separator + project.name),
-        () => editProjectName(project.name, label, data.directory)).dataset.project = project.name;
+      // Display names are kept with the run directory's tasks only.
+      addProject(label, () => void openProject(project.folder),
+        isDefault ? () => editProjectName(project.name, label, data.directory) : undefined).dataset.project = project.name;
     }
   } catch (e) {
     if (generation === projectListGeneration)
@@ -902,7 +919,8 @@ $('#project-name-form').onsubmit = async e => {
   finally { $('#project-name-save').disabled = false; }
 };
 for (const el of document.querySelectorAll('#open-task, [data-open-task]')) el.onclick = chooseProject;
-for (const el of document.querySelectorAll('#import-folder, [data-import-folder], #project-import')) el.onclick = () => void importFolder();
+$('#project-base-choose').onclick = () => void chooseProjectBase();
+$('#project-base-reset').onclick = () => { setProjectBase(''); void chooseProject(); };
 $("#retry-project").onclick = () => {
   if (state.waitingProject && !state.busy)
     void openProject(state.waitingProject.folder);

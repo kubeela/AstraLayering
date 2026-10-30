@@ -29,7 +29,6 @@
           <h1>角色文件</h1>
           <div class="file-actions">
             <button id="open-task" class="primary">打开项目</button>
-            <button id="import-folder" title="选择服务器上任意位置的任务文件夹">导入文件夹</button>
           </div>
           <div id="document-info" hidden>
             <div class="document-heading">
@@ -166,8 +165,8 @@
           <div id="empty-state">
             <div class="file-symbol">＋</div>
             <b>打开项目</b>
-            <p>从运行目录选择项目，或导入服务器上的任务文件夹</p>
-            <div class="file-actions"><button data-open-task>打开项目</button><button data-import-folder>导入文件夹</button></div>
+            <p>选择基准文件夹，从其中的任务中选择项目</p>
+            <div class="file-actions"><button data-open-task>打开项目</button></div>
           </div>
           <div id="project-empty" hidden>
             <b id="project-empty-name"></b>
@@ -404,10 +403,14 @@
         <h2>打开项目</h2>
         <button class="dialog-close" aria-label="关闭">×</button>
       </form>
-      <p id="project-directory" class="muted"></p>
+      <div class="project-base">
+        <span class="muted">基准文件夹</span>
+        <code id="project-directory"></code>
+        <button id="project-base-choose" title="选择服务器上的文件夹，列出其中的任务">选择…</button>
+        <button id="project-base-reset" class="text-button" title="回到设置中的运行目录" hidden>恢复默认</button>
+      </div>
       <div id="project-list" aria-label="项目列表"></div>
       <p id="project-status" class="muted" role="status"></p>
-      <button id="project-import" class="text-button">导入其他位置的任务文件夹…</button>
     </dialog>
     <dialog id="picker-dialog"></dialog>
     <dialog id="project-name-dialog">
