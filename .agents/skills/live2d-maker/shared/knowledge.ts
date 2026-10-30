@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { FunctionTool } from './codex/function-tools.ts';
@@ -131,21 +131,44 @@ export function stepKnowledge(section: string, step: string) {
   };
 }
 
+// {reference:} and {shared_reference:} name fixed knowledge files, so the
+// files they point to must exist; {uri:} points into the task and is not
+// checked, nor is a path that still holds a {variable}.
+function checkReferences(path: string, section?: string): void {
+  for (const match of read(path).matchAll(token)) {
+    const [text, prefix, relative] = match;
+    if ((prefix !== 'reference' && prefix !== 'shared_reference') || relative.includes('{')) continue;
+    if (prefix === 'reference' && !section) throw new Error(`${text} 需要所属管线：${path}`);
+    const target = prefix === 'reference' ? join(current, section!, relative) : join(current, 'shared', 'references', relative);
+    if (!existsSync(target)) throw new Error(`先验知识引用的文件不存在：${text}（${path}）`);
+  }
+}
+
+function markdownFiles(directory: string): string[] {
+  if (!existsSync(directory)) return [];
+  return readdirSync(directory, { recursive: true, encoding: 'utf8' }).filter(name => name.endsWith('.md')).map(name => join(directory, name));
+}
+
 // Startup check for the whole knowledge directory, before any agent runs.
 export function checkKnowledge(directory = current): void {
   if (!isAbsolute(directory) || !existsSync(directory)) throw new Error(`先验知识目录不存在：${directory}`);
   const previous = current;
   current = directory;
   try {
-    for (const name of runtimePrompts) read(runtimePromptPath(name));
+    for (const name of runtimePrompts) checkReferences(runtimePromptPath(name));
     const schemas = new Set(toolSchemaNames());
     for (const declared of knowledgeSteps) {
       const step = stepKnowledge(declared.section, declared.step);
       const config = parseAgent(join(step.directory, 'agent.json'), Boolean(declared.review));
       for (const role of ['main', 'review', 'repair'] as const) {
         if (role !== 'main' && !config.review) continue;
-        for (const path of step.files(role)) if (!read(path).trim()) throw new Error(`先验知识文件为空：${path}`);
+        for (const path of step.files(role)) {
+          if (!read(path).trim()) throw new Error(`先验知识文件为空：${path}`);
+          checkReferences(path, declared.section);
+        }
       }
+      // Group priors replace step prompts when their group runs.
+      for (const path of markdownFiles(join(step.directory, 'prompts', 'groups'))) checkReferences(path, declared.section);
       for (const [role, tools] of [['main', config.main.tools ?? []], ['review', config.review?.tools ?? []]] as const) {
         for (const name of tools) {
           if (!schemas.has(name)) throw new Error(`${declared.section}/${declared.step} 引用了未注册的工具：${name}`);
