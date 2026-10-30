@@ -1,0 +1,31 @@
+{
+  "hiyori": {
+    "hiyori/hiyori_pro/runtime/hiyori_pro_t11.moc3": "608d62c9a65cf537ac25ca9e710e687dbef98ee0a0575e0ee8e27bfdc446cd5e",
+    "hiyori/hiyori_pro/runtime/hiyori_pro_t11.model3.json": "9e40e4dd71beab5bef5c1df9e8223b111549bf1f836d276d1b471003cd754824",
+    "hiyori/hiyori_pro/runtime/hiyori_pro_t11.2048/texture_00.png": "a7d930d42814d8fb69e787b0aef5b60e5afd52b4d4557551c8a58e5bea3a4bb1",
+    "hiyori/hiyori_pro/runtime/hiyori_pro_t11.2048/texture_01.png": "87fe9ab7db81ab3025e0407229e449233581e00fa92c8e911923bc6c7d98ce84"
+  },
+  "mao": {
+    "mao/runtime/mao_pro.moc3": "247d028f9900be2a46e4530816ece5749524d35013ba77424bd943598e0e54ff",
+    "mao/runtime/mao_pro.model3.json": "27b71a0e5476d870ba69d1b52f5bd068ed5a03113739b4f5337e579e954b7e2a",
+    "mao/runtime/mao_pro.4096/texture_00.png": "0a5f5436f26dcc908cf7c5ec1f8b54ff36b895cacaf9804daba31b92d424c594"
+  },
+  "ren": {
+    "ren/runtime/ren.moc3": "a9ccf7d6b2f4f16c8b13da29b9b4f34dc865ba9c8ad88a0388530e7f2d6cc533",
+    "ren/runtime/ren.model3.json": "5b312e1b3da5902c1e1ed8b501e5f9ff728a23ae892f3294178b349560e3bf99",
+    "ren/runtime/ren.4096/texture_00.png": "25206a90a38af845db76c9543f48bc1a44cbf51760cf2f263bf21853979128d9"
+  },
+  "haru": {
+    "haru/runtime/haru.moc3": "6b1076c2ca8bcc18f680c13c8cb76c713f1a64c5d3767a71c73dc5107c618149",
+    "haru/runtime/haru.model3.json": "3e567677bb27353969291fd76027dfc9aec5f1bf09575c77de306b54db756245",
+    "haru/runtime/haru.1024/texture_00.png": "42a924c06662af0c179b11f007b3b05dbd8b4d4d6df5218935c46ddd235148d9",
+    "haru/runtime/haru.1024/texture_01.png": "4e23c466ff07ecfb7fc287191535e1618d78fb890d04a7f02bb058517b80d2c4",
+    "haru/runtime/haru.1024/texture_02.png": "191693bb7d57c321f10ed91a429af8a6d53d4487634e977ff9be25209a10b487"
+  },
+  "tsumiki": {
+    "tsumiki/runtime/tsumiki.moc3": "a3d5f2aa73caffaa6889fb3e341f072a3e2bd0cb5d4da14c03aa0b912fd8026e",
+    "tsumiki/runtime/tsumiki.model3.json": "0fa22c57718b9e5c59d87c220f19b55f5816ffb7bc93e9bb33a6c644dc3bcacb",
+    "tsumiki/runtime/tsumiki.2048/texture_00.png": "d3f8fedf26d9b18c31930b472cf3ea17c13e924c095f8290d41e602643f3c805",
+    "tsumiki/runtime/tsumiki.2048/texture_01.png": "fbf645633bbbdbe1e35e41065a769205b0f022b3aec1b4f2e6a03ddc0e8cb4ea"
+  }
+}
