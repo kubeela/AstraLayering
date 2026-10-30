@@ -58,11 +58,10 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 
 | 文件情况 | 下次同名启动 |
 | --- | --- |
-| `.completed` 存在 | 跳过该步；第一步还会检查正式 review / repair 是否齐备 |
+| `.completed` 存在 | 核对必要交付后沿用该步；交付缺失时拒绝运行并列出路径 |
 | `.running` 存在 | 保留现有工程与日志，继续原绘制 thread 和未完成环节 |
-| 步骤目录存在，两个标记都没有 | 清空该步及后续步骤目录，重置绘制 thread 后重跑 |
-| 某份正式 review / repair 被删除 | 从该环节接续，清除后续反馈记录，保留当前 KRA 与绘制 thread |
-| 上游 `clothing-part-layering/occlusion` 重新完成（part 重做） | 清空 step01 及后续步骤，重置绘制 thread 后重跑 |
+| 步骤目录存在，两个标记都没有 | 清空该步目录，重置绘制 thread 后重跑 |
+| `.running` 中某份正式 review / repair 被删除 | 从该环节接续，清除后续反馈记录，保留当前 KRA 与绘制 thread |
 | 上游 occlusion 步骤未完成 | 拒绝运行，不改动本管线 |
 
 `.running` 表示已开始但未完成，不表示系统进程仍在运行。报告先写 `.tmp`，只有模型回合成功、报告结论有效且交付检查通过后才发布正式 Markdown；日志和暂存文件不算完成事实。
@@ -74,7 +73,7 @@ rm <运行根目录>/jianma/clothing-raster-layering/step02/.completed
 pnpm clothing-raster-layering --name jianma --knowledge /path/to/knowledge
 ```
 
-这会保留第一步及上游产物，清空第二步目录并创建新绘制 thread。要从第一步重跑就删除 `step01/.completed`；未完成步骤也可删除其 `.running` 触发相同重置。重跑会删除对应步骤的工程和日志。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
+这会保留第一步及上游产物，清空第二步目录并创建新绘制 thread。删除 `step01/.completed` 只重做第一步，已完成的第二步沿用；未完成步骤也可删除其 `.running` 触发相同重置。重跑会删除对应步骤的工程和日志。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
 
 ## 验证与代码入口
 

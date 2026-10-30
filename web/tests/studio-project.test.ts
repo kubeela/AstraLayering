@@ -162,8 +162,8 @@ test('Unified studio discovers pending maps and prefers formal delivery', async 
   for (const section of ['part-layering', 'clothing-part-layering']) {
     await f.put(section + '/groups.json', '{"groups":[]}'); await f.put(section + '/occlusion.json', '{"layers":[]}');
   }
-  const maps = JSON.stringify({ stamp: 'maps', inputs: { 'character-assembly/step01': 'assembly' } });
-  await f.put('character-assembly/step01/.completed', JSON.stringify({ stamp: 'assembly', inputs: {} }));
+  const maps = '';
+  await f.put('character-assembly/step01/.completed', '');
   await f.put('shadow/run.json', '{}'); await f.put('shadow/step01_normal-depth/.running', maps);
   let data = await (await f.get()).json() as any;
   assert.equal(data.previewMode, 'mixed'); assert.equal(data.previewDraft, true); assert.equal(data.files.normal.available, true);
@@ -182,12 +182,6 @@ test('Unified studio discovers pending maps and prefers formal delivery', async 
   await f.put(shadowArtifacts.draftNormal, 'changed');
   assert.equal((await f.get({ preview: 'mixed' })).status, 400);
   await f.put(shadowArtifacts.draftNormal, normal);
-  // A redone assembly retires the maps made from the previous one.
-  await f.put(studioArtifacts.color, 'changed color');
-  await f.put('character-assembly/step01/.completed', JSON.stringify({ stamp: 'assembly-2', inputs: {} }));
-  data = await (await f.get({ preview: 'normal-depth' })).json() as any;
-  assert.equal(data.files.normal.available, false);
-  await f.put(studioArtifacts.color, color);
   for (const path of [studioArtifacts.normal, studioArtifacts.depth]) await f.put(path);
   await f.put('shadow/step01_normal-depth/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
   data = await (await f.get({ preview: 'mixed' })).json() as any;

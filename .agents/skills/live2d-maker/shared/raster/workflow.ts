@@ -12,7 +12,7 @@ import { runAgent, type Agent, type AgentRequest } from './agent.ts';
 import { checkKrita, type KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import { readStep, type ChainStep, type StepStatus } from '../step-chain.ts';
-import { runSection, type SectionPlan } from '../step-section.ts';
+import { runSection } from '../step-section.ts';
 import { clearStepSession, readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
 import { canonicalPath, fileInfo, rasterSteps, within } from './run-store.ts';
 import { taskRootOf } from '../task-paths.ts';
@@ -21,7 +21,7 @@ import { modelHarnesses } from '../agents/models.ts';
 import { requireCurrentLayout } from '../../workflow/layout.ts';
 import { cliExecutable } from '../agents/cli.ts';
 import { validateImageSelection } from '../agents/images.ts';
-import { beginReview, finishReview, legacyEdgeDrawingReady } from './review-baseline.ts';
+import { legacyEdgeDrawingReady } from './review-baseline.ts';
 import { SectionKrita, kritaRecordFile } from '../krita/section-krita.ts';
 import { createKritaTool } from '../krita/tool.ts';
 
@@ -56,7 +56,7 @@ export type KritaSection<Input> = {
   id: Extract<SectionId, 'raster-layering' | 'clothing-raster-layering' | 'character-assembly' | 'shadow'>;
   // `krita`: the section's Krita, reserved when the step uses Krita.
   tools?(output: string, input: Input, step: StepDefinition, phase: string, krita?: SectionKrita): NonNullable<AgentRequest['tools']>;
-  // The upstream section's final step; step01 records its stamp and reruns when it changes.
+  // The upstream section's final step, which must be completed before this section runs.
   upstreamStep?(input: Input): ChainStep;
   prepareStep?(output: string, input: Input, step: StepDefinition, krita: KritaInstallation): Promise<void>;
   prepareDelivery?(output: string, input: Input, step: StepDefinition): Promise<void>;
@@ -74,12 +74,10 @@ export type KritaSection<Input> = {
 
 // Upstream runs from before the step was recorded have no step directory; they
 // are read as they are. An unfinished upstream step must finish first.
-async function upstreamSteps(step: ChainStep | undefined): Promise<ChainStep[]> {
-  if (!step) return [];
-  const { status } = await readStep(step.directory, step.root);
-  if (status === 'absent') return [];
-  if (status !== 'completed') throw new Error(`上游步骤 ${step.id} 尚未完成（${step.directory}），请先完成上游再运行本管线。`);
-  return [step];
+async function requireUpstreamStep(step: ChainStep | undefined): Promise<void> {
+  if (!step) return;
+  const { status } = await readStep(step.directory);
+  if (status !== 'absent' && status !== 'completed') throw new Error(`上游步骤 ${step.id} 尚未完成（${step.directory}），请先完成上游再运行本管线。`);
 }
 
 export async function runWorkflow<Input>(section: KritaSection<Input>, options: WorkflowOptions, dependencies: Dependencies = {}): Promise<string> {
@@ -102,7 +100,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
   }
   const reference = await section.resolveInput(options.name, root);
   const inputDirectories = section.inputDirectories(reference);
-  const upstream = await upstreamSteps(section.upstreamStep?.(reference));
+  await requireUpstreamStep(section.upstreamStep?.(reference));
   for (const source of inputDirectories) {
     if (within(source, directory) || within(directory, source)) throw new Error('上游与本管线目录必须分开');
   }
@@ -124,9 +122,9 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
   const sectionKrita = new SectionKrita({ section: directory, krita: krita.executable, env: environment.codex.env,
     record: join(directory, kritaRecordFile) });
   const kritaTool = createKritaTool(sectionKrita, taskRoot);
-  try { await runSection({ directory, root: taskRoot, steps: rasterSteps(definitions, upstream.map(step => step.id)), upstream, dryRun: options.dryRun, signal: options.signal,
-    progress: options.progress, resetNote: '，并清除这些步骤的 thread',
-    // Validate retained deliveries before making any reset destructive.
+  try { await runSection({ directory, steps: rasterSteps(definitions), dryRun: options.dryRun, signal: options.signal,
+    progress: options.progress,
+    // Validate retained deliveries before running anything.
     async keep(chainStep) {
       const step = byId.get(chainStep.id)!;
       try { await checkFiles(chainStep.directory, step.requiredFiles); }
@@ -135,7 +133,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
       if (!options.dryRun) await logDeliveryWarnings(step);
     },
     async prepare() { await mkdir(directory, { recursive: true }); },
-    step: (chainStep, status, plan) => stepWork(byId.get(chainStep.id)!, status, plan),
+    step: (chainStep, status) => stepWork(byId.get(chainStep.id)!, status),
   }); } finally { await sectionKrita.release(); }
   if (options.dryRun) return previews.join('\n\n') || '当前已定义步骤均已完成；无需调用模型。';
   return `已完成当前已定义步骤。交付目录：${previous.at(-1) ?? directory}`;
@@ -146,21 +144,21 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
     }
   }
 
-  async function stepWork(step: StepDefinition, status: StepStatus, plan: SectionPlan): Promise<(() => Promise<void>) | undefined> {
+  async function stepWork(step: StepDefinition, status: StepStatus): Promise<(() => Promise<void>) | undefined> {
     const output = join(directory, step.id);
     const records = join(directory, 'agents', 'steps', step.id);
     if (!options.dryRun) await mkdir(records, { recursive: true });
-    // A step's thread carries that step's work; a step starting over (reset,
-    // or its directory removed) starts a new one.
+    // A step's thread carries that step's work; a step starting over (its
+    // directory removed) starts a new one.
     if (status === 'absent' && !options.dryRun) await clearStepSession(directory, step.id, '步骤重新开始');
     const drawingReady = status !== 'absent' && (step.review ? !!await fileInfo(join(output, 'report.md'))
       : status === 'running' && await legacyEdgeDrawingReady(output, step));
-    const reviewTask = step.review && drawingReady ? await nextReviewTask(output) : undefined;
-    if (status === 'completed' && (!step.review || !reviewTask)) {
+    if (status === 'completed') {
       options.progress?.(`${step.id}：.completed 已存在，跳过`);
       previous.push(output);
       return;
     }
+    const reviewTask = step.review && drawingReady ? await nextReviewTask(output) : undefined;
     const passthrough = await section.passthrough?.(output, reference, step);
     if (passthrough) {
       options.progress?.(`${step.id}：${passthrough.reason}，不调用 agent`);
@@ -269,9 +267,6 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
         if (step.review) await rename(join(output, 'report.md.tmp'), join(output, 'report.md'));
       }
       if (step.review) {
-        // Keep the original baseline across interrupted repairs. A read-only
-        // review must not discard already completed downstream artwork.
-        if (!await fileInfo(join(output, 'review-baseline.json'))) await beginReview(output, step);
         // An interrupted repair may still need to regenerate a deliverable.
         if (!drawingReady || reviewTask?.kind !== 'repair') await checkFiles(output, step.requiredFiles);
         await runReviews({ step, directory: output, signal: options.signal, progress: options.progress,
@@ -285,7 +280,6 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
       await section.validateDelivery?.(output, reference, step, krita);
       await logDeliveryWarnings(step);
       options.signal?.throwIfAborted();
-      if (step.review) await finishReview(directory, step, plan, options.progress);
       options.progress?.(`${step.id}：交付检查通过，写入 .completed`);
       previous.push(output);
     } catch (error) {

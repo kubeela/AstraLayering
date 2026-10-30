@@ -159,15 +159,6 @@ export async function runTask(options: TaskOptions, dependencies: {
     const active = () => { run!.activeSections = sectionIds.filter(id => run!.sections[id]?.status === 'running' || stopped.has(id)); };
     const lane = async (id: SectionId) => {
       signal.throwIfAborted();
-      // Once drawing has started, its upstream structural corrections are authoritative.
-      const downstream = id === 'part-layering' ? 'raster-layering'
-        : id === 'clothing-part-layering' ? 'clothing-raster-layering' : undefined;
-      if (downstream && selected.includes(downstream)
-        && run!.sections[id]?.status === 'completed' && !run!.sections[id]!.skipped && run!.sections[downstream]
-        && run!.sections[downstream]!.status !== 'pending') {
-        progress('沿用已完成的分层产物及绘画阶段保存的结构修正：' + id);
-        return;
-      }
       // Without a dress-up nothing is worn to separate. A clothing lane that
       // had already completed is kept as it is.
       if ((id === 'clothing-part-layering' || id === 'clothing-raster-layering') && await readDressup(directory) === false

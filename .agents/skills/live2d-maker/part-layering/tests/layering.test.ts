@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
-import { taskRootOf } from '../../shared/task-paths.ts';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { artifactPath, draftPath, readJson, reportPath, reviewedArtifact, svgHash } from '../../shared/part/artifact-facts.ts';
@@ -114,28 +113,6 @@ test('去重输出没有整批提交记录或只有部分输出时，不消费�
   assert.equal(state.groups[1].steps.reduction.status, 'pending');
 });
 
-test('已完成的去重产物被改动时拒绝续跑；重试本层只重跑字节变化的补全', async t => {
-  const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'a' }, { id: 'b' }]);
-  await runLayering({ ...f, groups: null, steps });
-  await writeAtomic(artifactPath(f.directory, 'a', 'reduction'), shape('a', 20, 80));
-  const state = (await GroupStore.open(f.directory)).snapshot();
-  assert.equal(state.groups[0].steps.reduction.status, 'pending');
-  assert.equal(state.groups[0].steps.completion.status, 'pending');
-  assert.equal(state.groups[1].steps.reduction.status, 'completed');
-  assert.equal(state.groups[1].steps.completion.status, 'completed');
-  events.length = 0;
-  await assert.rejects(runLayering({ ...f, groups: null, steps }), /产物被改动/);
-  assert.equal(events.length, 0);
-  await rm(join(f.directory, layerStepId(0), '.completed'));
-  await runLayering({ ...f, groups: null, steps: { ...steps, async reduceOutlines(context) {
-    events.push(`layer-${context.depth}:reduce`);
-    const entry = context.entries.find(entry => entry.group.id === 'a')!;
-    await writeAtomic(entry.outputPath, shape('a', 20, 80));
-    return { status: 'completed', output: { changed: [{ groupId: 'a', path: entry.outputPath }] } };
-  } } });
-  assert.equal(events[0], 'layer-0:reduce');
-  assert.ok(events.includes('a:completion') && !events.includes('b:completion'));
-});
 test('补形中断只留下草稿；续跑从补形继续，不重做轮廓、review、去重', async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events);
   await assert.rejects(runLayering({ ...f, groups: null, steps: { ...steps, async completeOcclusion(context) {
@@ -153,7 +130,7 @@ test('自检失败不分析子组；有效 SVG 不等于自检完成，续跑只
     return { status: 'completed', output: { passed: false as true } };
   } } }), /completion check did not pass/);
   assert.ok(!events.includes('head:children'));
-  assert.equal((await readStep(join(f.directory, groupStepId('head', 'completion')), taskRootOf(f.directory))).status, 'running');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 'completion')))).status, 'running');
   assert.ok(await readFile(artifactPath(f.directory, 'head', 'completion')));
   assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.completionCheck.status, 'pending');
   events.length = 0;
@@ -174,22 +151,20 @@ test('分析返回空子组有明确事实记录，重启不会重复分析；�
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(events, ['head:children']);
 });
-test('分析提交后中断，子组记录已完成；续跑直接进入下一层，记录被改动则拒绝续跑', async t => {
+test('分析提交后中断，子组记录已完成；续跑直接进入下一层', async t => {
   const f = await fixture(t), events: string[] = [];
   const steps = workingSteps(events, [{ id: 'head' }], { head: [{ id: 'head/eye', kind: 'part' }] });
   await assert.rejects(runLayering({ ...f, groups: null, steps, maxDepth: 1, progress(message) {
     if (message === '[head] 子组分析：完成') throw new Error('interrupt after atomic commit');
   } }), /interrupt after atomic commit/);
   assert.equal((await readJson(reportPath(f.directory, 'head', 'children'))).groups[0].id, 'head/eye');
-  assert.equal((await readStep(join(f.directory, groupStepId('head', 'children')), taskRootOf(f.directory))).status, 'completed');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 'children')))).status, 'completed');
   events.length = 0;
   await runLayering({ ...f, groups: null, steps });
   assert.ok(!events.includes('head:children'));
   assert.ok(events.includes('head/eye:outline'));
   assert.ok(await readFile(artifactPath(f.directory, 'head/eye', 'outline')));
   assert.match(artifactPath(f.directory, 'head/eye', 'outline'), /step09_outline\/head\/children\/eye\/outline\.svg$/);
-  await writeAtomic(reportPath(f.directory, 'head', 'children'), JSON.stringify({ groupId: 'head', groups: [] }));
-  await assert.rejects(runLayering({ ...f, groups: null, steps }), /产物被改动/);
 });
 test('blocked 或 pending 阻止整层去重及下一层，其他已启动轮廓可收尾', async t => {
   const f = await fixture(t), events: string[] = [], steps = workingSteps(events, [{ id: 'a' }, { id: 'b' }]);
