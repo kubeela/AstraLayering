@@ -1,5 +1,6 @@
-import { lstat, mkdir, open, readdir, readFile, realpath, rename, writeFile } from 'node:fs/promises';
-import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { lstat, mkdir, open, readdir, readFile, realpath, rename, stat, writeFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { randomUUID } from 'node:crypto';
 
 // Task-relative keys exchanged with the browser always use '/', independent of
@@ -78,4 +79,27 @@ export async function tail(root: string, path: string, bytes = 24 * 1024): Promi
     return (start ? '…（仅显示末尾）\n' : '') + buffer.toString('utf8');
   } catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return ''; throw error; }
   finally { await handle?.close(); }
+}
+
+// One directory of the server's filesystem for the settings picker: names only,
+// directories first. The browser's own picker cannot see a remote host.
+export async function browse(path: string | null, kind: 'dir' | 'file') {
+  let target = path?.trim() ? path.trim() : homedir(), selected: string | undefined;
+  if (!isAbsolute(target)) throw new Error('路径必须是绝对路径');
+  target = resolve(target);
+  const info = await stat(target).catch(() => undefined);
+  if (info?.isFile()) { selected = basename(target); target = dirname(target); }
+  else if (!info) throw new Error('路径不存在：' + target);
+  const entries: { name: string; dir: boolean }[] = [];
+  for (const entry of await readdir(target, { withFileTypes: true })) {
+    let dir = entry.isDirectory();
+    if (entry.isSymbolicLink()) dir = await stat(join(target, entry.name)).then(link => link.isDirectory(), () => false);
+    if (dir || kind === 'file') entries.push({ name: entry.name, dir });
+  }
+  entries.sort((a, b) => Number(b.dir) - Number(a.dir) || a.name.localeCompare(b.name));
+  const roots = process.platform === 'win32'
+    ? (await Promise.all('CDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(async letter => (await stat(letter + ':\\').then(() => true, () => false)) ? letter + ':\\' : ''))).filter(Boolean)
+    : ['/'];
+  const parent = dirname(target);
+  return { path: target, parent: parent === target ? null : parent, separator: sep, roots, home: homedir(), entries, ...(selected ? { selected } : {}) };
 }

@@ -31,14 +31,14 @@ async function fixture(t: any) {
     fetch(
       base +
         "/api/studio/project?" +
-        new URLSearchParams({ name, dir, ...override }),
+        new URLSearchParams({ folder: project, ...override }),
     );
   const put = async (path: string, value: string | Uint8Array = "fixture") => {
     const file = join(project, path);
     await mkdir(join(file, ".."), { recursive: true });
     await writeFile(file, value);
   };
-  return { root, dir, name, project, get, put };
+  return { root, dir, name, project, base, get, put };
 }
 test("Project preview reads only the fixed assembly and lighting outputs; absent maps are pending", async (t) => {
   const f = await fixture(t);
@@ -83,10 +83,14 @@ test("Project preview reads only the fixed assembly and lighting outputs; absent
     ),
   );
 });
-test("Project preview rejects stale directories, escaping names and symlinked outputs", async (t) => {
+test("Project preview rejects relative and symlinked folders, non-tasks outside the run directory and symlinked outputs", async (t) => {
   const f = await fixture(t);
-  assert.equal((await f.get({ dir: f.root })).status, 409);
-  assert.equal((await f.get({ name: "../outside" })).status, 400);
+  assert.equal((await f.get({ folder: "runs/角色" })).status, 400);
+  await symlink(f.project, join(f.root, "alias"));
+  assert.equal((await f.get({ folder: join(f.root, "alias") })).status, 400);
+  const plain = join(f.root, "elsewhere", "plain");
+  await mkdir(plain, { recursive: true });
+  assert.match(((await (await f.get({ folder: plain })).json()) as any).error, /run\.json/);
   await mkdir(join(f.project, "lighting"));
   const outside = join(f.root, "private.png");
   await writeFile(outside, "private");
@@ -196,6 +200,11 @@ test('Project reports the head nine-axis document and prefers its KRA while the 
   await f.put(a.headDeformers, '{}');
   data = (await (await f.get()).json()) as any;
   assert.equal(data.nineAxis.available, true);
+  // The deformers and their numbered layer textures read through the studio route.
+  await f.put('nine-axis/step01_head/layers/005.png', 'layer');
+  const read = (path: string) => fetch(f.base + '/studio-artifact?' + new URLSearchParams({ folder: f.project, path }));
+  assert.equal(await (await read('nine-axis/step01_head/layers/005.png')).text(), 'layer');
+  assert.equal((await read('nine-axis/step01_head/layers/../source.json')).status, 400);
   await f.put(studioArtifacts.document, 'kra'); await f.put(studioArtifacts.color, 'png');
   await f.put(a.headDocument, 'nine kra'); await f.put(a.headColor, 'nine png');
   const hash = (s: string) => createHash('sha256').update(s).digest('hex');
@@ -206,4 +215,22 @@ test('Project reports the head nine-axis document and prefers its KRA while the 
   await f.put(studioArtifacts.document, 'kra 2');
   data = (await (await f.get()).json()) as any;
   assert.deepEqual([data.files.document.path, data.nineAxisDocument, data.nineAxisStale], [studioArtifacts.document, false, true]);
+});
+test('An imported task folder outside the run directory opens; only studio outputs are readable', async t => {
+  const f = await fixture(t), folder = join(f.root, 'elsewhere', 'imported');
+  await mkdir(join(folder, 'character-assembly/step01'), { recursive: true });
+  await writeFile(join(folder, 'run.json'), JSON.stringify({ version: 1, sections: {}, jobs: 1, status: 'completed', from: 'part-layering', to: 'shadow' }));
+  await writeFile(join(folder, studioArtifacts.document), 'document');
+  await writeFile(join(folder, studioArtifacts.color), 'color');
+  await writeFile(join(folder, 'run.md'), 'private');
+  const response = await f.get({ folder });
+  assert.equal(response.status, 200);
+  const data = await response.json() as any;
+  assert.equal(data.folder, folder); assert.equal(data.name, 'imported'); assert.equal(data.inDirectory, false);
+  assert.equal(data.files.document.available, true);
+  const read = (path: string) => fetch(f.base + '/studio-artifact?' + new URLSearchParams({ folder, path }));
+  assert.equal(await (await read(studioArtifacts.document)).text(), 'document');
+  for (const path of ['run.json', 'run.md', '../imported/run.json']) assert.equal((await read(path)).status, 400);
+  const listed = await (await f.get()).json() as any;
+  assert.equal(listed.inDirectory, true);
 });
