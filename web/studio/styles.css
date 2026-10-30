@@ -1030,8 +1030,9 @@ canvas.disturb { cursor: crosshair; }
 .nine-part em { margin-left: auto; font-style: normal; font-size: 10px; color: #c49a52; }
 .nine-dirty { color: #ffcf5a; }
 #nine-axis-reset { margin-top: 4px; }
-#project-directory { margin: 4px 0 12px; overflow-wrap: anywhere; }
-#project-import { margin-top: 10px; }
+/* The base folder the project list reads, above the list. */
+.project-base { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 4px 0 12px; font-size: 12px; }
+#project-directory { flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere; }
 /* The server-side path picker shared with the workbench settings. */
 #picker-dialog { width: min(640px, calc(100vw - 40px)); padding: 0; }
 #picker-dialog .modal-heading { display: flex; justify-content: space-between; gap: 12px; padding: 20px 22px 12px; }
