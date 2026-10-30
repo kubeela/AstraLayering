@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import sharp from 'sharp';
 import type { AgentResult, AgentSession, AgentTask } from '../../shared/codex/agents.ts';
-import { artifactPath, publishSvg, svgHash } from '../../shared/part/artifact-facts.ts';
+import { artifactPath, publishSvg } from '../../shared/part/artifact-facts.ts';
 import { completeGroupOcclusion, checkGroupCompletion } from '../../shared/part/completion-agent.ts';
 import { assertCompletionPreserves, composeCompletion } from '../../shared/part/completion-svg.ts';
 import { normalizeGroups, GroupStore, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
@@ -86,7 +86,6 @@ test('补全原 SVG 正文原样保留，禁止删改属性、重排或注入任
     [{ d: 'M0 0Z', transform: 'scale(2)' }], [{ d: 'M0 0Z', fillRule: 'bad' }]]) {
     assert.throws(() => composeCompletion(source, bad), /只接受/);
   }
-  assert.equal(assertCompletionPreserves(source, complete.replace('<svg ', `<svg data-source-sha256="${svgHash(source)}" `)), 1);
 });
 
 test('补全默认适配器用只读 agent 和新增工具，提交后正式发布；完成后沿用', async t => {
@@ -214,7 +213,7 @@ test('新增路径修正后必须重看当前候选；没有工具提交不能�
   } });
   assert.equal(result.path, outputPath);
   const final = outputPath.replace('.draft.svg', '.svg');
-  await publishSvg(outputPath, final, svgHash(await readFile(source)));
+  await publishSvg(outputPath, final);
   assert.equal((await checkGroupCompletion({ ...f, group, before: { path: source }, after: { path: final } })).passed, true);
 });
 
