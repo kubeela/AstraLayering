@@ -54,7 +54,7 @@ KRA 可继续逐层编辑，案例保留分件结构、关键工程和验收记�
 
 [观看完整 MP4](showcase/jianma-wind-skirt.mp4) · [打开本次在线研究项目](https://gameclaw.woa.com/ai-weapon-spirit/character-layering/studio?project=jianma-shadow-fresh-20261022&preview=mixed&workspace=physics) · [独立长飘带测试画面](web/demo-screenshots/08-cloth-physics.png)
 
-在线演示使用该研究项目已有的物理配置。本地启动下方工作台后，可打开 [Jianma 研究入口](http://127.0.0.1:4387/studio?name=jianma)，或在角色工作台“从项目加载”选择布料示例，按当前项目配置启用物理并保存绑定草稿。Cubism 导出作为后续阶段。方法、现有边界及后续组件方案见 [摆动物理](tutorial/live2d-guidance/workflows/physics-preview.md)。
+在线演示使用该研究项目已有的物理配置。本地按下文启动工作台后，可在角色工作台「打开项目」中选择布料示例，或打开工作台地址下的 `studio?name=jianma` 加载 Jianma，按当前项目配置启用物理并保存绑定草稿。Cubism 导出作为后续阶段。方法、现有边界及后续组件方案见 [摆动物理](tutorial/live2d-guidance/workflows/physics-preview.md)。
 
 ## 启动方式 1：交给 agent（推荐）
 
