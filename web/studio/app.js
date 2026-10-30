@@ -6,6 +6,7 @@ import { openDocument } from "./document-loader.js";
 import { ProjectionPanel } from './projection-panel.js';
 import { projectionOnlyEdit } from './projection-model.js';
 import { PhysicsPanel } from './physics-panel.js';
+import { HeadNineAxisPanel } from './nine-axis-panel.js';
 import { physicsProjects, createPhysicsCase } from './physics-cases.js';
 import {
   defaults,
@@ -37,7 +38,7 @@ const state = {
   workspace: 'lighting',
   lightingEnabled: true,
 };
-let projections, physics;
+let projections, physics, nineAxis;
 function toast(message) {
   $("#toast").textContent = message;
   $("#toast").classList.add("visible");
@@ -313,6 +314,8 @@ function sync() {
   $('#projection-workspace').hidden = state.workspace !== 'mask';
   $('#lighting-workspace').hidden = !lighting;
   $('#physics-workspace').hidden = !physical;
+  $('#nine-axis-workspace').hidden = state.workspace !== 'nine-axis';
+  nineAxis?.activate(state.workspace === 'nine-axis');
   $('[data-tool="disturb"]').hidden = !physical;
   $('[data-tool="disturb"]').disabled = !physics?.enabled || state.busy;
   $('.recipe-actions').hidden = !lighting;
@@ -604,6 +607,7 @@ const surfaces = new SurfacePreview({stage, source:()=>state.source, session:()=
 physics = new PhysicsPanel({stage, surfaces, source:()=>state.source, fingerprint:()=>state.source?.authorHash,
   workspace:()=>state.workspace, tool:()=>state.tool, busy:()=>state.busy||state.layerBusy, error:toast,
   download, changed(){layers.render();if(!physics.enabled&&state.tool==='disturb')selectTool('move');sync();}, selectLayer(id){if(layers.selected!==id){layers.selected=id;layers.render();}}});
+nineAxis = new HeadNineAxisPanel({ error: toast });
 $('#effect-lighting').onchange = e => {
   state.lightingEnabled = e.target.checked;
   if (!state.lightingEnabled) { if (state.tool === 'light') selectTool('move'); if (state.view === 'shading') selectView('lit'); }
@@ -672,6 +676,7 @@ function finish(id) {
 async function install(source, id, reset = true) {
   // Rebinding invalidates preparations that have not reached active preview yet.
   surfaces.clear();
+  if (!source.project) void nineAxis.load(null);
   const urls = {};
   try {
     for (const k of ["color", "normal", "depth"])
@@ -935,6 +940,7 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
       project = await get('./api/studio/project?' + new URLSearchParams({ name, dir, preview: project.previewModes.mixed ? 'mixed' : 'mask' }));
     }
     if (id !== state.generation) return;
+    void nineAxis.load(project);
     if (!project.files.document.available) {
       if (!state.source) {
         state.waitingProject = { name, dir };
@@ -1098,7 +1104,7 @@ sync();
 // Projects load the complete document; workspaces only choose the editor.
 const requested = new URLSearchParams(location.search);
 const requestedProject = requested.get('project') || (requested.get('physicsCase') ? `example:cloth:${requested.get('physicsCase')}` : null);
-if (requestedProject) void openProject(requestedProject, undefined, requested.get('preview'), ['mask','lighting','physics'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined);
+if (requestedProject) void openProject(requestedProject, undefined, requested.get('preview'), ['mask','lighting','physics','nine-axis'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined);
 else if (
   requested.get("name") === "jianma" ||
   requested.get("sample") === "jianma"
@@ -1113,6 +1119,7 @@ window.addEventListener("pagehide", () => {
 });
 window.studioDiagnostics = () => ({
   physics: physics.diagnostics(),
+  nineAxis: nineAxis.diagnostics(),
   tool: state.tool,
   surface: surfaces.diagnostics(),
   renderer: rendererVersion,

@@ -4,6 +4,7 @@ import { studioArtifacts } from '../.agents/skills/live2d-maker/shared/studio-ar
 import { shadowArtifacts, shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { inspectDraftPreview } from '../.agents/skills/live2d-maker/shadow/preview.ts';
 import { safePath } from './files.ts';
+import { headNineAxisPath } from './studio/nine-axis-model.js';
 
 type Selection = { version: number; mode: 'mask' | 'normal-depth'; sourceKraHash: string; sourceColorHash: string };
 const previewModes = ['mask', 'normal-depth', 'mixed'] as const;
@@ -71,7 +72,8 @@ export async function studioProject(directory: string, name: string, dir: string
     depth: { ...depth, available: useMaps && depth.available },
     bindings: { ...all.bindings, available: useMask && maskAvailable },
   };
-  return { name, dir, files, previewMode: mode, previewModes: availableModes, maskStale, mapsStale,
+  const nineAxis = await file(headNineAxisPath);
+  return { name, dir, files, nineAxis, previewMode: mode, previewModes: availableModes, maskStale, mapsStale,
     previewDraft: useDraft, ...(useDraft ? { previewReview: draftRecord!.status, previewReviewReason: draftRecord!.reason } : {}),
     ...(selection ? { shadowMode: selection.mode, shadowStale: stale(selection) } : {}) };
 }
