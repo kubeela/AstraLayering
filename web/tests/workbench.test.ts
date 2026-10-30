@@ -105,8 +105,10 @@ test('web forwards shadow mode to the existing coordinator and shows artifacts o
   assert.equal((await f.post('start', { name: 'shadow-case', shadowMode: '../mask' })).status, 400);
   const root = join(f.dir, 'shadow-case');
   await put(root, 'shadow/step01_mask/character-shadowed.png');
+  assert.equal((await snapshot(root, 'shadow-case', f.dir)).sections.find(stage => stage.id === 'shadow')!.states.mask, 'pending', 'an unmarked step is a leftover');
+  await put(root, 'shadow/step01_mask/.running');
   const value = await snapshot(root, 'shadow-case', f.dir), stage = value.sections.find(stage => stage.id === 'shadow')!;
-  assert.equal(stage.states.mask, 'available'); assert.equal(stage.states['normal-depth'], 'pending');
+  assert.equal(stage.states.mask, 'unconfirmed'); assert.equal(stage.states['normal-depth'], 'pending');
   for (const path of ['normal.png', 'depth.png', 'report.md', '.completed']) await put(root, 'shadow/step01_normal-depth/' + path);
   const finished = (await snapshot(root, 'shadow-case', f.dir)).sections.find(stage => stage.id === 'shadow')!;
   assert.equal(finished.states['normal-depth'], 'done');
@@ -158,6 +160,10 @@ test('snapshots distinguish artifacts, real group states, missing outputs, revie
   await put(task, 'part-layering/step09_outline/body/outline.svg', '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
   await put(task, 'part-layering/preview.svg');
   let value = await snapshot(task, 'test', f.dir);
+  assert.equal(value.sections[0].states.merge, 'pending', 'a merge output without its step marker is a leftover');
+  await put(task, 'part-layering/step09_outline/body/.completed');
+  await put(task, 'part-layering/step13_merge/.running');
+  value = await snapshot(task, 'test', f.dir);
   assert.equal(value.status, 'untracked');
   assert.equal(value.sections[0].states.standard, 'pending');
   assert.equal(value.sections[0].states.merge, 'available');
@@ -183,6 +189,12 @@ test('snapshots distinguish artifacts, real group states, missing outputs, revie
   }
   value = await snapshot(task, 'test', f.dir);
   assert.equal(value.sections[3].states.step01, 'done');
+  // An unmarked step directory is a leftover the next run deletes and redoes.
+  await put(task, 'clothing-raster-layering/step02/clothing-depth.kra');
+  value = await snapshot(task, 'test', f.dir);
+  assert.equal(value.sections[3].states.step02, 'pending');
+  assert.match(value.sections[3].messages.step02, /残留目录/);
+  await rm(join(task, 'clothing-raster-layering/step02'), { recursive: true });
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'clothing-raster-layering', to: 'clothing-raster-layering' }, task);
   run.status = 'running'; run.runner = { id: 'dead', pid: 2147483647, startedAt: new Date().toISOString() };
   await saveRun(task, run);

@@ -16,8 +16,10 @@ export async function stepStatus(directory: string, section: string, id: string)
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return 'absent'; throw error; }
 }
 
-// These are file observations for display, not a second scheduler or a resume check:
-// a completed marker is shown as done.
+// These are file observations for display, not a second scheduler or a resume check.
+// They follow the run's marker rule: a product counts only in a step marked .running
+// or .completed (an unmarked or missing step is rerun from scratch), and a completed
+// step whose product is missing is shown failed.
 export async function partProgress(directory: string, section: string, groups: any[], files: Set<string>,
   json: (path: string) => Promise<any>, errors: string[], activeSince?: string, failedSince?: string) {
   const bytes = new Map<string, Promise<Buffer | undefined>>();
@@ -45,11 +47,16 @@ export async function partProgress(directory: string, section: string, groups: a
     node.webPhases = Object.fromEntries(phases.map(phase => [phase, 'pending']));
     node.webMessages = {};
     node.webDetails = {};
-    const mark = (phase: Phase, done: boolean, present: boolean, message: string) => {
+    const mark = (phase: Phase, done: boolean, present: boolean, message: string, missing?: string) => {
+      if (!done && missing) {
+        node.webPhases[phase] = 'failed'; node.webMessages[phase] = '执行失败';
+        node.webDetails[phase] = '.completed 存在但缺少交付：' + missing; return;
+      }
       node.webPhases[phase] = done ? 'done' : present ? 'available' : 'pending';
       node.webMessages[phase] = done ? '已完成' : present ? '已有产物' : '待执行';
-      if (present) node.webDetails[phase] = message;
+      if (done || present) node.webDetails[phase] = message;
     };
+    const marked = (status: StepStatus) => status === 'running' || status === 'completed';
     const outline = await read(path('outline'));
     const reduced = await read(path('reduction'));
     const completed = await read(path('completion'));
@@ -58,25 +65,31 @@ export async function partProgress(directory: string, section: string, groups: a
     const skipped = node.hiddenInReference === true && prepared === 'completed' && !!outline;
     const skipDetail = '原图不可见，已跳过描边和轮廓复核';
     if (skipped) skippedReviews.add(node);
-    mark('outline', !!outline, !!outline || draft('outline'), skipped ? skipDetail : outline ? '已落稿' : '草稿 · 未落稿');
+    mark('outline', !!outline && marked(prepared), marked(prepared) && (!!outline || draft('outline')),
+      skipped ? skipDetail : outline ? '已落稿' : '草稿 · 未落稿', prepared === 'completed' && !outline ? path('outline') : undefined);
 
     const report = await json(webFilePath(reportPath(section, node.id, 'review')));
     const validReport = report?.groupId === node.id && Array.isArray(report.reviews);
     reviewInputs.set(node, { report: validReport ? report : undefined, outline });
     const reviewed = outline && validReport ? reviewedArtifact(outline, path('outline'), report) : undefined;
     const last = validReport ? report.reviews.at(-1) : undefined;
-    mark('review', skipped || !!reviewed && prepared === 'completed', skipped || !!report, skipped ? skipDetail : reviewed ? reviewed.note ?? '复核通过'
+    mark('review', skipped || !!reviewed && prepared === 'completed', skipped || marked(prepared) && !!report, skipped ? skipDetail : reviewed ? reviewed.note ?? '复核通过'
       : last && outline && matchesHash(outline, last.candidateHash)
         ? last.verdict === 'revise' ? '需要返修' : last.verdict === 'blocked' ? '复核受阻' : '记录待确认'
         : '复核记录与当前稿未匹配');
 
     const reductionDone = !!reduced && layer === 'completed';
-    mark('reduction', reductionDone, !!reduced || draft('reduction'), reductionDone ? '已落稿 · 本层去重完成' : reduced ? '已有正式稿 · 本层去重未完成' : '草稿 · 未落稿');
-    const completionDone = !!completed && finished !== 'absent';
-    mark('completion', completionDone, !!completed || draft('completion'), completionDone ? '已落稿' : completed ? '已有正式稿 · 步骤待重做' : '草稿 · 未落稿');
+    // A group added later (a drawing-stage split) had no outline when its layer was reduced.
+    mark('reduction', reductionDone, layer === 'running' && (!!reduced || draft('reduction')),
+      reductionDone ? '已落稿 · 本层去重完成' : reduced ? '已有正式稿 · 本层去重未完成' : '草稿 · 未落稿',
+      layer === 'completed' && prepared === 'completed' && !reduced ? path('reduction') : undefined);
+    const completionDone = !!completed && marked(finished);
+    mark('completion', completionDone, finished === 'running' && draft('completion'), completionDone ? '已落稿' : '草稿 · 未落稿',
+      finished === 'completed' && !completed ? path('completion') : undefined);
     const check = await json(webFilePath(reportPath(section, node.id, 'completion-check')));
     const checked = !!check && finished === 'completed';
-    mark('completionCheck', checked, !!check, checked ? '补全检查通过' : '检查记录待确认');
+    mark('completionCheck', checked, finished === 'running' && !!check, checked ? '补全检查通过' : '检查记录待确认',
+      finished === 'completed' && !check ? webFilePath(reportPath(section, node.id, 'completion-check')) : undefined);
     const childrenDone = split === 'completed';
     mark('children', childrenDone, childrenDone || !!node.groups?.length, childrenDone ? `已分析 · ${node.groups?.length ?? 0} 个直属节点` : '已有分组 · 待重新分析');
     if (node.kind === 'part') node.webDetails.children = '终止 part，不再拆分';

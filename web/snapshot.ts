@@ -31,6 +31,7 @@ import { kritaRecordFile, kritaSlotsInUse, readKritaRecord } from '../.agents/sk
 export { phases } from './part-progress.ts';
 export const rasterDefinitions = { 'raster-layering': personSteps, 'clothing-raster-layering': clothingSteps, 'character-assembly': assemblySteps };
 export type Status = 'done' | 'running' | 'throttled' | 'pending' | 'failed' | 'interrupted' | 'available' | 'skipped' | 'unconfirmed';
+export const leftoverMessage = '残留目录（无完成或进行中标记）：下次运行会删除后重做';
 export const statusOf = (value?: string): Status => value === 'completed' ? 'done' : value === 'ready' ? 'pending' : ['running', 'failed', 'interrupted'].includes(value ?? '') ? value as Status : 'pending';
 const flatten = (nodes: any[]): any[] => nodes.flatMap(node => [node, ...flatten(node.groups ?? [])]);
 function validateGroups(nodes: any[], depth = 0) {
@@ -76,7 +77,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
     const saved = record.run?.sections[id];
     // A lane that failed stays listed as the one that stopped the run, while the other lane may still be running.
     const active = record.runnerAlive && record.lockHeld && current && saved?.status !== 'failed';
-    const failed = record.status === 'failed' || saved?.status === 'failed';
+    // Only the lane that failed marks its unfinished step failed; a step another lane
+    // left marked .running was stopped or interrupted, and continues on the next run.
+    const failed = saved?.status === 'failed';
     const mode = shadowMode(record.run?.shadowMode);
     // The section's inputs, resolved from its upstream as a run would; none while the upstream is unfinished.
     const section: { resolveInput(name: string, root: string): Promise<unknown> } | undefined = id === 'shadow' ? shadowSection(mode)
@@ -150,9 +153,12 @@ export async function snapshot(directory: string, name: string, dir: string) {
         // scheduler. Earlier exports omitted receipts; require intact deliveries
         // before displaying their archived section completion at each step.
         if (record.run?.archive && saved?.status === 'completed' && !missing.length) completed = true;
+        // An unmarked directory is a leftover the next run deletes before it reruns the step.
+        const leftover = files.some(path => path.startsWith(prefix + '/'));
         states[step.id] = completed ? (missing.length ? 'failed' : 'done') : running ? observed('running')
-          : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
+          : leftover && record.run?.archive ? 'available' : 'pending';
         if (completed && missing.length) messages[step.id] = '.completed 存在但缺少交付：' + missing.join('、');
+        if (!completed && !running && leftover && !record.run?.archive) messages[step.id] = leftoverMessage;
         if ('review' in step && step.review) {
           if (reports[step.id]) reports.draw = reports[step.id];
           states.draw = fileSet.has(prefix + '/report.md') ? 'done' : states[step.id];
@@ -197,7 +203,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
           if (record.run?.archive && saved?.status === 'completed' && variant === mode && delivered.every(Boolean)) complete = true;
           const state: Status = complete ? delivered.every(Boolean) ? 'done' : 'failed'
             : await exists(prefix + '/.running') ? variant === mode ? observed('running') : 'unconfirmed'
-              : files.some(path => path.startsWith(prefix + '/')) ? 'available' : 'pending';
+              : files.some(path => path.startsWith(prefix + '/')) && record.run?.archive ? 'available' : 'pending';
           modeStates.push(state);
           if (variant === 'normal-depth') states['normal-depth-maps'] = state;
         }
