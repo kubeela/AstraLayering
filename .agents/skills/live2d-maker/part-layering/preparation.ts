@@ -5,12 +5,12 @@ import { mkdir, readFile } from 'node:fs/promises';
 import { copyAsPng, pngBytes } from '../shared/png.ts';
 import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
-import { clearPreparedParts, readPreparationOptions } from '../shared/part/preparation-cache.ts';
-import { modifiedError, type ChainPlan, type ChainStep } from '../shared/step-chain.ts';
-import { inspectSection, runSection } from '../shared/step-section.ts';
+import { readPreparationOptions } from '../shared/part/preparation-cache.ts';
+import type { ChainStep } from '../shared/step-chain.ts';
+import { inspectSection, runSection, stepName, type SectionPlan } from '../shared/step-section.ts';
 import type { PreparationInput, PreparationReferences } from '../shared/part/preparation-types.ts';
-import { checkStandardJudgment, exists, findImage, poseJudgmentPath, preparationSteps, present, produce,
-  sectionOf, stageNumber, stageStep, stepStage, writeJson, type PreparationStage, type StandardJudgment } from './preparation-state.ts';
+import { checkStandardJudgment, exists, findImage, poseJudgmentPath, preparationSteps, produce,
+  sectionOf, stageStep, stepStage, writeJson, type PreparationStage, type PreparationStep, type StandardJudgment } from './preparation-state.ts';
 import { stepKnowledge } from '../shared/knowledge.ts';
 import { taskRootOf } from '../shared/task-paths.ts';
 import type { DressupDecision } from '../shared/part/dressup.ts';
@@ -45,11 +45,12 @@ async function references(runName: string, root?: string): Promise<PreparationRe
     simplifiedSubject: join(directory, 'simplified-subject.png'),
     baseSubject: join(directory, 'base-subject.png') };
 }
-const output = (step: ChainStep) => resolve(step.directory, step.outputs![0]);
-const unfinished = (plan: ChainPlan, id: string) => plan.reset.includes(id) || plan.statuses.get(id) !== 'completed';
+const outputs = (steps: readonly PreparationStep[]) =>
+  new Map(steps.flatMap(step => step.output ? [[stepName(step.number, step.note), step.output] as const] : []));
+const unfinished = (plan: SectionPlan, id: string) => plan.statuses.get(id) !== 'completed';
 
 function modeError(directory: string, saved: boolean): Error {
-  return new Error(`preparation 已按 --${saved ? '' : 'no-'}standard 制作，不能直接切换。需要切换时请对 options 步骤执行重试：删除 ${join(sectionOf(directory), stageStep('options'), '.completed')} 后带新选项重跑，之后的参考会随之重做；或使用新的 --name。已有文件已保留。`);
+  return new Error(`preparation 已按 --${saved ? '' : 'no-'}standard 制作（${join(sectionOf(directory), stageStep('options'))}），不能直接切换；请使用新的 --name。已有文件已保留。`);
 }
 
 // Explicit groups only read prepared inputs; no conversion, model call, copying or cache reset.
@@ -57,18 +58,18 @@ export async function loadPreparedReferences(runName: string, root?: string, sta
   const refs = await references(runName, root), directory = refs.directory;
   const saved = await readPreparationOptions(directory);
   if (standard !== undefined && saved !== undefined && standard !== saved) throw modeError(directory, saved);
-  const plan = await inspectSection(sectionOf(directory), taskDirectory(runName, root), await preparationSteps(refs, saved ?? standard ?? false, inputDirectory(runName, root)), { scan: false });
-  const modified = modifiedError(plan, plan.chain);
-  if (modified) throw modified;
-  const missing = plan.chain.filter(step => plan.defined.has(step.id) && unfinished(plan, step.id))
-    .map(step => `${step.id}：${step.outputs ? output(step) : step.directory}`);
+  const steps = await preparationSteps(refs, saved ?? standard ?? false, inputDirectory(runName, root)), paths = outputs(steps);
+  const plan = await inspectSection(sectionOf(directory), steps);
+  const missing: string[] = [];
+  for (const step of plan.chain) {
+    const path = paths.get(step.id);
+    if (unfinished(plan, step.id) || (path && !await exists(path))) missing.push(`${step.id}：${path ?? step.directory}`);
+  }
   if (missing.length) throw new Error(`显式 groups 的前置参考未完成：\n${missing.join('\n')}\n请先使用默认流程完成参考准备。`);
   return refs;
 }
 
-// Each preparation step is one link of the shared step chain: a step whose
-// output or marker is gone reruns with everything built on it, and outputs
-// replaced while the run was interrupted stop the run until that step is retried.
+// Each preparation step runs by its own marker (shared/step-chain.ts).
 export async function prepareReferences(input: PreparationInput, steps: PreparationSteps,
   progress?: (message: string) => void, options: ImageProcessingOptions = {}): Promise<PreparationReferences> {
   const normalization = { ...options, runsRoot: input.dir ?? options.runsRoot, progress: progress ?? options.progress };
@@ -84,23 +85,26 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   await mkdir(directory, { recursive: true });
   const standard = input.standard ?? false;
   const initial = await references(input.runName, input.dir);
-  let partsBuilt = false;
+  const defined = await preparationSteps(initial, standard, inputs, source), paths = outputs(defined);
+  const output = (step: ChainStep) => paths.get(step.id)!;
   await runSection({
-    directory: sectionOf(directory), root: taskDirectory(input.runName, input.dir), steps: await preparationSteps(initial, standard, inputs, source), progress,
-    // The layering steps after ready check themselves; resetting ready clears them.
-    last: stageNumber('ready'),
+    directory: sectionOf(directory), steps: defined, progress,
     async check(plan) {
       const saved = await readPreparationOptions(directory);
       if (saved !== undefined && saved !== standard && !unfinished(plan, stageStep('options'))) throw modeError(directory, saved);
       // Refuse before deleting anything when the step cannot be redone.
-      const pending = plan.chain.find(step => plan.defined.has(step.id) && unfinished(plan, step.id));
+      const pending = plan.chain.find(step => unfinished(plan, step.id));
       const stage = pending && stepStage(pending.id), has = (stage: PreparationStage) => plan.defined.has(stageStep(stage));
-      if ((stage === 'original' && !source && (plan.reset.includes(pending!.id) || !initial.originalImage))
+      if ((stage === 'original' && !source && !initial.originalImage)
         || ((stage === 'pose' || stage === 'standard') && !has('original'))
         || ((stage === 'simplified' || stage === 'base') && !has('standard'))) {
         throw new Error('首次启动或原图缺失时，需要 --image <角色图片路径>');
       }
-      partsBuilt = plan.reset.includes(stageStep('ready'));
+    },
+    async keep(step) {
+      if (paths.has(step.id) && !await exists(output(step))) {
+        throw new Error(`${step.id} 已标记完成但交付缺失：${output(step)}；请恢复文件，或删除 ${step.id}/.completed 触发重跑。`);
+      }
     },
     async step(step, status) {
       const refs = await references(input.runName, input.dir), stage = stepStage(step.id);
@@ -168,8 +172,6 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
         return;
       }
       case 'ready':
-        await clearPreparedParts(dirname(directory));
-        if (partsBuilt) progress?.('preparation：参考内容已重新生成，已重置本人物 part 的拆分缓存。');
     }
   }
 }

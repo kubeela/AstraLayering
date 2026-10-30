@@ -229,105 +229,20 @@ test('残留的旧管线 run.json 不被读取或改写；使用当前环境模�
   assert.equal(attempts[1].model, 'gpt-6.1-sol'); assert.equal(attempts[1].effort, 'low');
 });
 
-test('删 step02 完成标记后保留 step01/上游产物，清理后续目录，后续各步新建 thread', async t => {
-  const f = await fixture(t);
-  let index = 0;
-  await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: request => deliver(request, f.definitions[index++]) });
-  const first = await readFile(join(f.output, 'agents/steps/step01/events.jsonl'));
-  const snapshot = await readFile(join(f.input, 'parts/face.svg'));
-  await writeFile(join(f.output, 'step02/old.png'), 'old artwork');
-  await mkdir(join(f.output, 'step04'));
-  await writeFile(join(f.output, 'step04/.completed'), '');
-  await rm(join(f.output, 'step02/.completed'));
-  const messages: string[] = [];
-  await runWorkflow({ ...f.resume, dryRun: true, progress: message => messages.push(message) }, { ...f.deps, steps: f.definitions, agent: forbidden });
-  assert.ok(messages.some(message => message.includes('预览：将重置 step02')));
-  await readFile(join(f.output, 'step02/old.png'));
-  await readFile(join(f.output, 'step03/.completed'));
-  index = 1;
-  await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: async request => {
-    const step = f.definitions[index++];
-    if (step.id === 'step02') {
-      assert.equal(request.threadId, undefined);
-      assert.equal(await threadOf(f.output, 'step02'), undefined);
-      await absent(join(f.output, 'step02/old.png'));
-      await absent(join(f.output, 'step03/.completed'));
-      await assert.rejects(readdir(join(f.output, 'step04')), { code: 'ENOENT' });
-    } else assert.equal(request.threadId, undefined);
-    assert.ok(request.prompt.includes(JSON.stringify(join(f.output, 'step01/report.md'))));
-    return deliver(request, step, 'thread-new');
-  } });
-  assert.equal(index, 3);
-  assert.deepEqual(await readFile(join(f.output, 'agents/steps/step01/events.jsonl')), first);
-  assert.deepEqual(await readFile(join(f.input, 'parts/face.svg')), snapshot);
-  assert.equal(await threadOf(f.output, 'step03'), 'thread-new');
-});
-
-test('part 终止步骤 occlusion 重做后 step01 及后续重跑并换新 thread；上游未完成时拒绝且不动本管线', async t => {
+test('part 终止步骤 occlusion 未完成时拒绝且不动本管线；完成后全部沿用', async t => {
   const f = await fixture(t), occlusion = join(f.input, 'step14_occlusion');
-  const mark = (stamp: string) => writeFile(join(occlusion, '.completed'), JSON.stringify({ stamp, inputs: {} }));
   await mkdir(occlusion);
-  await mark('part-a');
+  await writeFile(join(occlusion, '.completed'), '');
   let index = 0;
   await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: request => deliver(request, f.definitions[index++]) });
-  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'part-layering/step14_occlusion': 'part-a' });
-  // 上游没有变化时全部沿用。
-  await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: forbidden });
   await rm(join(occlusion, '.completed'));
   await writeFile(join(occlusion, '.running'), '');
   const before = await readFile(join(f.output, 'step03/.completed'));
   await assert.rejects(runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: forbidden }), /上游步骤 part-layering\/step14_occlusion 尚未完成/);
   assert.deepEqual(await readFile(join(f.output, 'step03/.completed')), before);
   await rm(join(occlusion, '.running'));
-  await mark('part-b');
-  index = 0;
-  await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: async request => {
-    const step = f.definitions[index++];
-    if (step.id === 'step01') {
-      assert.equal(request.threadId, undefined);
-      for (const id of ['step02', 'step03']) await assert.rejects(readdir(join(f.output, id)), { code: 'ENOENT' });
-    } else assert.equal(request.threadId, undefined);
-    return deliver(request, step, 'thread-part-b');
-  } });
-  assert.equal(index, 3);
-  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'part-layering/step14_occlusion': 'part-b' });
-});
-
-test('删 step01 完成标记清空所有后续步骤，包括尚未定义提示词的目录', async t => {
-  const f = await fixture(t);
-  await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
-  for (const id of ['step02', 'step03', 'step09']) {
-    await mkdir(join(f.output, id));
-    await writeFile(join(f.output, id, '.completed'), '');
-  }
-  await rm(join(f.output, 'step01/.completed'));
-  await runWorkflow(f.resume, { ...f.deps, agent: async request => {
-    assert.equal(request.threadId, undefined);
-    for (const id of ['step02', 'step03', 'step09']) await assert.rejects(readdir(join(f.output, id)), { code: 'ENOENT' });
-    await absent(join(f.output, 'step01/character-depth.kra'));
-    return deliver(request, f.definitions[0], 'replacement');
-  } });
-});
-
-test('重置清理中断后可恢复；前序目录整个缺失时也清理后续', async t => {
-  const f = await fixture(t);
-  let index = 0;
-  await runWorkflow(f.options, { ...f.deps, steps: f.definitions, agent: request => deliver(request, f.definitions[index++]) });
-  await rm(join(f.output, 'step01/.completed'));
-  // Simulate a crash after clearing the thread and deleting the furthest descendant.
-  await rm(join(f.output, 'agents/steps/step01/session.json'));
-  await rm(join(f.output, 'step03'), { recursive: true });
-  assert.equal((await inspectRun(f.output, steps)).resetFrom, 1);
-  await runWorkflow(f.resume, { ...f.deps, agent: request => deliver(request, f.definitions[0], 'after-cleanup-crash') });
-  await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
-  await mkdir(join(f.output, 'step02'));
-  await writeFile(join(f.output, 'step02/.completed'), '');
-  await rm(join(f.output, 'step01'), { recursive: true });
-  await runWorkflow(f.resume, { ...f.deps, agent: async request => {
-    assert.equal(request.threadId, undefined);
-    await assert.rejects(readdir(join(f.output, 'step02')), { code: 'ENOENT' });
-    return deliver(request, f.definitions[0], 'after-gap');
-  } });
+  await writeFile(join(occlusion, '.completed'), '');
+  await runWorkflow(f.resume, { ...f.deps, steps: f.definitions, agent: forbidden });
 });
 
 test('模型受阻、缺交付或取消均保留 .running；即使 result.json 写了完成也不能跳过', async t => {
@@ -394,10 +309,9 @@ test('入口不接受额外输入；符号链接步骤不被递归清理', async
   const other = join(f.directory, 'other');
   await mkdir(join(other, 'parts'), { recursive: true });
   assert.throws(() => parseRunArguments(['--name', 'test', '--input', other]), /Unknown option/);
-  await rm(join(f.output, 'step01/.completed'));
-  await symlink(other, join(f.output, 'step02'), 'dir');
+  await rm(join(f.output, 'step01'), { recursive: true });
+  await symlink(other, join(f.output, 'step01'), 'dir');
   await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: forbidden }), /步骤路径必须是普通目录/);
-  await readFile(join(f.output, 'step01/character-depth.kra'));
   assert.deepEqual(await readdir(other), ['parts']);
 });
 
@@ -416,24 +330,6 @@ test('raster 使用指定模型与 reasoning；临时 error 等待 CLI 终态，
   assert.equal((await failed.protocol()).find(message => message.method === 'thread/resume').params.threadId, 'thread-2');
   const ended = await rasterAppServer(t, '', {}, 'eof');
   await assert.rejects(runAgent({ ...request, environment: ended.environment }), /事件流结束/);
-});
-
-test('旧 step02 已完成绘制但停在移除的 review，新版本补 step01 检查后直接结束 step02', async t => {
-  const f = await fixture(t);
-  let index = 0;
-  await runWorkflow(f.options, { ...f.deps, steps: f.definitions.slice(0, 2), agent: request => deliver(request, f.definitions[index++]) });
-  await rm(join(f.output, 'step02/.completed'));
-  await writeFile(join(f.output, 'step02/.running'), '');
-  await writeFile(join(f.output, 'step02/prompt.md'), '交付 step02/report.md.tmp');
-  await writeFile(join(f.output, 'step02/result.json'), JSON.stringify(complete));
-  let calls = 0;
-  await runWorkflow(f.resume, { ...f.deps, steps: steps.slice(0, 2), agent: async request => {
-    calls++; assert.ok(request.prompt.startsWith('你负责对第一步交付'));
-    await writeFile(join(f.output, 'step01/review-01.md.tmp'), '结论：通过\n完整轮廓检查。'); return complete;
-  } });
-  assert.equal(calls, 1);
-  await readFile(join(f.output, 'step02/.completed'));
-  assert.equal(await threadOf(f.output), 'thread-1');
 });
 
 test('素体未换装时 step03 不调用 agent，直接沿用 step02 交付并标记完成', async t => {

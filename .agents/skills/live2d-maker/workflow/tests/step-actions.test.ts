@@ -48,10 +48,10 @@ for (const section of ['part-layering', 'clothing-part-layering']) {
     assert.match(await f.act(section, groupStepId('head/eye', 'completion'), 'resume'), /恢复等同继续/);
 
     await f.act(section, groupStepId('head/eye', 'completion'), 'retry');
-    assert.equal((await readStep(step, f.task)).status, 'absent');
+    assert.equal((await readStep(step)).status, 'absent');
     await gone(part); await gone(draftPath(part));
     assert.equal(await text(other), 'body');
-    assert.equal((await readStep(join(root, groupStepId('body', 'completion')), f.task)).status, 'completed');
+    assert.equal((await readStep(join(root, groupStepId('body', 'completion')))).status, 'completed');
   });
 }
 
@@ -71,15 +71,15 @@ test('任务级操作作用于全部中断或失败的步骤，已完成步骤�
   await put(draftPath(shirtPart), 'draft');
 
   assert.match(await task('continue'), /step12_children\/face[\s\S]*step11_completion\/shirt/);
-  assert.equal((await readStep(face, f.task)).status, 'running');
+  assert.equal((await readStep(face)).status, 'running');
   await task('resume');
   await gone(faceSession); await gone(shirtSession);
   assert.equal(await text(doneSession), '{}');
   assert.equal(await text(draftPath(shirtPart)), 'draft');
   await task('retry');
-  assert.equal((await readStep(face, f.task)).status, 'absent'); assert.equal((await readStep(shirt, f.task)).status, 'absent');
+  assert.equal((await readStep(face)).status, 'absent'); assert.equal((await readStep(shirt)).status, 'absent');
   await gone(draftPath(shirtPart));
-  assert.equal((await readStep(done, f.task)).status, 'completed');
+  assert.equal((await readStep(done)).status, 'completed');
   await assert.rejects(task('resume'), /没有中断或失败的步骤/);
   assert.match(await task('continue'), /从未完成处续跑/);
 });
@@ -113,7 +113,7 @@ for (const section of ['raster-layering', 'clothing-raster-layering', 'character
     assert.equal(await text(join(root, 'step02', 'draft.kra')), 'draft');
     assert.match(await f.act(section, 'step02', 'resume'), /恢复等同继续/);
     await f.act(section, 'step02', 'retry');
-    assert.equal((await readStep(join(root, 'step02'), f.task)).status, 'absent');
+    assert.equal((await readStep(join(root, 'step02'))).status, 'absent');
     assert.equal(await text(join(root, 'step01', 'kept.kra')), 'kra');
     await assert.rejects(f.act(section, 'merge', 'retry'), /没有步骤/);
   });
@@ -146,8 +146,8 @@ test('阴影重试只重置所选模式的 step01，另一模式不动', async t
   await put(join(root, 'step01_mask', '.running'), JSON.stringify({ inputs: {} }));
   assert.deepEqual((await listSteps(root, 'shadow')).map(entry => entry.id), ['step01_mask', 'step01_normal-depth']);
   await f.act('shadow', 'step01_normal-depth', 'retry');
-  assert.equal((await readStep(join(root, 'step01_normal-depth'), f.task)).status, 'absent');
-  assert.equal((await readStep(join(root, 'step01_mask'), f.task)).status, 'running');
+  assert.equal((await readStep(join(root, 'step01_normal-depth'))).status, 'absent');
+  assert.equal((await readStep(join(root, 'step01_mask'))).status, 'running');
 });
 
 test('空步骤 id 只能继续整条管线，保留工作区与步骤记录', async t => {
@@ -157,7 +157,7 @@ test('空步骤 id 只能继续整条管线，保留工作区与步骤记录', a
   await put(join(step, 'workspace', 'draft.svg'), 'working draft');
   await assert.rejects(f.act('part-layering', '', 'retry'), /没有步骤/);
   assert.match(await f.act('part-layering', '', 'continue'), /保留全部产物/);
-  assert.equal((await readStep(step, f.task)).status, 'running');
+  assert.equal((await readStep(step)).status, 'running');
   assert.equal(await text(join(step, 'workspace', 'draft.svg')), 'working draft');
 });
 
@@ -167,7 +167,7 @@ test('运行中的任务持有锁时拒绝步骤操作', async t => {
   const release = await acquireTaskLock(f.task);
   try { await assert.rejects(f.act('raster-layering', 'step01', 'retry')); }
   finally { await release(); }
-  assert.equal((await readStep(join(root, 'step01'), f.task)).status, 'running');
+  assert.equal((await readStep(join(root, 'step01'))).status, 'running');
   await assert.rejects(f.act('raster-layering', 'step01', 'redo'), /未知操作/);
 });
 

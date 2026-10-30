@@ -18,17 +18,13 @@ pnpm start --name jianma --background
 
 ### 姿态与参考
 
-新任务确认 `--standard`，默认关闭：直接复制原图；开启后先判断再按需生图，均输出 `part-layering/references/standard.png`。首次原图另存 `input/original.*`。选项只保存在总控 `run.json`，续跑省略则沿用；`part-layering/step02_options/options.json` 是该步产物，用于判断选项是否改变；`--no-standard` 显式关闭。`--standard`／`--no-standard` 要求本次路线包含 part-layering。已完成的参考改变选项时，对 part-layering 的 options 步骤重试，后续依赖参考随之重做：
-
-```sh
-pnpm start --name jianma [--dir …] [--from part-layering] --standard --retry --section part-layering --step step02_options --background
-```
+新任务确认 `--standard`，默认关闭：直接复制原图；开启后先判断再按需生图，均输出 `part-layering/references/standard.png`。首次原图另存 `input/original.*`。选项只保存在总控 `run.json`，续跑省略则沿用；`part-layering/step02_options/options.json` 是该步产物，记录已采用的选项；`--no-standard` 显式关闭。`--standard`／`--no-standard` 要求本次路线包含 part-layering。选项步骤完成后再切换会被拒绝且不改动文件，请使用新的 `--name`。
 
 默认换装范围是主体衣装；手套、袜类、鞋靴和其自身装饰随人物保留。人物素体使用临时连体服，raster step03 去除；衣服 preparation 同时读取简化穿衣图和素体图，提取互补衣装。整套衣装的大小与位置由组装适配。
 
 素体 agent 的选择写入 `part-layering/step06_base/decision.json`（`dressed`）。没有换装时，总控把 clothing-part-layering 与 clothing-raster-layering 记为“完成（跳过）”且不调用 agent；raster step03 直接复制 step02 成果作为素体，character-assembly 直接复制人物 KRA，阴影照常运行。之后重做素体并换装，两条衣服管线会正常执行。旧任务没有 decision.json 时按简化图与素体像素是否相同判断；已画出衣服的旧任务继续使用这些衣服，已完成的输入保持不变。
 
-参考和产物按内容指纹复用，提示词更新不会自动重绘。旧任务只有已合格参考时可沿用；若旧记录含尺寸／摘要则须匹配。已完成步骤的产物被替换时拒绝直接续跑并保留文件，不用归档副本猜补。生成参考的透明处理、等比缩放和留档规则见 [shared](../shared/README.md#参考图后处理)。
+已完成的步骤直接沿用，提示词更新不会自动重绘。已标记完成但交付文件缺失时拒绝续跑并提示路径：恢复文件，或对该步骤重试。生成参考的透明处理、等比缩放和留档规则见 [shared](../shared/README.md#参考图后处理)。
 
 ## 生效配置核对
 
@@ -60,9 +56,7 @@ pnpm env:check
 
 请求目录继续保留 `prompt.md`、`request.json`、`events.jsonl`、`result.json` 和会话记录。旧后台可能仍写 `service.log`，按状态返回的真实日志路径查看；新请求统一进 `workflow.log`，不新增永久 native/transcript 日志。
 
-section 的事实文件决定恢复，总控只是摘要。`.running` 表示尚未交付，不证明进程存活；`.completed` 表示交付检查通过。普通中断用相同入口、name、dir 恢复原会话。需要主动重做某步时用 `--retry --section <管线> --step <步骤>`（可指定已完成步骤），不要手动删除 `.completed` 等标记。重试删除该步骤目录、其声明的产物、会话，以及输出写在该步骤的 agent 尝试记录（`agents/<时间>-<名称>-*/` 与 `sessions.json` 中的对应条目），新 agent 不会读到旧尝试；依赖它的后续步骤按指纹重跑。
-
-raster、组装与阴影的上游步骤重做后，依赖它的步骤按指纹重做并清除其会话，不另存旧目录。
+section 的事实文件决定恢复，总控只是摘要。`.running` 表示尚未交付，不证明进程存活；`.completed` 表示交付检查通过。普通中断用相同入口、name、dir 恢复原会话。需要主动重做某步时用 `--retry --section <管线> --step <步骤>`（可指定已完成步骤），不要手动删除 `.completed` 等标记。重试删除该步骤目录、它在目录外的产物、会话，以及输出写在该步骤的 agent 尝试记录（`agents/<时间>-<名称>-*/` 与 `sessions.json` 中的对应条目），新 agent 不会读到旧尝试；只重做该步骤，已完成的后续步骤与下游管线沿用，不会因上游重做自动重跑。
 
 part 逐层进行轮廓与复核、同层去重、补全和直属拆分；每层全部结束再进下一层。raster step01 的结构修正持久写回上游，已进入 raster 的总控续跑不会再用旧 part 事实覆盖它；明确只选 part 会按首次分组与各步骤事实重建树；续跑前应留档核对仅在根 groups.json 中调整的结构。现行工具职责与诊断边界见 [共享说明](../shared/README.md#多深度与上游修正)。
 
@@ -124,7 +118,7 @@ Codex 泛化断流先读日志“错误详情”与请求 `result.json`，区分
 
 ### 恢复方式
 
-`--continue`（默认）接上原会话，只发一句固定的继续提示。`--resume`（网页“恢复”）适用于所有管线：清除会话、保留产物，新会话收到通用提示词，自行读取已有输入、产物及反馈。`--retry`（网页“重试”）删除该步骤目录、声明的产物、会话和该步骤的 agent 尝试记录，依赖步骤按指纹重跑。三者是不同操作。
+`--continue`（默认）接上原会话，只发一句固定的继续提示。`--resume`（网页“恢复”）适用于所有管线：清除会话、保留产物，新会话收到通用提示词，自行读取已有输入、产物及反馈。`--retry`（网页“重试”）删除该步骤目录、它在目录外的产物、会话和该步骤的 agent 尝试记录，只重做该步骤。三者是不同操作。
 
 ## 交付与自动化测试
 

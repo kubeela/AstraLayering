@@ -40,7 +40,7 @@ async function fixture(t: TestContext) {
   await mkdir(source, { recursive: true });
   await writeFile(join(source, 'character-assembled.kra'), kra);
   await writeFile(join(source, 'character-assembled.png'), color);
-  await writeFile(join(source, '.completed'), JSON.stringify({ stamp: 'assembly-1', inputs: {} }));
+  await writeFile(join(source, '.completed'), '');
   for (const id of ['part-layering', 'clothing-part-layering']) {
     const path = join(task, id); await mkdir(join(path, 'references'), { recursive: true });
     await writeFile(join(path, 'groups.json'), JSON.stringify({ groups: [{ id: 'hair' }, { id: 'face' }] }));
@@ -141,32 +141,11 @@ test('中断保留同模式 thread；两种 step01 产物共存，重跑只检�
   assert.deepEqual(await readFile(join(f.task, 'shadow/step01_mask/character-shadowed.kra')), mask);
   const normal = await sharp(join(f.task, 'lighting/normal.png')).raw().toBuffer();
   assert.deepEqual([...normal.filter((_value, i) => i % 4 === 3)], [255, 128, 0, 255]);
-  await rm(join(f.task, 'shadow/step01_mask/character-shadowed.png'));
-  await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: async () => assert.fail('maps retained') });
-  // Deleting a recorded delivery retries that step.
-  await runWorkflow(f.options, { ...f.deps, agent: async request => { assert.equal(request.threadId, undefined); calls++; return f.deliver(request); } });
-  assert.equal(calls, 3);
-  await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: async () => assert.fail('maps retained') });
+  // A completed step is kept; a missing delivery is refused, not rerun.
   await rm(join(f.task, 'shadow/step01_mask/report.md'));
   await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async () => assert.fail('missing completed file') }), /交付缺失/);
   assert.equal(JSON.parse(await readFile(join(f.task, 'shadow/selection.json'), 'utf8')).mode, 'normal-depth');
   assert.deepEqual(await readFile(join(f.source, 'character-assembled.kra')), Buffer.from(f.kra));
-});
-test('character-assembly 重做后所选 step01 删除旧产物、新建 thread 重做；另一模式产物不动', async t => {
-  const f = await fixture(t);
-  await runWorkflow(f.options, { ...f.deps, agent: f.deliver });
-  await runWorkflow({ ...f.options, shadowMode: 'normal-depth' }, { ...f.deps, agent: f.deliver });
-  const maps = await readFile(join(f.task, 'shadow/step01_normal-depth/.completed'));
-  await writeFile(join(f.task, 'shadow/step01_mask/work.kra'), 'stale');
-  await writeFile(join(f.source, '.completed'), JSON.stringify({ stamp: 'assembly-2', inputs: {} }));
-  await runWorkflow(f.options, { ...f.deps, agent: async request => {
-    assert.equal(request.threadId, undefined);
-    await assert.rejects(readFile(join(request.outputDirectory!, 'work.kra')), { code: 'ENOENT' });
-    return f.deliver(request);
-  } });
-  assert.ok(!(await readdir(join(f.task, 'shadow'))).some(name => name.includes('.previous-')));
-  await assert.rejects(readFile(join(f.task, 'shadow/run.json')), { code: 'ENOENT' });
-  assert.deepEqual(await readFile(join(f.task, 'shadow/step01_normal-depth/.completed')), maps);
 });
 test('法线深度只生成一步；删除的发布贴图从已完成步骤恢复', async t => {
   const f = await fixture(t);

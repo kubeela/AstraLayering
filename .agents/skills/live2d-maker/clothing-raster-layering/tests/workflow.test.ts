@@ -104,42 +104,18 @@ test('interrupted drawing resumes saved thread and directly reads upstream', asy
   assert.equal((await readStepSession(f.output, 'step02'))?.threadId, 'drawing-1');
 });
 
-test('deleting step02 completion resets its directory and context, preserving step01 and upstream artifacts', async t => {
-  const f = await fixture(t);
-  await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
-  const first = await readFile(join(f.output, 'agents/steps/step01/events.jsonl'));
-  await writeFile(join(f.output, 'step02/old.png'), 'old');
-  await rm(join(f.output, 'step02/.completed'));
-  let calls = 0;
-  await runWorkflow(f.options, { ...f.deps, agent: async request => {
-    calls++;
-    if (calls === 1) {
-      assert.ok(request.prompt.startsWith('在 clothing-raster-layering/step01/'));
-      assert.equal(request.threadId, undefined);
-      await assert.rejects(readFile(join(f.output, 'step02/old.png')), { code: 'ENOENT' });
-    }
-    return deliver(request, 'drawing-new');
-  } });
-  assert.equal(calls, 1);
-  assert.equal((await readStepSession(f.output, 'step02'))?.threadId, 'drawing-new');
-  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-1');
-  assert.deepEqual(await readFile(join(f.output, 'agents/steps/step01/events.jsonl')), first);
-  await readFile(join(f.source, 'parts/front.svg'));
-});
 
-test('clothing-part-layering occlusion 重做后 step01 及后续重跑并换新 thread', async t => {
+test('clothing-part-layering occlusion 未完成时拒绝且不动本管线；完成后全部沿用', async t => {
   const f = await fixture(t), occlusion = join(f.source, 'step14_occlusion');
-  const mark = (stamp: string) => writeFile(join(occlusion, '.completed'), JSON.stringify({ stamp, inputs: {} }));
   await mkdir(occlusion);
-  await mark('clothing-a');
+  await writeFile(join(occlusion, '.completed'), '');
   await runWorkflow(f.options, { ...f.deps, agent: request => deliver(request) });
-  assert.deepEqual(JSON.parse(await readFile(join(f.output, 'step01/.completed'), 'utf8')).inputs, { 'clothing-part-layering/step14_occlusion': 'clothing-a' });
-  await mark('clothing-b');
-  const drawn: (string | undefined)[] = [];
-  await runWorkflow(f.options, { ...f.deps, agent: async request => {
-    if (!request.prompt.startsWith('你负责对第一步交付')) drawn.push(request.threadId);
-    return deliver(request, request.threadId ?? 'drawing-2');
-  } });
-  assert.deepEqual(drawn, [undefined, undefined]);
-  for (const step of ['step01', 'step02']) assert.equal((await readStepSession(f.output, step))?.threadId, 'drawing-2');
+  await rm(join(occlusion, '.completed'));
+  await writeFile(join(occlusion, '.running'), '');
+  const before = await readFile(join(f.output, 'step02/.completed'));
+  await assert.rejects(runWorkflow(f.options, { ...f.deps, agent: async () => assert.fail('upstream running') }), /上游步骤 clothing-part-layering\/step14_occlusion 尚未完成/);
+  assert.deepEqual(await readFile(join(f.output, 'step02/.completed')), before);
+  await rm(join(occlusion, '.running'));
+  await writeFile(join(occlusion, '.completed'), '');
+  await runWorkflow(f.options, { ...f.deps, agent: async () => assert.fail('all kept') });
 });

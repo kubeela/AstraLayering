@@ -89,7 +89,7 @@ test('补全原 SVG 正文原样保留，禁止删改属性、重排或注入任
   assert.equal(assertCompletionPreserves(source, complete.replace('<svg ', `<svg data-source-sha256="${svgHash(source)}" `)), 1);
 });
 
-test('补全默认适配器用只读 agent 和新增工具，提交后正式发布并由文件恢复', async t => {
+test('补全默认适配器用只读 agent 和新增工具，提交后正式发布；完成后沿用', async t => {
   const f = await fixture(t), events: string[] = [];
   let calls = 0;
   const adapter = createLayeringSteps(sessioned(async task => {
@@ -116,9 +116,6 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
   assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.completionCheck.status, 'completed');
   await runLayering({ ...f, groups: null, steps });
   assert.equal(calls, 1);
-  // 即使版本标记仍匹配，篡改过原形的正式文件也不能构成完成事实。
-  await writeFile(artifactPath(f.directory, 'head', 'completion'), after.replace('M10 10', 'M11 10'));
-  assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.completion.status, 'pending');
 });
 
 test('任务根经软链接打开时，预览记录的真实路径仍认作当前补全草稿', async t => {
@@ -235,7 +232,7 @@ test('补全子组必须在父完成范围内，即使原形保留也不能越�
   }), /超出父轮廓/);
 });
 
-test('补全 threadId 记在 agents/steps：中断后续跑恢复同一会话，step02 重做时一并重置', async t => {
+test('补全 threadId 记在 agents/steps：中断后续跑恢复同一会话', async t => {
   const f = await fixture(t), resumed: (string | undefined)[] = [];
   const session = join(f.directory, 'agents/steps', groupStepId('head', 'completion'), 'session.json');
   let fail = true;
@@ -258,11 +255,6 @@ test('补全 threadId 记在 agents/steps：中断后续跑恢复同一会话，
   assert.deepEqual(JSON.parse(await readFile(session, 'utf8')), { threadId: 'completion-thread-1', harness: 'agv' });
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(resumed, [undefined, 'completion-thread-1']);
-  // 删掉补全产物后 step02 重做：同时清除 agents 中对应会话，新一轮从新会话开始。
-  await rm(artifactPath(f.directory, 'head', 'completion'));
-  await runLayering({ ...f, groups: null, steps });
-  assert.deepEqual(resumed, [undefined, 'completion-thread-1', undefined]);
-  assert.deepEqual(JSON.parse(await readFile(session, 'utf8')), { threadId: 'completion-thread-3', harness: 'agv' });
 });
 
 test('续跑补全沿用保留原形的草稿，提示词只给固定的先读草稿规则；原形已变的草稿或非续跑从原形开始', async t => {

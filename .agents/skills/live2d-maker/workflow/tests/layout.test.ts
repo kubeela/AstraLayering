@@ -40,7 +40,7 @@ async function previousTask(t: { after(fn: () => Promise<void>): void }) {
   return { runs, task };
 }
 
-test('a previous-layout task converts as a whole after a full backup, keeping its step records valid', async t => {
+test('a previous-layout task converts as a whole after a full backup, keeping its step markers', async t => {
   const { runs, task } = await previousTask(t);
   assert.equal(await layoutState(task), 'previous');
   await assert.rejects(readRun(task), /旧版目录布局/);
@@ -56,21 +56,15 @@ test('a previous-layout task converts as a whole after a full backup, keeping it
   assert.ok((await json(result.backup, 'part-layering/preparation/step05/.completed')).inputs);
 
   const part = join(task, 'part-layering');
-  const standard = await json(part, 'step04_standard/.completed');
-  assert.deepEqual(standard.outputs, { '../references/standard.png': sha('standard') });
-  assert.equal(standard.stamp, sha({ '../references/standard.png': sha('standard') }));
+  // Step records convert to plain empty markers.
+  for (const marker of ['step04_standard', 'step10_reduce/depth01', 'step11_completion/a']) assert.equal(await readFile(join(part, marker, '.completed'), 'utf8'), '');
   await assert.rejects(readdir(join(part, 'preparation')), { code: 'ENOENT' });
-  const reduce = await json(part, 'step10_reduce/depth01/.completed');
-  assert.deepEqual(reduce.outputs, { 'part-layering/step10_reduce/depth01/a.svg': sha('<svg/>') });
-  const completion = await json(part, 'step11_completion/a/.completed');
-  assert.deepEqual(completion.inputs, { 'step10_reduce/depth01#a.svg': sha('<svg/>') });
-  assert.equal(completion.stamp, sha({ '../../parts/a.svg': sha('<svg id="a"/>') }));
   assert.equal(await readFile(join(part, 'step11_completion/a/report.md'), 'utf8'), '[layer](../../step10_reduce/depth01/a.svg)');
   // agents/ records are not read or renamed; legacy thread fields are dropped.
   assert.deepEqual(await json(part, 'agents/steps/groups/a/step01/session.json'), { threadId: 'outline-thread' });
 
   const shadow = join(task, 'shadow');
-  assert.deepEqual((await json(shadow, 'step01_mask/.completed')).inputs, { 'part-layering/step14_occlusion': 'x' });
+  assert.equal(await readFile(join(shadow, 'step01_mask/.completed'), 'utf8'), '');
   await assert.rejects(readFile(join(shadow, 'run.json')), { code: 'ENOENT' });
   assert.deepEqual(await json(shadow, 'agents/sessions.json'), { mask: {} });
   assert.deepEqual((await readdir(shadow)).sort(), ['agents', 'step01_mask']);

@@ -3,17 +3,13 @@ import { join } from 'node:path';
 import sharp from 'sharp';
 import type { ShadowDraftPreview } from '../shared/shadow.ts';
 import { taskDirectory } from '../shared/paths.ts';
-import { assemblyStep, fileHash, resolveShadowInput } from './input.ts';
-import { inspectChain } from '../shared/step-chain.ts';
+import { fileHash, resolveShadowInput } from './input.ts';
 import { shadowStep } from '../shared/step-paths.js';
 
 // Read-only discovery for the unified studio. Never complete or publish a workflow.
 export async function inspectDraftPreview(name: string, root: string): Promise<ShadowDraftPreview | undefined> {
   const task = taskDirectory(name, root), output = join(task, 'shadow', shadowStep('normal-depth'));
-  const input = await resolveShadowInput(name, root), upstream = assemblyStep(input);
-  // Maps made from an assembly that has since been redone are not shown.
-  const maps = { id: shadowStep('normal-depth'), root: upstream.root, directory: output, dependsOn: [upstream.id] };
-  if ((await inspectChain([upstream, maps])).reset.includes(maps.id)) return;
+  const input = await resolveShadowInput(name, root);
   const source = await sharp(input.characterColor).metadata();
   const alpha = await sharp(input.characterColor).ensureAlpha().raw().toBuffer();
   let maxError = 0, visible = 0;

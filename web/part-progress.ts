@@ -12,12 +12,12 @@ type Phase = typeof phases[number];
 
 // Step markers are dotfiles, which the file inventory skips; read them directly.
 export async function stepStatus(directory: string, section: string, id: string): Promise<StepStatus> {
-  try { return (await readStep(await safePath(directory, `${section}/${id}`), directory)).status; }
+  try { return (await readStep(await safePath(directory, `${section}/${id}`))).status; }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return 'absent'; throw error; }
 }
 
 // These are file observations for display, not a second scheduler or a resume check:
-// a completed marker is shown as done without checking it against its inputs.
+// a completed marker is shown as done.
 export async function partProgress(directory: string, section: string, groups: any[], files: Set<string>,
   json: (path: string) => Promise<any>, errors: string[], activeSince?: string, failedSince?: string) {
   const bytes = new Map<string, Promise<Buffer | undefined>>();

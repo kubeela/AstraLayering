@@ -1,24 +1,23 @@
 import { formatAgentError } from '../codex/diagnostics.ts';
 import type { PartProfile } from './profile.ts';
-import { lstat, mkdir, readdir, readFile, rm, stat } from 'node:fs/promises';
+import { lstat, mkdir, readFile, rm, stat } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
 import { checkSubject, findGroup, groupCompleted, GroupStore, nodeSeed, normalizeGroups, setGroupProgress, walkGroups, writeAtomic } from './groups.ts';
 import { artifactPath, draftPath, stepDraftPath, mergeSourceHash, publishSvg, readReviewReport, readSvg, reportPath, reviewedArtifact, svgHash } from './artifact-facts.ts';
 import { mergePartSvgs } from './merge-svg.ts';
 import { publishDepthPreview } from './depth-preview.ts';
-import { groupStages, type GroupContext, type GroupInput, type GroupNode, type GroupSeed, type GroupStage, type GroupStageOutputs, type LayeringResult, type LayeringSteps, type StepResult, type SvgArtifact, type SvgMerger } from './layering-types.ts';
+import { type GroupContext, type GroupInput, type GroupNode, type GroupSeed, type GroupStage, type GroupStageOutputs, type LayeringResult, type LayeringSteps, type StepResult, type SvgArtifact, type SvgMerger } from './layering-types.ts';
 import type { PreparationReferences } from './preparation-types.ts';
 import { runWorkflow, validateWorkflowOptions } from './workflow.ts';
 import { validateGroupSvg } from './svg-tools.ts';
 import { assertCompletionPreserves } from './completion-svg.ts';
-import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclusionPlan } from './occlusion-plan.ts';
+import { occlusionPath, occlusionSourceHash, validateOcclusionPlan } from './occlusion-plan.ts';
 import { dependenciesMatch } from './completion-inputs.ts';
-import { beginStep, checkStep, completeStep, readStep, resetStep, type ChainStep, type StepCheck } from '../step-chain.ts';
+import { beginStep, checkStep, completeStep, readStep, type ChainStep, type StepAction, type StepStatus } from '../step-chain.ts';
 import { taskRootOf } from '../task-paths.ts';
-import { groupStep, groupStepId, groupSteps, layerStep, readChildren, readGroupTree, readInitialGroups } from './part-steps.ts';
+import { groupStep, layerStep, readInitialGroups } from './part-steps.ts';
 import { partSteps } from '../step-paths.js';
-import { layeringEntries } from './preparation-cache.ts';
 
 const labels = { outline: '组轮廓与自检', review: '外轮廓与去噪 review', reduction: '同层轮廓去重',
   completion: '直接遮挡补形', completionCheck: '补形自检', children: '子组分析' };
@@ -47,11 +46,10 @@ function proposal(output: { groups: GroupSeed[] }, seen: Set<string>, allowParts
   return normalizeGroups(output.groups, new Set(seen));
 }
 
-// Every unit of work is a step directory (part-steps.ts). Steps are checked
-// lazily in topological order as the tree grows: a step whose inputs (the
-// stamps of the outputs it reads) are unchanged and whose outputs are intact is
-// kept; one interrupted against the same inputs continues with its drafts and
-// session; anything else is reset, which drops its session, and rerun.
+// Every unit of work is a step directory (part-steps.ts), checked in order as
+// the tree grows by its own marker (step-chain.ts): a completed step is kept, a
+// running one continues with its drafts and session, and any other starts fresh
+// with a new session.
 export async function runLayering(input: {
   profile?: PartProfile; directory: string; references: PreparationReferences; groups: GroupInput | GroupInput[] | null;
   steps: LayeringSteps; mergeSvg?: SvgMerger; maxDepth?: number;
@@ -69,7 +67,6 @@ export async function runLayering(input: {
   let completedOcclusion: string | undefined;
   // directory is the part section directory, which sits in the task root.
   const root = taskRootOf(directory);
-  const lookup = (id: string): ChainStep => ({ id, root, directory: join(directory, id), dependsOn: [] });
 
   function context(id: string): GroupContext {
     const entry = walkGroups(store.snapshot().groups).find(entry => entry.group.id === id);
@@ -95,22 +92,13 @@ export async function runLayering(input: {
     try { return await action(); }
     catch (error) { throw error instanceof GroupExecutionError ? error : new GroupExecutionError(id, stage, error); }
   }
-  async function resetProgress(id: string, from: GroupStage) {
-    const stages = groupStages.slice(groupStages.indexOf(from));
-    await store.update(document => {
-      Object.assign(findGroup(document, id).steps, Object.fromEntries(stages.map(stage => [stage, { status: 'pending' }])));
-    });
-  }
   async function completed<S extends GroupStage>(id: string, stage: S, output: GroupStageOutputs[S]) {
     await store.update(document => setGroupProgress(findGroup(document, id), stage, { status: 'completed', output }));
   }
-  // Starts a step that is not kept; a rerun first removes its directory and outputs.
-  async function begin(step: ChainStep, check: StepCheck) {
-    if (check.action === 'rerun') {
-      await rm(join(directory, 'agents', 'steps', step.id), { recursive: true, force: true });
-      await resetStep(step);
-    }
-    await beginStep(step.directory, check.inputs);
+  // Starts a step that is not kept; a fresh start also drops its old session.
+  async function begin(step: ChainStep, check: { action: StepAction; status: StepStatus }) {
+    if (check.action === 'run') await rm(join(directory, 'agents', 'steps', step.id), { recursive: true, force: true });
+    await beginStep(step.directory, check.status);
   }
   async function execute<S extends GroupStage>(id: string, stage: S, action: () => Promise<StepResult<GroupStageOutputs[S]>>): Promise<boolean> {
     await store.update(document => setGroupProgress(findGroup(document, id), stage, { status: 'running' }));
@@ -128,7 +116,7 @@ export async function runLayering(input: {
     }
   }
   // A continued step (继续 / 恢复 keep the products) hands its draft back to the
-  // agent; only a fresh or rerun step starts from an empty draft.
+  // agent; only a fresh step starts from an empty draft.
   async function drawing(id: string, stage: 'outline' | 'completion', continued: boolean,
     action: (draft: string, resumeDraft: boolean) => Promise<StepResult<SvgArtifact>>) {
     return execute(id, stage, async () => {
@@ -165,16 +153,10 @@ export async function runLayering(input: {
   // step01: outline + review.
   async function prepare(id: string, run: boolean) {
     const step = groupStep(directory, id, 'outline');
-    let check = await guard(id, 'outline', () => checkStep(step, lookup));
+    const check = await guard(id, 'outline', () => checkStep(step.directory));
     const outline = artifactPath(directory, id, 'outline');
     const hidden = context(id).group.hiddenInReference === true;
-    const previousOutline = await readSvg(outline);
-    // A visibility change switches between observed outlines and an empty source.
-    // Old untagged steps keep their existing markers and review history.
-    if (previousOutline && hidden !== previousOutline.toString().includes('data-hidden-in-reference="true"')) check = { ...check, action: 'rerun' };
-    if (check.action === 'keep') return;
-    await resetProgress(id, 'outline');
-    if (!run) return;
+    if (check.action === 'keep' || !run) return;
     await begin(step, check);
     if (hidden) {
       const meta = await sharp(resolve(directory, input.references.baseSubject)).metadata();
@@ -184,7 +166,7 @@ export async function runLayering(input: {
       const output = { path: outline, note: '原图不可见：跳过描边和轮廓 review，以空底稿直接补全' };
       await completed(id, 'outline', output);
       await completed(id, 'review', output);
-      await completeStep(step, lookup);
+      await completeStep(step.directory);
       report(`[${id}] 原图不可见：跳过描边和轮廓 review，直接补全`);
       return;
     }
@@ -201,25 +183,20 @@ export async function runLayering(input: {
       if (!verified) throw new Error('review 未保存与当前 SVG 对应的完成事实');
       return { status: 'completed', output: verified };
     })) return;
-    await guard(id, 'review', () => completeStep(step, lookup));
+    await guard(id, 'review', () => completeStep(step.directory));
   }
-  // step10_reduce/depthNN: one reduction over every outline at that depth. Each run
-  // starts again from the outlines; only the outputs whose bytes change rerun the
-  // completions that read them.
+  // step10_reduce/depthNN: one reduction over every outline at that depth, which
+  // starts again from the outlines when it was interrupted.
   async function reduce(depth: number, entries: ReturnType<typeof walkGroups>): Promise<boolean> {
     const ids = entries.map(entry => entry.group.id);
-    const step = layerStep(directory, depth, ids);
-    const check = await checkStep(step, lookup);
+    const step = layerStep(directory, depth);
+    const check = await checkStep(step.directory);
     const finished = () => store.update(document => {
       for (const id of ids) setGroupProgress(findGroup(document, id), 'reduction', { status: 'completed', output: { path: artifactPath(directory, id, 'reduction') } });
     });
     if (check.action === 'keep') { await finished(); return true; }
     report(`第 ${depth} 层轮廓去重：开始`);
-    await beginStep(step.directory, check.inputs);
-    const wanted = new Set(ids.map(id => artifactPath(directory, id, 'reduction')));
-    for (const name of await readdir(step.directory, { recursive: true })) {
-      if (name.endsWith('.svg') && !wanted.has(join(step.directory, name))) await rm(join(step.directory, name), { force: true });
-    }
+    await beginStep(step.directory, check.status);
     await store.update(document => { for (const id of ids) setGroupProgress(findGroup(document, id), 'reduction', { status: 'running' }); });
     const inputs = await Promise.all(entries.map(async entry => {
       const id = entry.group.id;
@@ -254,12 +231,8 @@ export async function runLayering(input: {
       }
       else await writeAtomic(entry.draft, entry.bytes);
     }
-    // Unchanged outputs stay untouched, so nothing downstream sees a rewrite.
-    for (const entry of inputs) {
-      if ((await readSvg(entry.output))?.equals(await readFile(entry.draft))) await rm(entry.draft, { force: true });
-      else await publishSvg(entry.draft, entry.output);
-    }
-    await completeStep(step, lookup);
+    for (const entry of inputs) await publishSvg(entry.draft, entry.output);
+    await completeStep(step.directory);
     await finished();
     report(`第 ${depth} 层轮廓去重：完成`);
     return true;
@@ -267,9 +240,8 @@ export async function runLayering(input: {
   // step02: completion + check; step03: children split.
   async function finish(id: string) {
     const step = groupStep(directory, id, 'completion');
-    const check = await guard(id, 'completion', () => checkStep(step, lookup));
+    const check = await guard(id, 'completion', () => checkStep(step.directory));
     if (check.action !== 'keep') {
-      await resetProgress(id, 'completion');
       await begin(step, check);
       const reduced = artifact(id, 'reduction');
       const mask = await sharp(await readFile(reduced.path)).ensureAlpha().extractChannel('alpha').raw().toBuffer();
@@ -292,22 +264,14 @@ export async function runLayering(input: {
         }
         return result;
       })) return;
-      await guard(id, 'completionCheck', () => completeStep(step, lookup));
+      await guard(id, 'completionCheck', () => completeStep(step.directory));
     }
     const split = groupStep(directory, id, 'children');
-    const splitCheck = await guard(id, 'children', () => checkStep(split, lookup));
+    const splitCheck = await guard(id, 'children', () => checkStep(split.directory));
     if (splitCheck.action === 'keep') {
-      // An interrupted rerun of step02 that reproduced the same part keeps the split;
-      // the tree then lacks its children until they are read back.
-      const { groups } = await guard(id, 'children', () => readChildren(directory, id));
-      if (JSON.stringify(context(id).group.groups.map(child => child.id)) !== JSON.stringify(groups.map(child => child.id))) {
-        const children = normalizeGroups(await Promise.all(groups.map(seed => readGroupTree(directory, seed, new Map()))), seenOutside(id));
-        await store.update(document => { findGroup(document, id).groups = children; });
-      }
-      await completed(id, 'children', { ids: groups.map(child => child.id) });
+      await completed(id, 'children', { ids: context(id).group.groups.map(child => child.id) });
       return;
     }
-    await resetProgress(id, 'children');
     await begin(split, splitCheck);
     await execute(id, 'children', async () => {
       const completed = artifact(id, 'completion');
@@ -324,21 +288,10 @@ export async function runLayering(input: {
       }
       await writeAtomic(join(split.directory, 'children.json'), JSON.stringify({ groupId: id, groups: children.map(nodeSeed),
         ...(result.output.note ? { note: result.output.note } : {}) }, null, 2) + '\n');
-      // Children kept by id keep their subtrees (their own steps decide what reruns);
-      // removed children lose their step directories and parts.
-      const previous = context(id).group.groups;
-      for (const old of previous) if (!children.some(child => child.id === old.id)) {
-        for (const step of groupSteps) await rm(join(directory, groupStepId(old.id, step)), { recursive: true, force: true });
-        for (const { group } of walkGroups([old])) await rm(artifactPath(directory, group.id, 'completion'), { force: true });
-      }
       await store.update(draft => {
-        findGroup(draft, id).groups = children.map(child => {
-          const kept = previous.find(old => old.id === child.id);
-          const seed = normalizeGroups([nodeSeed(child)])[0];
-          return kept ? { ...seed, groups: kept.groups, steps: kept.steps } : seed;
-        });
+        findGroup(draft, id).groups = children.map(child => normalizeGroups([nodeSeed(child)])[0]);
       });
-      await completeStep(split, lookup);
+      await completeStep(split.directory);
       return { status: 'completed', output: { ids: children.map(child => child.id) } };
     });
   }
@@ -375,17 +328,10 @@ export async function runLayering(input: {
         if (!(await stat(resolve(directory, path))).isFile()) throw new Error(`显式 groups 缺少前置参考：${path}`);
       }
     } else {
-      const step: ChainStep = { id: partSteps.initial, root, directory: join(directory, partSteps.initial), dependsOn: [], outputs: ['groups.json'] };
-      const check = await checkStep(step, lookup);
+      const step: ChainStep = { id: partSteps.initial, directory: join(directory, partSteps.initial) };
+      const check = await checkStep(step.directory);
       if (check.action === 'keep') report('首次分组：沿用已有结果');
       else {
-        if (check.action === 'rerun') {
-          // Everything else hangs off the first grouping.
-          for (const entry of layeringEntries.filter(entry => entry !== partSteps.initial)) {
-            await rm(join(directory, entry), { recursive: true, force: true });
-          }
-          await store.update(document => { document.groups = []; delete document.subject; document.merge = { status: 'pending' }; });
-        }
         await begin(step, check);
         // A turn that saved its grouping before failing continues from that file.
         const saved = check.action === 'continue' && await exists(join(step.directory, 'groups.json'));
@@ -401,7 +347,7 @@ export async function runLayering(input: {
             document.groups = normalizeGroups(groups.map(nodeSeed));
             if (result.output.subject !== undefined) document.subject = result.output.subject;
           });
-          await completeStep(step, lookup);
+          await completeStep(step.directory);
         } else report(result.message);
       }
     }
@@ -418,15 +364,6 @@ export async function runLayering(input: {
       }
       try { if (!await reduce(depth, entries)) break; }
       catch (error) { throw new GroupExecutionError(`第 ${depth} 层`, 'reduction', error); }
-      // Started completions whose reduced inputs changed rerun even when not selected.
-      if (selected) for (const entry of entries) {
-        const id = entry.group.id;
-        if (scope()!.has(id)) continue;
-        const step = groupStep(directory, id, 'completion');
-        if ((await readStep(step.directory, root)).status === 'absent') continue;
-        // Only completions whose inputs changed; an unfinished one is not a change.
-        if ((await checkStep(step, lookup).catch(() => undefined))?.action === 'rerun') selected.add(id);
-      }
       const finishIds = scope();
       const finishTargets = entries.filter(entry => !finishIds || finishIds.has(entry.group.id));
       await batch(finishTargets, finish);
@@ -439,11 +376,9 @@ export async function runLayering(input: {
     }
     const document = store.snapshot(), all = walkGroups(document.groups);
     if (all.length && all.every(entry => groupCompleted(entry.group))) {
-      const step: ChainStep = { id: partSteps.merge, root, directory: join(directory, partSteps.merge), outputs: ['../preview.svg'],
-        dependsOn: [...all.map(entry => groupStepId(entry.group.id, 'children')),
-          ...all.filter(entry => !entry.group.groups.length).map(entry => groupStepId(entry.group.id, 'completion'))] };
+      const step: ChainStep = { id: partSteps.merge, directory: join(directory, partSteps.merge) };
       const output = join(directory, 'preview.svg');
-      const check = await checkStep(step, lookup);
+      const check = await checkStep(step.directory);
       if (check.action === 'keep') report('最终预览合并：沿用');
       else {
         await begin(step, check);
@@ -456,26 +391,26 @@ export async function runLayering(input: {
           const candidate = resolve(directory, result.output.path);
           if (candidate !== draft) await writeAtomic(draft, await readFile(candidate));
           await publishSvg(draft, output, await mergeSourceHash(directory, document));
-          await completeStep(step, lookup);
+          await completeStep(step.directory);
           report(`最终预览合并：完成 ${output}`);
         } else report(result.message);
       }
-      const merged = (await readStep(step.directory, root)).status === 'completed';
+      const merged = (await readStep(step.directory)).status === 'completed';
       await store.update(draft => { draft.merge = merged ? { status: 'completed', output: { path: output } } : { status: 'pending' }; });
     } else if (document.merge.status !== 'pending') await store.update(draft => { draft.merge = { status: 'pending' }; });
-    // 独立的最后一步。raster 会改写层级表中的深度，因此不登记产物哈希，
-    // 只要 merge 未变且层级表完整、输入指纹一致就沿用。
+    // 独立的最后一步。raster 会改写层级表中的深度，已完成时直接沿用现有层级表。
     const merged = store.snapshot();
     if (merged.merge.status === 'completed') {
       const context = { ...initial, groups: merged.groups, preview: merged.merge.output! };
-      const step: ChainStep = { id: partSteps.occlusion, root, directory: join(directory, partSteps.occlusion), dependsOn: [partSteps.merge] };
-      const check = await checkStep(step, lookup);
-      if (check.action === 'keep' && await restoreOcclusionPlan(context)) {
+      const step: ChainStep = { id: partSteps.occlusion, directory: join(directory, partSteps.occlusion) };
+      const check = await checkStep(step.directory);
+      if (check.action === 'keep') {
         completedOcclusion = occlusionPath(directory);
-        report('遮挡层级规划：沿用完整且输入一致的独立层级表');
+        if (!await stat(completedOcclusion).then(() => true, () => false)) throw new Error(`${partSteps.occlusion} 已标记完成但交付缺失；请恢复 occlusion.json，或删除 ${partSteps.occlusion}/.completed 触发重跑。`);
+        report('遮挡层级规划：沿用已完成的独立层级表');
       } else {
-        if (check.action !== 'continue') await rm(occlusionPath(directory), { force: true });
-        await begin(step, check.action === 'keep' ? { ...check, action: 'rerun' } : check);
+        if (check.action === 'run') await rm(occlusionPath(directory), { force: true });
+        await begin(step, check);
         report('遮挡层级规划：开始');
         const sourceHash = await occlusionSourceHash(context);
         const result = input.steps.planOcclusion ? await input.steps.planOcclusion(context)
@@ -485,7 +420,7 @@ export async function runLayering(input: {
           const plan = validateOcclusionPlan(result.output, context, sourceHash);
           completedOcclusion = occlusionPath(directory);
           await writeAtomic(completedOcclusion, JSON.stringify(plan, null, 2) + '\n');
-          await completeStep(step, lookup);
+          await completeStep(step.directory);
           report(`遮挡层级规划：完成 ${completedOcclusion}`);
         } else report(`遮挡层级规划：${result.message}`);
       }

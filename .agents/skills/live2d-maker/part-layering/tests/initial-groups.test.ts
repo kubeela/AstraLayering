@@ -5,7 +5,6 @@ import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { taskRootOf } from '../../shared/task-paths.ts';
 import { test, type TestContext } from 'node:test';
 import type { AgentTask } from '../../shared/codex/agents.ts';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
@@ -194,7 +193,7 @@ test('工具已保存分组后回合失败，续跑仍跳过已完成识别', as
     throw new Error('回合中断');
   } });
   await assert.rejects(runLayering({ ...context, groups: null, steps }), /回合中断/);
-  assert.equal((await readStep(join(context.directory, partSteps.initial), taskRootOf(context.directory))).status, 'running');
+  assert.equal((await readStep(join(context.directory, partSteps.initial))).status, 'running');
   assert.equal((await readInitialGroups(context.directory)).groups.length, 2);
   await runLayering({ ...context, groups: null, steps: initialSteps({ async run() { assert.fail('不应重做首次识别'); } }) });
 });
