@@ -368,7 +368,7 @@ export class LayerPanel {
     list.scrollTop = scroll;
     $("#layer-note").textContent =
       this.message ||
-      (this.owner ? "合成图，无图层" : "打开 KRA / PSD 以编辑图层");
+      (this.owner ? "合成图，无图层" : "打开项目以编辑图层");
     $("#layer-retry").hidden =
       !this.owner ||
       !/\.(kra|psd)$/i.test(this.owner.name) ||

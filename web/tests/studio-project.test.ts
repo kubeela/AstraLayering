@@ -30,14 +30,14 @@ async function fixture(t: any) {
     fetch(
       base +
         "/api/studio/project?" +
-        new URLSearchParams({ name, dir, ...override }),
+        new URLSearchParams({ folder: project, ...override }),
     );
   const put = async (path: string, value: string | Uint8Array = "fixture") => {
     const file = join(project, path);
     await mkdir(join(file, ".."), { recursive: true });
     await writeFile(file, value);
   };
-  return { root, dir, name, project, get, put };
+  return { root, dir, name, project, base, get, put };
 }
 test("Project preview reads only the fixed assembly and lighting outputs; absent maps are pending", async (t) => {
   const f = await fixture(t);
@@ -82,10 +82,14 @@ test("Project preview reads only the fixed assembly and lighting outputs; absent
     ),
   );
 });
-test("Project preview rejects stale directories, escaping names and symlinked outputs", async (t) => {
+test("Project preview rejects relative and symlinked folders, non-tasks outside the run directory and symlinked outputs", async (t) => {
   const f = await fixture(t);
-  assert.equal((await f.get({ dir: f.root })).status, 409);
-  assert.equal((await f.get({ name: "../outside" })).status, 400);
+  assert.equal((await f.get({ folder: "runs/角色" })).status, 400);
+  await symlink(f.project, join(f.root, "alias"));
+  assert.equal((await f.get({ folder: join(f.root, "alias") })).status, 400);
+  const plain = join(f.root, "elsewhere", "plain");
+  await mkdir(plain, { recursive: true });
+  assert.match(((await (await f.get({ folder: plain })).json()) as any).error, /run\.json/);
   await mkdir(join(f.project, "lighting"));
   const outside = join(f.root, "private.png");
   await writeFile(outside, "private");
@@ -187,4 +191,22 @@ test('Unified studio discovers pending maps and prefers formal delivery', async 
   await f.put('shadow/step01_normal-depth/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
   data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.previewDraft, false); assert.equal(data.files.normal.path, studioArtifacts.normal);
+});
+test('An imported task folder outside the run directory opens; only studio outputs are readable', async t => {
+  const f = await fixture(t), folder = join(f.root, 'elsewhere', 'imported');
+  await mkdir(join(folder, 'character-assembly/step01'), { recursive: true });
+  await writeFile(join(folder, 'run.json'), JSON.stringify({ version: 1, sections: {}, jobs: 1, status: 'completed', from: 'part-layering', to: 'shadow' }));
+  await writeFile(join(folder, studioArtifacts.document), 'document');
+  await writeFile(join(folder, studioArtifacts.color), 'color');
+  await writeFile(join(folder, 'run.md'), 'private');
+  const response = await f.get({ folder });
+  assert.equal(response.status, 200);
+  const data = await response.json() as any;
+  assert.equal(data.folder, folder); assert.equal(data.name, 'imported'); assert.equal(data.inDirectory, false);
+  assert.equal(data.files.document.available, true);
+  const read = (path: string) => fetch(f.base + '/studio-artifact?' + new URLSearchParams({ folder, path }));
+  assert.equal(await (await read(studioArtifacts.document)).text(), 'document');
+  for (const path of ['run.json', 'run.md', '../imported/run.json']) assert.equal((await read(path)).status, 400);
+  const listed = await (await f.get()).json() as any;
+  assert.equal(listed.inDirectory, true);
 });
