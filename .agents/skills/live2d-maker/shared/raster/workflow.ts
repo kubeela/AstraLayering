@@ -5,7 +5,7 @@ import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/envi
 import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
 import { retryDelays } from '../codex/agent-runtime.ts';
 import { sectionDirectory, resolveInput, resolveRunsDirectory, type SectionId } from '../paths.ts';
-import { appendFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { runAgent, type Agent, type AgentRequest } from './agent.ts';
@@ -15,7 +15,7 @@ import { readStep, type ChainStep, type StepStatus } from '../step-chain.ts';
 import { runSection, type SectionPlan } from '../step-section.ts';
 import { clearStepSession, readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
 import { canonicalPath, fileInfo, rasterSteps, within } from './run-store.ts';
-import { fromTaskPath, taskRootOf } from '../task-paths.ts';
+import { taskRootOf } from '../task-paths.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
 import { modelHarnesses } from '../agents/models.ts';
 import { requireCurrentLayout } from '../../workflow/layout.ts';
@@ -202,21 +202,12 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
       if (!fresh && session.threadId && (session.harness || 'codex') !== harness) {
         await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: session.threadId,
           previousHarness: session.harness || 'codex', harness, reason: '模型配置切换 CLI', at: new Date().toISOString() }) + '\n');
-        await saveSession({ handoff: session.handoff }, '模型配置切换 CLI');
+        await saveSession({}, '模型配置切换 CLI');
       }
-      const handoff = !fresh && !session.threadId ? session.handoff : undefined;
       // A repair in a new thread also needs the original drawing task and inputs.
       const repairPrompt = prompt;
       const resumeRepair = async (repair: string) => `${await section.buildPrompt(step, reference, output, previous)}\n\n${runtimePrompt('raster-repair-resume')}${repair}`;
       if (!fresh && phase !== 'draw' && !session.threadId) prompt = await resumeRepair(prompt);
-      if (handoff) {
-        const notes = await readFile(fromTaskPath(taskRoot, handoff.notes), 'utf8');
-        if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
-        prompt = runtimePrompt('raster-handoff',{
-          task_prompt:prompt, previous_thread_id:handoff.previousThreadId, reason:handoff.reason,
-          step_id:step.id, phase, notes,
-        });
-      }
       const paths = await prepareWorkspace({ cwd: directory, outputDirectory: output }, directory);
       prompt = workspacePrompt(prompt, paths);
       await writeFile(join(records, phase === 'draw' ? 'prompt.md' : `${phase}.prompt.txt`), prompt);
@@ -238,7 +229,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
         threadId: fresh ? undefined : session.threadId, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
           await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');
-          if (!fresh) await saveSession({ handoff: session.handoff }, reason);
+          if (!fresh) await saveSession({}, reason);
         },
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：限流等待（${retry.rateLimited ? '429' : '临时错误'}），保留并发位置，${retry.delayMs / 1000} 秒后第 ${retry.attempt}/${retryDelays.retries} 次重试，沿用原 thread 与产物。`);
@@ -250,8 +241,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
             lastThreadId = event.thread_id;
             if (fresh) return; // Reviewer sessions are never saved or resumed.
             if (!event.thread_id.trim() || (session.threadId && session.threadId !== event.thread_id)) throw new Error('SDK 返回了不同的 threadId；拒绝替换当前会话。');
-            if (session.threadId !== event.thread_id) await saveSession({ threadId: event.thread_id, harness,
-              ...(handoff ? { handoff: { ...handoff, replacementThreadId: event.thread_id } } : session.handoff ? { handoff: session.handoff } : {}) });
+            if (session.threadId !== event.thread_id) await saveSession({ threadId: event.thread_id, harness });
           }
           await appendFile(join(records, 'events.jsonl'), JSON.stringify({ attempt, phase, event }) + '\n');
           if (event.type === 'item.completed' && event.item.type === 'agent_message') options.progress?.(event.item.text);

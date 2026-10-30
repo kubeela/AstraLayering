@@ -62,7 +62,6 @@ reviewer 只提交已经观察确认的问题；blocked 仅用于必要输入／
 | `agent-turn.md` | 所有 CLI 共用的路径约定与工作区说明，无变量。 |
 | `interrupted-task.md` | 会话仍可接上时只发这一句。 |
 | `outline-repair-resume.md`、`raster-repair-resume.md` | 原 thread 不可用时，代码拼接原绘制任务、这一句固定提示与返修任务。 |
-| `raster-handoff.md` | 替代 thread 的会话交接，保留原机制：`{task_prompt}`、旧会话、原因、阶段与交接记录。 |
 | `image-blocked-*.md` | agent 内部遇到图片被内容策略拦截时的恢复策略：`{images}`、`{count}`、`{stop}`、`{origin}`。 |
 
 生图 API 的外层模板在 `shared/prompts/`：[生图请求](prompts/image-request.md)与 [Nano 纯色背景](prompts/nano-solid-background.md)（`{drawing_prompt}`、`{background_instructions}`、`{background_hex}`）保留原始绘制要求，并为 Nano 透明后处理补充独立的背景要求；[Nano 仅换背景](prompts/nano-background-replacement.md)（`{background_hex}`、`{width}`、`{height}`）在第二次请求仅附第一张原始 RGB 图，保持前景与画布，用双背景差分恢复透明 PNG。
@@ -128,7 +127,7 @@ node --import ./shared/tests/ignore-local-env.ts --test shared/tests/step-models
 pnpm check
 ```
 
-自动回归使用本地模拟，不证明上游授权、实际绘图质量或全部协议兼容。临时服务退避、会话交接与宿主巡检见 [workflow](../workflow/README.md)。
+自动回归使用本地模拟，不证明上游授权、实际绘图质量或全部协议兼容。临时服务退避、会话恢复与宿主巡检见 [workflow](../workflow/README.md)。
 
 ## 结构写回审计（2026-10-26）
 
@@ -195,7 +194,7 @@ pnpm check
 
 ## 工作区与产物
 
-各 CLI 使用同一运行目录约定：`<步骤>/workspace/` 保存中间文件，`<步骤>/` 保存完整交付、报告及报告引用的图片；工作区子目录由 agent 自行选择。CLI 当前目录为 `<步骤>/workspace/`；正文和工具结果给出绝对路径，工具参数及程序读取记录中的相对路径以任务根目录为基准。请求记录携带工作区与输出目录；同一步骤续跑或换 CLI 保留草稿，原生会话数据仍在 `agents/`。步骤调度记录在 `agents/steps/<步骤>/`；各管线的步骤会话统一保存在 `<管线>/agents/steps/<步骤>/session.json`，被替换或清除的会话追加到同目录 `session.json.history.jsonl`。reviewer 每次新建、不保存；配置切换 harness 时丢弃原 thread、保留交接记录。布局转换不改写 `agents/`，转换前的会话不再续接。
+各 CLI 使用同一运行目录约定：`<步骤>/workspace/` 保存中间文件，`<步骤>/` 保存完整交付、报告及报告引用的图片；工作区子目录由 agent 自行选择。CLI 当前目录为 `<步骤>/workspace/`；正文和工具结果给出绝对路径，工具参数及程序读取记录中的相对路径以任务根目录为基准。请求记录携带工作区与输出目录；同一步骤续跑或换 CLI 保留草稿，原生会话数据仍在 `agents/`。步骤调度记录在 `agents/steps/<步骤>/`；各管线的步骤会话统一保存在 `<管线>/agents/steps/<步骤>/session.json`，被替换或清除的会话追加到同目录 `session.json.history.jsonl`。reviewer 每次新建、不保存；配置切换 harness 时丢弃原 thread，新会话按通用提示词接续。布局转换不改写 `agents/`，转换前的会话不再续接。
 
 输入准备由 `shared/agents/inputs.ts` 共用：直接传入上下文的正文和图片不额外落盘；已有原图、上游产物与参考路径直接读取；程序需要生成的索引、说明与变换参考图放在 `workspace/references/`。`agents/` 下每个请求目录的 `prompt.md` 是实际请求的审计副本。工作区和部件层级路径也由共享模块解析，前端与迁移复用同一规则。
 

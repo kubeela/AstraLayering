@@ -78,6 +78,6 @@ pnpm start --name my-character --dir /绝对路径/运行根目录 --from charac
 ## 其他按需参考
 
 - **选择／切换模型方案、配置 LLM 或生图**：读 [model-presets.md](references/model-presets.md)；自定义 CLI、provider、生图协议或会话恢复时，按需阅读同页对应章节。保留未要求修改的配置、凭据和图片预算。
-- **启动、web 连接、巡检、交接或交付定位**：读 [workflow/README.md](workflow/README.md)。
+- **启动、web 连接、巡检、恢复或交付定位**：读 [workflow/README.md](workflow/README.md)。
 - **修改模板／工具定义、接入新 CLI 后验证**：读 [shared/README.md](shared/README.md)。共享工具在 `shared/tools/<名称>/`，管线专属工具在 `<管线>/tools/<名称>/`（如 `part-layering/tools/reuse_reference`、`shadow/tools/inspect_shadow_mask`）。绘制提示词、工具 schema 和运行参考是程序输入，保留各自职责与审核轮数。
 - **补丁构建、图片／请求体超限或网关错误**：读 [patches/README.md](patches/README.md)。安装补丁不等于启用容量保护。

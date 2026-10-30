@@ -259,7 +259,7 @@ test('CLI 区分只读查询、后台启动和恢复，拒绝冲突参数', () =
   assert.equal(parseArguments(['--name', 'case', '--background']).mode, 'background');
   for (const args of [ ['--name', 'case', '--dir', 'relative'], ['--name', 'case', '--json'],
     ['--name', 'case', '--status', '--background'], ['--name', 'case', '--status', '--image', 'x'],
-    ['--name', 'case', '--replace-thread', 'raster-layering'], ['--name', 'case', '--jobs', '0'],
+    ['--name', 'case', '--jobs', '0'],
     ['--name', 'case', '--standard', '--no-standard'], ['--name', 'case', '--status', '--standard'],
     ['--name', 'case', '--status', '--no-standard'] ]) {
     assert.throws(() => parseArguments(args));

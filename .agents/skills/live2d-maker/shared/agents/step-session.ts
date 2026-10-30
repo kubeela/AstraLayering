@@ -8,18 +8,10 @@ import type { Harness } from './models.ts';
 // A step's draw and repairs share its thread; reviewers are fresh and never saved.
 // Each replaced or cleared session is appended to session.json.history.jsonl.
 // Deleting agents/steps/<step> (a rerun) drops the session with the step.
-export type ThreadHandoff = {
-  id: string;
-  previousThreadId: string;
-  notes: string;
-  reason: string;
-  createdAt: string;
-  replacementThreadId?: string;
-};
-export type StepSession = { threadId?: string; harness?: Harness; handoff?: ThreadHandoff };
+export type StepSession = { threadId?: string; harness?: Harness };
 
 export const sessionPath = (section: string, step: string) => join(section, 'agents', 'steps', step, 'session.json');
-const active = (session: StepSession | undefined) => !!(session?.threadId || session?.handoff);
+const active = (session: StepSession | undefined) => !!session?.threadId;
 
 async function readJson<T>(path: string): Promise<T | undefined> {
   try { return JSON.parse(await readFile(path, 'utf8')) as T; }
@@ -32,12 +24,11 @@ export async function readStepSession(section: string, step: string): Promise<St
 
 export async function writeStepSession(section: string, step: string, next: StepSession, reason?: string): Promise<void> {
   const path = sessionPath(section, step), previous = await readStepSession(section, step);
-  if (active(previous) && (previous!.threadId !== next.threadId || previous!.handoff?.id !== next.handoff?.id)) {
+  if (active(previous) && previous!.threadId !== next.threadId) {
     await mkdir(dirname(path), { recursive: true });
     await appendFile(path + '.history.jsonl', JSON.stringify({ ...previous, replacedAt: new Date().toISOString(), ...(reason ? { reason } : {}) }) + '\n');
   }
-  const record: StepSession = { ...(next.threadId ? { threadId: next.threadId } : {}), ...(next.harness ? { harness: next.harness } : {}),
-    ...(next.handoff ? { handoff: next.handoff } : {}) };
+  const record: StepSession = { ...(next.threadId ? { threadId: next.threadId } : {}), ...(next.harness ? { harness: next.harness } : {}) };
   if (active(record)) {
     await mkdir(dirname(path), { recursive: true });
     const temporary = `${path}.${randomUUID()}.tmp`;
