@@ -34,7 +34,7 @@ export class HeadNineAxisPanel {
     this.stopSwing();
     if (!force && this.doc && this.project?.name === project?.name && this.project?.dir === project?.dir && this.version === entry?.version) return;
     this.project = project; this.version = entry?.version; this.clear();
-    if (!entry?.available) { this.status(project ? `${project.name} 尚无头部九轴数据（${entry?.path ?? 'nine-axis/head/deformers.json'}）` : '打开含头部九轴数据的项目后预览'); return; }
+    if (!entry?.available) { this.status(project ? `${project.name} 尚无头部九轴数据（${entry?.path ?? 'nine-axis/step01_head/deformers.json'}）` : '打开含头部九轴数据的项目后预览'); return; }
     this.status('正在读取头部九轴…');
     try {
       const url = path => './artifact?' + new URLSearchParams({ name: project.name, dir: project.dir, path, version: entry.version });

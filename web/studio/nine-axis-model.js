@@ -1,7 +1,6 @@
 // Head nine-axis document: one Cubism-style warp deformer per head layer.
 // Each part owns a (cols+1)×(rows+1) control lattice in canvas pixels with
 // keyforms on ParamAngleX; the art mesh UV is the regular lattice over bbox.
-export const headNineAxisPath = 'nine-axis/head/deformers.json';
 export const levelNames = { face: '脸＋五官', hair: '头发', accessory: '头饰' };
 
 export function validateHeadNineAxis(doc) {
