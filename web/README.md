@@ -32,7 +32,7 @@ pnpm web --port 4387
 旧布局任务在标题栏显示“需转换目录”及“转换目录”按钮，调用 `POST /api/convert-layout {name}`：先把原目录完整复制到运行根目录的 `.backups/`，再整体迁移到当前布局；早于上一版本的布局只提示，不提供转换。
 
 标题栏的继续／恢复／重试调用 `POST /api/task-action {name, action}`，一次作用于任务里全部中断或失败的步骤，随后重新运行任务；没有任何步骤记录时，继续打开运行对话框。
-单个步骤仍可用 `POST /api/step-action {name, section, step, action}`（CLI 等客户端），`step` 为管线目录下的步骤路径，如 `step11_completion/head/children/eye`、`step10_reduce/depth01`、`step02`、`step01_mask`。命令行对应 `pnpm start --name <任务名> --continue|--resume|--retry [--section <管线> --step <步骤>]`，停止为 `pnpm start --name <任务名> --stop`。
+单个步骤只在命令行处理：`pnpm start --name <任务名> --continue|--resume|--retry --section <管线> --step <步骤>`，`--step` 为管线目录下的步骤路径，如 `step11_completion/head/children/eye`、`step10_reduce/depth01`、`step02`、`step01_mask`；省略 `--section`／`--step` 时与标题栏相同。停止为 `pnpm start --name <任务名> --stop`。
 
 ## 任务执行与流程预览
 

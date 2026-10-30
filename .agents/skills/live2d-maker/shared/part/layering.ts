@@ -123,10 +123,6 @@ export async function runLayering(input: {
       const output = artifactPath(directory, id, stage), draft = stepDraftPath(directory, id, stage);
       const before = stage === 'completion' ? (await readSvg(artifact(id, 'reduction').path))! : undefined;
       await mkdir(dirname(draft), { recursive: true });
-      if (continued && !await readSvg(draft)) {
-        const legacy = await readSvg(output.replace(/\.svg$/, '.draft.svg'));
-        if (legacy) await writeAtomic(draft, legacy);
-      }
       const resumeDraft = continued && !!await readSvg(draft);
       if (!resumeDraft) await rm(draft, { force: true });
       if (resumeDraft) report(`[${id}] ${labels[stage]}：沿用上次的草稿继续`);

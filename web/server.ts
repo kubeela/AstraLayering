@@ -12,7 +12,7 @@ import { encodePng } from '../.agents/skills/live2d-maker/shared/png.ts';
 import { runsDirectory, sectionIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedSections, sectionId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { convertLayout } from '../.agents/skills/live2d-maker/workflow/layout.ts';
-import { applyStepAction, applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
+import { applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
 import { configAPI, configRaw } from './config.ts';
 import { createEnvironmentConfig, EnvironmentConflict } from './environment-config.ts';
 import { atomicJSON, agentRecord, artifactExtensions, browse, inside, jsonFile, safePath } from './files.ts';
@@ -252,16 +252,16 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         }
         await task(opts.name, requestDir);
         if (path === '/api/convert-layout') { json(await convertLayout(directory)); return; }
-        if (['/api/start', '/api/step-action', '/api/task-action', '/api/stop'].includes(path) && (await readRun(directory))?.archive) {
+        if (['/api/start', '/api/task-action', '/api/stop'].includes(path) && (await readRun(directory))?.archive) {
           json({ error: '这是成果归档；请在原运行目录继续制作。' }, 409); return;
         }
         if (path === '/api/project-name') {
           await saveProjectDisplayName(directory, value.displayName);
           json({ name: opts.name, displayName: await projectDisplayName(directory, opts.name) }); return;
         }
-        if (path === '/api/start' || path === '/api/step-action' || path === '/api/task-action') {
+        if (path === '/api/start' || path === '/api/task-action') {
           // The same commands as pnpm start: plain start / continue, or --continue / --resume / --retry
-          // for every interrupted or failed step (task-action) or for one step (step-action).
+          // for every step still marked .running (task-action). One step is acted on from the CLI.
           if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
           starts.add(directory);
           try {
@@ -271,9 +271,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
               if (!(error instanceof KritaUnavailable)) throw error;
               json(kritaRefused(error), 409); return;
             }
-            const message = path === '/api/step-action'
-              ? await applyStepAction({ name: opts.name, dir: opts.dir, section: value.section, step: value.step, action: value.action })
-              : path === '/api/task-action' ? await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action }) : undefined;
+            const message = path === '/api/task-action' ? await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action }) : undefined;
             json({ ...(message === undefined ? {} : { message }), pid: await start(opts), name: opts.name }, 202);
           } finally { starts.delete(directory); }
           return;

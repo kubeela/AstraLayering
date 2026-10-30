@@ -21,7 +21,6 @@ import { modelHarnesses } from '../agents/models.ts';
 import { requireCurrentLayout } from '../../workflow/layout.ts';
 import { cliExecutable } from '../agents/cli.ts';
 import { validateImageSelection } from '../agents/images.ts';
-import { legacyEdgeDrawingReady } from './review-baseline.ts';
 import { SectionKrita, kritaRecordFile } from '../krita/section-krita.ts';
 import { createKritaTool } from '../krita/tool.ts';
 
@@ -151,8 +150,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
     // A step's thread carries that step's work; a step starting over (its
     // directory removed) starts a new one.
     if (status === 'absent' && !options.dryRun) await clearStepSession(directory, step.id, '步骤重新开始');
-    const drawingReady = status !== 'absent' && (step.review ? !!await fileInfo(join(output, 'report.md'))
-      : status === 'running' && await legacyEdgeDrawingReady(output, step));
+    const drawingReady = status !== 'absent' && !!step.review && !!await fileInfo(join(output, 'report.md'));
     if (status === 'completed') {
       options.progress?.(`${step.id}：.completed 已存在，跳过`);
       previous.push(output);

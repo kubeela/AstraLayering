@@ -54,7 +54,7 @@ pnpm env:check
 └── shadow/                   # mask/ 与 normal-depth/ 独立恢复
 ```
 
-请求目录继续保留 `prompt.md`、`request.json`、`events.jsonl`、`result.json` 和会话记录。旧后台可能仍写 `service.log`，按状态返回的真实日志路径查看；新请求统一进 `workflow.log`，不新增永久 native/transcript 日志。
+请求目录继续保留 `prompt.md`、`request.json`、`events.jsonl`、`result.json` 和会话记录。任务日志统一写入 `workflow.log`（不再读取旧版的 `service.log`），不新增永久 native/transcript 日志。
 
 section 的事实文件决定恢复，总控只是摘要。`.running` 表示尚未交付，不证明进程存活；`.completed` 表示交付检查通过。普通中断用相同入口、name、dir 恢复原会话。需要主动重做某步时用 `--retry --section <管线> --step <步骤>`（可指定已完成步骤），不要手动删除 `.completed` 等标记。重试删除该步骤目录、它在目录外的产物、会话，以及输出写在该步骤的 agent 尝试记录（`agents/<时间>-<名称>-*/` 与 `sessions.json` 中的对应条目），新 agent 不会读到旧尝试；只重做该步骤，已完成的后续步骤与下游管线沿用，不会因上游重做自动重跑。
 
