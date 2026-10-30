@@ -48,10 +48,10 @@ const state = {
 const stages = [
  {name:'人物分块',id:'part-layering'}, {name:'人物绘制',id:'raster-layering'},
  {name:'衣服分块',id:'clothing-part-layering'}, {name:'衣服绘制',id:'clothing-raster-layering'},
- {name:'穿戴组装',id:'character-assembly'}, {name:'阴影制作',id:'shadow'},
+ {name:'穿戴组装',id:'character-assembly'}, {name:'阴影制作',id:'shadow'}, {name:'头部九轴',id:'nine-axis'},
 ];
 // After the character preparation the character and clothing lanes run side by side; both merge into the assembly.
-const flowLanes = [{name:'人物线',stages:[0,1]}, {name:'衣服线',stages:[2,3]}], mergeStages = [4,5];
+const flowLanes = [{name:'人物线',stages:[0,1]}, {name:'衣服线',stages:[2,3]}], mergeStages = [4,5,6];
 const laneOf = index => flowLanes.findIndex(lane=>lane.stages.includes(index));
 const isRasterSection = index => ['raster-layering','clothing-raster-layering'].includes(stages[index]?.id);
 const hasKraPreview = index => isRasterSection(index)||stages[index]?.id==='character-assembly'
@@ -588,7 +588,7 @@ function jsonLines(text) {
 // open by themselves; one the user opened or closed stays so until the page reloads.
 function configTree() {
  const scope=file=>file;
- const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共先验'],['','其他文件']];
+ const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['nine-axis','头部九轴'],['shared','公共先验'],['','其他文件']];
  const query=state.configFilter.toLowerCase();
  const owned=file=>families.some(([prefix])=>prefix&&scope(file).startsWith(prefix+'/'));
  const count=node=>node.files.length+[...node.folders.values()].reduce((sum,child)=>sum+count(child),0);
@@ -699,7 +699,7 @@ function showNew(single=false, existing=false) {
   e.preventDefault();const form=e.target,fields=new FormData(form),button=form.querySelector('[type=submit]');button.disabled=true;form.querySelector('.form-error').textContent='';
   try {
    const single=fields.get('scope')==='single',index=Number(fields.get('stage'));
-   const payload={name:fields.get('name').trim(),displayName:fields.get('displayName').trim(),jobs:Number(fields.get('jobs')),from:single?stages[index].id:stages[0].id,to:single?stages[index].id:stages.at(-1).id};
+   const payload={name:fields.get('name').trim(),displayName:fields.get('displayName').trim(),jobs:Number(fields.get('jobs')),from:single?stages[index].id:stages[0].id,to:single?stages[index].id:'shadow'};
    if(!single||index===0)payload.standard=fields.get('standard')==='on';
    if(!single||stages[index].id==='shadow')payload.shadowMode=fields.get('shadowMode');
    if(!created) {

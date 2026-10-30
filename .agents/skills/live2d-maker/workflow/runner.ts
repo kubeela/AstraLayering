@@ -17,6 +17,8 @@ import { defaultKnowledgeDirectory, selectKnowledge } from '../shared/knowledge.
 import { MissingDependencyError } from '../shared/missing-dependency.ts';
 import { readDressup } from '../shared/part/dressup.ts';
 import { AgentSlotPool, agentSlotsVariable } from './agent-slots.ts';
+import { requireVideoApi, turnPrompt } from '../nine-axis/run.ts';
+import { ffmpegPath } from '../nine-axis/turn.ts';
 
 export type SectionExecution = (id: SectionId, run: TaskRun, context: {
   // The task directory, <runs root>/<task name>.
@@ -38,7 +40,16 @@ export const sectionDependencies: Record<SectionId, readonly { id: SectionId; pr
   'clothing-raster-layering': [{ id: 'clothing-part-layering' }],
   'character-assembly': [{ id: 'raster-layering' }, { id: 'clothing-raster-layering' }],
   'shadow': [{ id: 'character-assembly' }],
+  'nine-axis': [{ id: 'shadow' }],
 };
+
+// Checked like Krita: a missing video service or prompt refuses before the run is
+// recorded, a missing ffmpeg is recorded with its install hint.
+async function requireNineAxis(run: TaskRun, environment?: WorkflowEnvironment): Promise<MissingDependencyError | undefined> {
+  if (!environment || !selectedSections(run.from, run.to).includes('nine-axis')) return undefined;
+  requireVideoApi(environment); turnPrompt();
+  return ffmpegPath(environment.codex.env).then(() => undefined, error => { if (error instanceof MissingDependencyError) return error; throw error; });
+}
 
 function terminate(child: ChildProcess, force = false) {
   if (!child.pid) return;
@@ -133,7 +144,8 @@ export async function runTask(options: TaskOptions, dependencies: {
     selectKnowledge(configured.knowledge ?? defaultKnowledgeDirectory);
     // A missing system dependency such as Xvfb is the exception: the run is recorded as failed with its install hint.
     const missing = await requireKrita(configured, !!options.krita, dependencies.preflight ?? (path => checkKrita(path, environment?.codex.env)))
-      .then(() => undefined, error => { if (error instanceof MissingDependencyError) return error; throw error; });
+      .then(() => undefined, error => { if (error instanceof MissingDependencyError) return error; throw error; })
+      ?? await requireNineAxis(configured, environment);
     run = configured;
     run.status = 'running'; delete run.error; delete run.output; delete run.activeSections;
     run.runner = { id: randomUUID(), pid: process.pid, startedAt: now() };
@@ -188,7 +200,7 @@ export async function runTask(options: TaskOptions, dependencies: {
         });
         run!.sections[id] = { status: 'completed', updatedAt: now(), summary: result.summary };
         // The delivery is the one of the furthest section completed.
-        if (sectionIds.indexOf(id) > delivered) { delivered = sectionIds.indexOf(id); run!.output = result.output && toTaskPath(directory, result.output); }
+        if (sectionIds.indexOf(id) > delivered && result.output) { delivered = sectionIds.indexOf(id); run!.output = toTaskPath(directory, result.output); }
         progress(id + '：已完成');
       } catch (error) {
         stopped.add(id);
