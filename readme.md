@@ -76,6 +76,8 @@ KRA 可继续逐层编辑，案例保留分件结构、关键工程和验收记�
 姿态标准化：开启
 ```
 
+agent 首次拉取或更新本仓库前，先问一次用户是**使用者**还是**开发者**：使用者用稳定版，即 [Releases](https://github.com/wu-tian807/AstraLayering/releases) 中最新的发布版本（对应同名 tag）；更新时只检查有没有比当前更新的发布版本，有才升级，不直接拉取 `main`。开发者用 `main` 最新提交，它可能还没有经过完整验证，不保证能跑通。用户已说明的不再重复问。
+
 只安装 skill 时，需要安装 `.agents/skills/live2d-maker` 整个目录；可让 agent 通过 Git 稀疏检出安装，避免下载全部 demos。安装与操作能力检查见 [安装与前置](.agents/skills/live2d-maker/references/setup.md)。
 
 ## 启动方式 2：一键打开工作台，在网页制作

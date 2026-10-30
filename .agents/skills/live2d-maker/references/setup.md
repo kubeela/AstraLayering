@@ -15,6 +15,11 @@
 
 ## 安装方式
 
+**先选版本。** 首次拉取或更新仓库前，问一次用户是使用者还是开发者，已说明的不重复问：
+
+- **使用者（稳定版）：** 安装 [Releases](https://github.com/wu-tian807/AstraLayering/releases) 中最新的发布版本，可下载 `AstraLayering-vX.Y.Z.zip`，或检出同名 tag `vX.Y.Z`。更新时比较当前版本（根目录 `package.json` 的 `version`）与最新发布版本，有更新的发布版本才升级，不直接拉取 `main`。
+- **开发者（最新版）：** 克隆或拉取 `main`。`main` 可能包含未完整验证的改动，不保证能跑通。
+
 **完整仓库：** 按首页准备依赖后，双击对应系统的 start-workbench 启动文件。脚本通过 npm 准备 pnpm 10.33.0、安装依赖、在缺少时创建默认 `.env` 并打开前端，任务在网页新建与运行。已有配置原样复用。维护者也可在仓库根目录执行 `pnpm install --frozen-lockfile`，同时安装工作台与 skill 依赖。
 
 **独立 skill：** 需要 `wu-tian807/AstraLayering` 中 `.agents/skills/live2d-maker` 整个目录，包含运行代码、提示词、参考图和锁文件。使用 skill 安装器时选择 `--method git` 稀疏检出，控制大仓库下载量。agent 从 SKILL.md 所在目录执行：
