@@ -4,7 +4,7 @@ import { studioArtifacts } from '../.agents/skills/live2d-maker/shared/studio-ar
 import { shadowArtifacts, shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
 import { inspectDraftPreview } from '../.agents/skills/live2d-maker/shadow/preview.ts';
 import { safePath } from './files.ts';
-import { headNineAxisPath } from './studio/nine-axis-model.js';
+import { isNineAxisSource, nineAxisArtifacts } from '../.agents/skills/live2d-maker/shared/nine-axis.ts';
 
 type Selection = { version: number; mode: 'mask' | 'normal-depth'; sourceKraHash: string; sourceColorHash: string };
 const previewModes = ['mask', 'normal-depth', 'mixed'] as const;
@@ -72,8 +72,24 @@ export async function studioProject(directory: string, name: string, dir: string
     depth: { ...depth, available: useMaps && depth.available },
     bindings: { ...all.bindings, available: useMask && maskAvailable },
   };
-  const nineAxis = await file(headNineAxisPath);
-  return { name, dir, files, nineAxis, previewMode: mode, previewModes: availableModes, maskStale, mapsStale,
+  // The newest editable document wins: a nine-axis KRA made from the chosen
+  // document replaces it; layer UUIDs are kept, so shadow bindings still apply.
+  const nineAxis = await file(nineAxisArtifacts.headDeformers);
+  let nineAxisDocument = false, nineAxisStale = false;
+  let nineSource: unknown;
+  try { nineSource = JSON.parse(await readFile(await safePath(directory, nineAxisArtifacts.headSource), 'utf8')); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+  if (nineSource !== undefined) {
+    if (!isNineAxisSource(nineSource)) throw Error('无效的头部九轴来源记录');
+    const source = nineSource;
+    const [document, color] = await Promise.all([file(nineAxisArtifacts.headDocument), file(nineAxisArtifacts.headColor)]);
+    if (document.available && color.available && source.sourceDocument === files.document.path && source.sourceColor === files.color.path) {
+      nineAxisStale = (await Promise.all([files.document.path, files.color.path].map(async path => createHash('sha256').update(await readFile(await safePath(directory, path))).digest('hex'))))
+        .some((hash, i) => hash !== [source.sourceKraHash, source.sourceColorHash][i]);
+      if (!nineAxisStale) { files.document = document; files.color = color; nineAxisDocument = true; }
+    }
+  }
+  return { name, dir, files, nineAxis, nineAxisDocument, nineAxisStale, previewMode: mode, previewModes: availableModes, maskStale, mapsStale,
     previewDraft: useDraft, ...(useDraft ? { previewReview: draftRecord!.status, previewReviewReason: draftRecord!.reason } : {}),
     ...(selection ? { shadowMode: selection.mode, shadowStale: stale(selection) } : {}) };
 }

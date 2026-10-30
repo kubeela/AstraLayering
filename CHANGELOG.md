@@ -5,11 +5,20 @@
 
 ## 未发布
 
+- **头部九轴产物目录：** 改为 `nine-axis/step01_head/`（变形器 `deformers.json`、`layers/`、补绘工程 `character-nine-axis.kra` / PNG 与 `source.json`），约定见 `shared/nine-axis.ts` 与 `nine-axis/README.md`。来源记录与当前 KRA 一致时，角色工作台优先载入九轴补绘工程。pink-doll 后发按官方样例补绘转头露出的内层与外轮廓线，阴影 KRA 保留不改。
 - **步骤与目录命名（不兼容变更）：** 步骤目录统一为 `stepNN_<说明>`，pipeline 改称 section。part 与衣服分层为 `step01_original`～`step14_occlusion`（衣服准备为 `step01_preparation`），分组步骤为 `step09_outline/<组>`、`step11_completion/<组>`、`step12_children/<组>`，去重为 `step10_reduce/depthNN`；阴影为 `shadow/step01_mask` 或 `shadow/step01_normal-depth`。命令行 `--pipeline` 改为 `--section`，网页单步操作参数同步改为 `section`。
 - **section 无状态（不兼容变更）：** 各 section 不再有自己的 `run.json`，Krita 路径与标准化选项只由任务根 `run.json` 记录并在每次启动时传入；单独运行 section 时每次都要带 `--krita`（part-layering 需要时带 `--standard`）。任务根 `run.json` 不再保存 `name`、`dir`、`image`、`lastMessage` 与 `runner.stopProtocol`，进度只写入 `workflow.log`；停止只用 `.stop-request.json`，旧的 `.web-worker.json`／`.web-cancel.json` 停止兼容已移除。旧任务残留的 section `run.json` 不读取也不改写，转换目录时直接舍弃。
 - **一键转换目录：** 旧布局任务打开时提示“需转换目录”，点击“转换目录”或运行 `pnpm convert-layout --name <任务名>`，先把原目录完整复制到 `<运行根目录>/.backups/<任务名>-<时间>`，再整体迁移；完成记录的路径与指纹随之改写，已完成步骤不重做。早于上一版本的布局、或出现无法识别的旧路径时拒绝转换且不做任何改动。
+- **先验知识目录（不兼容变更）：** 提示词、参考图和工具说明统一移入 skill 下的 `knowledge/`，按 `shared/` 与 `<section>/<stepNN>/` 归属，各自分为 `prompts`、`references`、`tools`；工具 schema 仍在代码的 `shared/tools/<工具名>/schema.json`。每个步骤用 `agent.json` 声明各 agent 拼接的提示词与注册的工具，组专项提示词放在 `prompts/groups/<完整ID>/`，存在时替换同名通用正文。网页“提示词与工具”页改名“先验知识”。
+- **`--knowledge` 自定义目录：** 所有单 section 命令每次启动（含续跑）都须带 `--knowledge`；完整运行可选，记入任务根 `run.json`，续跑省略时沿用。启动前检查整个目录：`agent.json` 引用的文件、程序靠其收取结果的必需工具、固定的恢复提示词，以及 `{reference:}`／`{shared_reference:}` 指向的文件；缺少任何一项都拒绝启动并写入 `workflow.log`，不回退默认目录。
+- **步骤提示词只用 7 个变量：** `{group_id}`、`{group_dir}`、`{layer_depth}`、`{review_round}`、`{width}`、`{height}`、`{input}`；其他路径用相对任务根目录的 `{uri:}`，knowledge 内的文件用 `{reference:}`／`{shared_reference:}`，都渲染为绝对路径。不再追加 `提示词来源：` 等运行时段落。
+- **图片只给路径：** 参考图不再作为附件发送，改为“说明 + 绝对路径”由 agent 自行查看；删除 `references.json`。框架复制的图片（原图、复用参考、直接沿用的交付等）一律转为 PNG 并以 `.png` 命名。
+- **review 以文件给出：** 轮廓返修作为绘制会话的下一轮，只指向 `review.json` 最后一条的 feedback；raster 返修指向 `review-NN.md`。
+- **恢复只保留 continue／resume／retry：** 会话仍在时只发固定的继续提示；`--resume` 新开会话自行读取已有产物；删除交接笔记机制（`--replace-thread`、`--handoff`、`raster-handoff.md`）。
+- **去重与遮挡规划：** 同层去重每层一个 agent，用 `list_reduction_groups` 按父组列出各组，只在同一父组的直属子组之间去重，每次重新判断；遮挡规划直接读取 `groups.json`。
+- **手指补全：** 与掌片相接处按“两边合起来组成一个圆”衔接，参考图改为文字路径。
 
-升级影响：旧布局任务必须先转换才能继续运行。转换不改写 `agents/` 内的调用记录，并删除 `run.json` 中旧的 thread 字段，因此转换前的 agent 会话不再续接，中断的步骤会在新会话中继续；已完成成果无需重做。
+升级影响：旧布局任务必须先转换才能继续运行。转换不改写 `agents/` 内的调用记录，并删除 `run.json` 中旧的 thread 字段，因此转换前的 agent 会话不再续接，中断的步骤会在新会话中继续；已完成成果无需重做。先验知识目录调整不改变已完成步骤的指纹，已完成成果同样无需重做；未完成的步骤按新提示词继续。自行维护的提示词需按新的 `knowledge/` 结构放置，单独运行 section 的脚本需补上 `--knowledge`，使用 `--replace-thread`／`--handoff` 的脚本需改为 `--resume`。
 
 ## v0.1.3
 

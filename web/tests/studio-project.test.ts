@@ -8,6 +8,7 @@ import { createWorkbench } from "../server.ts";
 import { studioArtifacts } from "../../.agents/skills/live2d-maker/shared/studio-artifacts.ts";
 import { steps } from "../../.agents/skills/live2d-maker/character-assembly/steps.ts";
 import { shadowArtifacts } from '../../.agents/skills/live2d-maker/shared/shadow.ts';
+import { nineAxisArtifacts } from '../../.agents/skills/live2d-maker/shared/nine-axis.ts';
 import sharp from 'sharp';
 
 async function fixture(t: any) {
@@ -188,11 +189,21 @@ test('Unified studio discovers pending maps and prefers formal delivery', async 
   data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.previewDraft, false); assert.equal(data.files.normal.path, studioArtifacts.normal);
 });
-test('Project reports the head nine-axis document when it is present', async (t) => {
-  const f = await fixture(t);
+test('Project reports the head nine-axis document and prefers its KRA while the source is unchanged', async (t) => {
+  const f = await fixture(t), a = nineAxisArtifacts;
   let data = (await (await f.get()).json()) as any;
-  assert.deepEqual([data.nineAxis.path, data.nineAxis.available], ['nine-axis/head/deformers.json', false]);
-  await f.put('nine-axis/head/deformers.json', '{}');
+  assert.deepEqual([data.nineAxis.path, data.nineAxis.available], [a.headDeformers, false]);
+  await f.put(a.headDeformers, '{}');
   data = (await (await f.get()).json()) as any;
   assert.equal(data.nineAxis.available, true);
+  await f.put(studioArtifacts.document, 'kra'); await f.put(studioArtifacts.color, 'png');
+  await f.put(a.headDocument, 'nine kra'); await f.put(a.headColor, 'nine png');
+  const hash = (s: string) => createHash('sha256').update(s).digest('hex');
+  await f.put(a.headSource, JSON.stringify({ version: 1, sourceDocument: studioArtifacts.document, sourceColor: studioArtifacts.color, sourceKraHash: hash('kra'), sourceColorHash: hash('png'), updatedAt: 'x' }));
+  data = (await (await f.get()).json()) as any;
+  assert.deepEqual([data.files.document.path, data.files.color.path, data.nineAxisDocument], [a.headDocument, a.headColor, true]);
+  // A changed source KRA falls back to it and marks the nine-axis KRA stale.
+  await f.put(studioArtifacts.document, 'kra 2');
+  data = (await (await f.get()).json()) as any;
+  assert.deepEqual([data.files.document.path, data.nineAxisDocument, data.nineAxisStale], [studioArtifacts.document, false, true]);
 });

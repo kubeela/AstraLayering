@@ -30,3 +30,20 @@ test('先验知识只替换已知变量和路径前缀，其余花括号原样�
   assert.throws(()=>renderKnowledge('{reference:x.png}',{}),/需要所属管线/);
 });
 test('默认先验知识目录完整可用',()=>{ checkKnowledge(defaultKnowledgeDirectory); });
+test('启动检查 reference 与 shared_reference 指向的文件，uri 不检查',async()=>{
+  const {cp,mkdtemp,rm,writeFile,appendFile}=await import('node:fs/promises');
+  const {tmpdir}=await import('node:os');
+  const {join}=await import('node:path');
+  const root=await mkdtemp(join(tmpdir(),'knowledge-'));
+  try{
+    await cp(defaultKnowledgeDirectory,root,{recursive:true});
+    const task=join(root,'part-layering/step05_simplified/prompts/参考图片.md');
+    await appendFile(task,'\n{uri:不存在/x.png}\n');
+    checkKnowledge(root);
+    await appendFile(task,'{shared_reference:不存在.png}\n');
+    assert.throws(()=>checkKnowledge(root),/先验知识引用的文件不存在：\{shared_reference:不存在\.png\}/);
+    await cp(defaultKnowledgeDirectory,root,{recursive:true,force:true});
+    await rm(join(root,'part-layering/step11_completion/references/fingers/complete-fingers.png'));
+    assert.throws(()=>checkKnowledge(root),/\{reference:step11_completion\/references\/fingers\/complete-fingers\.png\}.*groups/);
+  }finally{ await rm(root,{recursive:true,force:true}); }
+});

@@ -23,9 +23,9 @@ pnpm raster-layering --check-krita --krita /绝对路径/krita
 
 | 步骤 | 职责与提示词 | 必需成果 |
 | --- | --- | --- |
-| step01 | [分层与补全](prompts/01-分层与补全.md)，[review](prompts/01-review.md) 与[返修](prompts/01-repair.md) | `character-depth.kra`、`report.md` 与实际执行的 review／repair 报告 |
-| step02 | [边缘精修](prompts/02-边缘柔化与去锯齿.md)，逐层自检 | `character-soft-edges.kra`、同名 PNG、`report.md` |
-| step03 | [去除临时连体服](prompts/03-去除连体服.md)，补全换装身体底层并自检 | `character-dressup-base.kra`、同名 PNG、`report.md` |
+| step01 | [分层与补全](../knowledge/raster-layering/step01/prompts/01-分层与补全.md)，[review](../knowledge/raster-layering/step01/prompts/01-review.md) 与[返修](../knowledge/raster-layering/step01/prompts/01-repair.md) | `character-depth.kra`、`report.md` 与实际执行的 review／repair 报告 |
+| step02 | [边缘精修](../knowledge/raster-layering/step02/prompts/02-边缘柔化与去锯齿.md)，逐层自检 | `character-soft-edges.kra`、同名 PNG、`report.md` |
+| step03 | [去除临时连体服](../knowledge/raster-layering/step03/prompts/03-去除连体服.md)，补全换装身体底层并自检 | `character-dressup-base.kra`、同名 PNG、`report.md` |
 
 三步的 agent 都有 `krita` 工具；此外按环节注册的流程工具如下（生图工具按 harness 另行提供）：
 

@@ -22,7 +22,7 @@ pnpm part-layering --name my-character --groups /绝对路径/selection.json --k
 
 输出 `references/standard.png`、`simplified-subject.png`、`base-subject.png`。标准化选项默认关闭，开启后先判断姿态再按需调整；原图保留在任务 `input/`。素体保留手套、鞋袜和各自饰件，主体衣装以临时连体服替换。步骤目录 `step01_original`～`step07_ready` 依次记录原图、选项、姿态、标准图、简化、素体与就绪，拆分步骤从 `step08_initial` 接续编号。
 
-简化与素体各由一个 preparation agent 完成“判断 → 复制或生图”。简化 agent 另收到画风参考 `resources/简化参考图片.png`（只比较画法），素体 agent 另收到连体服款式参考 `resources/连体服参考.jpg`。图1画法已足够简单（平涂色块、边界清楚、细节概括，有无线稿均可）时，简化 agent 直接复用，只在半写实、厚涂或晕染明显时转换；当前画幅没有主体衣装、角色已是素体或已有合适的临时连体服时，素体 agent 直接复用。复制工具 `reuse_reference` 绑定当前参考与输出位置，PNG 原样复制，其他格式转换为 PNG；需要转换或换装时调用本步骤配置的生图工具。两份完整提示词为 `prompts/2-简化图片.md`、`prompts/3-素体参考.md`。
+简化与素体各由一个 preparation agent 完成“判断 → 复制或生图”。简化 agent 另收到画风参考 [简化参考图片.png](../knowledge/part-layering/step05_simplified/references/简化参考图片.png)（只比较画法），素体 agent 另收到连体服款式参考 [连体服参考.jpg](../knowledge/part-layering/step06_base/references/连体服参考.jpg)。图1画法已足够简单（平涂色块、边界清楚、细节概括，有无线稿均可）时，简化 agent 直接复用，只在半写实、厚涂或晕染明显时转换；当前画幅没有主体衣装、角色已是素体或已有合适的临时连体服时，素体 agent 直接复用。复制工具 `reuse_reference` 绑定当前参考与输出位置，PNG 原样复制，其他格式转换为 PNG；需要转换或换装时调用本步骤配置的生图工具。两份完整提示词为 [2-简化图片.md](../knowledge/part-layering/step05_simplified/prompts/2-简化图片.md)、[3-素体参考.md](../knowledge/part-layering/step06_base/prompts/3-素体参考.md)。
 
 简化与素体步骤各自直接保存最终图片及步骤完成记录。简化的选择理由只保存在 agent 调用日志；素体步骤另写 `step06_base/decision.json`（`{ version, dressed, reason }`）。`dressed: false` 时总控跳过两条衣服管线，组装沿用人物 KRA，阴影照常运行；没有 decision.json 的旧任务按简化图与素体像素是否相同判断，完整规则见 [workflow](../workflow/README.md#姿态与参考)。复制结果原样交付，生图结果在准备函数内部完成后处理；续跑依据已有图片与步骤记录复用。旧任务已完成的图片继续沿用，缺图时按当前单次 agent 流程制作。
 
@@ -55,9 +55,9 @@ preparation 完成后，总控同时推进人物线（本管线逐层制作 → 
 
 ### 提示词与专项参考
 
-通用正文位于 `prompts/4`～`11`。`prompts/groups/<完整ID>/outline.md`、`review.md`、`completion.md`、`children.md` 可完整覆盖对应正文，只对当前 ID 生效。补全和拆分各自始终带 `9-补全操作约定.md`、`10-拆分操作约定.md`；动态输入填入模板声明的占位符，维护规则见 [shared](../shared/README.md#提示词模板与动态位置)。
+通用正文位于 [knowledge/part-layering](../knowledge/part-layering/) 各步骤的 `prompts/`（`4`～`11`），由该步骤的 `agent.json` 声明拼接顺序。`knowledge/part-layering/<stepNN>/prompts/groups/<完整ID>/<同名文件>` 存在时完整替换对应正文，只对当前 ID 生效；没有专项文件的组使用通用正文。补全和拆分各自始终带 `9-补全操作约定.md`、`10-拆分操作约定.md`；变量与引用规则见 [shared](../shared/README.md#提示词模板与动态位置)。
 
-额外参考图在正文的 `additionalReferences` 中以路径和用途列出，模型按需要自行查看，不附加图片、不限制工具可读路径。参考素材来源和准备要求保留在对应素材目录的 README。
+额外参考图在专项正文的 `additionalReferences` 中以路径和用途列出，模型按需要自行查看，不附加图片、不限制工具可读路径；没有专项参考的组不出现该字段。参考素材来源和准备要求保留在对应素材目录的 README。
 
 ## 输出与恢复
 
