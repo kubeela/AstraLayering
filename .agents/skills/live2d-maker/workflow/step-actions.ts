@@ -53,7 +53,7 @@ export async function listSteps(root: string, section: SectionId): Promise<StepE
     const { status } = await readStep(join(root, id), taskRootOf(root));
     if (status === 'absent') continue;
     const session = await readStepSession(root, id);
-    steps.push({ id, status, session: !!(session?.threadId || session?.handoff) });
+    steps.push({ id, status, session: !!session?.threadId });
   }
   return steps;
 }

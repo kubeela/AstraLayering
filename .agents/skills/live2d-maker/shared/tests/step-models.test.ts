@@ -462,7 +462,7 @@ test('model/effort changes resume within a harness, switching harness creates a 
     const first = await session.run({ step: 'part_outline', name: 'drawing', cwd, prompt: 'draw' });
     const repair = await session.run({ step: 'part_outline_repair', name: 'repair', cwd, prompt: 'repair' });
     const differentModel = await session.run({ step: 'part_completion', name: 'completion', cwd, prompt: 'complete' });
-    const switched = await session.run({ step: 'part_outline_review', name: 'handoff', cwd, prompt: 'continue from file' });
+    const switched = await session.run({ step: 'part_outline_review', name: 'switched', cwd, prompt: 'continue from file' });
     assert.equal(first.threadId, repair.threadId); assert.notEqual(first.threadId, switched.threadId);
     assert.equal(first.threadId, differentModel.threadId);
     assert.deepEqual(replaced, [first.threadId]);

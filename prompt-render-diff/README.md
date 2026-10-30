@@ -18,7 +18,9 @@
 - 其余图片都是框架写出的 `.png`，用固定的 `{uri:…png}`；其他路径也用相对任务根目录 `<name>` 的固定 `{uri:}`；
 - `{reference:…}`（本 section 的 knowledge references）与 `{shared_reference:…}`（`knowledge/shared/references`）按约定替换为 knowledge 内文件的绝对路径，只给链接、不附图片。
 
-不计入上述变量：图片被拦截时的 `image-blocked-*.md` 不属于流程，由程序直接引用；交接笔记按约定机制原样保留，只把模板移到 `knowledge/shared/prompts/runtime/`。
+不计入上述变量：图片被拦截时的 `image-blocked-*.md` 不属于流程，由程序直接引用。
+
+恢复只有三种：`--continue` 接上原会话并发固定的继续提示；`--resume` 清除会话、保留产物，新会话用通用提示词自行读取已有产物；`--retry` 删除产物重跑。交接笔记机制（`--replace-thread`、`--handoff`、`raster-handoff.md`）已整体删除；`clusters.txt` 是删除前采集的，其中 recovery 测试的「换 thread」记录现改为 `--resume` 后的新 thread 返修（绘制提示词 + 固定恢复句 + 返修提示词），不再含交接段落。
 
 框架复制的图片一律转为 PNG 并以 `.png` 命名（原图 `input/original.png`、复用参考、直接沿用的交付等），查找简化参考也只认 `simplified-subject.png`，保证 `{uri:…png}` 与实际文件一致。
 

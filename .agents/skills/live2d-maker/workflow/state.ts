@@ -40,8 +40,6 @@ export type TaskRun = {
   sections: Partial<Record<SectionId, SectionProgress>>;
   error?: string; output?: string;
 };
-// Fields of earlier records, dropped when a run is configured.
-const retiredFields = ['name', 'dir', 'image', 'lastMessage'] as const;
 
 export const now = () => new Date().toISOString();
 export function sectionId(value: string): SectionId {
@@ -155,8 +153,6 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   const run: TaskRun = saved ?? {
     version: 1, from, to, jobs, status: 'ready', createdAt: now(), updatedAt: now(), sections: {},
   };
-  for (const field of retiredFields) delete (run as Record<string, unknown>)[field];
-  if (run.runner) delete (run.runner as { stopProtocol?: unknown }).stopProtocol;
   Object.assign(run, { from, to, jobs, standard, shadowMode: shadowMode(options.shadowMode ?? saved?.shadowMode) });
   const { label } = await installedVersion();
   if (!saved) run.createdWith = label;

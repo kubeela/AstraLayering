@@ -10,7 +10,7 @@ pnpm start --name jianma --status --json
 pnpm start --name jianma --background
 ```
 
-参数含义（含 `--dir` 默认值、`--jobs`、`--step` 写法）只在 [SKILL.md](../SKILL.md#启动参数) 说明。自定义运行根目录时每次追加同一 `--dir`；所有相对输入（包括 image、groups、krita 和 handoff）从任务目录 `<dir>/<name>/` 解析。
+参数含义（含 `--dir` 默认值、`--jobs`、`--step` 写法）只在 [SKILL.md](../SKILL.md#启动参数) 说明。自定义运行根目录时每次追加同一 `--dir`；所有相对输入（包括 image、groups 和 krita）从任务目录 `<dir>/<name>/` 解析。
 
 总控按依赖调度：人物 part 完成准备（简化参考）后，人物 raster 与衣服线（衣服 part → 衣服 raster）同时进行；两条线都完成后执行组装和阴影。`--from`／`--to` 选择连续范围并保存，路线范围之外的上游视为已就绪，后续阶段自动推进。一条线失败只阻塞依赖它的管线，另一条线继续跑完，随后整次运行记为 failed。素体未换装时两条衣服管线记为 `completed` 且 `skipped: true`，见[姿态与参考](#姿态与参考)。运行状态的 `activeSections` 列出正在执行的 section。已有两份 KRA 与简化参考时可从组装开始，不伪造上游完成记录。
 
@@ -102,7 +102,7 @@ pnpm web
 
 1. 运行 `--status --json`，结合 `run.json`、`workflow.log`、当前报告和错误判断阶段；独立 section 无总控时沿用独立进程和事实记录。
 2. 核对实际进程身份、子进程和日志；固定沉默时长、`.running` 或仅 PID 存活均不足以认定卡死。正常或自动退避中的任务不重复启动。`<section>/krita.json` 的 `state: waiting` 表示在排队等本机 Krita 名额（`layering_krita_max_instances`，默认 4），不是卡死；`krita: false` 的步骤不占名额。
-3. 失败时检查最后消息、会话与已保存产物，修复可恢复的环境／输入问题后以原入口、范围、name、dir 续跑。不能只记录故障后等待。按情况选择：原会话可继续用 `--continue`（默认）；会话损坏但产物可用用 `--resume`；raster／组装／阴影需要把旧会话的上下文交给新会话时用 `--replace-thread`（见[下文](#保留产物地换绘制会话)）；产物本身不合格才用 `--retry`。
+3. 失败时检查最后消息、会话与已保存产物，修复可恢复的环境／输入问题后以原入口、范围、name、dir 续跑。不能只记录故障后等待。按情况选择：原会话可继续用 `--continue`（默认）；会话损坏但产物可用用 `--resume`；产物本身不合格才用 `--retry`。
 4. 追加发现、动作与结果到 `monitor.md`；只在有实质变化、故障、完成或需用户操作时通知，正常无变化保持安静。另检查网页仍连接同一任务。
 5. 完成时核对文件并交付，取消时核实身份后停止本任务及子进程；关闭本任务定时检查，保留产物和共享工作台。
 
@@ -122,18 +122,9 @@ pnpm web
 
 Codex 泛化断流先读日志“错误详情”与请求 `result.json`，区分 API、代理和 CLI，不能直接推断网络或容量；AGV 的响应头期限、MINIMAL 兼容与 LiteLLM 透传均见 [patches](../patches/README.md)。
 
-### 保留产物地换绘制会话
+### 恢复方式
 
-仅限已停止且原会话确实无法继续的 raster、组装或阴影任务；普通中断优先原会话。先写交接说明：故障证据、旧 threadId、当前工程、未完成项／反馈、必要路径与下一步。
-
-```sh
-pnpm start --name jianma --dir /绝对路径/运行根目录 --replace-thread clothing-raster-layering --handoff recovery-notes.md --reason "会话历史无法恢复"
-pnpm start --name jianma --dir /绝对路径/运行根目录 --background
-```
-
-替换命令只准备交接，在该 section 的 `recovery/<id>/` 归档当前步骤的旧会话（`session-before.json`）、交接和将覆盖的提示词／报告，保留 KRA、日志、完成与未完成标记及审核进度；之后另行续跑，新会话同时接收原任务、交接及当前反馈。part 不使用此接口。阴影需总控明确保存的 shadowMode，只替换该分支。
-
-`--resume`（网页“恢复”）适用于所有管线：清除会话、保留产物，不写交接，新会话读取已有输入、产物及反馈。`--replace-thread` 仅用于 raster-layering、clothing-raster-layering、character-assembly 和 shadow，额外归档旧会话并把交接说明交给新会话。`--retry`（网页“重试”）删除该步骤目录、声明的产物、会话和该步骤的 agent 尝试记录，依赖步骤按指纹重跑。三者是不同操作。
+`--continue`（默认）接上原会话，只发一句固定的继续提示。`--resume`（网页“恢复”）适用于所有管线：清除会话、保留产物，新会话收到通用提示词，自行读取已有输入、产物及反馈。`--retry`（网页“重试”）删除该步骤目录、声明的产物、会话和该步骤的 agent 尝试记录，依赖步骤按指纹重跑。三者是不同操作。
 
 ## 交付与自动化测试
 
@@ -146,7 +137,7 @@ node --import ./shared/tests/ignore-local-env.ts --test workflow/tests/*.test.ts
 
 必须预加载 `ignore-local-env.ts`（`pnpm test` 已包含），否则 skill 本机 `.env` 会改变测试所用的 harness、模型与能力；测试只读 `example.env`。
 
-使用本地模拟与临时文件，覆盖后台、锁、范围、状态、步骤操作及会话交接；不调用付费模型。
+使用本地模拟与临时文件，覆盖后台、锁、范围、状态、步骤操作及会话恢复；不调用付费模型。
 ## 导出成果
 
 仅当全部导出管线已完成、总调度已停止（无活跃进程和任务锁）时可导出；工作台提供“导出成果”，下载 `<name>.zip`。
