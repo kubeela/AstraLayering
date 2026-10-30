@@ -536,14 +536,6 @@ input[type="range"]::-moz-range-thumb {
   accent-color: var(--accent);
   margin: 0;
 }
-.recipe-actions {
-  display: flex;
-  gap: 6px;
-}
-.recipe-actions > * {
-  flex: 1;
-  font-size: 11px;
-}
 #lighting-controls > section:last-child {
   border-bottom: 1px solid var(--line);
 }
@@ -821,9 +813,6 @@ dialog select {
   padding: 5px 7px;
   font-size: 11px;
 }
-#layer-save {
-  margin-left: auto;
-}
 #layers {
   max-height: min(40dvh, 480px);
   min-height: 100px;
@@ -970,9 +959,6 @@ dialog select {
   #layers {
     max-height: 240px;
   }
-}
-#refresh-project {
-  margin-left: 12px;
 }
 #project-list {
   display: grid;
