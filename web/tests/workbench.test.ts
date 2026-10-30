@@ -87,7 +87,11 @@ test('upload retains original/config; same name never overwrites; selection pers
   assert.equal((await f.post('tasks', { name: '../escape', upload: bytes })).status, 400);
   assert.equal((await f.post('start', { name: '角色-01' }, { Origin: 'https://unrelated.example' })).status, 403);
   const next = join(f.base, 'next');
-  assert.equal((await f.post('settings', { directory: next })).status, 200);
+  const saved = await f.post('settings', { directory: next });
+  assert.equal(saved.status, 200); assert.match(saved.value.defaults.knowledge, /knowledge\/?$/);
+  assert.equal((await f.post('settings', { dir: next, directory: next, knowledge: 'relative' })).status, 400);
+  assert.equal((await f.post('settings', { dir: next, directory: next, knowledge: join(f.base, 'missing') })).status, 400);
+  assert.equal((await f.post('settings', { dir: next, directory: next, krita: 'relative/krita' })).status, 400);
   assert.equal((await f.post('start', { name: '角色-01' })).status, 409);
   const restart = await createWorkbench({ defaultDir: f.dir, settingsPath: f.settingsPath });
   await new Promise<void>(resolve => restart.listen(0, '127.0.0.1', resolve));
@@ -134,15 +138,19 @@ test('task assets reject traversal and symlinks; SVG is served sandboxed; versio
   assert.ok(listed.includes('part-layering/agents/draw/workspace/draft.png'));
   const svg = await fetch(artifact('out.svg'));
   assert.equal(svg.status, 200); assert.match(svg.headers.get('content-security-policy')!, /sandbox/);
+  // The config page lists the knowledge directory, relative to it, in the worktree and at a commit.
+  const prompt = 'part-layering/step14_occlusion/prompts/11-遮挡层级规划.md';
   const files = await (await fetch(f.url + '/api/config/files?ref=HEAD')).json() as any;
-  assert.ok(files.paths.includes('knowledge/part-layering/step14_occlusion/prompts/11-遮挡层级规划.md'));
+  assert.ok(files.paths.includes(prompt));
   const localFiles = await (await fetch(f.url + '/api/config/files?ref=worktree')).json() as any;
-  assert.ok(localFiles.paths.includes('presets/optimized.env'));
-  assert.ok(localFiles.paths.includes('references/model-presets.md'));
-  const preset = await fetch(f.url + '/api/config/content?ref=worktree&path=presets/optimized.env');
-  assert.equal(preset.status, 200);
-  assert.match((await preset.json() as any).text, /layering_agent_part_draw_model=gpt-6.1-sol-xhigh/);
+  assert.ok(localFiles.paths.includes(prompt)); assert.match(localFiles.directory, /knowledge\/?$/);
+  const content = await fetch(f.url + '/api/config/content?' + new URLSearchParams({ ref: 'worktree', path: prompt }));
+  assert.equal(content.status, 200); assert.ok((await content.json() as any).text.length > 0);
   assert.equal((await fetch(f.url + '/api/config/content?ref=HEAD&path=../../.env')).status, 400);
+  // Tool schemas are code: a description in knowledge finds its schema beside the code.
+  const description = localFiles.paths.find((path: string) => /^shared\/tools\/[^/]+\/description\.md$/.test(path));
+  const schema = await (await fetch(f.url + '/api/config/schema?path=' + encodeURIComponent(description))).json() as any;
+  assert.doesNotThrow(() => JSON.parse(schema.text));
 });
 
 test('snapshots distinguish artifacts, real group states, missing outputs, review pass, two repairs and dead runners', async t => {
@@ -269,7 +277,7 @@ test('开始、继续、恢复、重试先检查 Krita：不可用则 409 且不
     ['step-action', { section: 'part-layering', step: 'step11_completion/head', action: 'retry' }]] as const) {
     const refused = await f.post(path, { name: 'case', ...value });
     assert.equal(refused.status, 409, path); assert.deepEqual(refused.value.krita, { path: '/opt/old-krita' });
-    assert.match(refused.value.error, /记录的 Krita 不可用：\/opt\/old-krita[\s\S]*Krita 可执行文件路径[\s\S]*--krita/);
+    assert.match(refused.value.error, /记录的 Krita 不可用：\/opt\/old-krita[\s\S]*全局设置/);
   }
   assert.equal(started.length, 0);
   assert.equal(JSON.parse(await readFile(join(task, 'part-layering/agents/steps/step11_completion/head/session.json'), 'utf8')).threadId, 'thread-1');

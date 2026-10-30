@@ -8,6 +8,7 @@ import { projectionOnlyEdit } from './projection-model.js';
 import { PhysicsPanel } from './physics-panel.js';
 import { HeadNineAxisPanel } from './nine-axis-panel.js';
 import { physicsProjects, createPhysicsCase } from './physics-cases.js';
+import { pickServerPath } from '../server-picker.js';
 import {
   defaults,
   presets,
@@ -342,12 +343,10 @@ function sync() {
     $("#" + id).disabled = !state.source || state.busy || state.layerBusy || (id === 'export-recipe' && state.surfaceActive);
   $("#refresh-project").disabled = $("#retry-project").disabled =
     state.busy || state.layerBusy;
-  $("#open-task").disabled = state.busy || state.layerBusy;
+  for (const el of document.querySelectorAll('#open-task, #import-folder, [data-open-task], [data-import-folder]'))
+    el.disabled = state.busy || state.layerBusy;
   $(".layer-panel").inert = state.projectOpening || state.surfaceActive && !physics?.ready;
-  for (const k of ["normal", "depth"]) {
-    $("#file-" + k).disabled = $("#remove-" + k).disabled =
-      state.busy || state.layerBusy;
-  }
+
   overlay();
   physics?.sync();
 }
@@ -631,8 +630,6 @@ function showSource() {
   $("#download-document").hidden = !source?.file;
   $("#refresh-project").hidden = !source?.project;
   $("#refresh-project").disabled = state.busy || state.layerBusy;
-  for (const el of document.querySelectorAll(".map-bind"))
-    el.hidden = !!source?.project || !!state.waitingProject;
   for (const k of ["normal", "depth"]) {
     $("#" + k + "-status").textContent = source?.[k]
       ? source.project
@@ -645,7 +642,6 @@ function showSource() {
         : state.waitingProject
           ? "待管线生成"
           : "未绑定";
-    $("#remove-" + k).hidden = !!source?.project || !source?.[k];
   }
   $("#map-validity").hidden =
     !source || source.layerKey === "baseline" || !!source.normal;
@@ -739,81 +735,17 @@ async function install(source, id, reset = true) {
         : "color",
     );
     showSource();
-    const u = new URL(location.href);
-    u.searchParams.delete("sample");
-    u.searchParams.delete("name");
-    u.searchParams.delete("project");
-    u.searchParams.delete('preview');
-    u.searchParams.delete('physicsCase');
-    if (source.project) {
-      u.searchParams.set("project", source.project.name);
-      u.searchParams.set('preview', source.project.previewMode);
+    if (source.project) projectURL(source.project);
+    else {
+      const u = new URL(location.href);
+      for (const key of ['name', 'sample', 'project', 'folder', 'preview', 'physicsCase']) u.searchParams.delete(key);
+      if (source.sample) u.searchParams.set("name", source.sample);
+      history.replaceState(null, "", u);
     }
-    if (source.sample) u.searchParams.set("name", source.sample);
-    history.replaceState(null, "", u);
     if (reset) void layers.open(source);
   } finally {
     Object.values(urls).forEach(URL.revokeObjectURL);
   }
-}
-async function open(file, options = {}) {
-  layers.clear();
-  const id = begin("正在打开 " + file.name + "…");
-  try {
-    const source = /\.png$/i.test(file.name)
-      ? { name: file.name, file, color: file, layers: [] }
-      : await openDocument(file);
-    if (id !== state.generation) return;
-    await install({ ...source, ...options }, id);
-  } catch (e) {
-    if (id === state.generation) toast(e.message);
-  } finally {
-    finish(id);
-  }
-}
-$("#file-document").onchange = (e) => {
-  const file = e.target.files[0];
-  if (file) void open(file);
-  e.target.value = "";
-};
-for (const k of ["normal", "depth"]) {
-  $("#file-" + k).onchange = async (e) => {
-    const file = e.target.files[0];
-    e.target.value = "";
-    if (!file) return;
-    if (!state.source) return toast("请先打开角色文件");
-    const id = begin("正在绑定贴图…");
-    try {
-      await install({ ...state.source, [k]: file }, id, false);
-      if (id === state.generation) {
-        state.source.mapBindings.set(state.source.layerKey, {
-          normal: state.source.normal,
-          depth: state.source.depth,
-        });
-      }
-    } catch (e) {
-      toast(e.message);
-    } finally {
-      finish(id);
-    }
-  };
-  $("#remove-" + k).onclick = async () => {
-    if (!state.source || state.busy) return;
-    const id = begin("正在更新贴图…");
-    try {
-      await install({ ...state.source, [k]: null }, id, false);
-      if (id === state.generation)
-        state.source.mapBindings.set(state.source.layerKey, {
-          normal: state.source.normal,
-          depth: state.source.depth,
-        });
-      if (k === "normal") selectTool("move");
-    } catch (e) {
-      toast(e.message);
-    } finally {
-      finish(id);
-    }
-  };
 }
 $("#download-document").onclick = () => {
   if (state.source?.file) download(state.source.file, state.source.name);
@@ -836,30 +768,12 @@ $("#close-document").onclick = () => {
   u.searchParams.delete("name");
   u.searchParams.delete("sample");
   u.searchParams.delete("project");
+  u.searchParams.delete("folder");
+  u.searchParams.delete('preview');
   u.searchParams.delete('physicsCase');
   history.replaceState(null, "", u);
 };
-let dragDepth = 0;
-$("#drop-zone").ondragover = (e) => {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = "copy";
-};
-$("#drop-zone").ondragenter = (e) => {
-  e.preventDefault();
-  dragDepth++;
-  $("#drop-hint").hidden = false;
-};
-$("#drop-zone").ondragleave = () => {
-  if (--dragDepth <= 0) $("#drop-hint").hidden = true;
-};
-$("#drop-zone").ondrop = (e) => {
-  e.preventDefault();
-  dragDepth = 0;
-  $("#drop-hint").hidden = true;
-  const file = e.dataTransfer.files[0];
-  if (file) void open(file);
-};
-// Do not navigate away from the editor when a file is dropped on a sidebar.
+// Files are not opened by dropping; keep a stray drop from navigating away from the editor.
 window.addEventListener("dragover", (e) => e.preventDefault());
 window.addEventListener("drop", (e) => e.preventDefault());
 $("#export-recipe").onclick = () => {
@@ -884,29 +798,6 @@ $("#export-recipe").onclick = () => {
     "lighting-recipe.json",
   );
 };
-$("#import-recipe").onchange = async (e) => {
-  try {
-    const file = e.target.files[0];
-    if (!file) return;
-    const r = JSON.parse(await file.text());
-    if (r.schema !== 2 || r.renderer !== rendererVersion)
-      throw Error("参数版本不匹配；旧平行光参数请在原版本中打开");
-    if (
-      !state.inputs ||
-      ["color", "normal", "depth"].some(
-        (k) => r.inputs?.[k] !== state.inputs[k],
-      )
-    )
-      throw Error("参数对应的贴图与当前文件不同");
-    state.settings = validateSettings(r.settings);
-    apply(true);
-    toast("参数已载入");
-  } catch (e) {
-    toast(e.message);
-  } finally {
-    e.target.value = "";
-  }
-};
 async function openJianma() {
   layers.clear();
   const id = begin("正在打开 Jianma…");
@@ -926,49 +817,37 @@ async function openJianma() {
   }
 }
 let projectListGeneration = 0;
-async function openProject(name, dir, preview, workspace, refresh = false) {
-  if (Object.hasOwn(physicsProjects, name)) return openExampleProject(physicsProjects[name].caseId, workspace);
-  const id = begin("正在打开项目 " + name + "…", true);
+// A project is a whole task folder: one listed from the run directory, or one imported
+// from elsewhere on the server. Edits stay in this page; nothing is written back.
+async function openProject(folder, preview, workspace, refresh = false) {
+  const id = begin("正在打开项目…", true);
   try {
-    dir ??= (await get("./api/settings")).directory;
     let project = await get(
-      "./api/studio/project?" + new URLSearchParams({ name, dir, ...(preview ? { preview } : {}) }),
+      "./api/studio/project?" + new URLSearchParams({ folder, ...(preview ? { preview } : {}) }),
     );
     // Load the complete available document once. Shadow visibility is edited
     // in its native graph, never by reopening another base from a selector.
     if (project.previewMode === 'normal-depth' && project.previewModes.mask) {
-      project = await get('./api/studio/project?' + new URLSearchParams({ name, dir, preview: project.previewModes.mixed ? 'mixed' : 'mask' }));
+      project = await get('./api/studio/project?' + new URLSearchParams({ folder, preview: project.previewModes.mixed ? 'mixed' : 'mask' }));
     }
     if (id !== state.generation) return;
     void nineAxis.load(project);
     if (!project.files.document.available) {
       if (!state.source) {
-        state.waitingProject = { name, dir };
+        state.waitingProject = { name: project.displayName || project.name, folder: project.folder };
         showSource();
-        const u = new URL(location.href);
-        u.searchParams.delete("name");
-        u.searchParams.delete("sample");
-        u.searchParams.set("project", name);
-        history.replaceState(null, "", u);
+        projectURL(project);
         $("#task-dialog").close();
       }
-      throw Error(name + "：角色组装结果尚未生成");
+      throw Error(project.name + "：角色组装结果尚未生成");
     }
     const read = (kind) => {
       const file = project.files[kind];
       return file.available
-        ? blob(
-            "./artifact?" +
-              new URLSearchParams({
-                name,
-                dir,
-                path: file.path,
-                version: file.version,
-              }),
-          )
+        ? blob("./studio-artifact?" + new URLSearchParams({ folder: project.folder, path: file.path, version: file.version }))
         : null;
     };
-    const sameDocument = !refresh && state.source?.project?.name === name && state.source.project.dir === dir &&
+    const sameDocument = !refresh && state.source?.project?.folder === project.folder &&
       state.source.project.files.document.path === project.files.document.path &&
       state.source.project.files.document.version === project.files.document.version;
     const [document, normal, depth, bindings] = await Promise.all([
@@ -1003,33 +882,54 @@ async function openProject(name, dir, preview, workspace, refresh = false) {
     finish(id);
   }
 }
+// A project from the run directory is addressed by name; an imported one by its folder.
+function projectURL(project) {
+  const u = new URL(location.href);
+  for (const key of ['name', 'sample', 'project', 'folder', 'preview', 'physicsCase']) u.searchParams.delete(key);
+  if (project.inDirectory) u.searchParams.set('project', project.name);
+  else u.searchParams.set('folder', project.folder);
+  if (project.previewMode) u.searchParams.set('preview', project.previewMode);
+  history.replaceState(null, '', u);
+}
+async function importFolder() {
+  if (state.busy || state.layerBusy) return;
+  const folder = await pickServerPath({ get, esc, icon: (name) => name === 'folder' ? '▸' : name === 'close' ? '×' : '·', kind: 'dir',
+    path: state.source?.project?.folder ? state.source.project.folder.replace(/[\\/][^\\/]+$/, '') : '',
+    title: '导入任务文件夹', note: '选择服务器上的一个任务文件夹（含 run.json），进入后点「选择此目录」。' });
+  if (folder) await openProject(folder);
+}
 async function chooseProject() {
   const generation = ++projectListGeneration;
-  $("#task-dialog").showModal();
+  if (!$("#task-dialog").open) $("#task-dialog").showModal();
   $("#project-list").replaceChildren();
+  $("#project-directory").textContent = '';
   $("#project-status").textContent = "正在读取项目…";
-  const addProject = (name, label, dir) => {
+  const addProject = (label, open, rename) => {
     const button = document.createElement('button');
     button.className = 'project-item';
-    button.dataset.project = name;
     button.textContent = label;
-    button.onclick = () => void openProject(name, dir);
-    if (dir) {
+    button.onclick = open;
+    if (rename) {
       const row = document.createElement('div'); row.className = 'project-item-row';
       const edit = document.createElement('button'); edit.className = 'project-name-edit'; edit.textContent = '✎';
       edit.title = '修改显示名称'; edit.setAttribute('aria-label', `修改 ${label} 的显示名称`);
-      edit.dataset.renameProject = name;
-      edit.onclick = () => editProjectName(name, label, dir);
+      edit.onclick = rename;
       row.append(button, edit); $('#project-list').append(row);
     } else $('#project-list').append(button);
+    return button;
   };
-  for (const [name, project] of Object.entries(physicsProjects)) addProject(name, project.label);
+  for (const [name, project] of Object.entries(physicsProjects))
+    addProject(project.label, () => void openExampleProject(project.caseId)).dataset.project = name;
   try {
     const data = await get("./api/tasks");
     if (generation !== projectListGeneration) return;
-    $("#project-status").textContent = "选择项目，加载图层和贴图";
+    $("#project-directory").textContent = '运行目录 ' + data.directory;
+    $("#project-status").textContent = data.tasks.length ? "选择项目，加载图层和贴图" : "运行目录中还没有项目";
+    const separator = data.directory.includes('\\') && !data.directory.includes('/') ? '\\' : '/';
     for (const project of data.tasks) {
-      addProject(project.name, project.displayName || project.name, data.directory);
+      const label = project.displayName || project.name;
+      addProject(label, () => void openProject(data.directory.replace(/[\\/]$/, '') + separator + project.name),
+        () => editProjectName(project.name, label, data.directory)).dataset.project = project.name;
     }
   } catch (e) {
     if (generation === projectListGeneration)
@@ -1059,15 +959,16 @@ $('#project-name-form').onsubmit = async e => {
   } catch (error) { $('#project-name-error').textContent = error.message; }
   finally { $('#project-name-save').disabled = false; }
 };
-$("#open-task").onclick = chooseProject;
+for (const el of document.querySelectorAll('#open-task, [data-open-task]')) el.onclick = chooseProject;
+for (const el of document.querySelectorAll('#import-folder, [data-import-folder], #project-import')) el.onclick = () => void importFolder();
 $("#retry-project").onclick = () => {
   if (state.waitingProject && !state.busy)
-    void openProject(state.waitingProject.name, state.waitingProject.dir);
+    void openProject(state.waitingProject.folder);
 };
 $("#refresh-project").onclick = () => {
   if (state.source?.project && !state.busy && !state.layerBusy) {
-    const { name, dir, previewMode } = state.source.project;
-    void openProject(name, dir, previewMode, state.workspace, true);
+    const { folder, previewMode } = state.source.project;
+    void openProject(folder, previewMode, state.workspace, true);
   }
 };
 for (const button of document.querySelectorAll('[data-workspace]')) button.onclick = () => {
@@ -1103,14 +1004,18 @@ async function openExampleProject(caseId, workspace = 'lighting') {
 sync();
 // Projects load the complete document; workspaces only choose the editor.
 const requested = new URLSearchParams(location.search);
-const requestedProject = requested.get('project') || (requested.get('physicsCase') ? `example:cloth:${requested.get('physicsCase')}` : null);
-if (requestedProject) void openProject(requestedProject, undefined, requested.get('preview'), ['mask','lighting','physics','nine-axis'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined);
-else if (
-  requested.get("name") === "jianma" ||
-  requested.get("sample") === "jianma"
-)
-  void openJianma();
-else if (requested.get("name")) void openProject(requested.get("name"));
+const requestedWorkspace = ['mask','lighting','physics','nine-axis'].includes(requested.get('workspace')) ? requested.get('workspace') : undefined;
+const requestedExample = physicsProjects[requested.get('project')] ?? (requested.get('physicsCase') ? physicsProjects[`example:cloth:${requested.get('physicsCase')}`] : undefined);
+// A run-directory project is named; an imported one keeps its folder. With neither, the list opens.
+async function openRequested() {
+  const name = requested.get('project') || (requested.get('name') !== 'jianma' && requested.get('name'));
+  const folder = requested.get('folder') || (name && (await get('./api/settings')).directory.replace(/[\\/]$/, '') + '/' + name);
+  if (folder) return openProject(folder, requested.get('preview'), requestedWorkspace);
+  void chooseProject();
+}
+if (requestedExample) void openExampleProject(requestedExample.caseId, requestedWorkspace);
+else if (requested.get("name") === "jianma" || requested.get("sample") === "jianma") void openJianma();
+else void openRequested().catch(error => toast(error.message));
 window.addEventListener("pagehide", () => {
   surfaces.clear();
   layers.clear(true);

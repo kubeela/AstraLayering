@@ -158,10 +158,6 @@ p {
   color: var(--muted);
   line-height: 1.6;
 }
-.open-file {
-  display: block;
-  padding: 10px;
-}
 .primary {
   background: #414d6a;
   border-color: #657aa5;
@@ -177,6 +173,13 @@ p {
   background: transparent;
   font-size: 11px;
   padding: 6px;
+}
+.file-actions > .primary {
+  background: #414d6a;
+  padding: 9px 6px;
+}
+#empty-state .file-actions {
+  width: min(280px, 100%);
 }
 .document-heading {
   display: flex;
@@ -546,8 +549,7 @@ input[type="range"]::-moz-range-thumb {
 }
 #loading,
 #empty-state,
-#project-empty,
-#drop-hint {
+#project-empty {
   position: absolute;
   inset: 0;
   display: flex;
@@ -586,14 +588,6 @@ input[type="range"]::-moz-range-thumb {
   background: #242932df;
   white-space: pre-line;
   line-height: 1.7;
-}
-#drop-hint {
-  background: #334d70e8;
-  outline: 2px dashed #a4c5f5;
-  outline-offset: -12px;
-  font-size: 17px;
-  pointer-events: none;
-  z-index: 5;
 }
 #split-line {
   position: absolute;
@@ -1050,3 +1044,24 @@ canvas.disturb { cursor: crosshair; }
 .nine-part em { margin-left: auto; font-style: normal; font-size: 10px; color: #c49a52; }
 .nine-dirty { color: #ffcf5a; }
 #nine-axis-reset { margin-top: 4px; }
+#project-directory { margin: 4px 0 12px; overflow-wrap: anywhere; }
+#project-import { margin-top: 10px; }
+/* The server-side path picker shared with the workbench settings. */
+#picker-dialog { width: min(640px, calc(100vw - 40px)); padding: 0; }
+#picker-dialog .modal-heading { display: flex; justify-content: space-between; gap: 12px; padding: 20px 22px 12px; }
+#picker-dialog h2 { margin: 0; font-size: 16px; }
+#picker-dialog .modal-heading p { margin: 6px 0 0; font-size: 11px; color: var(--muted); }
+#picker-dialog .icon-button { border: 0; background: none; font-size: 20px; padding: 0 4px; }
+.picker-bar { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 22px 10px; }
+.picker-bar button { font-size: 11px; padding: 5px 9px; }
+#picker-dialog .picker-path { display: flex; gap: 6px; padding: 0 22px 10px; }
+.picker-path input { flex: 1; min-width: 0; padding: 6px 8px; color: inherit; background: #1d2028; border: 1px solid var(--line); border-radius: 4px; }
+.picker-list { margin: 0 22px; border: 1px solid var(--line); border-radius: 6px; height: 340px; overflow: auto; display: flex; flex-direction: column; background: #1f232b; }
+.picker-list > button { display: flex; align-items: center; gap: 8px; padding: 7px 11px; border: 0; border-radius: 0; background: none; text-align: left; font-size: 12px; }
+.picker-list > button:hover { background: #2d323c; }
+.picker-list > button.active { background: #414b66; color: #e2eaff; }
+.picker-list span { overflow-wrap: anywhere; }
+.picker-list .dialog-note { padding: 0 12px; color: var(--muted); font-size: 11px; }
+#picker-dialog .form-error { margin: 0; padding: 6px 22px 0; font-size: 12px; color: #f0a0a8; white-space: pre-wrap; }
+#picker-dialog .modal-footer { display: flex; align-items: center; gap: 8px; padding: 14px 22px; margin-top: 12px; border-top: 1px solid var(--line); }
+#picker-dialog .modal-footer > span { flex: 1; min-width: 0; font-size: 10px; color: var(--muted); overflow-wrap: anywhere; }
