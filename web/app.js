@@ -214,7 +214,7 @@ function svgPreviewPanel(index,group,phase,phaseFiles) {
 // Task recovery: 继续 keeps products and sessions, 恢复 drops the sessions and keeps
 // products, 重试 deletes the step products, sessions and agent attempt records.
 // Each acts on every interrupted or failed step of the task at once, then runs the
-// task again. Without any step record 继续 opens the run dialog instead. While the
+// task again; 重试 also redoes completed steps that lost a delivery. Without any step record 继续 opens the run dialog instead. While the
 // task runs they cannot apply, so the toolbar holds the stop button in their place.
 const stepActionNames={continue:'继续',resume:'恢复',retry:'重试'};
 // Shown on hover and focus: what the button keeps or drops, and when to choose it.
@@ -225,20 +225,20 @@ const stepActionHelp={
 };
 function stepTargets() {
  return (data.sections||[]).flatMap((section,index)=>[
-  ...(section.steps||[]).map(step=>({index,id:step.id,status:step.status,session:step.session}))]);
+  ...(section.steps||[]).map(step=>({index,id:step.id,status:step.status,session:step.session,missing:step.missing}))]);
 }
-const brokenSteps=(targets=stepTargets())=>targets.filter(target=>target.status==='running');
-const stepLabel=target=>`${stages[target.index].name} ${target.id}`;
+const brokenSteps=(targets=stepTargets(),action='continue')=>targets.filter(target=>target.status==='running'||action==='retry'&&target.missing?.length);
+const stepLabel=target=>`${stages[target.index].name} ${target.id}${target.status==='completed'?'（缺少交付）':''}`;
 const visibleStage=index=>!data.archived||Object.hasOwn(data.run?.sections||{},stages[index].id);
 function stepToolbar() {
  if(!state.name)return '';
  const exportButton=data.canExport?`<a class="button" data-export href="./api/export?${taskParams()}" title="下载正式产物、完整流程预览与报告；不包含过程文件">导出成果</a>`:'';
  if(data.archived)return `<div class="step-toolbar" role="group" aria-label="成果归档">${exportButton}<span>成果归档</span></div>`;
- const targets=stepTargets(),broken=brokenSteps(targets),busy=data.runnerAlive||data.lockHeld;
+ const targets=stepTargets(),busy=data.runnerAlive||data.lockHeld;
  if(busy)return `<div class="step-toolbar" role="group" aria-label="任务控制"><button class="button" data-action="stop" title="${data.canStop?'停止运行，保留产物与续跑记录（命令行 --stop）':'当前运行未提供可用的停止入口'}" ${data.canStop?'':'disabled'}>${icon('stop')}停止</button></div>`;
- const allowed=action=>action==='continue'||broken.length>0;
- const scope=broken.length?`作用于 ${broken.length} 个中断 / 失败步骤：${broken.map(stepLabel).join('、')}`:'没有中断或失败的步骤，从未完成处续跑';
- return `<div class="step-toolbar" role="group" aria-label="任务恢复">${Object.keys(stepActionNames).map(action=>`<span class="step-action"><button class="${action==='continue'?'primary':'button'}" data-step-toolbar="${action}" aria-describedby="step-tip-${action}" ${!allowed(action)?'disabled':''}>${stepActionNames[action]}</button><span class="step-tip" role="tooltip" id="step-tip-${action}"><b>${stepActionNames[action]}</b>${!targets.length?'<span>运行任务，可选择执行范围。</span>':stepActionHelp[action].map(line=>`<span>${line}</span>`).join('')}${!targets.length?'':!allowed(action)?'<small>当前没有中断或失败的步骤，不可用。</small>':`<small>${esc(scope)}。<span class="nowrap">命令行 --${action}</span></small>`}</span></span>`).join('')}${exportButton}</div>`;
+ const allowed=action=>action==='continue'||brokenSteps(targets,action).length>0;
+ const scope=action=>{const steps=brokenSteps(targets,action);return steps.length?`作用于 ${steps.length} 个中断 / 失败步骤：${steps.map(stepLabel).join('、')}`:'没有中断或失败的步骤，从未完成处续跑';};
+ return `<div class="step-toolbar" role="group" aria-label="任务恢复">${Object.keys(stepActionNames).map(action=>`<span class="step-action"><button class="${action==='continue'?'primary':'button'}" data-step-toolbar="${action}" aria-describedby="step-tip-${action}" ${!allowed(action)?'disabled':''}>${stepActionNames[action]}</button><span class="step-tip" role="tooltip" id="step-tip-${action}"><b>${stepActionNames[action]}</b>${!targets.length?'<span>运行任务，可选择执行范围。</span>':stepActionHelp[action].map(line=>`<span>${line}</span>`).join('')}${!targets.length?'':!allowed(action)?'<small>当前没有中断或失败的步骤，不可用。</small>':`<small>${esc(scope(action))}。<span class="nowrap">命令行 --${action}</span></small>`}</span></span>`).join('')}${exportButton}</div>`;
 }
 function groupPhaseNode(index,id,label,status,detail,items,number,hasPreview=false) {
  const key=`${index}:${id}`,closed=state.collapsedPhases.has(key);
@@ -766,7 +766,7 @@ function onText(x,y) {
 function bind() {
  const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
  document.querySelectorAll('[data-step-toolbar]').forEach(b=>b.onclick=async()=>{
-  const targets=stepTargets(),broken=brokenSteps(targets),action=b.dataset.stepToolbar;
+  const targets=stepTargets(),action=b.dataset.stepToolbar,broken=brokenSteps(targets,action);
   if(!targets.length){if(action==='continue')showNew(false,true);return;}
   if(action==='retry'&&!confirm(`重试：删除以下步骤的产物、会话与 agent 尝试记录并重新运行。\n${broken.map(stepLabel).join('\n')}\n确定吗？`))return;
   b.disabled=true;

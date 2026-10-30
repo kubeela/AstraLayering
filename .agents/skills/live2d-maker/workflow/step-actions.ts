@@ -1,6 +1,7 @@
 import { readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { readStep, type StepStatus } from '../shared/step-chain.ts';
+import { missingDeliveries } from '../shared/step-deliveries.ts';
 import { fromTaskPath, taskRootOf } from '../shared/task-paths.ts';
 import { within } from '../shared/raster/run-store.ts';
 import { clearStepSession, readStepSession } from '../shared/agents/step-session.ts';
@@ -11,7 +12,8 @@ import { sectionIds, type SectionId } from '../shared/paths.ts';
 import { acquireTaskLock, directoryFor, sectionId, type TaskOptions } from './state.ts';
 
 // Step recovery, for one step (CLI --section/--step) or for every step still
-// marked .running (web toolbar and CLI, applyTaskAction):
+// marked .running (web toolbar and CLI, applyTaskAction); retry also takes the
+// completed steps that lost a delivery, which a run refuses to keep:
 //   continue: change nothing; the next run continues the step with its
 //             products and session.
 //   resume:   drop the step's session and keep its products, so the next run
@@ -25,7 +27,8 @@ import { acquireTaskLock, directoryFor, sectionId, type TaskOptions } from './st
 // The empty step id continues the whole section.
 export const stepActions = ['continue', 'resume', 'retry'] as const;
 export type StepAction = typeof stepActions[number];
-export type StepEntry = { id: string; status: Exclude<StepStatus, 'absent'>; session: boolean };
+// missing: the deliveries a completed step lost, relative to the section.
+export type StepEntry = { id: string; status: Exclude<StepStatus, 'absent'>; session: boolean; missing?: string[] };
 
 const partSections: readonly SectionId[] = ['part-layering', 'clothing-part-layering'];
 const safeSegment = (segment: string) => !!segment && segment !== '.' && segment !== '..' && !/[\\\0]/.test(segment);
@@ -54,7 +57,8 @@ export async function listSteps(root: string, section: SectionId): Promise<StepE
     const { status } = await readStep(join(root, id));
     if (status === 'absent') continue;
     const session = await readStepSession(root, id);
-    steps.push({ id, status, session: !!session?.threadId });
+    const missing = status === 'completed' ? (await missingDeliveries(root, section, id)).map(path => relative(root, path).split(/[\\/]/).join('/')) : [];
+    steps.push({ id, status, session: !!session?.threadId, ...(missing.length ? { missing } : {}) });
   }
   return steps;
 }
@@ -76,8 +80,8 @@ export async function applyStepAction(options: Pick<TaskOptions, 'name' | 'dir'>
 
 // The task-wide form the web toolbar uses: the action applies to every step
 // still marked .running in every section; interrupted and failed steps both
-// keep that marker. Continue with no such step just runs the task on from
-// where it stopped.
+// keep that marker. Retry also redoes completed steps that lost a delivery.
+// Continue with no such step just runs the task on from where it stopped.
 export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'> & { action: string }): Promise<string> {
   if (!(stepActions as readonly string[]).includes(options.action)) throw new Error('未知操作：' + options.action + '；可选：' + stepActions.join(', '));
   const action = options.action as StepAction, directory = directoryFor(options);
@@ -87,7 +91,7 @@ export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'>
     for (const section of sectionIds) {
       const root = sectionRoot(directory, section);
       for (const step of await listSteps(root, section)) {
-        if (step.status === 'running') messages.push(`${section}/` + await actOnStep(root, section, step.id, action));
+        if (step.status === 'running' || action === 'retry' && step.missing) messages.push(`${section}/` + await actOnStep(root, section, step.id, action));
       }
     }
     if (!messages.length) {

@@ -66,14 +66,13 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 
 `.running` 表示已开始但未完成，不表示系统进程仍在运行。报告先写 `.tmp`，只有模型回合成功、报告结论有效且交付检查通过后才发布正式 Markdown；日志和暂存文件不算完成事实。
 
-先停止当前进程，再删除标记触发重跑。例如从第二步重新制作：
+先停止当前进程，再用重试重做某一步，不要手动删除标记。例如从第二步重新制作：
 
 ```bash
-rm <运行根目录>/jianma/clothing-raster-layering/step02/.completed
-pnpm clothing-raster-layering --name jianma --knowledge /path/to/knowledge
+pnpm start --name jianma --retry --section clothing-raster-layering --step step02
 ```
 
-这会保留第一步及上游产物，清空第二步目录并创建新绘制 thread。删除 `step01/.completed` 只重做第一步，已完成的第二步沿用；未完成步骤也可删除其 `.running` 触发相同重置。重跑会删除对应步骤的工程和日志。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
+这会保留第一步及上游产物，删除第二步目录、会话与 agent 尝试记录，下次运行时创建新绘制 thread。重试 `step01` 只重做第一步，已完成的第二步沿用。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
 
 ## 验证与代码入口
 

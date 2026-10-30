@@ -103,7 +103,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     },
     async keep(step) {
       if (paths.has(step.id) && !await exists(output(step))) {
-        throw new Error(`${step.id} 已标记完成但交付缺失：${output(step)}；请恢复文件，或删除 ${step.id}/.completed 触发重跑。`);
+        throw new Error(`${step.id} 已标记完成但交付缺失：${output(step)}；请恢复文件，或重试该步骤（网页「重试」或 --retry）。`);
       }
     },
     async step(step, status) {
