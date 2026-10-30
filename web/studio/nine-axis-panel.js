@@ -20,8 +20,6 @@ export class HeadNineAxisPanel {
     $('#nine-axis-grid').onchange = e => { this.showGrid = e.target.checked; this.draw(); };
     $('#nine-axis-radius').oninput = e => { this.radius = e.target.valueAsNumber; $('#nine-axis-radius-value').textContent = this.radius + ' px'; };
     $('#nine-axis-reset').onclick = () => this.resetKeyform();
-    $('#nine-axis-export').onclick = () => this.export();
-    $('#nine-axis-import').onchange = e => { const f = e.target.files[0]; e.target.value = ''; if (f) void this.import(f); };
     $('#nine-axis-restore').onclick = () => this.project && void this.load(this.project, true);
     $('#nine-axis-fit').onclick = () => this.fit();
     this.view.addEventListener('wheel', e => this.wheel(e), { passive: false });
@@ -114,7 +112,7 @@ export class HeadNineAxisPanel {
       $('#nine-axis-edit-hint').textContent = key === undefined ? '停在关键形上（点上方 −30 / 0 / +30）才能拖动控制点' : `正在编辑关键形 ${key > 0 ? '+' : ''}${key}：拖动控制点，软选择半径内的点随之移动`;
       $('#nine-axis-reset').disabled = key === undefined || !this.original?.has(p.id + '@' + key);
     }
-    $('#nine-axis-dirty').hidden = !this.dirty.size; $('#nine-axis-dirty').textContent = `已修改 ${this.dirty.size} 个变形器，导出 JSON 保存`;
+    $('#nine-axis-dirty').hidden = !this.dirty.size; $('#nine-axis-dirty').textContent = `已修改 ${this.dirty.size} 个变形器，只在本次会话内保留`;
     this.draw();
   }
   resize() {
@@ -184,19 +182,5 @@ export class HeadNineAxisPanel {
   }
   swing() { cancelAnimationFrame(this.raf); $('#nine-axis-swing').checked = true; const t0 = performance.now(); const tick = t => { this.setValue(30 * Math.sin((t - t0) / 1000 * Math.PI * .5)); this.raf = requestAnimationFrame(tick); }; this.raf = requestAnimationFrame(tick); }
   stopSwing() { cancelAnimationFrame(this.raf); this.raf = 0; $('#nine-axis-swing').checked = false; }
-  export() {
-    if (!this.doc) return;
-    const a = document.createElement('a'), u = URL.createObjectURL(new Blob([JSON.stringify(this.doc)], { type: 'application/json' }));
-    a.href = u; a.download = 'deformers.json'; a.click(); setTimeout(() => URL.revokeObjectURL(u), 1000);
-  }
-  async import(file) {
-    try {
-      const doc = validateHeadNineAxis(JSON.parse(await file.text()));
-      const ids = new Set(this.doc?.parts.map(p => p.id));
-      if (!this.doc || doc.parts.length !== ids.size || doc.parts.some(p => !ids.has(p.id))) throw Error('导入的变形器与当前项目部件不一致');
-      for (const p of doc.parts) { const own = this.doc.parts.find(q => q.id === p.id); if (own.cols !== p.cols || own.rows !== p.rows) throw Error(p.id + '：网格尺寸不一致'); own.keyforms = p.keyforms; this.dirty.add(p.id); }
-      this.sync();
-    } catch (e) { this.error(e.message); }
-  }
   activate(on) { if (on === this.active) return; this.active = on; this.view.hidden = !on; if (!on) this.stopSwing(); else requestAnimationFrame(() => this.resize()); }
 }
