@@ -15,7 +15,7 @@ export function resolveRunsDirectory(dir = runsDirectory): string {
   if (!isAbsolute(dir)) throw new Error('--dir 必须是运行根目录的绝对路径。');
   return resolve(dir);
 }
-export const sectionIds = ['part-layering', 'raster-layering', 'clothing-part-layering', 'clothing-raster-layering', 'character-assembly', 'shadow'] as const;
+export const sectionIds = ['part-layering', 'raster-layering', 'clothing-part-layering', 'clothing-raster-layering', 'character-assembly', 'shadow', 'nine-axis'] as const;
 export type SectionId = typeof sectionIds[number];
 
 export function taskDirectory(name: string, root = runsDirectory): string {
@@ -30,7 +30,7 @@ export function taskDirectory(name: string, root = runsDirectory): string {
 export function sectionDirectory(name: string, section: SectionId, root = runsDirectory): string {
   // The part entrypoints historically accept any single directory name. Keep
   // raster's stricter startup rule local to those sections when sharing paths.
-  if ((section === 'raster-layering' || section === 'clothing-raster-layering' || section === 'character-assembly' || section === 'shadow')
+  if ((section === 'raster-layering' || section === 'clothing-raster-layering' || section === 'character-assembly' || section === 'shadow' || section === 'nine-axis')
     && !/^[\p{L}\p{N}][\p{L}\p{N}._-]{0,127}$/u.test(name)) {
     throw new Error('--name 必须是单个任务名，以字母或数字开头，只含字母、数字、点、下划线或短横线（最多 128 字符）。');
   }
