@@ -56,14 +56,6 @@ async function blob(url) {
   if (!r.ok) throw Error(`文件读取失败 (${r.status})`);
   return r.blob();
 }
-function download(file, name) {
-  const u = URL.createObjectURL(file),
-    a = document.createElement("a");
-  a.href = u;
-  a.download = name;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(u), 10000);
-}
 async function hash(file) {
   if (!file) return null;
   return [
@@ -316,7 +308,6 @@ function sync() {
   $('#physics-workspace').hidden = !physical;
   $('[data-tool="disturb"]').hidden = !physical;
   $('[data-tool="disturb"]').disabled = !physics?.enabled || state.busy;
-  $('.recipe-actions').hidden = !lighting;
   $('#engine').textContent = [state.lightingEnabled && hasNormal ? '光照' : '', physics?.enabled ? '物理' : '', '原尺寸'].filter(Boolean).join(' · ');
   $('#physics-case-playback').hidden = !state.source?.physicsCase;
   for (const button of document.querySelectorAll('[data-workspace]')) {
@@ -336,8 +327,7 @@ function sync() {
       (["lit", "split", "shading"].includes(view) && !hasNormal);
     el.classList.toggle("active", view === state.view);
   }
-  for (const id of ["export-image", "export-recipe", "actual"])
-    $("#" + id).disabled = !state.source || state.busy || state.layerBusy || (id === 'export-recipe' && state.surfaceActive);
+  $("#actual").disabled = !state.source || state.busy || state.layerBusy;
   $("#refresh-project").disabled = $("#retry-project").disabled =
     state.busy || state.layerBusy;
   for (const el of document.querySelectorAll('#open-task, #import-folder, [data-open-task], [data-import-folder]'))
@@ -536,21 +526,7 @@ $("#actual").onclick = () => {
     sync();
   }
 };
-$("#export-image").onclick = async () => {
-  try {
-    download(
-      await stage.exportPNG(),
-      (state.source?.name || "character").replace(/\.[^.]+$/, "") +
-        "-" +
-        state.view +
-        ".png",
-    );
-  } catch (e) {
-    toast(e.message);
-  }
-};
 const layers = new LayerPanel({
-  download,
   error: toast,
   rendered() {
     projections?.render();
@@ -602,7 +578,7 @@ const surfaces = new SurfacePreview({stage, source:()=>state.source, session:()=
   changed(active){state.surfaceActive=active;if(!active)physics?.clear();sync();}});
 physics = new PhysicsPanel({stage, surfaces, source:()=>state.source, fingerprint:()=>state.source?.authorHash,
   workspace:()=>state.workspace, tool:()=>state.tool, busy:()=>state.busy||state.layerBusy, error:toast,
-  download, changed(){layers.render();if(!physics.enabled&&state.tool==='disturb')selectTool('move');sync();}, selectLayer(id){if(layers.selected!==id){layers.selected=id;layers.render();}}});
+  changed(){layers.render();if(!physics.enabled&&state.tool==='disturb')selectTool('move');sync();}, selectLayer(id){if(layers.selected!==id){layers.selected=id;layers.render();}}});
 $('#effect-lighting').onchange = e => {
   state.lightingEnabled = e.target.checked;
   if (!state.lightingEnabled) { if (state.tool === 'light') selectTool('move'); if (state.view === 'shading') selectView('lit'); }
@@ -623,7 +599,6 @@ function showSource() {
   $("#quality").textContent = source
     ? `${stage.source.w} × ${stage.source.h} px`
     : "未打开文件";
-  $("#download-document").hidden = !source?.file;
   $("#refresh-project").hidden = !source?.project;
   $("#refresh-project").disabled = state.busy || state.layerBusy;
   for (const k of ["normal", "depth"]) {
@@ -672,15 +647,9 @@ async function install(source, id, reset = true) {
   try {
     for (const k of ["color", "normal", "depth"])
       if (source[k]) urls[k] = URL.createObjectURL(source[k]);
-    const [entries, hashes, authorHash] = await Promise.all([
+    const [entries, authorHash] = await Promise.all([
       Promise.all(
         Object.entries(urls).map(async ([k, url]) => [k, await loadImage(url)]),
-      ),
-      Promise.all(
-        ["color", "normal", "depth"].map(async (k) => [
-          k,
-          await hash(source[k]),
-        ]),
       ),
       source.authorHash || hash(source.file || source.originalColor || source.color),
     ]);
@@ -708,7 +677,6 @@ async function install(source, id, reset = true) {
     }
     state.source = source;
     source.authorHash = authorHash;
-    state.inputs = Object.fromEntries(hashes);
     // Generated maps are data only. First lighting entry always uses an active
     // studio preset; later layer/workspace updates preserve the user's settings.
     if (reset || (source.normal && !source.lightingInitialized)) {
@@ -742,9 +710,6 @@ async function install(source, id, reset = true) {
     Object.values(urls).forEach(URL.revokeObjectURL);
   }
 }
-$("#download-document").onclick = () => {
-  if (state.source?.file) download(state.source.file, state.source.name);
-};
 $("#close-document").onclick = () => {
   surfaces.clear();
   layers.clear();
@@ -753,7 +718,6 @@ $("#close-document").onclick = () => {
   state.projectOpening = false;
   state.source = null;
   state.waitingProject = null;
-  state.inputs = null;
   $("#loading").hidden = true;
   stage.clear();
   selectTool("move");
@@ -771,28 +735,6 @@ $("#close-document").onclick = () => {
 // Files are not opened by dropping; keep a stray drop from navigating away from the editor.
 window.addEventListener("dragover", (e) => e.preventDefault());
 window.addEventListener("drop", (e) => e.preventDefault());
-$("#export-recipe").onclick = () => {
-  if (!state.inputs) return toast("请先打开角色文件");
-  download(
-    new Blob(
-      [
-        JSON.stringify(
-          {
-            schema: 2,
-            renderer: rendererVersion,
-            document: state.source.name,
-            inputs: state.inputs,
-            settings: state.settings,
-          },
-          null,
-          2,
-        ),
-      ],
-      { type: "application/json" },
-    ),
-    "lighting-recipe.json",
-  );
-};
 async function openJianma() {
   layers.clear();
   const id = begin("正在打开 Jianma…");
