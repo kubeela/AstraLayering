@@ -73,7 +73,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
   // Slots held machine-wide, read once a section of this task holds or awaits one.
   let kritaInUse: number | undefined;
   for (const id of sectionIds) {
-    if (record.run?.archive && !record.run.sections[id]) continue;
+    // An archive lists the sections it exported, and a later section made on top of it.
+    if (record.run?.archive && !record.run.sections[id] && !files.some(path => path.startsWith(id + '/'))) continue;
     // The character and clothing lanes run side by side: several sections can be active at once.
     const current = !!record.run?.activeSections?.includes(id);
     const saved = record.run?.sections[id];
@@ -225,6 +226,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
     if (waiting) for (const key of Object.keys(states)) if (states[key] === 'running') { states[key] = 'throttled'; messages[key] = waiting.retryError!; }
     let status: Status = active ? 'running' : observed(saved?.status);
     if (!saved) status = Object.values(states).includes('failed') ? 'failed' : Object.values(states).includes('unconfirmed') ? 'unconfirmed'
+      : id === 'nine-axis' && Object.keys(states).length && Object.values(states).every(value => value === 'done') ? 'done'
       : files.some(path => path.startsWith(id + '/')) ? 'available' : 'pending';
     if ((id === 'shadow' ? states.step01 === 'failed' : Object.values(states).includes('failed')) && !active) status = 'failed';
     if ((id in rasterDefinitions || id === 'shadow' || id === 'nine-axis') && status === 'done' && Object.entries(states).some(([key, value]) => key.startsWith('step') && value !== 'done')) {
