@@ -6,6 +6,7 @@ import { selectedTask, rememberTask } from './task-selection.js';
 import { renderReport } from './report-markdown.js';
 import { morph } from './dom-morph.js';
 import { createEnvEditor } from './env-editor.js';
+import { createSettings } from './settings-dialog.js';
 
 const icons = {
  layers:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>',
@@ -25,6 +26,7 @@ const icons = {
  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
  history:'<path d="M3 3v6h6M4 8a9 9 0 1 1-1 7M12 7v5l4 2"/>',
  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-11v1"/>',
+ settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>',
  copy:'<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
  };
 const icon = (name, cls='') => `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]||icons.file}</svg>`;
@@ -58,17 +60,9 @@ async function post(path, value) {
  const response = await fetch('./api/'+path, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dir:state.directory,...value})});
  const result = await response.json(); if(!response.ok)throw Object.assign(new Error(result.error),{krita:result.krita}); return result;
 }
-// Start, continue, resume and retry refuse an unusable Krita before changing any step,
-// like pnpm start; the path is given again here as with --krita.
-async function postWithKrita(path, value) {
- try{return await post(path,value);}
- catch(error){
-  if(!error.krita)throw error;
-  const krita=prompt(error.message+'\n\nKrita 可执行文件路径：',error.krita.path||'');
-  if(!krita?.trim())throw error;
-  return postWithKrita(path,{...value,krita:krita.trim()});
- }
-}
+// Creating a task, start, continue, resume and retry refuse an unusable Krita before changing
+// anything; the global settings open, and the action runs again once they are saved.
+const settings=createSettings({get,post,esc,icon,onSaved:async()=>{await refreshTask(true);if(state.page==='config'&&state.configMode==='files')await loadConfig();render();}});
 const requestedStage = Number(new URLSearchParams(location.search).get('stage') ?? 0);
 if (Number.isInteger(requestedStage) && requestedStage >= 0 && requestedStage < stages.length) {
  state.stage = requestedStage;
@@ -92,7 +86,7 @@ function versionBadge() {
 function header() {
  return `<header class="app-header"><a class="brand" href="./"><span class="brand-mark">${icon('layers')}</span><span>Astra<span class="brand-light">Layering</span></span></a>${versionBadge()}
  <nav class="global-tabs" aria-label="工作台页面"><button data-page="project" class="${state.page==='project'?'active':''}">${icon('branch')}任务与执行</button><button data-page="preview" class="${state.page==='preview'?'active':''}">${icon('layers')}流程预览</button><button data-page="config" class="${state.page==='config'?'active':''}">${icon('code')}管线配置</button></nav>
- <a class="button" href="./studio?${new URLSearchParams({project:state.name})}">${icon('eye')}角色工作台</a><span class="demo-badge">实时任务 · 每 4 秒同步</span></header>`;
+ <a class="button" href="./studio?${new URLSearchParams({project:state.name})}">${icon('eye')}角色工作台</a><button class="button" data-action="settings" title="Krita、运行目录与先验知识目录">${icon('settings')}全局设置</button><span class="demo-badge">实时任务 · 每 4 秒同步</span></header>`;
 }
 // Why a failed lane stopped, unless one of its steps already says so (a step keeps a shortened copy).
 function laneFailure(section){
@@ -101,7 +95,7 @@ function laneFailure(section){
 }
 const taskStatusNames = {ready:'待启动', running:'运行中', completed:'所选路线已完成', failed:'执行失败', interrupted:'已中断', untracked:'无总控记录', layout:'需转换目录'};
 function pageHeading() {
- return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select><button class="directory-button" data-action="directory" title="${esc(state.directory)}">${icon('folder')}工作目录 ${icon('down')}</button></div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${stepToolbar()}`:''}</div></div>`;
+ return `<div class="page-heading"><div class="task-heading"><select id="task-select" aria-label="选择任务"><option value="" ${!state.name?'selected':''}>选择任务</option>${tasks.map(task=>`<option value="${esc(task.name)}" ${task.name===state.name?'selected':''}>${esc(task.displayName||task.name)} · ${taskStatusNames[task.status]||task.status}</option>`).join('')}</select></div><div class="heading-actions"><button class="button" data-action="new">${icon('plus')}新建任务</button>${state.name?`<button class="button" data-action="files">${icon('folder')}全部产物</button>${stepToolbar()}`:''}</div></div>`;
 }
 let archivedFiles = new Set();
 const assetLookup = new Map();
@@ -540,7 +534,11 @@ async function openAsset(item,index,stepId) {
   if(state.asset===selected&&state.inspect)render();
  }
 }
-let versions, configFiles=[], configText='', schemaText='', diffText='', configBusy=false;
+let versions, configFiles=[], configDirectory='', configText='', schemaText='', diffText='', configBusy=false;
+// What the knowledge browser previews, by extension; anything else is offered for download.
+const textFile=/\.(md|markdown|txt|json|jsonc|ya?ml|toml|csv|tsv|[cm]?[jt]s|py|sh|xml|html?|css|ini|log)$/i;
+const mediaKind=file=>/\.(png|jpe?g|gif|webp|avif|bmp|svg)$/i.test(file)?'image':/\.(mp4|m4v|webm|mov|ogv)$/i.test(file)?'video':/\.(mp3|wav|ogg)$/i.test(file)?'audio':textFile.test(file)?'text':'binary';
+const configQuery=file=>`?ref=${encodeURIComponent(state.ref)}&path=${encodeURIComponent(file)}`;
 const envEditor=createEnvEditor({get,post,toast,render});
 function setConfigBusy(busy) {
  configBusy=busy;
@@ -555,21 +553,19 @@ async function loadConfig() {
  setConfigBusy(true);
  try {
   versions=await get('./api/config/versions?ref='+encodeURIComponent(state.ref));
-  const snapshot=await get('./api/config/files?ref='+encodeURIComponent(state.ref)); configFiles=snapshot.paths;
+  if(!versions.git)state.ref='worktree';
+  const snapshot=await get('./api/config/files?ref='+encodeURIComponent(state.ref)); configFiles=snapshot.paths;configDirectory=snapshot.directory;
   if(!configFiles.includes(state.file)) state.file=configFiles[0]||'';
   await loadConfigFile();
  } catch(error) { toast(error.message); } finally {setConfigBusy(false);}
 }
 async function loadConfigFile() {
- if(!state.file) {configText='这个版本没有可浏览的管线配置。';schemaText='';return;}
- const q=`?ref=${encodeURIComponent(state.ref)}&path=${encodeURIComponent(state.file)}`;
- configText=(await get('./api/config/content'+q)).text; schemaText=''; diffText='';
- // Descriptions live in knowledge/, schemas stay with the code of the section or shared.
- const tool=state.file.match(/^(?:knowledge\/)?([^/]+)\/(?:.*\/)?tools\/([^/]+)\/description\.md$/);
- const sibling=tool&&[state.file.replace(/description\.md$/,'schema.json'),`${tool[1]}/tools/${tool[2]}/schema.json`,`shared/tools/${tool[2]}/schema.json`].find(file=>configFiles.includes(file))
-  ??configFiles.find(file=>file.endsWith(`/tools/${tool[2]}/schema.json`));
- if(sibling) schemaText=(await get('./api/config/content'+`?ref=${encodeURIComponent(state.ref)}&path=${encodeURIComponent(sibling)}`)).text;
- if(state.diff) diffText=(await get('./api/config/diff'+q+'&base='+encodeURIComponent(state.base||'HEAD~2'))).text;
+ configText='';schemaText='';diffText='';
+ if(!state.file) {configText='这个版本的先验知识目录没有文件。';return;}
+ if(mediaKind(state.file)==='text')configText=(await get('./api/config/content'+configQuery(state.file))).text;
+ // Descriptions live in knowledge; their schemas stay with the code and come from the server.
+ if(/\/tools\/[^/]+\/description\.md$/.test(state.file))schemaText=(await get('./api/config/schema?path='+encodeURIComponent(state.file))).text;
+ if(state.diff) diffText=(await get('./api/config/diff'+configQuery(state.file)+'&base='+encodeURIComponent(state.base||'HEAD~2'))).text;
 }
 function markdown(text) {
  // The prototype renders text, headings and code; it never inserts source HTML.
@@ -587,18 +583,17 @@ function markdown(text) {
 function jsonLines(text) {
  return text.split('\n').map((line,i)=>`<div class="code-line"><span class="line-number">${i+1}</span><code>${esc(line).replace(/(&quot;.*?&quot;)(\s*:)?/g,(_,str,colon)=>`<span class="${colon?'json-key':'json-string'}">${str}</span>${colon||''}`).replace(/\b(false|true|null)\b/g,'<span class="json-value">$1</span>')}</code></div>`).join('');
 }
-// The configuration files as folders, the way they sit in the skill. A folder whose only
+// The knowledge files as folders, the way they sit in the directory. A folder whose only
 // content is one folder shares its row (prompts / groups). Folders around the selected file
 // open by themselves; one the user opened or closed stays so until the page reloads.
 function configTree() {
- // knowledge/<section>/ sits with <section>/, so a tool description meets its schema.
- const scope=file=>file.replace(/^knowledge\//,'');
- const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共配置'],['','技能根目录']];
+ const scope=file=>file;
+ const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共先验'],['','其他文件']];
  const query=state.configFilter.toLowerCase();
  const owned=file=>families.some(([prefix])=>prefix&&scope(file).startsWith(prefix+'/'));
  const count=node=>node.files.length+[...node.folders.values()].reduce((sum,child)=>sum+count(child),0);
  const isOpen=(path,fallback)=>query?true:state.configFolders.get(path)??fallback;
- const fileRow=(file,depth)=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" style="--depth:${depth}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':'file')}<span>${esc(file.split('/').at(-1))}</span></button>`;
+ const fileRow=(file,depth)=>`<button data-config-file="${esc(file)}" class="config-file ${state.file===file?'active':''}" style="--depth:${depth}" title="${esc(file)}">${icon(file.endsWith('.json')?'code':mediaKind(file)==='image'||mediaKind(file)==='video'?'image':'file')}<span>${esc(file.split('/').at(-1))}</span></button>`;
  const folderRows=(node,depth)=>[...[...node.folders].sort(([a],[b])=>a.localeCompare(b)).map(([name,child])=>{
   let label=name;
   while(!child.files.length&&child.folders.size===1){const [[next,inner]]=child.folders;label+=' / '+next;child=inner;}
@@ -629,15 +624,27 @@ function configPage() {
  const tabs=`<nav class="config-mode-tabs" aria-label="配置内容"><button data-config-mode="env" class="${state.configMode==='env'?'active':''}">环境与模型</button><button data-config-mode="files" class="${state.configMode==='files'?'active':''}">先验知识</button></nav>`;
  return state.configMode==='env'?`<div class="page-heading config-heading"><div><div class="breadcrumb">工作空间 ${icon('chevron')}<span>本地配置</span></div><h1>管线配置</h1><p>选择模型、连接服务，预览并保存这份仓库的运行配置。</p></div></div>${tabs}${envEditor.view()}`:tabs+promptConfigPage();
 }
+function configPreview(currentFile) {
+ const kind=mediaKind(state.file),raw='./api/config/raw'+configQuery(state.file);
+ if(kind==='image')return `<div class="media-preview"><img src="${raw}" alt="${esc(currentFile)}"></div>`;
+ if(kind==='video')return `<div class="media-preview"><video src="${raw}" controls preload="metadata"></video></div>`;
+ if(kind==='audio')return `<div class="media-preview"><audio src="${raw}" controls preload="metadata"></audio></div>`;
+ if(kind==='binary')return `<div class="empty-diff">${icon('info')}这种文件无法预览。<a class="button" href="${raw}" download="${esc(currentFile)}">下载</a></div>`;
+ return /\.(md|markdown)$/i.test(currentFile)?markdown(configText):`<pre>${esc(configText)}</pre>`;
+}
 function promptConfigPage() {
- const isTool=state.file.includes('/tools/'), currentFile=state.file.split('/').at(-1)||'', toolName=isTool?state.file.split('/').at(-2):currentFile;
- const sourceRefs=['worktree',...new Set(['origin/main','upstream/main',...(versions?.branches||[])])];
- return `<div class="page-heading config-heading"><div><div class="breadcrumb">工作空间 ${icon('chevron')}<span>配置浏览</span></div><h1>管线配置 <span class="subtitle-tag">只读</span></h1><p>查看提示词与工具协议，沿 Git 版本回溯每一次变化。</p></div><button class="button" data-action="history">${icon('history')}提交历史</button></div>
- <div class="version-bar"><span class="version-label">${icon('branch')}配置来源</span><select id="config-ref" aria-label="配置版本">${sourceRefs.map(ref=>`<option value="${esc(ref)}" ${ref===state.ref?'selected':''}>${ref==='worktree'?'本地工作区':esc(ref)}</option>`).join('')}${versions?.commits?.filter(c=>c.sha===state.ref).map(c=>`<option selected value="${c.sha}">${c.short}</option>`).join('')||''}</select><span class="version-sha">${versions?.commits?.[0]?.short||'…'}</span><span class="version-description">${state.ref==='worktree'?'包含尚未提交的本地修改':'固定版本快照'}</span><span class="spacer"></span><label class="diff-toggle"><input type="checkbox" id="config-diff" ${state.diff?'checked':''}>查看差异</label><select id="config-base" aria-label="对比基准">${(versions?.commits||[]).slice(1).map((c,i)=>`<option value="${c.sha}" ${(state.base?state.base===c.sha:i===1)?'selected':''}>对比 ${c.short} · ${esc(c.title.slice(0,32))}</option>`).join('')}</select></div>
- <div class="config-workspace"><aside class="config-tree"><div class="pane-title"><h3>配置目录</h3><span class="count-badge">${configFiles.length}</span></div><div class="tree-search">${icon('search')}<input id="config-search" value="${esc(state.configFilter)}" placeholder="搜索提示词或工具" aria-label="搜索配置"></div><div class="config-tree-scroll">${configTree()}</div><div class="config-tree-footer">${icon('lock')}切换版本不会修改工作区</div></aside>
- <section class="config-content"><div class="config-file-heading"><div class="config-file-icon">${icon(isTool?'code':'file')}</div><div><h2>${esc(toolName)}</h2><code>${esc(state.file.replace(/\/description\.md$/,''))}</code></div><span class="spacer"></span><span class="small-tag">${isTool?'TOOL DEFINITION':'MARKDOWN'}</span></div><div class="config-tabs"><button class="active">${icon(state.diff?'branch':'eye')}${state.diff?'版本差异':'配置预览'}</button><span>所选版本的实际文件</span></div>
- ${state.diff?`<div class="diff-content">${diffText?diffText.split('\n').map(line=>`<pre class="${line.startsWith('+')?'addition':line.startsWith('-')?'deletion':''}">${esc(line)}</pre>`).join(''):`<div class="empty-diff">${icon('check')}这个文件在两个版本之间没有变化。</div>`}</div>`:`<div class="config-pair"><article class="markdown-panel"><header><span>${icon('file')}${currentFile.endsWith('schema.json')?'Schema JSON':currentFile}</span><small>${currentFile.endsWith('.json')?'JSON':'MARKDOWN'}</small></header><div class="markdown-body">${currentFile.endsWith('.json')?`<pre>${esc(configText)}</pre>`:markdown(configText)}</div></article>${schemaText?`<article class="schema-panel"><header><span>${icon('code')}schema.json</span><small>JSON SCHEMA</small></header><div class="code-body">${jsonLines(schemaText)}</div></article>`:''}</div>`}
- <div class="config-content-footer">${icon('info')}description 与 schema 来自同一版本；预览不会影响正在运行的 agent。</div></section></div>`;
+ const isTool=/\/tools\/[^/]+\/description\.md$/.test(state.file), currentFile=state.file.split('/').at(-1)||'', toolName=isTool?state.file.split('/').at(-2):currentFile;
+ const kind=mediaKind(state.file), type=isTool?'TOOL DESCRIPTION':kind==='text'?(currentFile.split('.').at(-1)||'TEXT').toUpperCase():kind.toUpperCase();
+ const sourceRefs=['worktree',...new Set(['origin/main','upstream/main',...(versions?.branches||[])].filter(ref=>versions?.branches?.includes(ref)))];
+ const versionBar=versions?.git?`<div class="version-bar"><span class="version-label">${icon('branch')}知识版本</span><select id="config-ref" aria-label="先验知识版本">${sourceRefs.map(ref=>`<option value="${esc(ref)}" ${ref===state.ref?'selected':''}>${ref==='worktree'?'本地工作区':esc(ref)}</option>`).join('')}${versions.commits.filter(c=>c.sha===state.ref).map(c=>`<option selected value="${c.sha}">${c.short}</option>`).join('')}</select><span class="version-sha">${versions.commits[0]?.short||'…'}</span><span class="version-description">${state.ref==='worktree'?'包含尚未提交的本地修改':'固定版本快照'}</span><span class="spacer"></span><label class="diff-toggle"><input type="checkbox" id="config-diff" ${state.diff?'checked':''}>查看差异</label><select id="config-base" aria-label="对比基准">${versions.commits.slice(1).map((c,i)=>`<option value="${c.sha}" ${(state.base?state.base===c.sha:i===1)?'selected':''}>对比 ${c.short} · ${esc(c.title.slice(0,32))}</option>`).join('')}</select></div>`
+  :`<div class="version-bar"><span class="version-label">${icon('folder')}先验知识目录</span><span class="version-description">不在 Git 仓库内，只显示当前文件</span></div>`;
+ const diffing=state.diff&&versions?.git;
+ return `<div class="page-heading config-heading"><div><div class="breadcrumb">工作空间 ${icon('chevron')}<span>先验知识</span></div><h1>管线配置 <span class="subtitle-tag">只读</span></h1><p>浏览先验知识目录中的提示词、参考资料与工具说明：<code>${esc(configDirectory)}</code>（在「全局设置」中更换）。</p></div>${versions?.git?`<button class="button" data-action="history">${icon('history')}提交历史</button>`:''}</div>
+ ${versionBar}
+ <div class="config-workspace"><aside class="config-tree"><div class="pane-title"><h3>先验知识</h3><span class="count-badge">${configFiles.length}</span></div><div class="tree-search">${icon('search')}<input id="config-search" value="${esc(state.configFilter)}" placeholder="搜索提示词、参考或工具" aria-label="搜索先验知识"></div><div class="config-tree-scroll">${configTree()}</div><div class="config-tree-footer">${icon('lock')}只读浏览，不修改目录</div></aside>
+ <section class="config-content"><div class="config-file-heading"><div class="config-file-icon">${icon(isTool?'code':kind==='image'||kind==='video'?'image':'file')}</div><div><h2>${esc(toolName)}</h2><code>${esc(state.file.replace(/\/description\.md$/,''))}</code></div><span class="spacer"></span><span class="small-tag">${esc(type)}</span></div><div class="config-tabs"><button class="active">${icon(diffing?'branch':'eye')}${diffing?'版本差异':'预览'}</button><span>所选版本的实际文件</span></div>
+ ${diffing?`<div class="diff-content">${diffText?diffText.split('\n').map(line=>`<pre class="${line.startsWith('+')?'addition':line.startsWith('-')?'deletion':''}">${esc(line)}</pre>`).join(''):`<div class="empty-diff">${icon('check')}这个文件在两个版本之间没有变化。</div>`}</div>`:`<div class="config-pair"><article class="markdown-panel"><header><span>${icon('file')}${esc(currentFile)}</span><small>${esc(type)}</small></header><div class="markdown-body">${configPreview(currentFile)}</div></article>${schemaText?`<article class="schema-panel"><header><span>${icon('code')}schema.json</span><small>JSON SCHEMA · 随代码</small></header><div class="code-body">${jsonLines(schemaText)}</div></article>`:''}</div>`}
+ <div class="config-content-footer">${icon('info')}工具 schema 随代码发布，说明来自先验知识目录；预览不会影响正在运行的 agent。</div></section></div>`;
 }
 function render() {
  const focused=document.activeElement;
@@ -671,7 +678,7 @@ function render() {
 }
 function showNew(single=false, existing=false) {
  const dialog=document.querySelector('#new-task'); state.uploaded=null;
- dialog.innerHTML=`<div class="modal-heading"><div><span class="eyebrow">${existing?'CONTINUE CREATION':'NEW CREATION'}</span><h2>${existing?'继续 '+esc(state.name):'开始一次新的制作'}</h2><p>${existing?'沿用已有产物、完成标记与绘制 thread。':'提供一张角色图，制作分层素材。'}</p></div><button class="icon-button" data-close>${icon('close')}</button></div><form id="new-task-form"><div class="new-task-columns"><div>${!existing?`<label class="field-label">输入参考图</label><label class="upload-zone" id="upload-zone"><input id="image-input" type="file" accept="image/png,image/jpeg,image/webp" hidden><span class="upload-icon">${icon('upload')}</span><b>选择或拖入角色图片</b><p>PNG、JPG、WebP · 最大 20 MB</p></label><label class="field-label">或填写服务器上的图片路径</label><input name="image" placeholder="绝对路径；相对路径基于任务目录">`:data.original?`<img class="resume-reference" src="${artifact(data.original)}" alt="已保存的原图">`:'<p>从该任务已有的上游产物继续。</p>'}<div class="input-note">${icon('folder')}${esc(state.directory)}</div></div><div class="task-form-fields"><label class="field-label" for="task-display-name">显示名称</label><input id="task-display-name" name="displayName" value="${existing?esc(data.displayName||state.name):''}" placeholder="可使用中文"><label class="field-label" for="task-name">任务目录名</label><input id="task-name" name="name" value="${existing?esc(state.name):''}" ${existing?'readonly':''} placeholder="例如 character-03" required><label class="field-label">执行范围</label><div class="scope-options"><label class="${!single?'selected':''}"><input type="radio" name="scope" value="all" ${!single?'checked':''}>整条流程<span>共同准备后人物线与衣服线并行，再合流组装与阴影</span></label><label class="${single?'selected':''}"><input type="radio" name="scope" value="single" ${single?'checked':''}>单条管线<span>读取本任务已有上游产物</span></label></div><select name="stage" id="new-stage" ${!single?'hidden':''}>${stages.map((s,i)=>`<option value="${i}" ${i===state.stage?'selected':''}>${s.name} · ${s.id}</option>`).join('')}</select><label class="standard-option"><div><b>标准化人物姿态</b><p>先判断是否需要调整，再按需生图。</p></div><input type="checkbox" name="standard" ${existing&&data.run?.standard?'checked':''} role="switch" aria-label="标准化人物姿态"></label><div class="standard-detail">嘴部张大、眼睛张开，正视站立，双手放在身体两侧。仅人物准备阶段使用。</div><label class="field-label">阴影方式</label><select name="shadowMode"><option value="mask" ${!existing||data.run?.shadowMode!=='normal-depth'?'selected':''}>Live2D 蒙版</option><option value="normal-depth" ${existing&&data.run?.shadowMode==='normal-depth'?'selected':''}>法线＋深度</option></select><label class="field-label">Krita 可执行文件</label><input name="krita" value="${existing?esc(data.run?.krita||''):''}" placeholder="例如 /usr/bin/krita；已记录时可留空"><small>绘制与组装管线需要 Krita。未安装时，请先由 agent 协助安装桌面版或配置无桌面显示环境。</small><label class="field-label">调度并发 jobs</label><input name="jobs" type="number" min="1" value="${existing?data.run?.jobs||3:3}"></div></div><p class="form-error" role="alert"></p><div class="modal-footer"><span>操作由服务器执行，关闭网页仍会继续。</span><button type="button" class="button" data-close>取消</button><button class="primary" type="submit">${icon('play')}${existing?'继续':'开始制作'}</button></div></form>`;
+ dialog.innerHTML=`<div class="modal-heading"><div><span class="eyebrow">${existing?'CONTINUE CREATION':'NEW CREATION'}</span><h2>${existing?'继续 '+esc(state.name):'开始一次新的制作'}</h2><p>${existing?'沿用已有产物、完成标记与绘制 thread。':'提供一张角色图，制作分层素材。'}</p></div><button class="icon-button" data-close>${icon('close')}</button></div><form id="new-task-form"><div class="new-task-columns"><div>${!existing?`<label class="field-label">输入参考图</label><label class="upload-zone" id="upload-zone"><input id="image-input" type="file" accept="image/png,image/jpeg,image/webp" hidden><span class="upload-icon">${icon('upload')}</span><b>选择或拖入角色图片</b><p>PNG、JPG、WebP · 最大 20 MB</p></label><label class="field-label">或填写服务器上的图片路径</label><input name="image" placeholder="绝对路径；相对路径基于任务目录">`:data.original?`<img class="resume-reference" src="${artifact(data.original)}" alt="已保存的原图">`:'<p>从该任务已有的上游产物继续。</p>'}<div class="input-note">${icon('folder')}${esc(state.directory)}</div></div><div class="task-form-fields"><label class="field-label" for="task-display-name">显示名称</label><input id="task-display-name" name="displayName" value="${existing?esc(data.displayName||state.name):''}" placeholder="可使用中文"><label class="field-label" for="task-name">任务目录名</label><input id="task-name" name="name" value="${existing?esc(state.name):''}" ${existing?'readonly':''} placeholder="例如 character-03" required><label class="field-label">执行范围</label><div class="scope-options"><label class="${!single?'selected':''}"><input type="radio" name="scope" value="all" ${!single?'checked':''}>整条流程<span>共同准备后人物线与衣服线并行，再合流组装与阴影</span></label><label class="${single?'selected':''}"><input type="radio" name="scope" value="single" ${single?'checked':''}>单条管线<span>读取本任务已有上游产物</span></label></div><select name="stage" id="new-stage" ${!single?'hidden':''}>${stages.map((s,i)=>`<option value="${i}" ${i===state.stage?'selected':''}>${s.name} · ${s.id}</option>`).join('')}</select><label class="standard-option"><div><b>标准化人物姿态</b><p>先判断是否需要调整，再按需生图。</p></div><input type="checkbox" name="standard" ${existing&&data.run?.standard?'checked':''} role="switch" aria-label="标准化人物姿态"></label><div class="standard-detail">嘴部张大、眼睛张开，正视站立，双手放在身体两侧。仅人物准备阶段使用。</div><label class="field-label">阴影方式</label><select name="shadowMode"><option value="mask" ${!existing||data.run?.shadowMode!=='normal-depth'?'selected':''}>Live2D 蒙版</option><option value="normal-depth" ${existing&&data.run?.shadowMode==='normal-depth'?'selected':''}>法线＋深度</option></select><label class="field-label">调度并发 jobs</label><input name="jobs" type="number" min="1" value="${existing?data.run?.jobs||3:3}"></div></div><p class="form-error" role="alert"></p><div class="modal-footer"><span>操作由服务器执行，关闭网页仍会继续。</span><button type="button" class="button" data-close>取消</button><button class="primary" type="submit">${icon('play')}${existing?'继续':'开始制作'}</button></div></form>`;
  dialog.showModal();dialog.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>dialog.close());
  if(!existing) {
   let previewURL;
@@ -692,23 +699,19 @@ function showNew(single=false, existing=false) {
   e.preventDefault();const form=e.target,fields=new FormData(form),button=form.querySelector('[type=submit]');button.disabled=true;form.querySelector('.form-error').textContent='';
   try {
    const single=fields.get('scope')==='single',index=Number(fields.get('stage'));
-   const payload={name:fields.get('name').trim(),displayName:fields.get('displayName').trim(),krita:fields.get('krita'),jobs:Number(fields.get('jobs')),from:single?stages[index].id:stages[0].id,to:single?stages[index].id:stages.at(-1).id};
+   const payload={name:fields.get('name').trim(),displayName:fields.get('displayName').trim(),jobs:Number(fields.get('jobs')),from:single?stages[index].id:stages[0].id,to:single?stages[index].id:stages.at(-1).id};
    if(!single||index===0)payload.standard=fields.get('standard')==='on';
    if(!single||stages[index].id==='shadow')payload.shadowMode=fields.get('shadowMode');
    if(!created) {
     payload.image=fields.get('image');
     if(state.uploaded)payload.upload=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=reject;reader.readAsDataURL(state.uploaded);});
-    await post('tasks',payload);created=true;form.elements.name.readOnly=true;delete payload.upload;delete payload.image;
+    await settings.withKrita(()=>post('tasks',payload));created=true;form.elements.name.readOnly=true;delete payload.upload;delete payload.image;
    }
    if(existing)await post('project-name',{name:payload.name,displayName:payload.displayName});
-   state.name=payload.name;button.textContent='正在启动…';await post('start',payload);dialog.close();await refreshTask(true);toast('任务已在后台启动');
-  } catch(error){form.querySelector('.form-error').textContent=error.message;if(error.krita)form.elements.krita.focus();if(created){button.textContent='重新启动';await refreshTask(true);}}
+   state.name=payload.name;button.textContent='正在启动…';await settings.withKrita(()=>post('start',payload));dialog.close();await refreshTask(true);toast('任务已在后台启动');
+  } catch(error){form.querySelector('.form-error').textContent=error.message;if(created){button.textContent='重新启动';await refreshTask(true);}}
   finally{button.disabled=false;}
  };
-}
-function showDirectory() {
- const dialog=document.querySelector('#directory-dialog');dialog.innerHTML=`<div class="modal-heading"><div><h2>追踪运行目录</h2><p>自动发现该目录下的任务，选择保存在服务器。</p></div><button class="icon-button" data-close>${icon('close')}</button></div><form><label class="field-label">目录绝对路径</label><input name="directory" value="${esc(state.directory)}" required><p class="dialog-note">仓库默认：&lt;仓库&gt;/.run<br>独立安装 skill：&lt;skill 上一级&gt;/.run<br>切换目录不会停止已运行的任务。</p><p class="form-error"></p><div class="modal-footer"><button class="primary">保存目录</button></div></form>`;
- dialog.showModal();dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.querySelector('form').onsubmit=async e=>{e.preventDefault();try{await post('settings',{directory:new FormData(e.target).get('directory').trim()});dialog.close();await refreshTask(true);}catch(error){dialog.querySelector('.form-error').textContent=error.message;}};
 }
 function showFiles() {
  const dialog=document.querySelector('#directory-dialog');dialog.innerHTML=`<div class="modal-heading"><div><h2>${esc(state.name)} · 全部产物</h2><p>按任务实际目录浏览、预览或下载。</p></div><button class="icon-button" data-close>${icon('close')}</button></div><input id="file-filter" placeholder="筛选路径" aria-label="筛选产物"><div class="all-files"></div>`;
@@ -722,7 +725,7 @@ function showFiles() {
  dialog.showModal();dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.querySelector('#file-filter').oninput=e=>listing(e.target.value);listing('');
 }
 function showHistory() {
- const dialog=document.querySelector('#directory-dialog');dialog.innerHTML=`<div class="modal-heading"><div><h2>提交历史</h2><p>选择一次提交，浏览当时的管线配置。</p></div><button class="icon-button" data-close>${icon('close')}</button></div><div class="commit-list">${(versions?.commits||[]).map((c,i)=>`<button data-commit="${c.sha}"><span class="commit-node">${icon('branch')}</span><div><b>${esc(c.title)}</b><small>${c.short}${i===0?' · 当前分支最新提交':''}</small></div>${icon('chevron')}</button>`).join('')}</div>`;dialog.showModal();dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.querySelectorAll('[data-commit]').forEach(b=>b.onclick=async()=>{state.ref=b.dataset.commit;dialog.close();await loadConfig();render();});
+ const dialog=document.querySelector('#directory-dialog');dialog.innerHTML=`<div class="modal-heading"><div><h2>提交历史</h2><p>选择一次提交，浏览当时的先验知识。</p></div><button class="icon-button" data-close>${icon('close')}</button></div><div class="commit-list">${(versions?.commits||[]).map((c,i)=>`<button data-commit="${c.sha}"><span class="commit-node">${icon('branch')}</span><div><b>${esc(c.title)}</b><small>${c.short}${i===0?' · 当前分支最新提交':''}</small></div>${icon('chevron')}</button>`).join('')}</div>`;dialog.showModal();dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.querySelectorAll('[data-commit]').forEach(b=>b.onclick=async()=>{state.ref=b.dataset.commit;dialog.close();await loadConfig();render();});
 }
 function selectStage(index) {
  state.stage=index;state.selectedStep=index===0||index===2?'layers':'step01';
@@ -767,7 +770,7 @@ function bind() {
   if(!targets.length){if(action==='continue')showNew(false,true);return;}
   if(action==='retry'&&!confirm(`重试：删除以下步骤的产物、会话与 agent 尝试记录并重新运行，依赖它们的后续步骤会随之重跑。\n${broken.map(stepLabel).join('\n')}\n确定吗？`))return;
   b.disabled=true;
-  try{const result=await postWithKrita('task-action',{name:state.name,action});toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
+  try{const result=await settings.withKrita(()=>post('task-action',{name:state.name,action}));toast(result.message+' 已在后台重新运行。');await refreshTask(true);}
   catch(error){toast(error.message);b.disabled=false;}
  });
  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=async()=>{state.page=b.dataset.page;updateViewURL();if(state.page==='config')await loadConfig();render();});
@@ -803,7 +806,7 @@ function bind() {
   else if(action==='files')showFiles();
   else if(action==='stop'){b.disabled=true;post('stop',{name:state.name}).then(result=>{toast(result.message);return refreshTask(true);}).catch(error=>{toast(error.message);b.disabled=false;});}
   else if(action==='convert-layout'){b.disabled=true;toast('正在备份并转换目录…');post('convert-layout',{name:state.name}).then(result=>{toast(`已转换，原目录备份在 ${result.backup}`);return refreshTask(true);}).catch(error=>{toast(error.message);b.disabled=false;});}
-  else if(action==='directory')showDirectory();
+  else if(action==='settings')settings.show();
   else if(action==='history')showHistory();
   else if(action==='dismiss-update'){try{localStorage.setItem(dismissedKey,appVersion.latest);}catch{}render();}
   else if(action==='close-inspector'){state.inspect=false;render();}
