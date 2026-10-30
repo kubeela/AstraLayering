@@ -77,7 +77,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     }
   }
   await mkdir(directory, { recursive: true });
-  const standard = input.standard ?? await readPreparationOptions(directory) ?? false;
+  const standard = input.standard ?? false;
   const initial = await references(input.runName, input.dir);
   let partsBuilt = false;
   await runSection({

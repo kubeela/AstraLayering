@@ -21,10 +21,10 @@ export const workflowKrita: KritaCheck = path => checkKrita(path, loadWorkflowEn
 // Routes without a Krita section need none. A missing system dependency does not
 // refuse the start: the run records it as failed, so workflow.log and the page show it.
 export async function preflightKrita(options: TaskOptions, check: KritaCheck = workflowKrita): Promise<KritaInstallation | undefined> {
-  const directory = directoryFor(options), saved = await readRun(directory, options.name);
+  const directory = directoryFor(options), saved = await readRun(directory);
   if (saved?.archive) return; // Refused as an archive by the caller.
   const selected = selectedSections(options.from ?? saved?.from ?? 'part-layering', options.to ?? saved?.to ?? 'shadow');
-  try { return await requireKrita({ ...saved, from: selected[0]!, to: selected.at(-1)!, krita: await taskKrita(options, directory, saved, selected) }, !!options.krita, check); }
+  try { return await requireKrita({ ...saved, from: selected[0]!, to: selected.at(-1)!, krita: taskKrita(options, saved) }, !!options.krita, check); }
   catch (error) { if (!(error instanceof MissingDependencyError)) throw error; }
 }
 

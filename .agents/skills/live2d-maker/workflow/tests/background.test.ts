@@ -8,7 +8,6 @@ import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { setTimeout as delay } from 'node:timers/promises';
 import { test, type TestContext } from 'node:test';
-import { newConfig, initializeRun } from '../../shared/raster/run-store.ts';
 import { steps } from '../../character-assembly/steps.ts';
 import { startBackground } from '../run.ts';
 import { runTask } from '../runner.ts';
@@ -45,8 +44,7 @@ async function fixture(t: TestContext, slow = false) {
     t.after(() => { process.env.layering_codex_path = previous; });
   }
   const output = join(task, 'character-assembly');
-  const config = newConfig(name, inputs, { executable: krita });
-  await initializeRun(output, config);
+  await mkdir(output, { recursive: true });
   await writeStepSession(output, 'step01', { threadId: 'completed-fixture', harness: 'codex' });
   await mkdir(join(output, 'step01'));
   // A slow fixture leaves the step unfinished, so the worker calls the agent.
@@ -69,7 +67,7 @@ async function startFixtureBackground(f: Awaited<ReturnType<typeof fixture>>, kr
 
 test('真实后台父进程退出后任务继续，已完成组装跳过模型并记录交付', { skip: process.platform === 'win32' }, async t => {
   const f = await fixture(t);
-  const { stdout } = await startFixtureBackground(f);
+  const { stdout } = await startFixtureBackground(f, f.options.krita);
   assert.match(stdout, /后台总调度已启动/);
   await until(async () => !(await taskStatus(f.options)).lockHeld);
   const status = await taskStatus(f.options);

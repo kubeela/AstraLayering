@@ -20,7 +20,7 @@ pnpm shadow --name <任务名> --krita <可执行文件> [--dir <绝对运行根
 --shadow-mode mask|normal-depth 选择本次走哪个 step01，独立入口默认 mask。
 --dry-run 只检查输入和 Krita、展示提示词，不调用模型、不写文件。
 读取同名 character-assembly 的 KRA / PNG、simplified 参考和两套 part 的分组与遮挡顺序；产物位于 shadow/step01_<模式>/。
-两种模式共用 shadow/run.json，各自的 step01 保存 thread 和完成标记；已完成产物必须通过原尺寸、配准与绑定检查。
+独立入口不保存配置，每次都须带 --krita；两种模式各自的 step01 保存 thread 和完成标记；已完成产物必须通过原尺寸、配准与绑定检查。
 character-assembly 重做后 step01 随之重做。
 总入口：pnpm start --name <任务名> --from shadow --to shadow --shadow-mode <模式>。
 `;

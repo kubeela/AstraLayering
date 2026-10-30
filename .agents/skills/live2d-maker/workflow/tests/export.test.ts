@@ -23,7 +23,7 @@ test('directory/ZIP exports retain artwork, completion facts and cited workspace
   assert.ok(manifest.files['shadow/step01_mask/inspection/overview.png']);
   assert.ok(manifest.files['shadow/step01_mask/inspection/relation-000-review.png']);
   const run = JSON.parse(await readFile(join(destination, 'run.json'), 'utf8'));
-  assert.equal(run.archive, true); assert.equal(run.krita, undefined); assert.equal(run.runner, undefined); assert.equal(run.dir, '.');
+  assert.equal(run.archive, true); assert.equal(run.krita, undefined); assert.equal(run.runner, undefined); assert.equal('dir' in run, false);
   assert.equal(JSON.stringify(run).includes(f.root), false);
   const depth = await readFile(join(destination, 'part-layering/step14_occlusion/preview.svg'), 'utf8');
   assert.match(depth, /data-depth-preview="whole-parts"/);

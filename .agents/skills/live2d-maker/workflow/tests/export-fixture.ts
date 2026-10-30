@@ -22,7 +22,7 @@ export async function exportFixture(t: TestContext) {
   const kra = Buffer.from(zipSync({ 'mergedimage.png': png }));
   const put = async (path: string, content: string | Uint8Array) => { const file = join(root, path); await mkdir(dirname(file), { recursive: true }); await writeFile(file, content); };
   const mark = (path: string) => put(path + '/.completed', JSON.stringify({ stamp: path, inputs: {} }));
-  const run: TaskRun = { version: 1, name, dir, jobs: 3, status: 'completed', from: 'part-layering', to: 'shadow', standard: true, shadowMode: 'mask',
+  const run: TaskRun = { version: 1, jobs: 3, status: 'completed', from: 'part-layering', to: 'shadow', standard: true, shadowMode: 'mask',
     createdAt: '2026-10-26T00:00:00Z', updatedAt: '2026-10-26T01:00:00Z', krita: '/machine-specific/krita',
     sections: Object.fromEntries(sectionIds.map(id => [id, { status: 'completed', updatedAt: '2026-10-26T01:00:00Z', summary: root }])) };
   await put('run.json', JSON.stringify(run)); await put('input/original.png', png);

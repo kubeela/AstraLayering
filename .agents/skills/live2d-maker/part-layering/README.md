@@ -8,7 +8,7 @@
 
 ```sh
 pnpm part-layering --name my-character --image /绝对路径/角色.png
-# 姿态标准化按需追加 --standard；续跑省略则沿用保存值
+# 姿态标准化按需追加 --standard；单独续跑须带同一选项（总入口续跑沿用总控记录）
 pnpm part-layering --name my-character
 # 只处理根层，登记下一层
 pnpm part-layering --name my-character --max-depth 1

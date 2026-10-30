@@ -99,12 +99,9 @@ test('part 合并与遮挡重试删除步骤外的产物；已完成步骤只能
   await assert.rejects(f.act('part-layering', partSteps.initial, 'retry'), /不存在/);
 });
 
-const rasterConfig = (thread: Record<string, unknown> = {}) => JSON.stringify({ version: 2, name: 'case', ...thread,
-  sourceInput: {}, krita: { executable: process.execPath, version: 'test' } });
 for (const section of ['raster-layering', 'clothing-raster-layering', 'character-assembly']) {
   test(`${section} 步骤：恢复清除本步骤会话并记录，重试只删除该步骤`, async t => {
     const f = await fixture(t), root = join(f.task, section);
-    await put(join(root, 'run.json'), rasterConfig());
     await put(sessionPath(root, 'step02'), JSON.stringify({ threadId: 'thread-r', harness: 'claude' }));
     await put(join(root, 'step01', '.completed'), 'legacy'); await put(join(root, 'step01', 'kept.kra'), 'kra');
     await put(join(root, 'step02', '.running'), JSON.stringify({ inputs: {} })); await put(join(root, 'step02', 'draft.kra'), 'draft');
@@ -124,7 +121,6 @@ for (const section of ['raster-layering', 'clothing-raster-layering', 'character
 
 test('重试清除输出写在该步骤的 agent 尝试记录，其他步骤与无输出记录的保留', async t => {
   const f = await fixture(t), root = join(f.task, 'raster-layering'), agents = join(root, 'agents');
-  await put(join(root, 'run.json'), rasterConfig());
   await put(join(root, 'step01', '.running'), JSON.stringify({ inputs: {} }));
   await put(join(root, 'step02', '.running'), JSON.stringify({ inputs: {} }));
   const attempt = (name: string, request: unknown) => put(join(agents, name, 'request.json'), JSON.stringify(request));
@@ -146,7 +142,6 @@ test('重试清除输出写在该步骤的 agent 尝试记录，其他步骤与�
 
 test('阴影重试只重置所选模式的 step01，另一模式不动', async t => {
   const f = await fixture(t), root = join(f.task, 'shadow');
-  await put(join(root, 'run.json'), rasterConfig());
   await put(join(root, 'step01_normal-depth', '.running'), JSON.stringify({ inputs: {} }));
   await put(join(root, 'step01_mask', '.running'), JSON.stringify({ inputs: {} }));
   assert.deepEqual((await listSteps(root, 'shadow')).map(entry => entry.id), ['step01_mask', 'step01_normal-depth']);

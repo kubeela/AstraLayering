@@ -182,7 +182,7 @@ test('两套 step01 结束时结构诊断仅记日志，保留完成状态并推
     await assert.rejects(readFile(join(output, 'error.txt')), { code: 'ENOENT' });
     assert.equal((await f.json('occlusion.json')).layers[0].layer, '051 | fixture');
     // A retained completed step diagnoses the same issue without rerunning it.
-    await runWorkflow(section, { name: 'case' }, { ...deps, agent: async () => assert.fail('already completed') });
+    await runWorkflow(section, { name: 'case', krita: process.execPath }, { ...deps, agent: async () => assert.fail('already completed') });
   }
 });
 

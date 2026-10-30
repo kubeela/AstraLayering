@@ -11,8 +11,8 @@
 pnpm character-assembly --name jianma --krita /绝对路径/krita --dry-run
 # 开始组装
 pnpm character-assembly --name jianma --krita /绝对路径/krita
-# 续跑
-pnpm character-assembly --name jianma
+# 续跑（独立 section 不保存配置，仍须带 --krita）
+pnpm character-assembly --name jianma --krita /绝对路径/krita
 # 自定义运行根目录时，首次和续跑均加 --dir
 pnpm character-assembly --name jianma --dir /绝对路径/运行根目录 --krita /绝对路径/krita
 ```
@@ -37,7 +37,6 @@ CLI 在 `character-assembly/step01/workspace/` 中运行，提示词给出两份
 
 ```text
 character-assembly/
-├── run.json
 └── step01/
     ├── character-assembled.kra
     ├── character-assembled.png

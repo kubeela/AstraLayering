@@ -1,20 +1,11 @@
-import { lstat, mkdir, mkdtemp, readFile, realpath, rename, rm, writeFile } from 'node:fs/promises';
+import { lstat, realpath } from 'node:fs/promises';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { isPartLayeringInput, type PartLayeringInput } from './input.ts';
-import type { KritaInstallation } from './krita.ts';
 import type { StepDefinition } from './steps.ts';
 import type { StepStatus } from '../step-chain.ts';
 import { inspectSection, type SectionPlan, type SectionStep } from '../step-section.ts';
 import { stepNumber, stepPattern } from '../step-paths.js';
 import { fromTaskPath, taskRootOf, toTaskPathReal } from '../task-paths.ts';
 
-// Sessions live per step in agents/steps/<step>/session.json (see step-session.ts).
-export type RunConfig<Input = PartLayeringInput> = {
-  version: 2;
-  name: string;
-  sourceInput: Input;
-  krita: KritaInstallation;
-};
 export type { StepStatus };
 export type RunPlan = SectionPlan;
 
@@ -47,7 +38,7 @@ export async function taskPath(root: string, path: string): Promise<string> {
 export async function agentPath(root: string, path: string): Promise<string> {
   return fromTaskPath(root, await taskPath(root, path));
 }
-// Deep taskPath of the absolute strings in a record, such as run.json sourceInput.
+// Deep taskPath of the absolute strings in a record.
 export const taskPaths = <T>(root: string, value: T): Promise<T> => mapPaths(value, path => taskPath(root, path));
 // Deep agentPath of the absolute strings in a tool result.
 export const agentPaths = <T>(root: string, value: T): Promise<T> => mapPaths(value, path => agentPath(root, path));
@@ -58,45 +49,6 @@ async function mapPaths<T>(value: T, at: (path: string) => Promise<string>): Pro
     return Object.fromEntries(await Promise.all(Object.entries(value).map(async ([key, item]) => [key, await mapPaths(item, at)]))) as T;
   }
   return value;
-}
-
-export async function loadConfig<Input = PartLayeringInput>(directory: string, name: string,
-  validateInput: (value: unknown) => boolean = isPartLayeringInput): Promise<RunConfig<Input> | undefined> {
-  const info = await fileInfo(directory);
-  if (!info) return;
-  if (!info.isDirectory() || info.isSymbolicLink()) throw new Error(`任务目录必须是普通目录：${directory}`);
-  const file = join(directory, 'run.json');
-  if (!await fileInfo(file)) throw new Error(`任务目录已存在但缺少 run.json：${directory}。请使用新的 --name，保留原文件。`);
-  const config = JSON.parse(await readFile(file, 'utf8')) as RunConfig<Input> & { models?: unknown };
-  if (config?.version !== 2 || config.name !== name
-    || !validateInput(config.sourceInput)
-    || typeof config.krita?.executable !== 'string' || !config.krita.executable.trim()) {
-    throw new Error(`无效的任务配置：${file}`);
-  }
-  // Old snapshots are ignored and removed on the next save. Model selection
-  // belongs to the current environment; sessions belong to their steps.
-  delete config.models;
-  return config;
-}
-
-export function newConfig<Input>(name: string, input: Input, krita: KritaInstallation): RunConfig<Input> {
-  return { version: 2, name, sourceInput: input, krita };
-}
-
-export async function saveConfig(directory: string, config: RunConfig<unknown>): Promise<void> {
-  const file = join(directory, 'run.json');
-  await writeFile(`${file}.tmp`, JSON.stringify(config, null, 2) + '\n');
-  await rename(`${file}.tmp`, file);
-}
-
-export async function initializeRun(directory: string, config: RunConfig<unknown>): Promise<void> {
-  await mkdir(dirname(directory), { recursive: true });
-  const staging = await mkdtemp(join(dirname(directory), '.init-'));
-  try {
-    await saveConfig(staging, config);
-    // Upstream artifacts remain in their owning section; initialize configuration only.
-    await rename(staging, directory);
-  } finally { await rm(staging, { recursive: true, force: true }); }
 }
 
 // Raster steps form one linear section. Each records the hashes of its

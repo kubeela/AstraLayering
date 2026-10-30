@@ -2,7 +2,7 @@ import { readStepSession } from '../agents/step-session.ts';
 import {deliverRasterStep, isRasterReview} from './raster-delivery.ts';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import { copyFile, mkdir, mkdtemp, realpath, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, realpath, rm, stat, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFile } from 'node:child_process';
@@ -91,14 +91,13 @@ test('两套 raster 的 --dir 定位上游与续跑 thread，覆盖测试注入 
       throw new Error('interrupted fixture');
     } }), /interrupted fixture/);
     await stat(join(output, 'step01/.running'));
-    await run({ name: 'case', dir }, { ...deps, agent: async request => {
+    await run({ name: 'case', dir, krita: 'krita' }, { ...deps, agent: async request => {
       if (!isRasterReview(request)) assert.equal(request.threadId, 'kept-thread');
       // The upstream located under --dir is shown to the agent as an absolute path.
       if (!isRasterReview(request)) assert.ok(request.prompt.includes(JSON.stringify(sectionDirectory('case', input, dir))));
       return deliverRasterStep(request, definitions[0], 'kept-thread');
     } });
     await stat(join(output, 'step01/.completed'));
-    const config = JSON.parse(await readFile(join(output, 'run.json'), 'utf8'));
-    assert.equal((await readStepSession(output, 'step01'))?.threadId, 'kept-thread'); assert.equal(config.sourceInput.directory, input);
+    assert.equal((await readStepSession(output, 'step01'))?.threadId, 'kept-thread');
   }
 });

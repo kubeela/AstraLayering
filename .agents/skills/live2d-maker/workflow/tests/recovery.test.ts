@@ -23,19 +23,14 @@ test('阴影恢复按保存模式替换所选 step01 的会话，另一模式与
     const f = await fixture(t), target = join(f.task, 'shadow');
     const step = `step01_${mode}`, other = `step01_${mode === 'mask' ? 'normal-depth' : 'mask'}`;
     await mkdir(join(target, step), { recursive: true }); await mkdir(join(target, other), { recursive: true });
-    const rootRun = { version: 1, name: 'case', dir: f.dir, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', sections: {}, shadowMode: mode };
+    const rootRun = { version: 1, from: 'shadow', to: 'shadow', jobs: 1, status: 'interrupted', sections: {}, shadowMode: mode };
     await writeFile(join(f.task, 'run.json'), JSON.stringify(rootRun));
-    const run = JSON.stringify({ version: 2, name: 'case',
-      sourceInput: { characterKra: 'source.kra', characterColor: 'source.png', simplifiedCharacter: 'simplified.png', structureFiles: [] },
-      krita: { executable: process.execPath, version: 'test' } });
-    await writeFile(join(target, 'run.json'), run);
     await writeStepSession(target, step, { threadId: 'old-shadow' });
     await writeFile(join(target, step, '.running'), '');
     await writeFile(join(target, step, 'normal.png'), 'existing map');
     await writeFile(join(target, other, '.completed'), 'completed');
     const archive = await replaceThread({ ...f.recovery, section: 'shadow' });
     assert.ok(archive.startsWith(join(target, 'recovery')));
-    assert.equal(await readFile(join(target, 'run.json'), 'utf8'), run);
     const session = await readStepSession(target, step);
     assert.equal(session?.threadId, undefined); assert.equal(session?.handoff?.previousThreadId, 'old-shadow');
     assert.equal(JSON.parse(await readFile(join(archive, 'session-before.json'), 'utf8')).threadId, 'old-shadow');

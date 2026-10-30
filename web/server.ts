@@ -171,7 +171,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         }
         await task(opts.name, requestDir);
         if (path === '/api/convert-layout') { json(await convertLayout(directory)); return; }
-        if (['/api/start', '/api/step-action', '/api/task-action', '/api/stop'].includes(path) && (await readRun(directory, opts.name))?.archive) {
+        if (['/api/start', '/api/step-action', '/api/task-action', '/api/stop'].includes(path) && (await readRun(directory))?.archive) {
           json({ error: '这是成果归档；请在原运行目录继续制作。' }, 409); return;
         }
         if (path === '/api/project-name') {

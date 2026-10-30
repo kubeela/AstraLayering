@@ -33,7 +33,7 @@ export const completeRun = (run?: TaskRun) => !!run && run.status === 'completed
 // Completion facts are portable. CLI configuration, model selection and thread
 // records stay at the source; an export cannot accidentally resume old sessions.
 export function archiveRun(run: TaskRun): TaskRun {
-  return { version: 1, archive: true, name: run.name, dir: '.', from: 'part-layering', to: 'shadow',
+  return { version: 1, archive: true, from: 'part-layering', to: 'shadow',
     jobs: run.jobs, standard: run.standard, shadowMode: run.shadowMode, status: run.status,
     createdAt: run.createdAt, updatedAt: run.updatedAt,
     sections: Object.fromEntries(Object.entries(run.sections).filter(([id]) => (exportSectionIds as readonly string[]).includes(id)).map(([id, value]) => [id,
@@ -61,11 +61,10 @@ async function sourceFile(root: string, path: string): Promise<string | undefine
 // Collect formal deliveries from receipts/contracts, then close over report
 // image references. A workspace image is published beside its citing report.
 // root is the real task directory. Records may name it through another prefix
-// (a symlinked runs root, or the run's recorded dir); those aliases map onto root.
+// (a symlinked runs root); those aliases map onto root.
 export async function exportFiles(root: string, run: TaskRun, aliases: readonly string[] = []): Promise<{ entries: Map<string, Entry>; warnings: string[] }> {
   const entries = new Map<string, Entry>(), files: string[] = [], steps = new Set<string>(), warnings: string[] = [];
-  const roots = [...new Set([...aliases, ...(run.dir && isAbsolute(run.dir) ? [join(run.dir, run.name)] : [])]
-    .map(path => resolve(path)))].filter(path => path !== root);
+  const roots = [...new Set(aliases.map(path => resolve(path)))].filter(path => path !== root);
   // Same conversion as toTaskPath, also accepting the aliases; an outside path stays absolute.
   const taskPath = (path: string) => {
     for (const base of [root, ...roots]) { const local = toTaskPath(base, path); if (!isAbsolute(local)) return local; }
@@ -223,11 +222,11 @@ export async function exportCompletedRun(options: { name: string; dir?: string; 
   if (inside(root, output) || inside(output, root)) throw new Error('导出位置不能覆盖或嵌入原任务目录');
   if (await lstat(output).then(() => true, error => { if (error.code === 'ENOENT') return false; throw error; })) throw new Error('导出位置已存在：' + output);
   const state = await taskStatus(options);
-  if (state.runnerAlive || state.lockHeld || !completeRun(await readRun(root, options.name))) throw new Error('仅能导出全流程已完成且已停止的任务');
+  if (state.runnerAlive || state.lockHeld || !completeRun(await readRun(root))) throw new Error('仅能导出全流程已完成且已停止的任务');
   const release = await acquireTaskLock(root);
   let staging: string | undefined;
   try {
-    const run = await readRun(root, options.name);
+    const run = await readRun(root);
     if (!completeRun(run)) throw new Error('任务状态已改变，请刷新后再导出');
     const { entries, warnings } = await exportFiles(root, run!, [source]);
     await mkdir(dirname(output), { recursive: true });

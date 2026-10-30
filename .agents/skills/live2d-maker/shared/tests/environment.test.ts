@@ -133,15 +133,14 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     assert.match(await readFile(join(directory, 'agents/steps/step01/error.txt'), 'utf8'), /模型最后消息/);
     await assert.rejects(readFile(join(directory, 'step01/.completed')), { code: 'ENOENT' });
     const changed = loadWorkflowEnvironment({ layering_high_model: 'gpt-6.1-sol-low' }, root);
-    await runWorkflow(section, { name: 'case' }, { ...deps, environment: changed, agent: async request => {
+    await runWorkflow(section, { name: 'case', krita: process.execPath }, { ...deps, environment: changed, agent: async request => {
       if (isRasterReview(request)) return deliverRasterStep(request, section.steps[0]);
       assert.equal(request.threadId, 'persistent-thread');
       assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'low');
       return deliverRasterStep(request, section.steps[0], 'persistent-thread');
     } });
-    const config = JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
     assert.equal((await readStepSession(directory, 'step01'))?.threadId, 'persistent-thread');
-    assert.equal(config.models, undefined);
+    await assert.rejects(readFile(join(directory, 'run.json')), { code: 'ENOENT' });
     const attempts = (await readFile(join(directory,'agents/steps/step01/attempts.jsonl'),'utf8')).trim().split('\n').map(line=>JSON.parse(line));
     const draw = attempts.filter(attempt=>attempt.phase==='draw').at(-1);
     assert.equal(draw.model,'gpt-6.1-sol'); assert.equal(draw.effort,'low');

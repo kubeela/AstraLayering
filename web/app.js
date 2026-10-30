@@ -429,7 +429,7 @@ function graph() {
 }
 function runNotice() {
  if(data.status==='layout')return `<div class="run-notice error"><span>${icon('info')}${esc(data.message)}</span>${data.layout==='previous'?`<button class="button" data-action="convert-layout">${icon('folder')}转换目录</button>`:''}</div>`;
- const message=data.run?.error||data.lastLogMessage||data.run?.lastMessage||'尚无总调度执行记录，可选择单条管线读取已有上游产物。';
+ const message=data.run?.error||data.lastLogMessage||'尚无总调度执行记录，可选择单条管线读取已有上游产物。';
  const stopped=data.status==='failed'||data.status==='interrupted';
  return `<details data-details="run-notice" class="run-notice ${data.status==='failed'?'error':''}" ${stopped?'open':''}><summary>${icon(data.status==='failed'?'info':'clock')}<span>${stopped?esc(taskStatusNames[data.status])+' · ':''}${esc(message.split('\n')[0])}</span><small>运行记录与日志</small></summary><div>${data.errors.length?`<pre class="status-error">${esc(data.errors.join('\n'))}</pre>`:''}<pre>${esc(message)}</pre><pre class="live-log">${esc(data.logs||'暂无日志')}</pre><small>日志：${esc(data.logPath||data.directory)}${data.logUpdatedAt?' · 日志更新：'+esc(new Date(data.logUpdatedAt).toLocaleString()):''}${data.run?.updatedAt?' · 状态保存：'+esc(new Date(data.run.updatedAt).toLocaleString()):''}</small></div></details>`;
 }
