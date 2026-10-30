@@ -1,7 +1,8 @@
 import {staticPromptPrefix} from '../../shared/tests/prompt-prefix.ts';
 import { profile } from '../profile.ts';
+import { partKnowledge } from '../../shared/part/group-prompts.ts';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { taskRootOf } from '../../shared/task-paths.ts';
@@ -23,11 +24,12 @@ function initialSteps(agents: Parameters<typeof createLayeringSteps>[0]) {
 }
 
 async function fixture(t: TestContext): Promise<InitialContext> {
-  const directory = await mkdtemp(join(tmpdir(), 'part-layering-initial-'));
-  t.after(() => rm(directory, { recursive: true, force: true }));
+  const root = await mkdtemp(join(tmpdir(), 'part-layering-initial-')), directory = join(root, 'part-layering');
+  t.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(directory);
   return { profile, directory, references: {
     directory: join(directory, 'references'),
-    simplifiedSubject: join(directory, 'references/simplified.png'), baseSubject: join(directory, 'references/base.png'),
+    simplifiedSubject: join(directory, 'references/simplified-subject.png'), baseSubject: join(directory, 'references/base-subject.png'),
   } };
 }
 
@@ -45,7 +47,7 @@ async function saveGrouping(task: AgentTask, value: unknown = wingGroups) {
 
 test('首次识别一次调用，绑定 view_bitmap 和 write_groups；直接保存正式分组，忽略最终回复', async t => {
   const context = await fixture(t);
-  context.references.baseSubject = 'references/base.png';
+  context.references.baseSubject = 'references/base-subject.png';
   const calls: AgentTask[] = [];
   const steps = initialSteps({ async run(task) {
     calls.push(task);
@@ -57,11 +59,10 @@ test('首次识别一次调用，绑定 view_bitmap 和 write_groups；直接保
   assert.equal(calls[0].name, '首次分组识别');
   assert.equal(calls[0].cwd, context.directory);
   assert.equal(calls[0].imageGeneration, undefined);
-  assert.ok(calls[0].prompt.startsWith(staticPromptPrefix(await readFile(new URL('../prompts/4-初始分组.md', import.meta.url), 'utf8'))));
+  assert.ok(calls[0].prompt.startsWith(staticPromptPrefix(await readFile(partKnowledge(profile, 'initial').files('main')[0], 'utf8'))));
   assert.match(calls[0].prompt, /本次运行目录/);
-  assert.ok(calls[0].prompt.includes(`素体参考图：${join(taskRootOf(context.directory), 'references/base.png')}`));
+  assert.ok(calls[0].prompt.includes(`素体参考图：${join(context.directory, 'references/base-subject.png')}`));
   assert.doesNotMatch(calls[0].prompt, /自行寻找|优先根据/);
-  assert.equal(calls[0].images, undefined);
   assert.equal(calls[0].outputSchema, undefined);
   assert.deepEqual(calls[0].tools!.map(tool => tool.name), ['view_bitmap', 'write_groups']);
   assert.match(calls[0].prompt, /按需裁剪放大/);

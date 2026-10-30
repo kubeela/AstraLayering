@@ -46,7 +46,7 @@ async function fixture(t: TestContext) {
     await writeFile(join(path, 'groups.json'), JSON.stringify({ groups: [{ id: 'hair' }, { id: 'face' }] }));
     await writeFile(join(path, 'occlusion.json'), '{}');
   }
-  await writeFile(join(task, 'part-layering/references/simplified-subject.webp'), color);
+  await writeFile(join(task, 'part-layering/references/simplified-subject.png'), color);
   const options = { name: 'case', dir: root, krita: process.execPath };
   const inspectNative: NativeInspect = async (_document, relations, output) => {
     await mkdir(output,{recursive:true});
@@ -84,8 +84,9 @@ async function fixture(t: TestContext) {
   return { root, task, source, color, kra, options, deps, deliver, inspectNative };
 }
 test('默认蒙版；全局保存、透传并仅预检所选 step01', async t => {
-  assert.equal(parseRunArguments(['--name', 'case']).shadowMode, 'mask');
-  assert.throws(() => parseRunArguments(['--name', 'case', '--shadow-mode', 'unknown']));
+  assert.equal(parseRunArguments(['--name', 'case', '--knowledge', 'knowledge']).shadowMode, 'mask');
+  assert.throws(() => parseRunArguments(['--name', 'case']), /--knowledge/);
+  assert.throws(() => parseRunArguments(['--name', 'case', '--knowledge', 'knowledge', '--shadow-mode', 'unknown']));
   const parsed = parseArguments(['--name', 'case', '--shadow-mode', 'normal-depth']);
   assert.ok(parsed.mode !== 'help'); assert.equal(parsed.options.shadowMode, 'normal-depth');
   assert.deepEqual(sectionAgentSteps('shadow', false, 'mask'), ['shadow_mask']);

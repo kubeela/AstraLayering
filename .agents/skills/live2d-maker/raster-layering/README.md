@@ -7,15 +7,15 @@
 从 skill 根目录执行：
 
 ```sh
-pnpm raster-layering --name my-character --krita /绝对路径/krita
-# 续跑同样带 --krita（独立 section 不保存配置）
+pnpm raster-layering --name my-character --krita /绝对路径/krita --knowledge /绝对路径/knowledge
+# 续跑同样带 --krita 与 --knowledge（独立 section 不保存配置）
 # 自定义运行根目录时，首次与续跑均追加 --dir
-pnpm raster-layering --name my-character --dir /绝对路径/运行根目录 --dry-run
+pnpm raster-layering --name my-character --dir /绝对路径/运行根目录 --knowledge /绝对路径/knowledge --dry-run
 # 单独核对指定 Krita 入口
 pnpm raster-layering --check-krita --krita /绝对路径/krita
 ```
 
-数据位于 `<dir>/<name>/raster-layering/`，上游读取相邻 `part-layering/`。每次启动（含续跑）都传 Krita 的实际可执行文件，本 section 不保存配置；相对输入从 `<dir>/<name>/` 解析。`--dry-run` 检查输入、Krita 与待执行提示词，保持任务文件原样。真实绘制还需要可用显示与操作环境，桌面和 headless 检查见 setup。独立调试前先停止同任务总调度。
+数据位于 `<dir>/<name>/raster-layering/`，上游读取相邻 `part-layering/`。每次启动（含续跑）都传 Krita 的实际可执行文件与 `--knowledge` 先验知识目录，本 section 不保存配置；相对输入从 `<dir>/<name>/` 解析。`--dry-run` 检查输入、Krita 与待执行提示词，保持任务文件原样。真实绘制还需要可用显示与操作环境，桌面和 headless 检查见 setup。独立调试前先停止同任务总调度。
 
 三步都在本 section 的私有 Krita 中操作：工作流只准备环境并占名额，agent 通过 `krita` 工具自行启动，section 结束时关闭；私有进程、并发名额与显示见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。
 
@@ -23,9 +23,9 @@ pnpm raster-layering --check-krita --krita /绝对路径/krita
 
 | 步骤 | 职责与提示词 | 必需成果 |
 | --- | --- | --- |
-| step01 | [分层与补全](prompts/01-分层与补全.md)，[review](prompts/01-review.md) 与[返修](prompts/01-repair.md) | `character-depth.kra`、`report.md` 与实际执行的 review／repair 报告 |
-| step02 | [边缘精修](prompts/02-边缘柔化与去锯齿.md)，逐层自检 | `character-soft-edges.kra`、同名 PNG、`report.md` |
-| step03 | [去除临时连体服](prompts/03-去除连体服.md)，补全换装身体底层并自检 | `character-dressup-base.kra`、同名 PNG、`report.md` |
+| step01 | [分层与补全](../knowledge/raster-layering/step01/prompts/01-分层与补全.md)，[review](../knowledge/raster-layering/step01/prompts/01-review.md) 与[返修](../knowledge/raster-layering/step01/prompts/01-repair.md) | `character-depth.kra`、`report.md` 与实际执行的 review／repair 报告 |
+| step02 | [边缘精修](../knowledge/raster-layering/step02/prompts/02-边缘柔化与去锯齿.md)，逐层自检 | `character-soft-edges.kra`、同名 PNG、`report.md` |
+| step03 | [去除临时连体服](../knowledge/raster-layering/step03/prompts/03-去除连体服.md)，补全换装身体底层并自检 | `character-dressup-base.kra`、同名 PNG、`report.md` |
 
 三步的 agent 都有 `krita` 工具；此外按环节注册的流程工具如下（生图工具按 harness 另行提供）：
 
@@ -73,7 +73,7 @@ step02 沿用已确认结构，用 `locate_pixel_differences` 候选框引导细
 | 上游 part 重新完成、来源戳改变 | 重做 step01 与依赖步骤 |
 | 缺少上游或必要成果 | 报告具体路径，恢复文件或完成对应前置后续跑 |
 
-普通中断按相同 name／dir 续跑。主动重做时先停止当前进程，使用网页“重试”或移除该步骤的完成标记；随后本步与后续目录会重建，上游修正和前序工程保留。需要保留现有成果而更换损坏会话时，使用 [workflow 的交接](../workflow/README.md#保留产物地换绘制会话)。
+普通中断按相同 name／dir 续跑。主动重做时先停止当前进程，使用网页“重试”或移除该步骤的完成标记；随后本步与后续目录会重建，上游修正和前序工程保留。需要保留现有成果而更换损坏会话时，使用 `--resume`（网页“恢复”），见 [workflow](../workflow/README.md#恢复方式)。
 
 旧任务若已完成 step01 绘制而缺轮廓审核，会保留工程补跑审核；修复确实改变工程时，后续产物归档到 recovery 并按新输入接续。旧 step02 完成绘制而停在已移除审核时，可保留精修结果完成标记。
 

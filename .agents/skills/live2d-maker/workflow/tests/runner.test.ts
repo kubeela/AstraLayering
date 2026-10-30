@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
+import sharp from 'sharp';
 import { sectionIds, type SectionId } from '../../shared/paths.ts';
 import { runTask } from '../runner.ts';
 import { preflightKrita } from '../krita.ts';
@@ -11,10 +12,14 @@ import { MissingDependencyError } from '../../shared/missing-dependency.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, taskStatus } from '../state.ts';
 import { main, parseArguments, startBackground } from '../run.ts';
 import { fakePatchedCodex } from '../../shared/tests/fake-codex.ts';
+import { defaultKnowledgeDirectory, knowledgeDirectory, selectKnowledge } from '../../shared/knowledge.ts';
 import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
 
 // Real background workers inherit this and pass the Codex startup check without a build.
 process.env.layering_codex_path = await fakePatchedCodex();
+
+const png = (background: string) => sharp({ create: { width: 2, height: 2, channels: 4, background } }).png().toBuffer();
+const originalImage = await png('#f00');
 
 async function fixture(t: TestContext) {
   const dir = await mkdtemp(join(tmpdir(), 'live2d-runner-'));
@@ -22,7 +27,7 @@ async function fixture(t: TestContext) {
   const options = { name: 'case', dir, krita: process.execPath };
   const directory = directoryFor(options);
   await mkdir(directory);
-  await writeFile(join(directory, 'reference.png'), 'original-image');
+  await writeFile(join(directory, 'reference.png'), originalImage);
   return { options, directory };
 }
 const preflight = async (executable: string) => ({ executable, version: 'test' });
@@ -90,7 +95,7 @@ test('总控保留输入与配置，按依赖推进；后续仅用 name 和 dir 
     ['clothing-raster-layering', 'character-assembly'], ['character-assembly', 'shadow']] as const) assert.ok(first.indexOf(before) < first.indexOf(after), before + ' → ' + after);
   // The delivery is the furthest section's, whichever lane finished last.
   assert.equal((await readRun(f.directory))!.output, 'shadow/output');
-  assert.equal(await readFile(join(f.directory, 'input/original.png'), 'utf8'), 'original-image');
+  assert.deepEqual(await readFile(join(f.directory, 'input/original.png')), originalImage);
   await rm(join(f.directory, 'reference.png'));
   await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async (id, run) => {
     second.push(id); assert.equal(run.jobs, 2); assert.equal(run.krita, process.execPath);
@@ -179,9 +184,9 @@ test('手动上游可从组装开始，不伪造此前进度；更换原图不�
   assert.deepEqual(calls, ['character-assembly', 'shadow']);
   assert.deepEqual(Object.keys((await readRun(f.directory))!.sections), ['character-assembly', 'shadow']);
   await runTask({ ...f.options, image: 'reference.png' }, { preflight, execute: async () => ({ summary: 'ok' }) });
-  await writeFile(join(f.directory, 'different.png'), 'different image');
+  await writeFile(join(f.directory, 'different.png'), await png('#00f'));
   await assert.rejects(runTask({ ...f.options, image: 'different.png' }), /已有不同的原图/);
-  assert.equal(await readFile(join(f.directory, 'input/original.png'), 'utf8'), 'original-image');
+  assert.deepEqual(await readFile(join(f.directory, 'input/original.png')), originalImage);
 });
 
 test('Krita 不可用时拒绝启动且不改动任务记录；用 --krita 重新指定后继续', async t => {
@@ -233,12 +238,28 @@ test('同名任务锁阻止重复启动，取消保留状态并释放锁', async
   const unlock = await acquireTaskLock(f.directory); await unlock();
 });
 
+test('--knowledge 记入 run.json，续跑省略沿用；缺失文件时拒绝启动，写入 workflow.log 且不改任务记录', async t => {
+  const f = await fixture(t);
+  t.after(() => selectKnowledge(defaultKnowledgeDirectory));
+  const knowledge = join(f.options.dir, 'knowledge');
+  await cp(defaultKnowledgeDirectory, knowledge, { recursive: true });
+  const done = { preflight, execute: async () => ({ summary: 'ok' }) };
+  await runTask({ ...f.options, image: 'reference.png', to: 'part-layering', knowledge }, done);
+  assert.equal((await readRun(f.directory))!.knowledge, knowledge);
+  assert.equal(knowledgeDirectory(), knowledge);
+  const before = await readFile(join(f.directory, 'run.json'), 'utf8');
+  await rm(join(knowledge, 'shared/prompts/runtime/interrupted-task.md'));
+  await assert.rejects(runTask({ name: 'case', dir: f.options.dir, to: 'part-layering' }, done), /先验知识缺少文件：.*interrupted-task\.md/);
+  assert.equal(await readFile(join(f.directory, 'run.json'), 'utf8'), before, '拒绝启动不能改动任务记录');
+  assert.match(await readFile(join(f.directory, 'workflow.log'), 'utf8'), /先验知识缺少文件：.*interrupted-task\.md/);
+});
+
 test('CLI 区分只读查询、后台启动和恢复，拒绝冲突参数', () => {
   assert.equal(parseArguments(['--name', 'case', '--status', '--json']).mode, 'status');
   assert.equal(parseArguments(['--name', 'case', '--background']).mode, 'background');
   for (const args of [ ['--name', 'case', '--dir', 'relative'], ['--name', 'case', '--json'],
     ['--name', 'case', '--status', '--background'], ['--name', 'case', '--status', '--image', 'x'],
-    ['--name', 'case', '--replace-thread', 'raster-layering'], ['--name', 'case', '--jobs', '0'],
+    ['--name', 'case', '--jobs', '0'],
     ['--name', 'case', '--standard', '--no-standard'], ['--name', 'case', '--status', '--standard'],
     ['--name', 'case', '--status', '--no-standard'] ]) {
     assert.throws(() => parseArguments(args));
@@ -251,6 +272,7 @@ test('CLI 与网页操作对应：继续、恢复、重试、停止，可指定�
   assert.equal(parse('--retry').mode, 'run');
   assert.deepEqual([parse('--resume', '--background').mode, parse('--resume', '--background').action.action], ['background', 'resume']);
   assert.equal(parse('--continue', '--krita', '/opt/krita').options.krita, '/opt/krita');
+  assert.equal(parse('--resume', '--knowledge', '/opt/knowledge').options.knowledge, '/opt/knowledge');
   assert.deepEqual(parse('--retry', '--section', 'part-layering', '--step', 'step11_completion/head').action,
     { action: 'retry', section: 'part-layering', step: 'step11_completion/head' });
   assert.deepEqual(parse('--continue', '--section', 'shadow').action, { action: 'continue', section: 'shadow', step: '' });
@@ -258,7 +280,7 @@ test('CLI 与网页操作对应：继续、恢复、重试、停止，可指定�
   assert.equal(parse().action, undefined);
   for (const args of [['--resume', '--retry'], ['--section', 'shadow'], ['--retry', '--step', 'step01'],
     ['--retry', '--section', 'shadow'], ['--retry', '--section', 'unknown', '--step', 'step01'],
-    ['--stop', '--krita', 'x'], ['--stop', '--background'], ['--stop', '--retry'], ['--status', '--retry']]) {
+    ['--stop', '--krita', 'x'], ['--stop', '--knowledge', 'x'], ['--status', '--knowledge', 'x'], ['--stop', '--background'], ['--stop', '--retry'], ['--status', '--retry']]) {
     assert.throws(() => parse(...args), Error, args.join(' '));
   }
 });

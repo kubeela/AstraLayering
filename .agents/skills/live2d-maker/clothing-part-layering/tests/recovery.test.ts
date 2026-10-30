@@ -3,7 +3,7 @@ import { cp, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { taskRootOf } from '../../shared/task-paths.ts';
-import { test, type TestContext } from 'node:test';
+import { test } from 'node:test';
 import { artifactPath, readJson, reportPath } from '../../shared/part/artifact-facts.ts';
 import { GroupStore, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
 import { runLayering } from '../../shared/part/layering.ts';
@@ -115,31 +115,7 @@ test('复核中断后续跑沿用同一轮廓与复核记录，不重画也不�
   assert.ok(!events.includes('head:outline'));
 });
 
-async function referencing(t: TestContext, source: string, from: string, sibling: string) {
-  const prompts = await mkdtemp(join(tmpdir(), 'part-layering-prompts-'));
-  t.after(() => rm(prompts, { recursive: true, force: true }));
-  await cp(source, prompts, { recursive: true });
-  await writeAtomic(join(prompts, 'groups', from, 'completion.references.json'), JSON.stringify([{ sibling }]));
-  return prompts;
-}
-
-test('掌片去重稿变化只重跑引用它的补全，不重画引用者轮廓或无关部件', async t => {
-  const f = await fixture(t), events: string[] = [];
-  const profile = { ...f.profile, promptsDirectory: await referencing(t, f.profile.promptsDirectory, 'hand/finger', 'palm') };
-  const steps = redrawn(workingSteps(events, [{ id: 'hand' }], { hand: ['palm', 'finger', 'ornament'].map(name => ({ id: `hand/${name}`, kind: 'part' as const })) }), ['hand/palm']);
-  await runLayering({ ...f, profile, groups: null, steps });
-  const ornament = [artifactPath(f.directory, 'hand/ornament', 'completion'), reportPath(f.directory, 'hand/ornament', 'completion-check')];
-  const before = await snapshot(ornament);
-  await rm(artifactPath(f.directory, 'hand/palm', 'outline'));
-  events.length = 0;
-  const result = await runLayering({ ...f, profile, groups: { id: 'hand/palm' }, steps });
-  assert.equal(result.status, 'completed');
-  assert.ok(events.includes('hand/palm:completion') && events.includes('hand/finger:completion'));
-  assert.ok(!events.includes('hand/finger:outline') && !events.some(event => event.startsWith('hand/ornament:')));
-  assert.deepEqual(await snapshot(ornament), before);
-});
-
-test('去重实际改变别件时只重跑变化的补全；未改变的去重结果保持，提交后中断也安全', async t => {
+test('去重每次从轮廓重新判断；字节不变的去重结果保持，只重跑变化的补全，提交后中断也安全', async t => {
   const f = await fixture(t), events: string[] = [];
   const base = redrawn(workingSteps(events, ['a', 'b', 'd'].map(id => ({ id }))), ['a']);
   await runLayering({ ...f, groups: null, steps: { ...base, async reduceOutlines(context) {
@@ -151,12 +127,10 @@ test('去重实际改变别件时只重跑变化的补全；未改变的去重�
   const before = await snapshot(preserved);
   await rm(artifactPath(f.directory, 'a', 'outline'));
   await assert.rejects(runLayering({ ...f, groups: { id: 'a' }, steps: { ...base, async reduceOutlines(context) {
-    // 轮廓未变的组把当前去重稿交给适配器参考。
-    assert.equal(context.entries.find(entry => entry.group.id === 'd')!.current?.path, preserved[0]);
-    assert.equal(context.entries.find(entry => entry.group.id === 'a')!.current, undefined);
-    const entry = context.entries.find(entry => entry.group.id === 'b')!;
-    await writeAtomic(entry.outputPath, shape('b', 20, 80));
-    return { status: 'completed', output: { changed: [{ groupId: 'b', path: entry.outputPath }] } };
+    // 重新判断后 d 得到与上次相同的去重结果，b 新增改动。
+    const changed = [['d', 20, 80], ['b', 20, 80]] as const;
+    for (const [id, left, right] of changed) await writeAtomic(context.entries.find(entry => entry.group.id === id)!.outputPath, shape(id, left, right));
+    return { status: 'completed', output: { changed: changed.map(([groupId]) => ({ groupId, path: context.entries.find(entry => entry.group.id === groupId)!.outputPath })) } };
   } }, progress(message) { if (message === '第 0 层轮廓去重：完成') throw new Error('interrupt after changed reduction'); } }), /interrupt after changed reduction/);
   events.length = 0;
   await runLayering({ ...f, groups: null, steps: base });

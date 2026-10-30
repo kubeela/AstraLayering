@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { stepKnowledge } from '../../shared/knowledge.ts';
 import { test, type TestContext } from 'node:test';
 import type { AgentTask } from '../../shared/codex/agents.ts';
 import { getPreparationDirectory, loadPreparedReferences, prepareReferences, type PreparationReferences } from '../preparation.ts';
@@ -13,14 +13,16 @@ import sharp from 'sharp';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { readDressup } from '../../shared/part/dressup.ts';
 import { partSteps } from '../../shared/step-paths.js';
+import { referencePaths } from '../../shared/tests/prompt-input.ts';
+import { pngBytes } from '../../shared/png.ts';
 
 // The part section holds the preparation steps beside the references directory.
 const section = (refs: { directory: string } | string) => dirname(typeof refs === 'string' ? refs : refs.directory);
 const step = (stage: keyof typeof partSteps) => partSteps[stage];
 const optionsPath = (refs: { directory: string } | string) => join(section(refs), step('options'), 'options.json');
 
-const styleReference = fileURLToPath(new URL('../resources/简化参考图片.png', import.meta.url));
-const outfitReference = fileURLToPath(new URL('../resources/连体服参考.jpg', import.meta.url));
+const styleReference = stepKnowledge('part-layering', 'step05_simplified').reference('简化参考图片.png');
+const outfitReference = stepKnowledge('part-layering', 'step06_base').reference('连体服参考.jpg');
 
 async function fixture(t: TestContext, needsSimplification: boolean, needsAdjustment = false, reuseBase = false) {
   const temporary = await mkdtemp(join(tmpdir(), 'part-layering-preparation-'));
@@ -58,8 +60,8 @@ test('无需简化仍执行换装，判断和换装各收到正确的两张图�
   const f = await fixture(t, false);
   const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
   assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
-  assert.deepEqual(f.calls[0].images?.map(image => image.path), [refs.standardImage, styleReference]);
-  assert.deepEqual(f.calls[1].images?.map(image => image.path), [refs.simplifiedSubject, outfitReference]);
+  assert.deepEqual(referencePaths(f.calls[0].prompt), [refs.standardImage, styleReference]);
+  assert.deepEqual(referencePaths(f.calls[1].prompt), [refs.simplifiedSubject, outfitReference]);
   assert.deepEqual(await readFile(refs.simplifiedSubject), f.bytes);
   assert.deepEqual(await readFile(refs.baseSubject), f.bytes);
   assert.deepEqual(await readFile(refs.standardImage!), f.bytes);
@@ -72,8 +74,8 @@ test('需要简化时先转换画风再换装，续跑不依赖外部原图', as
   const f = await fixture(t, true);
   const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
   assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
-  assert.deepEqual(f.calls[0].images?.map(image => image.path), [refs.standardImage, styleReference]);
-  assert.deepEqual(f.calls[1].images?.map(image => image.path), [refs.simplifiedSubject, outfitReference]);
+  assert.deepEqual(referencePaths(f.calls[0].prompt), [refs.standardImage, styleReference]);
+  assert.deepEqual(referencePaths(f.calls[1].prompt), [refs.simplifiedSubject, outfitReference]);
   await rm(f.original);
   f.calls.length = 0;
   const messages: string[] = [];
@@ -221,14 +223,14 @@ test('删除产物即重试该步骤；无效 PNG 明确报错，不留下正式
   await assert.rejects(readFile(refs.baseSubject), { code: 'ENOENT' });
 });
 
-test('原图不是 PNG 时保留原始字节，standard 和不简化的参考都是真实 PNG', async t => {
+test('原图不是 PNG 时复制为 original.png，standard 和不简化的参考都是真实 PNG', async t => {
   const f = await fixture(t, false);
   const jpeg = f.original.replace('.png', '.jpg');
-  const bytes = await sharp(f.original).jpeg().toBuffer();
-  await writeFile(jpeg, bytes);
+  await writeFile(jpeg, await sharp(f.original).jpeg().toBuffer());
   const refs = await prepareReferences({ runName: f.runName, image: jpeg }, f.steps);
-  assert.deepEqual(await readFile(refs.originalImage!), bytes);
-  assert.ok(refs.originalImage!.endsWith('.jpg'));
+  assert.deepEqual(await readFile(refs.originalImage!), await pngBytes(jpeg));
+  assert.ok(refs.originalImage!.endsWith('original.png'));
+  await prepareReferences({ runName: f.runName, image: jpeg }, f.steps);
   for (const path of [refs.standardImage!, refs.simplifiedSubject]) assert.equal((await sharp(path).metadata()).format, 'png');
   assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
 });
@@ -240,16 +242,14 @@ test('--standard 先判断；已标准仅复制，需要调整才传一张原图
     const refs = await prepareReferences({ runName: f.runName, image: f.original, standard: true }, f.steps);
     assert.deepEqual(f.calls.map(task => task.name), ['姿态判断', ...(adjust ? ['标准姿态'] : []), '参考判断与简化', '素体换装']);
     const judge = f.calls[0];
-    assert.equal(judge.images!.length, 1);
-    assert.equal(judge.images![0].path, refs.originalImage);
+    assert.deepEqual(referencePaths(judge.prompt), [refs.originalImage]);
     const generation = f.calls.find(task => task.name === '标准姿态');
     if (adjust) {
       assert.equal(generation!.imageGeneration, true);
-      assert.equal(generation!.images!.length, 1);
-      assert.equal(generation!.images![0].path, refs.originalImage);
+      assert.deepEqual(referencePaths(generation!.prompt), [refs.originalImage]);
       assert.deepEqual(await readFile(refs.standardImage!), await readFile(f.generated));
     } else assert.deepEqual(await readFile(refs.standardImage!), f.bytes);
-    assert.equal(f.calls.find(task => task.name === '参考判断与简化')!.images![0].path, refs.standardImage);
+    assert.equal(referencePaths(f.calls.find(task => task.name === '参考判断与简化')!.prompt)[0], refs.standardImage);
     assert.deepEqual(await readFile(refs.originalImage!), f.bytes);
     f.calls.length = 0;
     assert.deepEqual(await prepareReferences({ runName: f.runName, standard: true }, f.steps), refs);

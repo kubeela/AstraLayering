@@ -58,8 +58,7 @@ export type GroupContext = InitialContext & {
   parent?: GroupNode;
 };
 // outputPath 提供默认草稿位置；也可返回其他 SVG 路径，由调度器验证后保存正式产物。
-// resumeDraft：继续中断的步骤（继续或恢复）时，outputPath 上的草稿是上次画到的进度，
-// 应在其上接着画而不是从头开始。
+// resumeDraft：继续中断的步骤（继续或恢复）时保留 outputPath 上已有的草稿，不先清除。
 export type DrawingContext = GroupContext & { outputPath: string; resumeDraft?: boolean };
 export type ReviewContext = GroupContext & { outline: SvgArtifact; reportPath: string };
 
@@ -81,7 +80,7 @@ export type OcclusionContext = InitialContext & { groups: GroupNode[]; preview: 
 
 export type OutlineReductionContext = InitialContext & {
   depth: number;
-  entries: { group: GroupNode; parent?: GroupNode; outline: SvgArtifact; current?: SvgArtifact; outputPath: string }[];
+  entries: { group: GroupNode; parent?: GroupNode; outline: SvgArtifact; outputPath: string }[];
 };
 export type OutlineReduction = {
   changed: { groupId: string; path: string }[];

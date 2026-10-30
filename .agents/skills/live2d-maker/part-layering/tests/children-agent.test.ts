@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, readFile, realpath, rm } from 'node:fs/promises';
+import { readFile, readdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import type { AgentTask } from '../../shared/codex/agents.ts';
@@ -10,7 +10,9 @@ import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
 import { parseRunArguments } from '../run.ts';
-import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
+import { fixture, publishGroups, shape, workingMerger, workingSteps } from './layering-fixture.ts';
+import { defaultKnowledgeDirectory } from '../../shared/knowledge.ts';
+import { promptInput } from '../../shared/tests/prompt-input.ts';
 
 const signal = new AbortController().signal;
 const child = (name: string, kind = 'part') => ({ name, kind, note: `${name} 的完整形体及独立控制范围` });
@@ -38,8 +40,8 @@ test('真实拆分适配器读取特化及操作约定，通过预览和工具�
     calls++;
     assert.equal(task.imageGeneration, false);
     assert.match(task.prompt, /face_base/);
-    assert.match(task.prompt, /10-拆分操作约定/);
-    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    assert.match(task.prompt, /【固定范围与操作约定】\n本轮只分析直属节点。/);
+    const input = promptInput(task.prompt);
     const submit = task.tools!.find(tool => tool.name === 'submit_children')!;
     await assert.rejects(submit.execute({ children: [child('base'), child('eye', 'group')], note: '依据' }, signal), /须查看/);
     await observe(task, input.sourceSvg);
@@ -66,38 +68,34 @@ test('真实拆分适配器读取特化及操作约定，通过预览和工具�
   assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].groups[0].kind, 'part');
 });
 
-test('拆分收到可选图片用途，按需调用能看到 prompts 外部参考且原图保持只读', async t => {
-  const f = await fixture(t), external = await fixture(t);
-  const prompts = join(external.directory, 'prompts'), hairDirectory = join(prompts, 'groups', 'hair');
-  await mkdir(hairDirectory, { recursive: true });
-  await writeAtomic(join(hairDirectory, 'children.md'), '有长发粒度疑问时，按 additionalReferences 用 view_bitmap 查看完整长束。\n提示词来源：{prompt_source}\n\n【本次输入】\n{runtime_context}\n\n【固定范围与操作约定】\n{fixed_rules}\n固定约定提示词来源：{fixed_rules_source}');
-  await writeAtomic(join(hairDirectory, 'children.references.json'), JSON.stringify([
-    { path: '../../../references/base.png', description: '长发主束与细束对照：按需查看，不固定层数' },
-  ]));
-  const source = join(f.directory, 'hair.svg');
+test('拆分在正文里写出可选参考图的路径与用途，按需调用 view_bitmap 查看，原图保持只读', async t => {
+  const f = await fixture(t);
+  await publishGroups(f.directory, [{ id: 'hair' }]);
+  const source = artifactPath(f.directory, 'hair', 'completion');
   await writeAtomic(source, shape('hair'));
-  const sourceBefore = await readFile(source), refBefore = await readFile(external.references.baseSubject);
+  const boards = join(defaultKnowledgeDirectory, 'part-layering/step12_children/references/hair');
+  const sourceBefore = await readFile(source), refBefore = await readFile(join(boards, '02-长发主束与细束的粒度对照-莉尔.png'));
   const result = await analyzeChildren({ ...f, group: normalizeGroups([{ id: 'hair' }])[0], completed: { path: source } }, {
     async run(task) {
-      assert.equal(task.images!.length, 1); // Extra boards are offered on demand.
-      const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
-      assert.deepEqual(input.additionalReferences, [{
-        path: await realpath(external.references.baseSubject), description: '长发主束与细束对照：按需查看，不固定层数',
-      }]);
+      const input = promptInput(task.prompt);
+      assert.equal(input.sourceSvg, source);
+      assert.deepEqual(input.additionalReferences.map((item: { path: string }) => item.path),
+        (await readdir(boards)).filter(name => name.endsWith('.png')).sort().map(name => join(boards, name)));
+      assert.match(input.additionalReferences[1].description, /^长发主束与细束的粒度对照（莉尔）/);
       const view = task.tools!.find(tool => tool.name === 'view_bitmap')!;
-      const observed = await view.execute({ path: input.additionalReferences[0].path, crop: [0, 0, 30, 30], scale: 2 }, signal);
+      const observed = await view.execute({ path: input.additionalReferences[1].path, crop: [0, 0, 30, 30], scale: 2 }, signal);
       assert.equal(observed.contentItems[1].type, 'inputImage');
-      assert.equal((await view.execute({ path: external.references.simplifiedSubject }, signal)).success, true);
+      assert.equal((await view.execute({ path: input.reference }, signal)).success, true);
       await observe(task, source);
       await task.tools!.find(tool => tool.name === 'submit_children')!.execute({
         children: [child('main'), child('side')], note: '参考完整发片，按当前独立控制需求拆分',
       }, signal);
       return { text: 'done', images: [] };
     },
-  }, prompts);
+  });
   assert.deepEqual(result.groups.map(g => g.id), ['hair/main', 'hair/side']);
   assert.deepEqual(await readFile(source), sourceBefore);
-  assert.deepEqual(await readFile(external.references.baseSubject), refBefore);
+  assert.deepEqual(await readFile(join(boards, '02-长发主束与细束的粒度对照-莉尔.png')), refBefore);
 });
 
 test('part 仍完成绘制到补全检查但不分析，混合层 BFS、深度边界和叶子合并均成立', async t => {

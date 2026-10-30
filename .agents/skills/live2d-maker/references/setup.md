@@ -88,7 +88,7 @@ pnpm build:codex --source /absolute/codex-source --jobs 4
 
 缺少 Xvfb 时，任务会记录为失败，并在网页与 `workflow.log` 中显示具体依赖、安装方法和显示环境配置提示。补齐后点「继续」（命令行 `--continue`），会重新检查并沿用已有会话和产物接着运行。
 
-Krita 用法只写在 [krita 工具说明](../shared/tools/krita/description.md)，随需要 Krita 的步骤提供。
+Krita 用法只写在 [krita 工具说明](../knowledge/shared/tools/krita/description.md)，随需要 Krita 的步骤提供。
 
 ## 按需功能
 

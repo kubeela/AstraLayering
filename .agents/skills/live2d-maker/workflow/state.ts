@@ -1,9 +1,9 @@
 import { shadowMode, type ShadowMode } from '../shared/shadow.ts';
 import { stepPattern } from '../shared/step-paths.js';
-import { randomUUID, createHash } from 'node:crypto';
-import { copyFile, mkdir, readFile, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import { mkdir, readFile, readdir, rename, stat, unlink, writeFile } from 'node:fs/promises';
 import { setTimeout as delay } from 'node:timers/promises';
-import { extname, join } from 'node:path';
+import { join } from 'node:path';
 import lockfile from 'proper-lockfile';
 import { sectionIds, resolveInput, resolveRunsDirectory, taskDirectory, type SectionId } from '../shared/paths.ts';
 import { defaultAgentConcurrency } from '../shared/codex/agent-runtime.ts';
@@ -11,9 +11,10 @@ import { readTaskLog } from './log.ts';
 import { requireCurrentLayout } from './layout.ts';
 import { currentSession } from '../shared/agents/step-session.ts';
 import { installedVersion } from '../shared/version.ts';
+import { copyAsPng, pngBytes } from '../shared/png.ts';
 
 export type TaskOptions = {
-  name: string; dir?: string; image?: string; krita?: string;
+  name: string; dir?: string; image?: string; krita?: string; knowledge?: string;
   from?: SectionId; to?: SectionId; jobs?: number; standard?: boolean; shadowMode?: ShadowMode;
 };
 export type SectionProgress = {
@@ -26,6 +27,8 @@ export type TaskRun = {
   archive?: true;
   version: 1; from: SectionId; to: SectionId;
   krita?: string; jobs: number; standard?: boolean; shadowMode?: ShadowMode;
+  // The knowledge directory given with --knowledge; absent, the skill's own knowledge/.
+  knowledge?: string;
   status: 'ready' | 'running' | 'completed' | 'failed' | 'interrupted';
   createdAt: string; updatedAt: string;
   // Release labels (shared/version.ts) of the version that created the task and that last configured a run.
@@ -37,8 +40,6 @@ export type TaskRun = {
   sections: Partial<Record<SectionId, SectionProgress>>;
   error?: string; output?: string;
 };
-// Fields of earlier records, dropped when a run is configured.
-const retiredFields = ['name', 'dir', 'image', 'lastMessage'] as const;
 
 export const now = () => new Date().toISOString();
 export function sectionId(value: string): SectionId {
@@ -63,6 +64,7 @@ export async function readRun(directory: string): Promise<TaskRun | undefined> {
   const run = JSON.parse(contents) as TaskRun;
   if (run.version !== 1 || !run.sections || typeof run.sections !== 'object'
     || !Number.isSafeInteger(run.jobs) || run.jobs < 1 || (run.standard !== undefined && typeof run.standard !== 'boolean')
+    || (run.knowledge !== undefined && typeof run.knowledge !== 'string')
     || !['ready', 'running', 'completed', 'failed', 'interrupted'].includes(run.status)) {
     throw new Error('无效的总控记录：' + join(directory, 'run.json'));
   }
@@ -122,13 +124,12 @@ async function keepOriginal(directory: string, input?: string): Promise<void> {
   if (!(await stat(input)).isFile()) throw new Error('输入图像不是文件：' + input);
   const retained = await taskOriginal(directory);
   if (retained) {
-    const hash = (data: Buffer) => createHash('sha256').update(data).digest('hex');
-    if (hash(await readFile(input)) !== hash(await readFile(retained))) {
+    if (!(await pngBytes(input)).equals(await pngBytes(retained))) {
       throw new Error('任务已有不同的原图：' + retained + '。制作另一张图请使用新的 --name。');
     }
   } else {
     await mkdir(join(directory, 'input'), { recursive: true });
-    await copyFile(input, join(directory, 'input', 'original' + (extname(input) || '.png')));
+    await copyAsPng(input, join(directory, 'input', 'original.png'));
   }
 }
 export const usesKrita = (selected: SectionId[]) => selected.some(id => id.includes('raster') || id === 'character-assembly' || id === 'shadow');
@@ -152,13 +153,12 @@ export async function configureRun(options: TaskOptions, directory: string): Pro
   const run: TaskRun = saved ?? {
     version: 1, from, to, jobs, status: 'ready', createdAt: now(), updatedAt: now(), sections: {},
   };
-  for (const field of retiredFields) delete (run as Record<string, unknown>)[field];
-  if (run.runner) delete (run.runner as { stopProtocol?: unknown }).stopProtocol;
   Object.assign(run, { from, to, jobs, standard, shadowMode: shadowMode(options.shadowMode ?? saved?.shadowMode) });
   const { label } = await installedVersion();
   if (!saved) run.createdWith = label;
   run.lastRunWith = label;
   run.krita = taskKrita(options, run);
+  if (options.knowledge) run.knowledge = resolveInput(options.name, options.knowledge, options.dir);
   for (const id of selected) run.sections[id] ??= { status: 'pending', updatedAt: now() };
   return run;
 }

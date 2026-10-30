@@ -11,6 +11,7 @@ import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { type AgentRequest } from '../../shared/raster/agent.ts';
 import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
+import sharp from 'sharp';
 
 async function fixture(t: TestContext) {
   const root = await realpath(await mkdtemp(join(tmpdir(), 'character-assembly-')));
@@ -19,7 +20,7 @@ async function fixture(t: TestContext) {
   const inputs = {
     characterKra: join(task, 'raster-layering/step03/character-dressup-base.kra'),
     clothingKra: join(task, 'clothing-raster-layering/step02/clothing-soft-edges.kra'),
-    simplifiedCharacter: join(task, 'part-layering/references/simplified-subject.webp'),
+    simplifiedCharacter: join(task, 'part-layering/references/simplified-subject.png'),
   };
   for (const [kind, path] of Object.entries(inputs)) {
     await mkdir(dirname(path), { recursive: true }); await writeFile(path, kind);
@@ -39,7 +40,7 @@ async function deliver(request: AgentRequest) {
 test('按 name 和 dir 定位两份 KRA 与实际扩展名的参考图，不需要 part SVG 或上游会话', async t => {
   const f = await fixture(t);
   assert.deepEqual(await resolveAssemblyInput('case', f.root), f.inputs);
-  assert.equal(parseRunArguments(['--name', 'case', '--dir', f.root]).dir, f.root);
+  assert.equal(parseRunArguments(['--name', 'case', '--dir', f.root, '--knowledge', 'knowledge']).dir, f.root);
   assert.equal(isAssemblyInput(f.inputs), true);
   assert.equal(isAssemblyInput({ directory: f.task, parts: f.task }), false);
 });
@@ -158,11 +159,12 @@ test('素体未换装时不需要衣服 KRA，不调用 agent，直接复制人�
   const f = await fixture(t);
   await markBaseStep(f.task, false);
   await rm(dirname(dirname(f.inputs.clothingKra)), { recursive: true });
-  await writeFile(f.inputs.characterKra.replace(/\.kra$/, '.png'), 'character png');
+  const characterPng = await sharp({ create: { width: 2, height: 2, channels: 4, background: '#8040c0' } }).png().toBuffer();
+  await writeFile(f.inputs.characterKra.replace(/\.kra$/, '.png'), characterPng);
   const agent = async () => assert.fail('no clothing: assembly must not call agent');
   await runWorkflow(f.options, { ...f.deps, agent });
   assert.equal(await readFile(join(f.output, 'step01/character-assembled.kra'), 'utf8'), 'characterKra');
-  assert.equal(await readFile(join(f.output, 'step01/character-assembled.png'), 'utf8'), 'character png');
+  assert.deepEqual(await readFile(join(f.output, 'step01/character-assembled.png')), characterPng);
   assert.match(await readFile(join(f.output, 'step01/report.md'), 'utf8'), /没有衣服需要组装/);
   await stat(join(f.output, 'step01/.completed'));
   await runWorkflow(f.options, { ...f.deps, agent });

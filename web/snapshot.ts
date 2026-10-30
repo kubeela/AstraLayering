@@ -251,6 +251,6 @@ export async function snapshot(directory: string, name: string, dir: string) {
     logPath: log.path, logUpdatedAt: log.updatedAt, lastLogMessage: log.message,
     canStop: canStopTask(record.run?.runner, record.runnerAlive, record.lockHeld),
     original: files.find(path => /^input\/original\.(png|jpe?g|webp)$/i.test(path)),
-    reference: files.find(path => /^part-layering\/references\/simplified-subject\.(png|jpe?g|webp)$/i.test(path)),
+    reference: files.find(path => /^part-layering\/references\/simplified-subject\.png$/i.test(path)),
   };
 }

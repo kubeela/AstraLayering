@@ -5,7 +5,7 @@ import { relative, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import type { FunctionTool } from '../codex/function-tools.ts';
-import { imageBudget, VisualContext, protectedImages, readVisualSummary, visualErrorStatus } from '../../patches/shared/visual-context.ts';
+import { imageBudget, VisualContext, readVisualSummary, visualErrorStatus } from '../../patches/shared/visual-context.ts';
 
 const helper = fileURLToPath(new URL('./agv-tool.ts', import.meta.url));
 const quote = (value: string) => "'" + value.replaceAll("'", "'\\''") + "'";
@@ -91,7 +91,6 @@ export function rewriteGenaiTools(event: any, tools: readonly FunctionTool[]) {
 }
 
 export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly FunctionTool[], logsRoot: string, signal: AbortSignal,
-  inputImages: readonly { path: string; description: string }[] = [], workspace = '',
   observe?: (event: GatewayEvent) => Promise<void>, context?: VisualContext) {
   const budget = imageBudget(env, 'agv');
   if (!env.AGY_LLM_GATEWAY_URL || env.AGY_LLM_GATEWAY_WIRE_PROTOCOL !== 'genai') {
@@ -102,12 +101,7 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
   if (minimalThinking && !['LOW', 'MEDIUM', 'HIGH'].includes(minimalThinking)) {
     throw new Error('layering_agv_minimal_thinking_level 只能为 LOW、MEDIUM、HIGH；留空保留 CLI 原值。');
   }
-  const images = await Promise.all(inputImages.map(async image => {
-    const bytes = await readFile(image.path);
-    return { inlineData: { mimeType: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } };
-  }));
-  const visual = context ?? new VisualContext({ directory: `${logsRoot}/visual-context`, protocol: 'genai', budget,
-    protectedImageHashes: protectedImages(images.map(image => image.inlineData)) });
+  const visual = context ?? new VisualContext({ directory: `${logsRoot}/visual-context`, protocol: 'genai', budget });
   const upstream = env.AGY_LLM_GATEWAY_URL.replace(/\/+$/, '');
   const controllers = new Set<AbortController>();
   const server = createServer(async (req, res) => {
@@ -122,11 +116,6 @@ export async function genaiGateway(env: NodeJS.ProcessEnv, tools: readonly Funct
       const chunks = []; for await (const chunk of req) chunks.push(chunk);
       let body = JSON.parse(Buffer.concat(chunks).toString());
       if (body.contents) await prepareGenaiTools(body, tools, logsRoot);
-      // agy's stream-json currently accepts text only. On a configured GenAI
-      // gateway attach the originals to this turn's user message directly.
-      for (const content of body.contents || []) if (content.role === 'user' && content.parts?.some((p: any) => p.text?.includes(workspace))) {
-        content.parts.push(...images); break;
-      }
       const thinking = body.generationConfig?.thinkingConfig ?? body.generation_config?.thinking_config;
       const requestedThinkingLevel = thinking?.thinkingLevel ?? thinking?.thinking_level;
       prepareGenaiThinking(body, minimalThinking);

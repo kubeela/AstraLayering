@@ -1,0 +1,30 @@
+{
+  "main": {
+    "initial": [
+      "prompts/5-组轮廓.md"
+    ],
+    "tools": [
+      "preview_svg",
+      "write_outline_svg",
+      "read_svg",
+      "view_bitmap",
+      "update_group_note"
+    ]
+  },
+  "review": {
+    "initial": [
+      "prompts/6-轮廓review.md"
+    ],
+    "tools": [
+      "preview_svg",
+      "submit_review",
+      "read_svg",
+      "view_bitmap"
+    ],
+    "repair": {
+      "initial": [
+        "prompts/7-轮廓返修.md"
+      ]
+    }
+  }
+}

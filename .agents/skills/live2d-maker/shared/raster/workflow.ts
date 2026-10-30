@@ -1,11 +1,11 @@
 import { prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
 import { publishReportAssets } from '../report-assets.ts';
-import {renderPromptFile} from '../prompts/render.ts';
+import { runtimePrompt, stepKnowledge } from '../knowledge.ts';
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../codex/environment.ts';
 import { formatAgentError, agentOutcomeError } from '../codex/diagnostics.ts';
 import { retryDelays } from '../codex/agent-runtime.ts';
 import { sectionDirectory, resolveInput, resolveRunsDirectory, type SectionId } from '../paths.ts';
-import { appendFile, mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { runAgent, type Agent, type AgentRequest } from './agent.ts';
@@ -15,7 +15,7 @@ import { readStep, type ChainStep, type StepStatus } from '../step-chain.ts';
 import { runSection, type SectionPlan } from '../step-section.ts';
 import { clearStepSession, readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
 import { canonicalPath, fileInfo, rasterSteps, within } from './run-store.ts';
-import { fromTaskPath, taskRootOf } from '../task-paths.ts';
+import { taskRootOf } from '../task-paths.ts';
 import { buildReviewPrompt, discardReviewReports, nextReviewTask, runReviews } from './review.ts';
 import { modelHarnesses } from '../agents/models.ts';
 import { requireCurrentLayout } from '../../workflow/layout.ts';
@@ -202,21 +202,14 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
       if (!fresh && session.threadId && (session.harness || 'codex') !== harness) {
         await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ previousThreadId: session.threadId,
           previousHarness: session.harness || 'codex', harness, reason: '模型配置切换 CLI', at: new Date().toISOString() }) + '\n');
-        await saveSession({ handoff: session.handoff }, '模型配置切换 CLI');
+        await saveSession({}, '模型配置切换 CLI');
       }
-      const handoff = !fresh && !session.threadId ? session.handoff : undefined;
-      if (!fresh && phase !== 'draw' && !session.threadId && !handoff) prompt = renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
-      if (handoff) {
-        const notes = await readFile(fromTaskPath(taskRoot, handoff.notes), 'utf8');
-        if (!notes.trim()) throw new Error('替代 thread 的交接记录为空：' + handoff.notes);
-        // A new repair thread also needs the original drawing task and inputs.
-        if (phase !== 'draw') prompt = renderPromptFile(new URL('../prompts/raster-handoff-repair.md',import.meta.url),{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt});
-        prompt = renderPromptFile(new URL('../prompts/raster-handoff.md',import.meta.url),{
-          task_prompt:prompt, previous_thread_id:handoff.previousThreadId, reason:handoff.reason,
-          step_id:step.id, phase, notes,
-        });
-      }
-      prompt = workspacePrompt(prompt, await prepareWorkspace({ cwd: directory, outputDirectory: output }, directory));
+      // A repair in a new thread also needs the original drawing task and inputs.
+      const repairPrompt = prompt;
+      const resumeRepair = async (repair: string) => `${await section.buildPrompt(step, reference, output, previous)}\n\n${runtimePrompt('raster-repair-resume')}${repair}`;
+      if (!fresh && phase !== 'draw' && !session.threadId) prompt = await resumeRepair(prompt);
+      const paths = await prepareWorkspace({ cwd: directory, outputDirectory: output }, directory);
+      prompt = workspacePrompt(prompt, paths);
       await writeFile(join(records, phase === 'draw' ? 'prompt.md' : `${phase}.prompt.txt`), prompt);
       await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ attempt, phase, startedAt: new Date().toISOString(),
         model: selected.model, effort: selected.effort, krita, ...(fresh ? {} : { threadId: session.threadId ?? null }) }) + '\n');
@@ -226,16 +219,17 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
       options.progress?.(`${step.id} ${phase}：${fresh ? '新建 reviewer 会话' : session.threadId ? '继续原 thread' : '新建 thread'} (${selected.model} / ${selected.effort})`);
       const result = await (dependencies.agent ?? runAgent)({
         prompt, directory, outputDirectory: output, model: selected.model, effort: selected.effort, environment, step: key,
-        tools: [...section.tools?.(output, reference, step, phase, sectionKrita) ?? [],
+        tools: stepKnowledge(step.knowledge.section, step.knowledge.step).tools(fresh ? 'review' : phase === 'draw' ? 'main' : 'repair', [
+          ...section.tools?.(output, reference, step, phase, sectionKrita) ?? [],
           // Drawing, review and repairs run one after another in this section
           // and share its Krita; a fresh reviewer thread is still the same section.
-          ...(step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])],
+          ...(step.krita === false || !sectionKrita.reserved ? [] : [kritaTool])]),
         imageNormalization: { env: environment.codex.env, runsRoot: root, progress: options.progress },
-        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? renderPromptFile(new URL('../prompts/raster-repair-resume.md',import.meta.url),{drawing_prompt:await section.buildPrompt(step, reference, output, previous),repair_prompt:prompt}) : undefined,
+        recoveryPrompt: session.threadId && !fresh && phase !== 'draw' ? workspacePrompt(await resumeRepair(repairPrompt), paths) : undefined,
         threadId: fresh ? undefined : session.threadId, signal: options.signal,
         onThreadReplacement: async (oldId, reason) => {
           await appendFile(join(records, 'attempts.jsonl'), JSON.stringify({ oldId, reason, phase, at: new Date().toISOString() }) + '\n');
-          if (!fresh) await saveSession({ handoff: session.handoff }, reason);
+          if (!fresh) await saveSession({}, reason);
         },
         onRetry: async retry => {
           options.progress?.(`${step.id} ${phase}：限流等待（${retry.rateLimited ? '429' : '临时错误'}），保留并发位置，${retry.delayMs / 1000} 秒后第 ${retry.attempt}/${retryDelays.retries} 次重试，沿用原 thread 与产物。`);
@@ -247,8 +241,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
             lastThreadId = event.thread_id;
             if (fresh) return; // Reviewer sessions are never saved or resumed.
             if (!event.thread_id.trim() || (session.threadId && session.threadId !== event.thread_id)) throw new Error('SDK 返回了不同的 threadId；拒绝替换当前会话。');
-            if (session.threadId !== event.thread_id) await saveSession({ threadId: event.thread_id, harness,
-              ...(handoff ? { handoff: { ...handoff, replacementThreadId: event.thread_id } } : session.handoff ? { handoff: session.handoff } : {}) });
+            if (session.threadId !== event.thread_id) await saveSession({ threadId: event.thread_id, harness });
           }
           await appendFile(join(records, 'events.jsonl'), JSON.stringify({ attempt, phase, event }) + '\n');
           if (event.type === 'item.completed' && event.item.type === 'agent_message') options.progress?.(event.item.text);

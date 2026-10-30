@@ -13,10 +13,10 @@ import { runWorkflow, validateWorkflowOptions } from './workflow.ts';
 import { validateGroupSvg } from './svg-tools.ts';
 import { assertCompletionPreserves } from './completion-svg.ts';
 import { occlusionPath, occlusionSourceHash, restoreOcclusionPlan, validateOcclusionPlan } from './occlusion-plan.ts';
-import { completionReferenceGroups, dependenciesMatch } from './completion-inputs.ts';
-import { beginStep, checkStep, completeStep, readStep, resetStep, runningInputs, type ChainStep, type StepCheck } from '../step-chain.ts';
+import { dependenciesMatch } from './completion-inputs.ts';
+import { beginStep, checkStep, completeStep, readStep, resetStep, type ChainStep, type StepCheck } from '../step-chain.ts';
 import { taskRootOf } from '../task-paths.ts';
-import { groupStep, groupStepId, groupSteps, layerStep, parentGroupId, readChildren, readGroupTree, readInitialGroups } from './part-steps.ts';
+import { groupStep, groupStepId, groupSteps, layerStep, readChildren, readGroupTree, readInitialGroups } from './part-steps.ts';
 import { partSteps } from '../step-paths.js';
 import { layeringEntries } from './preparation-cache.ts';
 
@@ -64,7 +64,6 @@ export async function runLayering(input: {
   await store.update(() => {});
   const report = input.progress ?? (() => {});
   const initial = { profile: input.profile, directory, references: input.references, store };
-  const promptsDirectory = input.profile?.promptsDirectory;
   const statePath = directory;
   let selected: Set<string> | undefined;
   let completedOcclusion: string | undefined;
@@ -204,9 +203,9 @@ export async function runLayering(input: {
     })) return;
     await guard(id, 'review', () => completeStep(step, lookup));
   }
-  // step10_reduce/depthNN: one reduction over every outline at that depth. It is reopened
-  // in place; a group whose outline is unchanged keeps its current reduction, and
-  // only the outputs whose bytes change rerun the completions that read them.
+  // step10_reduce/depthNN: one reduction over every outline at that depth. Each run
+  // starts again from the outlines; only the outputs whose bytes change rerun the
+  // completions that read them.
   async function reduce(depth: number, entries: ReturnType<typeof walkGroups>): Promise<boolean> {
     const ids = entries.map(entry => entry.group.id);
     const step = layerStep(directory, depth, ids);
@@ -216,7 +215,6 @@ export async function runLayering(input: {
     });
     if (check.action === 'keep') { await finished(); return true; }
     report(`第 ${depth} 层轮廓去重：开始`);
-    const previous = (check.status === 'running' ? await runningInputs(step.directory) : undefined) ?? check.record?.inputs ?? {};
     await beginStep(step.directory, check.inputs);
     const wanted = new Set(ids.map(id => artifactPath(directory, id, 'reduction')));
     for (const name of await readdir(step.directory, { recursive: true })) {
@@ -224,19 +222,18 @@ export async function runLayering(input: {
     }
     await store.update(document => { for (const id of ids) setGroupProgress(findGroup(document, id), 'reduction', { status: 'running' }); });
     const inputs = await Promise.all(entries.map(async entry => {
-      const id = entry.group.id, outline = groupStepId(id, 'outline');
+      const id = entry.group.id;
       const bytes = (await readSvg(artifactPath(directory, id, 'outline')))!;
       const output = artifactPath(directory, id, 'reduction'), draft = stepDraftPath(directory, id, 'reduction');
       await mkdir(dirname(draft), { recursive: true });
       await rm(draft, { force: true });
-      const current = previous[outline] === check.inputs[outline] && await readSvg(output) ? { path: output } : undefined;
-      return { ...entry, bytes, output, draft, current };
+      return { ...entry, bytes, output, draft };
     }));
     const visible = inputs.filter(entry => !entry.group.hiddenInReference);
     const result = visible.length <= 1 ? { status: 'completed' as const, output: { changed: [], note: '本层可见组不足两个，无跨组轮廓去重' } }
       : input.steps.reduceOutlines ? await input.steps.reduceOutlines({ ...initial, depth,
         entries: visible.map(entry => ({ group: context(entry.group.id).group, parent: context(entry.group.id).parent,
-          outline: artifact(entry.group.id, 'outline'), current: entry.current, outputPath: entry.draft })) })
+          outline: artifact(entry.group.id, 'outline'), outputPath: entry.draft })) })
         : { status: 'pending' as const, message: '同层轮廓去重：待接入' };
     if (result.status === 'pending') { report(result.message); return false; }
     if (!Array.isArray(result.output.changed)) throw new Error('去重结果必须包含 changed');
@@ -255,7 +252,7 @@ export async function runLayering(input: {
         await validateGroupSvg(candidate, entry.group.id, { width: meta!.autoOrient.width, height: meta!.autoOrient.height }, undefined, true);
         if (candidate !== entry.draft) await writeAtomic(entry.draft, await readFile(candidate));
       }
-      else await writeAtomic(entry.draft, entry.current ? await readFile(entry.current.path) : entry.bytes);
+      else await writeAtomic(entry.draft, entry.bytes);
     }
     // Unchanged outputs stay untouched, so nothing downstream sees a rewrite.
     for (const entry of inputs) {
@@ -269,7 +266,7 @@ export async function runLayering(input: {
   }
   // step02: completion + check; step03: children split.
   async function finish(id: string) {
-    const step = groupStep(directory, id, 'completion', await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
+    const step = groupStep(directory, id, 'completion');
     const check = await guard(id, 'completion', () => checkStep(step, lookup));
     if (check.action !== 'keep') {
       await resetProgress(id, 'completion');
@@ -425,7 +422,7 @@ export async function runLayering(input: {
       if (selected) for (const entry of entries) {
         const id = entry.group.id;
         if (scope()!.has(id)) continue;
-        const step = groupStep(directory, id, 'completion', await completionReferenceGroups(id, parentGroupId(id), promptsDirectory));
+        const step = groupStep(directory, id, 'completion');
         if ((await readStep(step.directory, root)).status === 'absent') continue;
         // Only completions whose inputs changed; an unfinished one is not a change.
         if ((await checkStep(step, lookup).catch(() => undefined))?.action === 'rerun') selected.add(id);

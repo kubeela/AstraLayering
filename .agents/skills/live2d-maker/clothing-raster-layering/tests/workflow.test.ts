@@ -50,7 +50,7 @@ test('independent run directory, parts path normalization, and external-only pro
   const f = await fixture(t);
   assert.equal(runDirectory('test'), fileURLToPath(new URL('../../../../../.run/test/clothing-raster-layering', import.meta.url)));
   assert.equal((await resolvePartInput('test', 'clothing-part-layering', f.deps.runsDirectory)).directory, f.source);
-  assert.equal(parseRunArguments(['--name', 'test']).name, 'test');
+  assert.equal(parseRunArguments(['--name', 'test', '--knowledge', 'knowledge']).name, 'test');
   assert.throws(() => parseRunArguments(['--name', 'test', '--provider-config', 'secret.json']), /Unknown option/);
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps, agent: async () => assert.fail('dry run must not invoke Codex') });
   assert.ok(prompt.includes('本步骤配置的生图工具 imagegen'));

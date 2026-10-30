@@ -7,7 +7,8 @@ import { extname, resolve, join, isAbsolute, dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 import { shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
-import { referenceUrl } from '../.agents/skills/live2d-maker/shadow/preparation.ts';
+import { referencePath } from '../.agents/skills/live2d-maker/shadow/preparation.ts';
+import { encodePng } from '../.agents/skills/live2d-maker/shared/png.ts';
 import { runsDirectory, sectionIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedSections, sectionId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { convertLayout } from '../.agents/skills/live2d-maker/workflow/layout.ts';
@@ -148,8 +149,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
               if (!['png', 'jpeg', 'webp'].includes(meta.format) || (meta.pages ?? 1) > 1) throw new Error('请选择单张 PNG、JPG 或 WebP 图片');
               await image.resize(1, 1).raw().toBuffer();
               await mkdir(join(directory, 'input'));
-              const retained = join(directory, 'input/original.' + (meta.format === 'jpeg' ? 'jpg' : meta.format));
-              await writeFile(retained, bytes, { flag: 'wx', mode: 0o600 });
+              await writeFile(join(directory, 'input/original.png'), await encodePng(bytes), { flag: 'wx', mode: 0o600 });
               delete opts.image;
             } else {
               if (!opts.image) throw new Error('新任务需要一张输入参考图');
@@ -293,7 +293,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       }
       if (path === '/shadow-reference/skirt.png' || path === '/shadow-reference/hair.png') {
         response.writeHead(200, { 'Content-Type': 'image/png' });
-        response.end(await readFile(referenceUrl(path.split('/').at(-1)!))); return;
+        response.end(await readFile(referencePath(path.split('/').at(-1)!))); return;
       }
       const vendor: Record<string,string> = {
         '/vendor/three.module.js': 'node_modules/three/build/three.module.js',

@@ -33,7 +33,7 @@ test('AGV gateway forwards headers before delayed SSE content and records phases
   t.after(() => { release(); upstream.closeAllConnections(); upstream.close(); });
   const events: any[] = [];
   const gateway = await genaiGateway({ AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(upstream.address() as { port: number }).port}`,
-    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, [], '', async event => { events.push(event); });
+    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, async event => { events.push(event); });
   assert.ok(gateway); t.after(() => gateway.close());
   const response = await Promise.race([fetch(gateway.url + '/models/fixture:streamGenerateContent?alt=sse&key=request-secret', {
     method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer credential-secret' },
@@ -89,7 +89,7 @@ test('gateway records actual request size/images and configured compatibility wi
   const env = { AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(upstream.address() as { port: number }).port}/v1beta`,
     AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai', layering_agv_minimal_thinking_level: 'LOW' };
   const events: any[] = [];
-  const gateway = await genaiGateway(env, [], root, new AbortController().signal, [], '', async event => { events.push(event); });
+  const gateway = await genaiGateway(env, [], root, new AbortController().signal, async event => { events.push(event); });
   assert.ok(gateway); t.after(() => gateway.close());
   const body = { contents: [{ role: 'user', parts: [{ text: 'private prompt' },
     { functionResponse: { name: 'view', response: {}, parts: [{ inlineData: { mimeType: 'image/png', data: 'private-image' } }] } }] }],
@@ -124,7 +124,7 @@ test('AGV gateway keeps HTTP failures and broken streams visible after flushing 
   t.after(() => { upstream.closeAllConnections(); upstream.close(); });
   const events: any[] = [];
   const gateway = await genaiGateway({ AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(upstream.address() as { port: number }).port}`,
-    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, [], '', async event => { events.push(event); });
+    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, async event => { events.push(event); });
   assert.ok(gateway); t.after(() => gateway.close());
   const init = { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' };
   const failed = await fetch(gateway.url + '/error', init);

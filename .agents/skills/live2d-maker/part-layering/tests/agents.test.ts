@@ -45,15 +45,13 @@ const generatedPath = '/case/step01/workspace/generated/image.png';
 test('无工具一次性回合走 app-server：只读、关闭 shell，记录输入与结果和绝对 savedPath', async t => {
   const finalText = saved(generatedPath);
   const f = await fixture(t, [], 'completed', [{ type: 'imageGeneration', status: 'completed', savedPath: generatedPath }], { finalText });
-  const result = await f.agents.run({ name: '生成', prompt: '测试提示词', imageGeneration: true,
-    images: [{ path: join(f.directory, 'reference.png'), description: '图 1：测试图片' }] });
+  const result = await f.agents.run({ name: '生成', prompt: '测试提示词', imageGeneration: true });
   const log = await readLog(f.logDirectory);
   assert.equal(result.text, finalText);
   assert.equal(result.threadId, 'native-thread');
   assert.equal(result.logDirectory, log.directory);
   assert.deepEqual(result.images, [{ savedPath: generatedPath }]);
   assert.ok(log.request.prompt.startsWith(workspacePrompt('测试提示词', executionPaths({ cwd: f.directory }, f.directory))));
-  assert.match(log.request.prompt, /图 1：测试图片/);
   assert.equal(log.request.task.timeoutMs, null);
   assert.equal(log.result.status, 'completed');
   assert.match(log.transcript, /测试工具选择摘要/);

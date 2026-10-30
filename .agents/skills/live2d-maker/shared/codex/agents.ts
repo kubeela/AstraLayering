@@ -4,7 +4,7 @@ import { workflowsDirectory } from '../paths.ts';
 import type { CodexOptions } from '@openai/codex-sdk';
 import { join } from 'node:path';
 import { AgentLog } from './agent-log.ts';
-import { AgentCallError, AgentRuntime, retryDelays, continuationPrompt, recoverableAgentError, retryableAgentError, type AgentRetry, type RecoverableAgentError } from './agent-runtime.ts';
+import { AgentCallError, AgentRuntime, retryDelays, interruptedTaskPrompt, recoverableAgentError, retryableAgentError, type AgentRetry, type RecoverableAgentError } from './agent-runtime.ts';
 import { blockedImagesPrompt, readBlockedImages, type BlockedImages } from './blocked-images.ts';
 import { createFunctionToolSession } from './tool-agent.ts';
 import type { FunctionTool } from './function-tools.ts';
@@ -26,7 +26,6 @@ export type AgentTask = {
   name: string;
   prompt: string;
   recoveryPrompt?: string;
-  images?: { path: string; description: string }[];
   imageGeneration?: boolean;
   outputSchema?: Record<string, unknown>;
   timeoutMs?: number;
@@ -61,7 +60,6 @@ export type AgentOptions = CodexOptions & {
   progress?: (message: string) => void;
   logDirectory?: string;
   agentConcurrency?: number;
-  toolsDirectory?: string;
   runtime?: AgentRuntime;
 };
 
@@ -135,7 +133,6 @@ export class CodexAgents {
     let closed = false, busy = false;
     return {
       run: async (task, externalSignal) => {
-        if (this.options.toolsDirectory && task.tools) task = { ...task, tools: task.tools.map(tool => ({ ...tool, ...toolDefinition(tool.name, this.options.toolsDirectory, tool.omitParameters) })) };
         await checkCodexCapabilities(this.options.environment!, this.options);
         if (closed) throw new Error('会话已关闭');
         if (busy) throw new Error('同一会话不能并发运行');
@@ -166,8 +163,8 @@ export class CodexAgents {
           const replace = this.replacement(task);
           return await this.invoke(task, signal, async () => {
             try {
-              const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked), images: undefined }
-                : interrupted ? { ...task, prompt: continuationPrompt([...savedImages], task.prompt, paths.root), images: undefined }
+              const result = await session!.run(blocked ? { ...task, prompt: blockedImagesPrompt(blocked) }
+                : interrupted ? { ...task, prompt: interruptedTaskPrompt() }
                 : fresh ? { ...task, prompt: task.recoveryPrompt || task.prompt } : task, signal);
               id = result.threadId || id;
               for (const image of result.images) savedImages.add(image.savedPath);
@@ -270,7 +267,7 @@ export class CodexAgents {
               let interrupted = false;
               const replace = this.replacement(task);
               result = await this.invoke(task, signal, async () => {
-                try { return await runCliTask(interrupted ? { ...task, prompt: continuationPrompt(generated.map(i => i.savedPath), task.prompt, paths.root), images: undefined } : task,
+                try { return await runCliTask(interrupted ? { ...task, prompt: interruptedTaskPrompt() } : task,
                   selected, settings, { ...this.options, onEvent: async event => {
                     if (event.type === 'thread.started') await this.options.onSessionStarted?.(event.thread_id, selected.harness);
                     await this.options.onEvent?.(event);

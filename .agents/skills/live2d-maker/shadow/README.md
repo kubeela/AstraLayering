@@ -5,13 +5,13 @@
 先准备同名任务的组装成果及下表所需参考，停止同任务总调度，再从 skill 根目录运行。独立入口只制作所选阴影模式：
 
 ```sh
-pnpm shadow --name jianma --krita /path/to/krita
-pnpm shadow --name jianma --shadow-mode normal-depth --krita /path/to/krita
+pnpm shadow --name jianma --krita /path/to/krita --knowledge /path/to/knowledge
+pnpm shadow --name jianma --shadow-mode normal-depth --krita /path/to/krita --knowledge /path/to/knowledge
 # 总入口只运行阴影；首次默认 mask
 pnpm start --name jianma --from shadow --to shadow --shadow-mode mask
 ```
 
-`--dir` 指定运行根目录；输入从 `<dir>/<name>` 的固定产物读取。独立入口省略模式默认 `mask`，总入口续跑省略则沿用保存的模式。独立入口不保存配置，每次启动都需传 `--krita`；总入口续跑复用任务根 `run.json` 记录的路径。每次启动都做不启动 Krita 的轻量检查。只有 mask 模式占用 Krita 名额并获得 `krita` 与 `inspect_shadow_mask` 工具；normal-depth 声明 `krita: false`，不占名额也没有 krita 工具。私有 Krita 见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。`--dry-run` 检查输入与提示词，不写任务或调用模型。
+`--dir` 指定运行根目录；输入从 `<dir>/<name>` 的固定产物读取。独立入口省略模式默认 `mask`，总入口续跑省略则沿用保存的模式。独立入口不保存配置，每次启动都需传 `--krita` 与 `--knowledge`；总入口续跑复用任务根 `run.json` 记录的路径。每次启动都做不启动 Krita 的轻量检查。只有 mask 模式占用 Krita 名额并获得 `krita` 与 `inspect_shadow_mask` 工具；normal-depth 声明 `krita: false`，不占名额也没有 krita 工具。私有 Krita 见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。`--dry-run` 检查输入与提示词，不写任务或调用模型。
 
 | 模式 | 输入 | 交付 |
 | --- | --- | --- |
@@ -40,7 +40,7 @@ Krita 阴影采用隔离组和透明度继承，JSON 保存真实 part ID 与最
 
 ## 制作参考与原生检查
 
-开工前在 `step01_mask/workspace/references/` 生成 `inputs.json`：真实 part、单深度／多深度区域、KRA UUID 和明确的名称归属。未匹配的层仍需查看像素确认。随后把 [制作格式](references/production.md)、[裙影示意](references/skirt.png) 与 [发影示意](references/hair.png) 复制到同一目录。两图是依据原模型结构绘制的原创示意，不再分发模型原画。
+开工前在 `step01_mask/workspace/references/` 生成 `inputs.json`：真实 part、单深度／多深度区域、KRA UUID 和明确的名称归属。未匹配的层仍需查看像素确认。随后把 [制作格式](../knowledge/shadow/step01_mask/references/production.md)、[裙影示意](../knowledge/shadow/step01_mask/references/skirt.png) 与 [发影示意](../knowledge/shadow/step01_mask/references/hair.png) 复制到同一目录。两图是依据原模型结构绘制的原创示意，不再分发模型原画。
 
 保存后，agent 调用本 section 专属的 `inspect_shadow_mask` 工具检查，检查时机和次数由 agent 决定。工具使用本 section 的 Krita，未启动时自动启动，并把问题、提示和检查图路径直接返回给 agent。
 

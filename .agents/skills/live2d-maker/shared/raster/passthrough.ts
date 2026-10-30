@@ -3,12 +3,13 @@ import { dirname, join } from 'node:path';
 import { taskRootOf, toTaskPath } from '../task-paths.ts';
 import { randomUUID } from 'node:crypto';
 import type { Passthrough } from './workflow.ts';
+import { copyAsPng } from '../png.ts';
 
 // Copies upstream files into the step under their delivery names, then writes
 // the report; each file is replaced atomically.
 export function copyDelivery(output: string, reason: string, copies: readonly (readonly [source: string, name: string])[]): Passthrough {
   return { reason, async deliver() {
-    for (const [source, name] of copies) await atomically(join(output, name), temporary => copyFile(source, temporary));
+    for (const [source, name] of copies) await atomically(join(output, name), temporary => (/\.png$/i.test(name) ? copyAsPng : copyFile)(source, temporary));
     const root = taskRootOf(dirname(output));
     const lines = copies.map(([source, name]) => `- \`${name}\` ← \`${toTaskPath(root, source)}\``);
     await atomically(join(output, 'report.md'), temporary => writeFile(temporary,

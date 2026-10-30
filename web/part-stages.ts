@@ -22,7 +22,7 @@ export async function partStages(directory: string, section: string, groups: any
   const states: Record<string, Status> = {}, messages: Record<string, string> = {};
   const present = (path: string) => files.has(section + '/' + path);
   const artifact = (...paths: string[]): Status => paths.some(present) ? 'available' : 'pending';
-  const reference = (name: string) => ['png', 'jpg', 'jpeg', 'webp'].map(ext => `references/${name}.${ext}`).find(present);
+  const reference = (name: string) => [`references/${name}.png`].find(present);
   states.initial = await step(partSteps.initial) === 'completed' ? 'done' : groups.length ? 'available' : 'pending';
   if (section === 'part-layering') {
     for (const [phase, name] of [['standard', 'standard'], ['simplified', 'simplified-subject'], ['base', 'base-subject']] as const) {

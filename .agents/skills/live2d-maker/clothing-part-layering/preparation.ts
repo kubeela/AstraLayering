@@ -1,4 +1,4 @@
-import {preparationImagePrompt} from '../shared/prompts/preparation.ts';
+import { stepKnowledge } from '../shared/knowledge.ts';
 import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
 import type { ImageProcessingOptions } from '../shared/image-processing.ts';
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
@@ -8,7 +8,8 @@ import { readStep, type ChainStep } from '../shared/step-chain.ts';
 import { clothingPreparationStep, partSteps, stepNumber } from '../shared/step-paths.js';
 import { requireUpstream, simplifiedCharacter } from '../shared/upstream.ts';
 import { randomUUID } from 'node:crypto';
-import { copyFile, mkdir, readFile, rename, rm } from 'node:fs/promises';
+import { mkdir, readFile, rename, rm } from 'node:fs/promises';
+import { copyAsPng } from '../shared/png.ts';
 import { dirname, join } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../shared/codex/agents.ts';
@@ -42,11 +43,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
   return { async extract(image, baseImage, output, prompt) {
     const result = await agents.run({
       step: 'clothing_preparation', name: '纯衣服参考准备', imageGeneration: true,
-      images: [
-        { path: image, description: '图 1：简化后的穿衣角色原稿，提供待提取衣装的款式、比例和画风。' },
-        { path: baseImage, description: '图 2：同一角色的素体参考，用于确认换装范围；人物及随人物保留的外观由素体自身提供。' },
-      ],
-      prompt: preparationImagePrompt(prompt,'clothing'),
+      prompt,
       outputSchema: { type: 'object', additionalProperties: false, required: ['savedPath', 'error'],
         properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } } },
     });
@@ -54,7 +51,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     const imageResult = result.images.at(-1);
     if (!imageResult) throw new Error('imagegen 未返回生成图片。');
     await sharp(imageResult.savedPath).metadata();
-    await copyFile(imageResult.savedPath, output);
+    await copyAsPng(imageResult.savedPath, output);
     });
   } };
 }
@@ -107,8 +104,8 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
       return async () => {
         const baseImage = await characterBase(input.runName, input.dir);
         const meta = await sharp(standard).metadata();
-        const prompt = (await readFile(new URL('prompts/preparation.md', import.meta.url), 'utf8'))
-          .replaceAll('{width}', String(meta.autoOrient.width)).replaceAll('{height}', String(meta.autoOrient.height));
+        const prompt = stepKnowledge('clothing-part-layering', 'step01_preparation')
+          .render('main', { width: String(meta.autoOrient.width), height: String(meta.autoOrient.height) }, { taskRoot: taskDirectory(input.runName, input.dir) });
         progress?.('preparation：使用已配置生图工具生成纯衣服参考。');
         const temporary = `${refs.baseSubject}.${randomUUID()}.tmp`;
         try {

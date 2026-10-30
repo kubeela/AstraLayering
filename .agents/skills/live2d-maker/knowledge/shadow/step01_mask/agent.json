@@ -1,0 +1,14 @@
+{
+  "main": {
+    "initial": [
+      "prompts/mask.md",
+      "prompts/runtime.md",
+      "prompts/shadow-inspection.md",
+      "prompts/runtime-output.md"
+    ],
+    "tools": [
+      "inspect_shadow_mask",
+      "krita"
+    ]
+  }
+}

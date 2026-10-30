@@ -1,0 +1,31 @@
+{
+  "main": {
+    "initial": [
+      "prompts/01-衣服分层与补全.md",
+      "shared/prompts/raster-drawing-responsibilities.md",
+      "prompts/runtime.md"
+    ],
+    "tools": [
+      "edit_groups",
+      "edit_occlusion",
+      "krita"
+    ]
+  },
+  "review": {
+    "initial": [
+      "prompts/01-review.md",
+      "shared/prompts/raster-review-runtime.md"
+    ],
+    "tools": [
+      "annotate_review_regions",
+      "krita"
+    ],
+    "repair": {
+      "initial": [
+        "prompts/01-repair.md",
+        "shared/prompts/raster-drawing-responsibilities.md",
+        "shared/prompts/raster-review-runtime.md"
+      ]
+    }
+  }
+}

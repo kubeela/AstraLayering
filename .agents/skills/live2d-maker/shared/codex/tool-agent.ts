@@ -1,4 +1,4 @@
-import {renderPromptFile} from '../prompts/render.ts';
+import { runtimePrompt } from '../knowledge.ts';
 import { loadWorkflowEnvironment, workflowCodexOptions } from './environment.ts';
 import { agentCallError, formatAgentError } from './diagnostics.ts';
 import { errorDetails, errorMessage } from '../agents/errors.ts';
@@ -14,7 +14,6 @@ import { type AgentOptions, type AgentSession, type AgentTask, type GeneratedIma
 import type { ToolResult } from './function-tools.ts';
 import { validateProviderModel } from '../agents/providers.ts';
 import { prepareWorkspace, workspacePrompt, workspaceTools } from '../agents/workspace.ts';
-import { contextImages } from '../agents/inputs.ts';
 import { imagePath } from '../task-paths.ts';
 
 // Only the protocol subset used here is maintained. The CLI is pinned by codex-sdk.
@@ -295,7 +294,6 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
       if (busy) throw new Error('同一会话不能并发运行');
       checkFailure();
       const paths = await prepareWorkspace(task, options.cwd ?? workflowsDirectory);
-      task = { ...task, images: contextImages(task.images, paths.root) };
       const tools = workspaceTools(task.tools ?? [], paths);
       const byName = new Map(tools.map(tool => [tool.name, tool]));
       if (byName.size !== tools.length || tools.some(tool => !/^[a-zA-Z0-9_-]+$/.test(tool.name))) {
@@ -323,10 +321,6 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
         dynamicTools: definitions,
       };
       const input: Record<string, unknown>[] = [{ type: 'text', text: workspacePrompt(task.prompt, paths), text_elements: [] }];
-      for (const image of task.images ?? []) {
-        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd(), text_elements: [] });
-        input.push({ type: 'localImage', path: resolve(image.path) });
-      }
       const log = await AgentLog.create(resolve(options.logDirectory ?? join(paths.directory, 'agents')), task.name, {
         workspace: paths.workspace, outputDirectory: paths.outputDirectory,
         transport: 'app-server', task: { ...task, tools: definitions, timeoutMs: timeoutMs ?? null }, input,

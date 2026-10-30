@@ -6,14 +6,15 @@ import { test } from 'node:test';
 import sharp from 'sharp';
 import type { AgentResult, AgentSession, AgentTask } from '../../shared/codex/agents.ts';
 import { artifactPath, publishSvg, svgHash } from '../../shared/part/artifact-facts.ts';
-import { completeGroupOcclusion, checkGroupCompletion, readCompletionReferences } from '../../shared/part/completion-agent.ts';
+import { completeGroupOcclusion, checkGroupCompletion } from '../../shared/part/completion-agent.ts';
 import { assertCompletionPreserves, composeCompletion } from '../../shared/part/completion-svg.ts';
 import { normalizeGroups, GroupStore, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
-import { readGroupPrompt, readGroupReferences } from '../../shared/part/group-prompts.ts';
+import { partKnowledge } from '../../shared/part/group-prompts.ts';
 import { createLayeringSteps } from '../../shared/part/layering-steps.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { groupStepId } from '../../shared/part/part-steps.ts';
-import { fixture, linkedFixture, shape, workingSteps } from './layering-fixture.ts';
+import { fixture, linkedFixture, publishGroups, shape, workingSteps } from './layering-fixture.ts';
+import { promptInput } from '../../shared/tests/prompt-input.ts';
 
 const signal = new AbortController().signal;
 const paths = [{ d: 'M 5 40 H 20 V 60 H 5 Z' }];
@@ -32,7 +33,7 @@ test('完全遮挡节点可提交空可见轮廓，经独立 review 后补出形
   const f = await fixture(t), calls: string[] = [];
   const run = async (task: AgentTask) => {
     calls.push(task.name);
-    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    const input = promptInput(task.prompt);
     if (task.name.startsWith('组轮廓绘制')) {
       assert.equal(task.imageGeneration, false);
       await tool(task, 'write_outline_svg').execute({ svg: shape('face', 10, 90, true) }, signal);
@@ -97,10 +98,10 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
     assert.ok(task.tools!.some(tool => tool.name === 'view_bitmap'));
     assert.match(task.prompt, /部件完全被遮挡.*必须先.*结构辅助图并查看/);
     assert.match(task.prompt, /不设计侧面、背面/);
-    const rules = await readFile(new URL('../prompts/9-补全操作约定.md', import.meta.url), 'utf8');
+    const rules = (await readFile(partKnowledge(profile, 'completion').files('main')[1], 'utf8'));
     assert.ok(task.prompt.includes(`【固定范围与操作约定】\n${rules}`));
-    assert.match(task.prompt, /固定约定提示词来源：.*9-补全操作约定\.md/);
-    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    assert.doesNotMatch(task.prompt, /提示词来源：/);
+    const input = promptInput(task.prompt);
     await tool(task, 'preview_svg').execute({ path: input.sourceSvg, mode: 'blend' }, signal);
     await tool(task, 'set_completion_paths').execute({ paths }, signal);
     await submit(task, input.outputDraft);
@@ -123,7 +124,7 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
 test('任务根经软链接打开时，预览记录的真实路径仍认作当前补全草稿', async t => {
   const f = await linkedFixture(t, await fixture(t)), events: string[] = [];
   const adapter = createLayeringSteps(sessioned(async task => {
-    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    const input = promptInput(task.prompt);
     await tool(task, 'set_completion_paths').execute({ paths }, signal);
     await submit(task, input.outputDraft);
     return { text: 'done', images: [] };
@@ -141,23 +142,12 @@ test('自定义补全实现也受调度器保留原形约束，不发布重画�
   await assert.rejects(readFile(artifactPath(f.directory, 'head', 'completion')), { code: 'ENOENT' });
 });
 
-test('face 特化与可选参考按完整 ID 独立读取；只配置参考也不要求替换通用正文', async t => {
-  const f = await fixture(t);
-  const face = await readGroupPrompt('face', 'completion', profile.promptsDirectory);
-  assert.match(face.text, /不要扩成整个头型/);
-  assert.match(face.text, /不设计侧脸、背面/);
-  assert.ok((await readGroupPrompt('face/eye', 'completion', profile.promptsDirectory)).path.endsWith('9-正面遮挡补全.md'));
-  const prompts = join(f.directory, 'prompts');
-  await mkdir(join(prompts, 'groups', 'head'), { recursive: true });
-  await writeFile(join(prompts, '9-正面遮挡补全.md'), 'generic');
-  const groupPrompt = await readGroupPrompt('head', 'completion', prompts);
-  await writeFile(join(groupPrompt.groupDirectory, 'completion.references.json'), JSON.stringify([
-    { path: '../../../references/base.png', description: '仅供正面轮廓先验' },
-  ]));
-  assert.deepEqual(await readCompletionReferences(groupPrompt.groupDirectory), [{ path: f.references.baseSubject, description: '仅供正面轮廓先验' }]);
-  assert.deepEqual(await readCompletionReferences(join(groupPrompt.groupDirectory, 'child')), []);
-  await writeFile(join(groupPrompt.groupDirectory, 'completion.references.json'), '[{"path":"missing.png","description":"ref"}]');
-  await assert.rejects(readCompletionReferences(groupPrompt.groupDirectory), { code: 'ENOENT' });
+test('face 特化按完整 ID 独立读取，未特化的子组沿用通用正文', async t => {
+  const completion = partKnowledge(profile, 'completion');
+  const face = completion.render('main', {}, { taskRoot: '/task', group: 'face' });
+  assert.match(face, /不要扩成整个头型/);
+  assert.match(face, /不设计侧脸、背面/);
+  assert.ok(completion.files('main', 'face/eye')[0].endsWith('step11_completion/prompts/9-正面遮挡补全.md'));
 });
 
 test('正式调度中左右十指附加实际掌片与完整指体图片，part 不再分析子组', async t => {
@@ -171,25 +161,21 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
   ]);
   const steps = workingSteps(events, [{ id: 'arms' }], children), calls: string[] = [];
   const adapter = createLayeringSteps(sessioned(async task => {
-    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    const input = promptInput(task.prompt);
     const id = input.group.id;
     calls.push(id);
-    assert.ok(task.prompt.includes(`prompts/groups/${id}/completion.md`));
+    // The finger override replaces the default completion text.
+    assert.ok(task.prompt.includes('为当前整根手指补齐正面遮挡下的隐藏指身、指根及与手掌连接所需的局部胶水余量'));
     assert.match(task.prompt, /仅延伸到邻指下面不等于接到了手掌/);
     assert.match(task.prompt, /拇指按其自身根部与鱼际附近/);
     const palm = `${id.slice(0, id.lastIndexOf('/'))}/palm`;
     assert.match(task.prompt, /Milly 与樱桃的完整指体图例/);
     assert.match(task.prompt, /整指连通或指根碰到掌片，不代表中间指身已经补足/);
-    assert.equal(input.additionalReferences.length, 2);
-    const ref = input.additionalReferences[0];
-    assert.equal(ref.groupId, palm);
-    assert.equal(ref.sourceStage, 'reduction');
-    assert.equal(ref.sourceSvg, artifactPath(f.directory, palm, 'reduction'));
-    assert.equal(ref.sourceHash, svgHash(await readFile(ref.sourceSvg)));
-    const prior = input.additionalReferences[1];
-    assert.ok(prior.path.endsWith('/prompts/groups/arms/references/fingers/complete-fingers.png'));
-    assert.match(prior.description, /不照搬姿势、宽度、肤色/);
-    assert.deepEqual(task.images!.map(image => image.path), [f.references.baseSubject, ref.path, prior.path]);
+    assert.match(task.prompt, /按两边合起来组成一个圆来想/);
+    const palmSvg = artifactPath(f.directory, palm, 'reduction');
+    assert.ok(task.prompt.includes(`- ${palmSvg}：`));
+    assert.match(task.prompt, /step11_completion\/references\/fingers\/complete-fingers\.png：[^\n]*不照搬姿势、宽度、肤色/);
+    const ref = { sourceSvg: palmSvg };
     const result = await tool(task, 'read_svg').execute({ path: ref.sourceSvg }, signal);
     assert.ok(JSON.stringify(result).includes(palm));
     const otherPalm = ref.sourceSvg.replace(id.includes('/arm_left/') ? '/arm_left/' : '/arm_right/', id.includes('/arm_left/') ? '/arm_right/' : '/arm_left/');
@@ -208,40 +194,13 @@ test('正式调度中左右十指附加实际掌片与完整指体图片，part 
     assert.ok(!events.includes(`${group.id}:children`));
   }
   for (const id of ['arms/arm_left/hand', 'arms/arm_left/hand/palm', 'arms/arm_right/hand', 'arms/arm_right/hand/palm']) {
-    assert.ok((await readGroupPrompt(id, 'completion', profile.promptsDirectory)).path.endsWith('9-正面遮挡补全.md'));
+    assert.ok(partKnowledge(profile, 'completion').files('main', id)[0].endsWith('step11_completion/prompts/9-正面遮挡补全.md'));
   }
-});
-
-test('声明的同级参考使用稳定去重底形，不读取旧补全稿；缺失依赖及非法引用明确报错', async t => {
-  const f = await fixture(t), config = join(f.directory, 'config');
-  await mkdir(config);
-  const parent = normalizeGroups([{ id: 'hand', groups: [{ id: 'hand/palm', kind: 'part' }, { id: 'hand/finger', kind: 'part' }] }])[0];
-  const [palm, group] = parent.groups, source = artifactPath(f.directory, palm.id, 'reduction');
-  await writeAtomic(source, shape(palm.id, 20, 70));
-  await writeAtomic(artifactPath(f.directory, palm.id, 'completion'), 'invalid old completion');
-  palm.steps.reduction = { status: 'completed', output: { path: source } };
-  const context = { ...f, group, parent }, manifest = join(config, 'completion.references.json');
-  await writeFile(manifest, JSON.stringify([{ sibling: 'palm', description: '实际掌片' }]));
-  const [ref] = await readCompletionReferences(config, context);
-  assert.ok('sourceSvg' in ref && ref.sourceSvg === source);
-  assert.equal(palm.steps.completion.status, 'pending');
-  await assert.rejects(readCompletionReferences(config), /需要本次运行上下文/);
-  palm.steps.reduction = { status: 'pending' };
-  await assert.rejects(readCompletionReferences(config, context), /尚未完成整层去重/);
-  for (const sibling of ['missing', 'finger']) {
-    await writeFile(manifest, JSON.stringify([{ sibling, description: 'ref' }]));
-    await assert.rejects(readCompletionReferences(config, context), /不是当前节点的其他直属同级/);
-  }
-  for (const entry of [{ sibling: '../palm', description: 'ref' }, { sibling: 'palm', path: 'also.png', description: 'ref' }]) {
-    await writeFile(manifest, JSON.stringify([entry]));
-    await assert.rejects(readCompletionReferences(config, context), /无效 completion 参考清单/);
-  }
-  await writeFile(join(config, 'children.references.json'), JSON.stringify([{ sibling: 'palm', description: 'ref' }]));
-  await assert.rejects(readGroupReferences(config, 'children'), /无效 children 参考清单/);
 });
 
 test('新增路径修正后必须重看当前候选；没有工具提交不能交付', async t => {
   const f = await fixture(t), group = normalizeGroups([{ id: 'face' }])[0];
+  await publishGroups(f.directory, [{ id: 'face' }]);
   const source = join(f.directory, 'source.svg'), outputPath = join(f.directory, 'face.draft.svg');
   await writeFile(source, shape('face'));
   const context = { ...f, group, reviewed: { path: source }, outputPath };
@@ -287,7 +246,7 @@ test('补全 threadId 记在 agents/steps：中断后续跑恢复同一会话，
       return { async close() {}, async run(task) {
         await callbacks?.onSessionStarted?.(threadId, 'agv');
         if (fail) { fail = false; throw new Error('补全中断'); }
-        const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+        const input = promptInput(task.prompt);
         await tool(task, 'set_completion_paths').execute({ paths }, signal);
         await submit(task, input.outputDraft);
         return { text: 'done', images: [], threadId, harness: 'agv' };
@@ -306,32 +265,36 @@ test('补全 threadId 记在 agents/steps：中断后续跑恢复同一会话，
   assert.deepEqual(JSON.parse(await readFile(session, 'utf8')), { threadId: 'completion-thread-3', harness: 'agv' });
 });
 
-test('续跑补全沿用保留原形的草稿并提示 agent；原形已变的草稿或非续跑从原形开始', async t => {
+test('续跑补全沿用保留原形的草稿，提示词只给固定的先读草稿规则；原形已变的草稿或非续跑从原形开始', async t => {
   const f = await fixture(t), group = normalizeGroups([{ id: 'face' }])[0];
+  await publishGroups(f.directory, [{ id: 'face' }]);
   const source = join(f.directory, 'source.svg'), outputPath = join(f.directory, 'face.draft.svg');
   await writeFile(source, shape('face'));
   const drawn = composeCompletion(shape('face'), paths);
   const seen = async (resumeDraft: boolean) => {
-    let state: { draft: string; resumed: boolean } | undefined;
+    let state: string | undefined;
     await completeGroupOcclusion({ ...f, group, reviewed: { path: source }, outputPath, resumeDraft }, { async run(task) {
-      const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
-      state = { draft: await readFile(outputPath, 'utf8'), resumed: 'resumedDraft' in input };
+      const input = promptInput(task.prompt);
+      assert.equal('resumedDraft' in input, false);
+      assert.match(task.prompt, /outputDraft 已含 sourceSvg 之外、上次中断前补上的形状时/);
+      state = await readFile(outputPath, 'utf8');
       await submit(task, outputPath);
       return { text: 'done', images: [] };
     } });
     return state!;
   };
   await writeFile(outputPath, drawn);
-  assert.deepEqual(await seen(true), { draft: drawn, resumed: true });
+  assert.equal(await seen(true), drawn);
   await writeFile(outputPath, drawn);
-  assert.deepEqual(await seen(false), { draft: shape('face'), resumed: false });
+  assert.equal(await seen(false), shape('face'));
   await writeFile(outputPath, shape('face', 20, 80));
-  assert.deepEqual(await seen(true), { draft: shape('face'), resumed: false });
+  assert.equal(await seen(true), shape('face'));
 });
 
 test('不可见部件直接绘制非空 SVG，分别完成生成图 edge、原图 blend 和独显后提交', async t => {
   const f = await fixture(t), group = normalizeGroups([{ id: 'face/eye_left/iris', kind: 'part',
     allowOutsideParent: true, hiddenInReference: true }])[0];
+  await publishGroups(f.directory, [{ id: group.id, kind: 'part', allowOutsideParent: true, hiddenInReference: true }]);
   const source = join(f.directory, 'source.svg'), outputPath = join(f.directory, 'iris.draft.svg');
   const generated = join(f.directory, 'generated.png');
   await writeFile(source, shape(group.id, 10, 90, true));
@@ -339,7 +302,7 @@ test('不可见部件直接绘制非空 SVG，分别完成生成图 edge、原�
   const result = await completeGroupOcclusion({ ...f, group, reviewed: { path: source }, outputPath }, { async run(task) {
     assert.equal(task.imageGeneration, true);
     assert.match(task.prompt, /referenceRegion.*框选生成图/);
-    const input = JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+    const input = promptInput(task.prompt);
     assert.equal(input.group.hiddenInReference, true);
     assert.equal(input.group.allowOutsideParent, true);
     await assert.rejects(tool(task, 'set_completion_paths').execute({ paths: [] }, signal), /没有可见/);
@@ -360,7 +323,7 @@ test('不可见部件直接绘制非空 SVG，分别完成生成图 edge、原�
     return { text: 'done', images: [{ savedPath: generated }] };
   } });
   assert.equal(assertCompletionPreserves(await readFile(source, 'utf8'), await readFile(outputPath, 'utf8')), 1);
-  assert.ok(result.dependencies?.some(dep => dep.path === 'generated.png'));
+  assert.ok(result.dependencies?.some(dep => dep.path === 'part-layering/generated.png'));
   assert.equal((await checkGroupCompletion({ ...f, group, before: { path: source }, after: result })).passed, true);
 });
 

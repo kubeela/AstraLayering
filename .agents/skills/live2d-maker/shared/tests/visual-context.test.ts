@@ -177,7 +177,7 @@ test('AGV transport partitions actual inline request bytes before forwarding; ca
   server.listen(0, '127.0.0.1'); await once(server, 'listening'); t.after(() => { server.closeAllConnections(); server.close(); });
   const context = new VisualContext({ directory, protocol: 'genai', budget: { bytes: budget } });
   const gateway = await genaiGateway({ AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(server.address() as { port: number }).port}`, AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' },
-    [], directory, new AbortController().signal, [], '', undefined, context);
+    [], directory, new AbortController().signal, undefined, context);
   assert.ok(gateway); t.after(() => gateway.close());
   const response = await fetch(gateway.url + '/models/fixture:generateContent', { method: 'POST', body: JSON.stringify(history('genai', 18, 10000)) });
   assert.equal(response.status, 200); await response.text(); assert.ok(requests.length > 2);

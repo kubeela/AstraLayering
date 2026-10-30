@@ -11,17 +11,17 @@
 需要 Node 24.12+、pnpm、已安装的 Krita，以及所配置模型对应 harness（Codex、Claude Code 或 AGV）的 CLI 与登录；`krita` 等流程工具由工作流注册。先准备同名衣服 part 的轮廓、参考、分组与深度，停止同任务总调度，再从 skill 根目录执行本 section：
 
 ```bash
-pnpm clothing-raster-layering --name jianma --krita /path/to/krita
+pnpm clothing-raster-layering --name jianma --krita /path/to/krita --knowledge /path/to/knowledge
 
-# 续跑沿用绘制会话；独立 section 不保存配置，仍须带 --krita
-pnpm clothing-raster-layering --name jianma --krita /path/to/krita
+# 续跑沿用绘制会话；独立 section 不保存配置，仍须带 --krita 与 --knowledge
+pnpm clothing-raster-layering --name jianma --krita /path/to/krita --knowledge /path/to/knowledge
 ```
 
 素体未换装（`dressed: false`）时总控把本管线记为“完成（跳过）”，见 [总控](../workflow/README.md#姿态与参考)；此时上游衣服 part 没有产物，单独运行会因缺少输入而失败。
 
 按 `--name` 直接读取 `<运行根目录>/<name>/clothing-part-layering/` 的 parts、参考、groups.json 与 occlusion.json，不接受额外输入路径、不复制上游产物。缺失时列出具体路径，提示先执行对应上游管线或手动放置产物。
 
-`--krita` 必须显式指定可执行文件，脚本只校验它，不下载安装或搜索路径。`--check-krita` 仅检查安装；`--dry-run` 检查路径和 Krita 并打印待执行提示词，不调用模型、不创建或重置任务文件。本 section 不保存配置，每次启动都要传 `--krita`；总入口由任务根 `run.json` 记录并传入。换输入应使用新名字。
+`--krita` 必须显式指定可执行文件，脚本只校验它，不下载安装或搜索路径。`--check-krita` 仅检查安装；`--dry-run` 检查路径和 Krita 并打印待执行提示词，不调用模型、不创建或重置任务文件。本 section 不保存配置，每次启动都要传 `--krita` 与 `--knowledge`；总入口由任务根 `run.json` 记录并传入。换输入应使用新名字。
 
 生图按 [模型与通道](../references/model-presets.md) 选择宿主原生能力或自定义接口。订阅或 API、provider 与鉴权由所选 harness 的 CLI 配置，Claude／AGV 使用共享生图工具 `imagegen`。Krita 可执行文件由外部提供；工作流不启动 Krita，只准备私有配置、桥接插件与（Linux 无显示时）共享 Xvfb 并占用名额，agent 通过 `krita` 工具自行启动并以 Python 操作，section 结束时由工作流关闭，详见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。启用工具的配置项不保证服务端实际提供该工具；不可用时应明确受阻，不能生成完成标记。
 
@@ -71,7 +71,7 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 
 ```bash
 rm <运行根目录>/jianma/clothing-raster-layering/step02/.completed
-pnpm clothing-raster-layering --name jianma
+pnpm clothing-raster-layering --name jianma --knowledge /path/to/knowledge
 ```
 
 这会保留第一步及上游产物，清空第二步目录并创建新绘制 thread。要从第一步重跑就删除 `step01/.completed`；未完成步骤也可删除其 `.running` 触发相同重置。重跑会删除对应步骤的工程和日志。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
@@ -82,7 +82,7 @@ pnpm clothing-raster-layering --name jianma
 pnpm check
 ```
 
-[steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [prompts](prompts/)；review / repair 文件名由调度器替换占位符，提示词不固定轮次。
+[steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [knowledge/clothing-raster-layering](../knowledge/clothing-raster-layering/)；review / repair 文件名由 `{review_round}` 给出，提示词不固定轮次。
 
 自动测试模拟 App Server 响应，覆盖上游产物读取、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
 

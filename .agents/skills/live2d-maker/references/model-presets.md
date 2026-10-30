@@ -179,7 +179,7 @@ AGV 的 GenAI 网关 base URL 可以包含 `/v1beta`，转发会保留供应商�
 
 Codex 的自定义生图请求通过[原生补丁](../patches/README.md)接入；启动会核对补丁的 `image_provider_version: 2`，为本次请求准备本地生图路由。原生 imagegen 负责工具调用、保存图片与事件，路由复用共享 OpenAI／Google 适配器，模型与凭据通过运行配置传递。`codex-native` 直接使用宿主生图能力。
 
-Claude／AGV 注册与 Codex 原生工具同名的共享 `imagegen` 函数工具，其 [description.md](../shared/tools/imagegen/description.md) 与 [schema.json](../shared/tools/imagegen/schema.json) 保持统一；Codex 使用原生工具定义。两条路径共用底层接口实现，绘图任务与验收要求由各管线自己的提示词约定。
+Claude／AGV 注册与 Codex 原生工具同名的共享 `imagegen` 函数工具，其 [description.md](../knowledge/shared/tools/imagegen/description.md) 与 [schema.json](../shared/tools/imagegen/schema.json) 保持统一；Codex 使用原生工具定义。两条路径共用底层接口实现，绘图任务与验收要求由各管线自己的提示词约定。
 
 参考图按顺序传入，生成结果保存在任务请求目录。共享函数工具返回 `hasAlpha`，原生工具路径也检查实际 PNG 的透明通道，并结合看图验收。
 
@@ -205,7 +205,7 @@ part 遮挡补全分别使用 `layering_part_completion_image_model` 和 `layeri
 
 Codex、Claude／agv 共用 `<步骤>/workspace/` 工作区，中间文件在其内部自由组织。暂不设写入沙箱，各 CLI 均以完全访问权限运行，写入范围由提示词与工具路径约定管理。请求配置、日志和 CLI 私有会话数据在管线的 `agents/` 下；鉴权复用用户环境，不修改全局配置。同一步骤续跑复用工作区；恢复同一 session 时复用原私有会话数据，切换 CLI 或重建会话仍保留已有产物。Antigravity 的 GenAI 自定义网关会转发原始工具定义，并保留工具返回的图片。
 
-所有管线的 agent 步骤共用同一套会话记录：`<管线>/agents/steps/<步骤>/session.json` 保存 ID、harness 和待交接信息，替换或清除时旧记录追加到同目录的 `session.json.history.jsonl`。part 轮廓绘制与返修共用 `agents/steps/step09_outline/<组路径>/session.json`，补全会反复修改草稿，记在 `agents/steps/step11_completion/<组路径>/session.json`（子组路径为 `<父>/children/<名>`）；raster、组装记在 `agents/steps/<stepNN>/session.json`，阴影记在 `shadow/agents/steps/step01_<模式>/session.json`，同一步骤的绘制与返修共用。独立 reviewer、去重和子组分析等一次性 agent 每次新建，不记录 ID。
+所有管线的 agent 步骤共用同一套会话记录：`<管线>/agents/steps/<步骤>/session.json` 保存 ID 和 harness，替换或清除时旧记录追加到同目录的 `session.json.history.jsonl`。part 轮廓绘制与返修共用 `agents/steps/step09_outline/<组路径>/session.json`，补全会反复修改草稿，记在 `agents/steps/step11_completion/<组路径>/session.json`（子组路径为 `<父>/children/<名>`）；raster、组装记在 `agents/steps/<stepNN>/session.json`，阴影记在 `shadow/agents/steps/step01_<模式>/session.json`，同一步骤的绘制与返修共用。独立 reviewer、去重和子组分析等一次性 agent 每次新建，不记录 ID。
 
 每个步骤新建自己的 thread：Codex 恢复 thread 时沿用创建时的工具定义，不接受新工具。重试步骤会连同 `agents/steps/<步骤>/` 一起清除会话。布局转换删除旧任务 `run.json` 中的 `threadId`／`threadHarness`／`threadStep`／`threadHandoff`，不迁移，转换前的会话不再续接；`.running`／`.completed`、两轮 review 和产物检查规则不变。
 

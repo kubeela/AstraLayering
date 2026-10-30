@@ -26,7 +26,7 @@ pnpm web --port 4387
 标题栏右上角按任务状态显示操作：运行中只有“停止”（当前 runner 无法停止时置灰并说明原因）；空闲时提供继续／恢复／重试，一次作用于任务里全部中断或失败的步骤，覆盖人物与衣服的分块、绘制、组装和阴影；全流程完成后另有“导出成果”。成果归档只显示“成果归档”与导出。操作在任务锁内执行，完成后按任务保存的路线在后台重新运行：
 
 - **继续**：不改任何文件，保留产物和会话从中断处续跑。
-- **恢复**：清除该步骤的会话、保留产物，下次在新会话中继续。所有管线的步骤会话统一保存在 `<管线>/agents/steps/<步骤>/session.json`（thread、harness、待交接信息），旧记录追加到 `session.json.history.jsonl`。没有会话的一次性步骤，恢复等同继续。
+- **恢复**：清除该步骤的会话、保留产物，下次在新会话中继续。所有管线的步骤会话统一保存在 `<管线>/agents/steps/<步骤>/session.json`（thread、harness），旧记录追加到 `session.json.history.jsonl`。没有会话的一次性步骤，恢复等同继续。
 - **重试**：删除这些步骤的目录（含会话）及其登记的产物与草稿，例如补全的 `parts/<id>.svg`、合并的 `preview.svg`、遮挡的 `occlusion.json`；依赖它的后续步骤由续跑校验自动重跑，无关步骤保留。已完成的步骤不受影响；重试需确认后执行。产物在管线目录之外的步骤（如输入原图）不能在此重试。
 
 旧布局任务在标题栏显示“需转换目录”及“转换目录”按钮，调用 `POST /api/convert-layout {name}`：先把原目录完整复制到运行根目录的 `.backups/`，再整体迁移到当前布局；早于上一版本的布局只提示，不提供转换。
@@ -63,7 +63,7 @@ SVG 小图预览按实际可见内容居中取景，等比放大并保留边距�
 “管线配置”分为两个页签：
 
 - **环境与模型**：按职责选择语言模型与思考力度、按步骤选择生图模型；编辑模型连接、生图服务、图片容量保护和运行环境（含本机 Krita 并发上限 `layering_krita_max_instances`，默认 4）。CLI 检测仅查询本机入口与版本，未就绪的 CLI 对应模型会标注并禁用。填写 CLI 路径后可重新检测；登录、生图能力和账号权限在制作启动时检查。
-- **提示词与工具**：只读展示各管线 Markdown 和工具 `description.md` / `schema.json`，按 skill 目录嵌套为文件夹树，搜索时展开全部。可选择工作区、本地或远端跟踪分支（含 `origin/main`）、提交版本及差异基准。版本浏览保留工作区，远端快照由维护者执行 `git fetch` 更新。
+- **先验知识**：只读展示 `knowledge/` 中各管线的 Markdown、`agent.json` 与工具 `description.md`，以及代码中的 `schema.json`，按管线嵌套为文件夹树（`knowledge/<管线>/` 与 `<管线>/` 合并显示），搜索时展开全部。可选择工作区、本地或远端跟踪分支（含 `origin/main`）、提交版本及差异基准。版本浏览保留工作区，远端快照由维护者执行 `git fetch` 更新。
 
 ![环境与模型配置](demo-screenshots/13-environment-config.png)
 
@@ -75,7 +75,7 @@ SVG 小图预览按实际可见内容居中取景，等比放大并保留边距�
 
 [连续操作 GIF](demo-screenshots/14-env-guide.gif) · [高清 MP4](demo-screenshots/14-env-guide.mp4)
 
-![提示词与工具版本浏览](demo-screenshots/15-config-tools.png)
+![先验知识版本浏览](demo-screenshots/15-config-tools.png)
 
 **软件版本：** 标题栏显示发布标签版本（`.agents/skills/live2d-maker/shared/version.ts`：本仓库检出用 `git describe` 的 `vX.Y.Z` 标签，标签后的提交显示为 `+N`；无 `.git` 时用根 `package.json` 的 `version`）。`GET /api/version` 返回当前版本与最新标签，`/healthz` 也带 `version`。最新标签每天最多查询一次 GitHub tags API，结果缓存在 `.web/update-check.json`，失败一小时后再试且不提示；skill `.env` 的 `layering_update_check=false` 关闭查询（shell 同名变量优先，每次请求重新读取，配置页可直接切换）。任务 `run.json` 的 `createdWith`／`lastRunWith` 记录创建与最近一次配置运行的版本。发布流程：更新 `package.json` 版本与 `CHANGELOG.md`，合入 main 后打 `vX.Y.Z` 标签并推送，再用 `pnpm release:pack` 从该标签生成 `.release/AstraLayering-vX.Y.Z.zip`（按 `.gitattributes` 的 `export-ignore` 只带工作台、skill、展示图与 Pink Doll 示例）。
 

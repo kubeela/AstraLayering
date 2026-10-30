@@ -1,6 +1,6 @@
 import { mkdir, copyFile, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, resolve } from 'node:path';
-import { fromTaskPath } from '../task-paths.ts';
+import { copyAsPng } from '../png.ts';
 
 export const referencesDirectory = (outputDirectory: string) => join(outputDirectory, 'workspace', 'references');
 export type FileInput = { name: string } & ({ source: string } | { content: string | Uint8Array });
@@ -20,13 +20,8 @@ export async function prepareFileInputs(outputDirectory: string, inputs: readonl
   for (const input of inputs) {
     const path = resolve(directory, input.name);
     await mkdir(resolve(path, '..'), { recursive: true });
-    if ('source' in input) await copyFile(input.source, path); else await writeFile(path, input.content);
+    if ('source' in input) await (/\.png$/i.test(path) ? copyAsPng : copyFile)(input.source, path); else await writeFile(path, input.content);
     paths[input.name] = path;
   }
   return paths;
-}
-
-// Program-supplied images: absolute, or relative to the task root.
-export function contextImages(images: readonly { path: string; description: string }[] | undefined, root: string) {
-  return images?.map(image => ({ ...image, path: fromTaskPath(root, image.path) }));
 }
