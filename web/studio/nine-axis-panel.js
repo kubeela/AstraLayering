@@ -10,7 +10,7 @@ const fragmentShader = 'uniform sampler2D map;uniform float dim;varying vec2 vUv
 
 export class HeadNineAxisPanel {
   constructor({ error }) {
-    Object.assign(this, { error }); this.epoch = 0; this.value = 0; this.level = 'hair'; this.selected = null; this.hidden = new Set();
+    Object.assign(this, { error }); this.epoch = 0; this.value = 0; this.level = 'accessory'; this.selected = null; this.hidden = new Set();
     this.radius = 40; this.showGrid = true; this.dirty = new Set(); this.active = false;
     this.canvas = $('#nine-axis-canvas'); this.overlay = $('#nine-axis-overlay'); this.view = $('#nine-axis-view');
     $('#nine-axis-angle').oninput = e => this.setValue(e.target.valueAsNumber);
@@ -182,7 +182,7 @@ export class HeadNineAxisPanel {
     if (![...(this.original?.keys() ?? [])].some(k => k.startsWith(p.id + '@'))) this.dirty.delete(p.id);
     this.sync();
   }
-  swing() { this.stopSwing(); const t0 = performance.now(); const tick = t => { this.setValue(30 * Math.sin((t - t0) / 1000 * Math.PI * .5)); this.raf = requestAnimationFrame(tick); }; this.raf = requestAnimationFrame(tick); }
+  swing() { cancelAnimationFrame(this.raf); $('#nine-axis-swing').checked = true; const t0 = performance.now(); const tick = t => { this.setValue(30 * Math.sin((t - t0) / 1000 * Math.PI * .5)); this.raf = requestAnimationFrame(tick); }; this.raf = requestAnimationFrame(tick); }
   stopSwing() { cancelAnimationFrame(this.raf); this.raf = 0; $('#nine-axis-swing').checked = false; }
   export() {
     if (!this.doc) return;
