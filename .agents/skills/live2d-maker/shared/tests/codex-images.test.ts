@@ -70,10 +70,10 @@ test('normal/depth use opaque data transport in both tools and native routes wit
     layering_shadow_maps_image_model: 'gemini-nano-banana-2.1',
     layering_google_image_base_url: `http://127.0.0.1:${(server.address() as any).port}/v1`,
     layering_google_image_api_key: 'fixture', layering_google_image_protocol: 'openai' }, root);
-  const tool = imageGenerationTool(settings, 'shadow_maps', join(root, 'output'), [root])!;
+  const tool = imageGenerationTool(settings, 'shadow_maps', join(root, 'output'))!;
   const result = await tool.execute({ prompt: 'normal data', input_images: [input] }, new AbortController().signal);
   const saved = JSON.parse((result.contentItems[0] as { text: string }).text).savedPath;
-  assert.deepEqual(await readFile(saved), png);
+  assert.deepEqual(await readFile(saved), png); // absolute for the agent
   const route = await createCodexImageRoute(settings, 'shadow_maps', root);
   try {
     const response = await fetch(route.env.LAYERING_IMAGE_BASE_URL + '/images/generations', {
@@ -195,7 +195,7 @@ test('Codex completion uses native image events, resumes after changing image mo
     assert.deepEqual(starts.map(r => r.method), ['thread/start', 'thread/resume']);
     for (const r of starts) {
       assert.equal(r.params.config['features.image_generation'], true);
-      assert.ok(!r.params.dynamicTools.some((tool: any) => tool.name === 'image_generation'));
+      assert.ok(!r.params.dynamicTools.some((tool: any) => tool.name === 'imagegen'));
     }
   } finally { await session.close(); }
 });

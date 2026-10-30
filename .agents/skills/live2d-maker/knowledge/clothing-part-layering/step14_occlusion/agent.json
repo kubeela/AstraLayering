@@ -1,0 +1,14 @@
+{
+  "main": {
+    "initial": [
+      "prompts/11-遮挡层级规划.md"
+    ],
+    "tools": [
+      "preview_svg",
+      "propose_occlusion",
+      "check_occlusion_part",
+      "submit_occlusion",
+      "report_occlusion_problem"
+    ]
+  }
+}

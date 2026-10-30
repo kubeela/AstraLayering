@@ -1,8 +1,9 @@
 import { constants } from 'node:fs';
-import { copyFile, mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, realpath, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import { reportReferences } from './report-links.js';
+import { taskRootOf, toTaskPathReal } from './task-paths.ts';
 
 const inside = (root: string, path: string) => path === root || path.startsWith(root + sep);
 
@@ -30,8 +31,11 @@ export async function publishEvidence(path: string, workspace: string, output: s
   return target;
 }
 
-export async function publishObservations<T extends { savedPath: string }>(entries: readonly T[], workspace: string, output: string): Promise<T[]> {
-  return Promise.all(entries.map(async entry => ({ ...entry, savedPath: await publishEvidence(entry.savedPath, workspace, output) })));
+// Persisted savedPath is task-relative; old absolute records are read as is.
+export async function publishObservations<T extends { savedPath: string }>(entries: readonly T[], workspace: string, output: string,
+  root = taskRootOf(dirname(output))): Promise<T[]> {
+  return Promise.all(entries.map(async entry => ({ ...entry,
+    savedPath: await toTaskPathReal(root, await publishEvidence(entry.savedPath, workspace, output)) })));
 }
 
 export async function publishReportText(text: string, workspace: string, output: string): Promise<string> {
@@ -44,14 +48,14 @@ export async function publishReportText(text: string, workspace: string, output:
     let source: string | undefined;
     for (const candidate of candidates) {
       if (!inside(root, candidate)) continue;
-      try { source = await realpath(candidate); break; }
-      catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+      // Report text is free prose: a target that names no readable file is left as written.
+      try { const path = await realpath(candidate); if ((await stat(path)).isFile()) { source = path; break; } }
+      catch {}
     }
     if (!source) continue;
     const published = await publishEvidence(source, workspace, output);
     const newTarget = relative(output, published).split(sep).map(encodeURIComponent).join('/');
-    const reference = text.slice(ref.start, ref.end).replace(ref.target, newTarget);
-    text = text.slice(0, ref.start) + reference + text.slice(ref.end);
+    text = text.slice(0, ref.targetStart) + newTarget + text.slice(ref.targetEnd);
   }
   return text;
 }

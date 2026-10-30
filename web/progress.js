@@ -5,14 +5,16 @@ export const groupPhases = [
   ['outline', '轮廓绘制'], ['review', '轮廓复核'], ['reduction', '同层去重'],
   ['completion', '遮挡补全'], ['completionCheck', '补全检查'], ['children', '直属结构拆分'],
 ];
-export const statusNames = {pending:'待执行', running:'进行中', available:'已有产物', done:'已完成', failed:'执行失败'};
+// throttled: waiting to retry after a 429 or other temporary error; the agent keeps its slot and resumes on its own.
+// A summary stays running or throttled while any part still is, and only then shows a failure.
+export const statusNames = {pending:'待执行', running:'进行中', throttled:'限流等待', available:'已有产物', done:'已完成', failed:'执行失败'};
 export const displayStatus = (status, hasArtifacts = false) => status === 'skipped' ? 'done'
   : Object.hasOwn(statusNames, status) ? status : hasArtifacts ? 'available' : 'pending';
 export const statusLabel = status => statusNames[displayStatus(status)];
 
 export function groupSummary(group) {
   const values = groupPhases.map(([id]) => group.webPhases?.[id]);
-  const status = values.includes('failed') ? 'failed' : values.includes('running') ? 'running' : values.every(value => value === 'done') ? 'done'
+  const status = values.includes('running') ? 'running' : values.includes('throttled') ? 'throttled' : values.includes('failed') ? 'failed' : values.every(value => value === 'done') ? 'done'
     : values.some(value => value === 'done' || value === 'available') ? 'available' : 'pending';
   return { status, text: statusNames[status] };
 }
@@ -39,15 +41,15 @@ export function groupStagePreviewArtifacts(phase, phaseFiles, files, versions = 
   return [];
 }
 
-const groupStepPath = (pipeline, id, step) => `${pipeline}/${groupStepId(id, step)}`;
-const layerPath = (pipeline, depth) => `${pipeline}/${layerStepId(depth)}`;
+const groupStepPath = (section, id, step) => `${section}/${groupStepId(id, step)}`;
+const layerPath = (section, depth) => `${section}/${layerStepId(depth)}`;
 
-export function groupReviewSteps(group, pipeline, groupId) {
+export function groupReviewSteps(group, section, groupId) {
   return [1, 2].flatMap(number => ['review', 'repair'].map(mode => {
     const record = group.webReviewRounds?.[number - 1]?.[mode];
     const title = `第 ${number} 轮${mode === 'review' ? '轮廓复核' : '返修'}`;
     return { id: `${mode}-${number}`, title, status: record?.status || 'pending', detail: record?.detail || '',
-      artifacts: record?.reportIndex === undefined ? [] : [{ path: `${groupStepPath(pipeline, groupId, 1)}/review.json`,
+      artifacts: record?.reportIndex === undefined ? [] : [{ path: `${groupStepPath(section, groupId, 'outline')}/review.json`,
         label: mode === 'review' ? `第 ${number} 轮反馈` : `第 ${number} 轮返修记录`, kind: 'file',
         reviewIndex: record.reportIndex, reviewMode: mode }] };
   }));
@@ -94,17 +96,16 @@ const rasterSteps = clothing => [
   ...(clothing ? [] : [step('step03', '去除连体服、补全身体底层', 'pending')]),
 ];
 
-export const pipelineSteps = [
+export const sectionSteps = [
   partSteps(false), rasterSteps(false), partSteps(true), rasterSteps(true),
   [step('step01', '人物与衣服 KRA 组装', 'pending', [],
     '同一 agent 调整穿戴关系、必要遮罩与局部笔触，重开验收并导出 KRA、合成 PNG 和报告。')],
   [{ ...step('step01', '阴影方式 · 二选一', 'pending', [
-    { ...step('mask', 'Live2D 蒙版', 'pending'), processDirectory: 'shadow/mask/step01' },
+    { ...step('mask', 'Live2D 蒙版', 'pending'), processDirectory: 'shadow/step01_mask' },
     step('normal-depth', '法线＋深度', 'pending', [
-      { ...step('normal-depth-maps', '生成与验收贴图', 'pending'), processDirectory: 'shadow/normal-depth/step01' },
+      { ...step('normal-depth-maps', '生成与验收贴图', 'pending'), processDirectory: 'shadow/step01_normal-depth' },
     ])],
-    '本轮执行所选分支；两种方式的已有产物分别保留。'), childrenMode: 'alternative' }],
-  [step('step01','组件与实际连接','pending'),step('step02','固定区与约束绑定','pending'),step('step03','连续动画复核','pending')],
+    '启动时选择其中一种方式执行；另一种方式的已有产物保留。'), childrenMode: 'alternative' }],
 ];
 
 export function groupLayers(groups) {
@@ -122,10 +123,10 @@ export function groupLayers(groups) {
 // Known artifact contracts; the UI only displays files present in the selected task.
 const image = (path, label) => ({ path, label, kind: 'image' });
 const file = (path, label) => ({ path, label, kind: 'file' });
-const rasterDelivery = (pipeline, stepId, png, kra) => [
-  image(`${pipeline}/${stepId}/${png}`, '合成 PNG'),
-  file(`${pipeline}/${stepId}/${kra}`, '分层 KRA'),
-  file(`${pipeline}/${stepId}/report.md`, '绘制报告'),
+const rasterDelivery = (section, stepId, png, kra) => [
+  image(`${section}/${stepId}/${png}`, '合成 PNG'),
+  file(`${section}/${stepId}/${kra}`, '分层 KRA'),
+  file(`${section}/${stepId}/report.md`, '绘制报告'),
 ];
 export const stepArtifacts = [
   {
@@ -135,7 +136,7 @@ export const stepArtifacts = [
     base: [image('part-layering/references/base-subject.png', '素体参考')],
     initial: [file('part-layering/groups.json', '分组树')],
     merge: [image('part-layering/preview.draft.svg', '分块合成 · 中间产物'), image('part-layering/preview.svg', '分块合成 SVG')],
-    occlusion: [image('part-layering/occlusion/preview.svg', '遮挡深度预览'), file('part-layering/occlusion.json', '遮挡深度表')],
+    occlusion: [image('part-layering/step14_occlusion/preview.svg', '遮挡深度预览'), file('part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('raster-layering', 'step01', 'composite.png', 'character-depth.kra'),
@@ -146,7 +147,7 @@ export const stepArtifacts = [
     clothing: [image('clothing-part-layering/references/clothing.png', '纯衣服参考')],
     initial: [file('clothing-part-layering/groups.json', '分组树')],
     merge: [image('clothing-part-layering/preview.draft.svg', '衣服分块 · 中间产物'), image('clothing-part-layering/preview.svg', '衣服分块 SVG')],
-    occlusion: [image('clothing-part-layering/occlusion/preview.svg', '遮挡深度预览'), file('clothing-part-layering/occlusion.json', '遮挡深度表')],
+    occlusion: [image('clothing-part-layering/step14_occlusion/preview.svg', '遮挡深度预览'), file('clothing-part-layering/occlusion.json', '遮挡深度表')],
   },
   {
     step01: rasterDelivery('clothing-raster-layering', 'step01', 'composite.png', 'clothing-depth.kra'),
@@ -160,36 +161,34 @@ export const stepArtifacts = [
 
 stepArtifacts.push({
   step01: [file('shadow/selection.json', '当前预览方式')],
-  mask: [image('shadow/mask/step01/character-shadowed.png', '投影阴影'), image('shadow/mask/step01/face-review.png', '头脸投影 · 原尺寸对照'), image('shadow/mask/step01/inspection/overview.png', '去影对照'), file('shadow/mask/step01/character-shadowed.kra', '阴影 KRA'), file('shadow/mask/step01/shadows.json', '跟随与裁切关系'), file('shadow/mask/step01/inspection.json', '裁切检查'), file('shadow/mask/step01/report.md', '绘制报告')],
+  mask: [image('shadow/step01_mask/character-shadowed.png', '投影阴影'), image('shadow/step01_mask/face-review.png', '头脸投影 · 原尺寸对照'), image('shadow/step01_mask/inspection/overview.png', '去影对照'), file('shadow/step01_mask/character-shadowed.kra', '阴影 KRA'), file('shadow/step01_mask/shadows.json', '跟随与裁切关系'), file('shadow/step01_mask/inspection.json', '裁切检查'), file('shadow/step01_mask/report.md', '绘制报告')],
   'normal-depth': [],
-  'normal-depth-maps': [image('shadow/normal-depth/step01/normal.png', '法线'), image('shadow/normal-depth/step01/depth.png', '深度'), file('shadow/normal-depth/step01/report.md', '贴图报告')],
+  'normal-depth-maps': [image('shadow/step01_normal-depth/normal.png', '法线'), image('shadow/step01_normal-depth/depth.png', '深度'), file('shadow/step01_normal-depth/report.md', '贴图报告')],
 });
 export function shadowInspectionArtifacts(files) {
-  return files.filter(path => /^shadow\/mask\/step01\/inspection\/relation-\d{3,}-review\.png$/.test(path)).sort()
+  return files.filter(path => /^shadow\/step01_mask\/inspection\/relation-\d{3,}-review\.png$/.test(path)).sort()
     .map((path,i) => image(path, `投影 ${i+1} · 余量检查`));
 }
 
 for (const index of [1, 3]) {
-  const pipeline = index === 1 ? "raster-layering" : "clothing-raster-layering";
+  const section = index === 1 ? "raster-layering" : "clothing-raster-layering";
   for (const phase of ["review-01", "repair-01", "review-02", "repair-02"])
-    stepArtifacts[index][phase] = [file(`${pipeline}/step01/${phase}.md`, phase + " 报告")];
+    stepArtifacts[index][phase] = [file(`${section}/step01/${phase}.md`, phase + " 报告")];
 }
 
-export function groupArtifacts(pipeline, group, depth) {
+export function groupArtifacts(section, group, depth) {
  const svg = (path, label, draft) => [
   image(path.replace(/\.svg$/, '.draft.svg'), `${label} · 中间产物`),
   image(draft, `${label} · 中间产物`),
   image(path, `${label}图`),
  ];
- const step = number => groupStepPath(pipeline, group.id, number);
+ const step = name => groupStepPath(section, group.id, name);
  return {
-  outline: svg(`${step(1)}/outline.svg`, '轮廓', `${step(1)}/workspace/outline.draft.svg`),
-  review: [file(`${step(1)}/review.json`, '复核 / 返修记录')],
-  reduction: svg(`${layerPath(pipeline, depth)}/${group.id}.svg`, '去重', `${layerPath(pipeline, depth)}/workspace/${group.id}.draft.svg`),
-  completion: svg(`${pipeline}/parts/${group.id}.svg`, '补全', `${step(2)}/workspace/completion.draft.svg`),
-  completionCheck: [file(`${step(2)}/check.json`, '补全检查记录')],
-  children: [file(`${step(3)}/children.json`, '子组分析记录')],
+  outline: svg(`${step('outline')}/outline.svg`, '轮廓', `${step('outline')}/workspace/outline.draft.svg`),
+  review: [file(`${step('outline')}/review.json`, '复核 / 返修记录')],
+  reduction: svg(`${layerPath(section, depth)}/${group.id}.svg`, '去重', `${layerPath(section, depth)}/workspace/${group.id}.draft.svg`),
+  completion: svg(`${section}/parts/${group.id}.svg`, '补全', `${step('completion')}/workspace/completion.draft.svg`),
+  completionCheck: [file(`${step('completion')}/check.json`, '补全检查记录')],
+  children: [file(`${step('children')}/children.json`, '子组分析记录')],
  };
 }
-
-stepArtifacts.push({step01:[file('physics/step01/analysis.json','组件分析'),file('physics/step01/report.md','分析说明')],step02:[file('physics/step02/physics.draft.json','物理草稿'),file('physics/step02/report.md','绑定说明')],step03:[file('physics/physics.json','正式物理配置'),file('physics/step03/findings.json','视觉结论'),file('physics/step03/evidence/manifest.json','连续动画证据'),file('physics/step03/report.md','复核说明')]});

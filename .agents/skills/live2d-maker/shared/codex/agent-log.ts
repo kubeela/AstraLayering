@@ -1,7 +1,12 @@
 import { appendFile, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
-import { pipelineIds } from '../paths.ts';
+import { sectionIds } from '../paths.ts';
+import { retryDelays } from './agent-runtime.ts';
+import { toTaskPath, toTaskPaths } from '../task-paths.ts';
 import type { ThreadEvent } from '@openai/codex-sdk';
+
+// Written into a call's record directory while it waits to retry; see AgentLog.retry.
+export const retryWaitFile = 'retry-wait.json';
 
 function readable(value: unknown): string {
   return JSON.stringify(value, function (key, item) {
@@ -91,33 +96,43 @@ export class AgentLog {
 
   private readonly workflowLog: string;
   private readonly name: string;
-  private constructor(directory: string, name: string, root: string) {
+  private readonly taskRoot?: string;
+  private constructor(directory: string, name: string, root: string, taskRoot?: string) {
     this.directory = directory;
     this.name = name;
     this.workflowLog = workflowLogPath(root);
+    this.taskRoot = taskRoot;
   }
 
   private async write(description: string, timestamp = new Date().toISOString()) {
     if (description) await appendFile(this.workflowLog, '[' + timestamp + '] [' + this.name + '] ' + description + '\n');
   }
 
-  static async create(root: string, name: string, request: unknown): Promise<AgentLog> {
+  // With taskRoot, paths inside the task are recorded relative to it; events.jsonl
+  // stays the verbatim protocol stream.
+  static async create(root: string, name: string, request: unknown, taskRoot?: string): Promise<AgentLog> {
     await mkdir(root, { recursive: true });
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const safeName = name.replace(/[^\p{L}\p{N}_-]/gu, '_').slice(0, 48) || 'agent';
-    const log = new AgentLog(await mkdtemp(join(root, `${timestamp}-${safeName}-`)), name, root);
+    const log = new AgentLog(await mkdtemp(join(root, `${timestamp}-${safeName}-`)), name, root, taskRoot);
+    if (taskRoot) request = toTaskPaths(taskRoot, request);
     await writeFile(join(log.directory, 'request.json'), JSON.stringify(request, null, 2) + '\n', 'utf8');
     if (request && typeof request === 'object' && 'prompt' in request && typeof request.prompt === 'string')
       await writeFile(join(log.directory, 'prompt.md'), request.prompt, 'utf8');
     await writeFile(join(log.directory, 'events.jsonl'), '', 'utf8');
-    await log.write('请求记录：' + log.directory, log.startedAt);
+    await log.write('请求记录：' + (taskRoot ? toTaskPath(taskRoot, log.directory) : log.directory), log.startedAt);
     return log;
   }
 
-  static async retry(directory: string, event: { attempt: number; nextAttempt: number; delayMs: number; error: string }) {
-    const timestamp = new Date().toISOString();
+  static async retry(directory: string, event: { attempt: number; nextAttempt: number; delayMs: number; error: string; rateLimited?: boolean },
+    now = new Date()) {
+    const timestamp = now.toISOString();
     await appendFile(join(directory, 'events.jsonl'), JSON.stringify({ timestamp, event: { type: 'retry.scheduled', ...event } }) + '\n');
-    await appendFile(workflowLogPath(directory), `[${timestamp}] [${basename(directory)}] 临时错误，${event.delayMs / 1000} 秒后第 ${event.nextAttempt} 次尝试：${event.error}\n`);
+    // The page reads this to show 限流等待 until the next attempt; a later retry overwrites it, and the
+    // wait ends on its own when `until` passes, so nothing removes it.
+    await writeFile(join(directory, retryWaitFile), JSON.stringify({ reason: event.rateLimited ? 'rate-limit' : 'transient', attempt: event.attempt,
+      nextAttempt: event.nextAttempt, since: timestamp, until: new Date(now.getTime() + event.delayMs).toISOString(), error: event.error }, null, 2) + '\n');
+    await appendFile(workflowLogPath(directory), `[${timestamp}] [${basename(directory)}] 限流等待（${event.rateLimited ? '429' : '临时错误'}），保留并发位置，${event.delayMs / 1000} 秒后第 ${event.attempt}/${retryDelays.retries} 次重试：${event.error}\n`);
   }
 
   async record(event: ThreadEvent): Promise<string> {
@@ -163,6 +178,7 @@ export class AgentLog {
 
   async finish(result: Record<string, unknown>): Promise<void> {
     const finishedAt = new Date().toISOString();
+    if (this.taskRoot && Array.isArray(result.images)) result = { ...result, images: toTaskPaths(this.taskRoot, result.images) };
     await writeFile(join(this.directory, 'result.json'), JSON.stringify({
       startedAt: this.startedAt, finishedAt, elapsedMs: Date.now() - this.startedMs, ...result,
     }, null, 2) + '\n', 'utf8');
@@ -171,11 +187,11 @@ export class AgentLog {
   }
 }
 
-// All six pipelines, including independent CLI entrypoints, share the task log.
+// All six sections, including independent CLI entrypoints, share the task log.
 // Unstructured/test callers keep their log inside their own supplied log root.
 export function workflowLogPath(root: string): string {
   for (let path = resolve(root); dirname(path) !== path; path = dirname(path)) {
-    if ((pipelineIds as readonly string[]).includes(basename(path))) return join(dirname(path), 'workflow.log');
+    if ((sectionIds as readonly string[]).includes(basename(path))) return join(dirname(path), 'workflow.log');
   }
   return join(resolve(root), 'workflow.log');
 }

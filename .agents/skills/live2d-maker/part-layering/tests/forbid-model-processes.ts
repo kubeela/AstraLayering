@@ -1,6 +1,8 @@
 import childProcess from 'node:child_process';
 import { syncBuiltinESMExports } from 'node:module';
 import { promisify } from 'node:util';
+import { EventEmitter } from 'node:events';
+import { PassThrough } from 'node:stream';
 import '../../shared/tests/ignore-local-env.ts';
 import { patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
 
@@ -11,6 +13,15 @@ for (const name of ['spawn', 'spawnSync', 'execFile', 'execFileSync', 'exec', 'e
 }
 // 新版入口先检查 CLI 版本和 Codex 补丁能力。只模拟这两种本地探测，不启动外部进程；
 // app-server、模型调用及其他命令仍由上面的保护拒绝。
+Object.defineProperty(childProcess, 'spawn', { value: (file: string, args: string[] = []) => {
+  if (file !== process.execPath || args.length !== 1 || args[0] !== '--version') return forbidden();
+  const child = Object.assign(new EventEmitter(), { stdout: new PassThrough(), stderr: new PassThrough(), kill: () => true });
+  queueMicrotask(() => {
+    child.stdout.end('fixture CLI 1.2.3'); child.stderr.end();
+    child.emit('exit', 0, null); child.emit('close', 0, null);
+  });
+  return child;
+} });
 Object.defineProperty(childProcess, 'execFile', { value: Object.assign(() => forbidden(), {
   [promisify.custom]: async (file: string, args: string[]) => {
     if (args.join(' ') === 'debug layering-capabilities') return { stdout: JSON.stringify(patchedCodexCapabilities), stderr: '' };

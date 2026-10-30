@@ -15,6 +15,7 @@ import { gatewayRequestUrl, genaiGateway, prepareGenaiThinking, prepareGenaiTool
 import { ToolCatalog, toolDefinition, toolsDirectory } from '../codex/tool-config.ts';
 import { profile as character } from '../../part-layering/profile.ts';
 import { profile as clothing } from '../../clothing-part-layering/profile.ts';
+const shadowTools = fileURLToPath(new URL('../../shadow/tools/', import.meta.url));
 
 test('AGV gateway forwards headers before delayed SSE content and records phases without request secrets', async t => {
   const root = await mkdtemp(join(tmpdir(), 'agv-headers-'));
@@ -32,7 +33,7 @@ test('AGV gateway forwards headers before delayed SSE content and records phases
   t.after(() => { release(); upstream.closeAllConnections(); upstream.close(); });
   const events: any[] = [];
   const gateway = await genaiGateway({ AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(upstream.address() as { port: number }).port}`,
-    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, [], '', async event => { events.push(event); });
+    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, async event => { events.push(event); });
   assert.ok(gateway); t.after(() => gateway.close());
   const response = await Promise.race([fetch(gateway.url + '/models/fixture:streamGenerateContent?alt=sse&key=request-secret', {
     method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer credential-secret' },
@@ -88,7 +89,7 @@ test('gateway records actual request size/images and configured compatibility wi
   const env = { AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(upstream.address() as { port: number }).port}/v1beta`,
     AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai', layering_agv_minimal_thinking_level: 'LOW' };
   const events: any[] = [];
-  const gateway = await genaiGateway(env, [], root, new AbortController().signal, [], '', async event => { events.push(event); });
+  const gateway = await genaiGateway(env, [], root, new AbortController().signal, async event => { events.push(event); });
   assert.ok(gateway); t.after(() => gateway.close());
   const body = { contents: [{ role: 'user', parts: [{ text: 'private prompt' },
     { functionResponse: { name: 'view', response: {}, parts: [{ inlineData: { mimeType: 'image/png', data: 'private-image' } }] } }] }],
@@ -123,7 +124,7 @@ test('AGV gateway keeps HTTP failures and broken streams visible after flushing 
   t.after(() => { upstream.closeAllConnections(); upstream.close(); });
   const events: any[] = [];
   const gateway = await genaiGateway({ AGY_LLM_GATEWAY_URL: `http://127.0.0.1:${(upstream.address() as { port: number }).port}`,
-    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, [], '', async event => { events.push(event); });
+    AGY_LLM_GATEWAY_WIRE_PROTOCOL: 'genai' }, [], root, new AbortController().signal, async event => { events.push(event); });
   assert.ok(gateway); t.after(() => gateway.close());
   const init = { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' };
   const failed = await fetch(gateway.url + '/error', init);
@@ -226,10 +227,10 @@ test('agv HTTP gateway sends the real grouping union schema as JSON Schema and r
 test('all real shared, character and clothing tool schemas retain every constraint in Gemini and MCP registration', async t => {
   const root = await mkdtemp(join(tmpdir(), 'agv-catalog-'));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const names = (await readdir(toolsDirectory, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name);
-  assert.ok(names.includes('write_groups') && names.includes('propose_occlusion') && names.includes('image_generation'));
-  for (const [label, overrides] of [['shared', undefined], ['character', character.toolsDirectory], ['clothing', clothing.toolsDirectory]] as const) {
-    const catalog = new ToolCatalog(toolsDirectory, overrides);
+  const shared = (await readdir(toolsDirectory, { withFileTypes: true })).filter(entry => entry.isDirectory()).map(entry => entry.name);
+  assert.ok(shared.includes('write_groups') && shared.includes('propose_occlusion') && shared.includes('imagegen'));
+  for (const [label, overrides] of [['shared', undefined], ['character', character.toolsDirectory], ['clothing', clothing.toolsDirectory], ['shadow', shadowTools]] as const) {
+    const catalog = new ToolCatalog(toolsDirectory, overrides), names = catalog.names();
     const definitions = names.map(name => catalog.get(name));
     const snapshot = structuredClone(definitions);
     const tools = definitions.map(definition => ({ ...definition, async execute() { throw new Error('registration only'); } }));

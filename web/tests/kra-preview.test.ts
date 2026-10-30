@@ -9,16 +9,16 @@ import sharp from 'sharp';
 import { KRAPreviews } from '../kra-preview.ts';
 import { createWorkbench } from '../server.ts';
 import { snapshot } from '../snapshot.ts';
-import { pipelineSteps } from '../progress.js';
+import { sectionSteps } from '../progress.js';
 
-test('阴影蒙版显示最新 KRA，首次保存前等待；法线分支不显示蒙版预览', async () => {
+test('阴影蒙版显示最新 KRA，首次保存前等待；法线方式不显示蒙版预览', async () => {
   const { latestKraPreview } = await import(new URL('../progress.js', import.meta.url).href);
   const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
-  const helpers = source.slice(source.indexOf('const isRasterPipeline ='), source.indexOf('async function post('));
+  const helpers = source.slice(source.indexOf('const isRasterSection ='), source.indexOf('async function post('));
   const renderer = source.slice(source.indexOf('function kraPreviewPanel('), source.indexOf('function reportEvidence('));
-  const pipeline: { mode: string; previews: Record<string, { path: string; savedAt: string }> } = { mode: 'mask', previews: {} };
+  const section: { mode: string; previews: Record<string, { path: string; savedAt: string }> } = { mode: 'mask', previews: {} };
   const context = {
-    stages: [{ id: 'shadow', name: '阴影制作' }], data: { pipelines: [pipeline] }, pipelineSteps: [pipelineSteps[5]],
+    stages: [{ id: 'shadow', name: '阴影制作' }], data: { sections: [section] }, sectionSteps: [sectionSteps[5]],
     latestKraPreview, esc: String, icon: () => '',
     artifacts: (items: { path: string; kind: string; sharedPreview: boolean }[]) => {
       assert.equal(items[0].kind, 'image'); assert.equal(items[0].sharedPreview, true);
@@ -27,12 +27,12 @@ test('阴影蒙版显示最新 KRA，首次保存前等待；法线分支不显�
   };
   const render = () => runInNewContext(helpers + renderer + '\nkraPreviewPanel(0);', { ...context }) as string;
   assert.match(render(), /等待首次保存 KRA/);
-  pipeline.previews.step01 = { path: 'shadow/mask/step01/working.kra', savedAt: '2026-10-24T00:00:00Z' };
+  section.previews.step01 = { path: 'shadow/step01_mask/working.kra', savedAt: '2026-10-24T00:00:00Z' };
   const saved = render();
   assert.match(saved, /data-kra-preview="0"/); assert.match(saved, /Live2D 蒙版/);
-  assert.match(saved, /shadow\/mask\/step01\/working\.kra/);
+  assert.match(saved, /shadow\/step01_mask\/working\.kra/);
   assert.doesNotMatch(saved, /selection\.json|等待首次保存/);
-  pipeline.mode = 'normal-depth';
+  section.mode = 'normal-depth';
   assert.equal(render(), '');
 });
 
@@ -48,8 +48,8 @@ test('共用 KRA 预览按最近保存选择跨步骤的新画面', async () => 
 
 test('raster review 位于 step01，step02 只有边缘精修', () => {
   for (const i of [1, 3]) {
-    assert.deepEqual(pipelineSteps[i][0].children.map(step => step.id), ['draw', 'review-01', 'repair-01', 'review-02', 'repair-02']);
-    assert.equal(pipelineSteps[i][1].children.length, 0);
+    assert.deepEqual(sectionSteps[i][0].children.map(step => step.id), ['draw', 'review-01', 'repair-01', 'review-02', 'repair-02']);
+    assert.equal(sectionSteps[i][1].children.length, 0);
   }
 });
 
@@ -64,13 +64,13 @@ test('最新 KRA 保存画面通过真实 HTTP 预览，不采用过期导出或
   await writeFile(draft, zipSync({ 'mergedimage.png': current, 'huge-unused-entry': new Uint8Array(1024) }));
   await writeFile(join(step, 'old-export.png'), old);
   const before = await readFile(draft), value = await snapshot(task, 'case', base);
-  assert.equal(value.pipelines[1].previews.step02.path, 'raster-layering/step02/working.kra');
+  assert.equal(value.sections[1].previews.step02.path, 'raster-layering/step02/working.kra');
   assert.ok(value.fileVersions['raster-layering/step02/working.kra']);
   const server = await createWorkbench({ defaultDir: base, settingsPath: join(base, 'settings.json') });
   await new Promise<void>(done => server.listen(0, '127.0.0.1', done));
   t.after(() => new Promise<void>(done => server.close(() => done())));
   const url = `http://127.0.0.1:${(server.address() as any).port}/artifact?` + new URLSearchParams({ name: 'case', dir: base,
-    path: value.pipelines[1].previews.step02.path, preview: 'kra' });
+    path: value.sections[1].previews.step02.path, preview: 'kra' });
   const first = await fetch(url);
   assert.equal(first.status, 200); assert.equal(first.headers.get('content-type'), 'image/png');
   assert.deepEqual(await sharp(Buffer.from(await first.arrayBuffer())).raw().toBuffer(), await sharp(current).raw().toBuffer());
@@ -79,7 +79,7 @@ test('最新 KRA 保存画面通过真实 HTTP 预览，不采用过期导出或
   const changed = await fetch(url);
   assert.deepEqual(await sharp(Buffer.from(await changed.arrayBuffer())).raw().toBuffer(), await sharp(old).raw().toBuffer());
   const after = await snapshot(task, 'case', base);
-  assert.notEqual(after.fileVersions[value.pipelines[1].previews.step02.path], value.fileVersions[value.pipelines[1].previews.step02.path]);
+  assert.notEqual(after.fileVersions[value.sections[1].previews.step02.path], value.fileVersions[value.sections[1].previews.step02.path]);
 });
 
 test('损坏或缺少合成图的 KRA 明确报错，不伪装为其他图片', async t => {

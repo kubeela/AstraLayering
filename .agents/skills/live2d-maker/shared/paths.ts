@@ -15,8 +15,8 @@ export function resolveRunsDirectory(dir = runsDirectory): string {
   if (!isAbsolute(dir)) throw new Error('--dir 必须是运行根目录的绝对路径。');
   return resolve(dir);
 }
-export const pipelineIds = ['part-layering', 'raster-layering', 'clothing-part-layering', 'clothing-raster-layering', 'character-assembly', 'shadow', 'physics'] as const;
-export type PipelineId = typeof pipelineIds[number];
+export const sectionIds = ['part-layering', 'raster-layering', 'clothing-part-layering', 'clothing-raster-layering', 'character-assembly', 'shadow'] as const;
+export type SectionId = typeof sectionIds[number];
 
 export function taskDirectory(name: string, root = runsDirectory): string {
   if (!name || name === '.' || name === '..' || /[\\/:]/.test(name)) throw new Error('--name 必须是单个目录名。');
@@ -27,14 +27,14 @@ export function taskDirectory(name: string, root = runsDirectory): string {
   return directory;
 }
 
-export function pipelineDirectory(name: string, pipeline: PipelineId, root = runsDirectory): string {
+export function sectionDirectory(name: string, section: SectionId, root = runsDirectory): string {
   // The part entrypoints historically accept any single directory name. Keep
-  // raster's stricter startup rule local to those pipelines when sharing paths.
-  if ((pipeline === 'raster-layering' || pipeline === 'clothing-raster-layering' || pipeline === 'character-assembly' || pipeline === 'shadow' || pipeline === 'physics')
+  // raster's stricter startup rule local to those sections when sharing paths.
+  if ((section === 'raster-layering' || section === 'clothing-raster-layering' || section === 'character-assembly' || section === 'shadow')
     && !/^[\p{L}\p{N}][\p{L}\p{N}._-]{0,127}$/u.test(name)) {
     throw new Error('--name 必须是单个任务名，以字母或数字开头，只含字母、数字、点、下划线或短横线（最多 128 字符）。');
   }
-  return join(taskDirectory(name, root), pipeline);
+  return join(taskDirectory(name, root), section);
 }
 
 // All user-supplied input paths use the named task as their base, regardless of cwd.

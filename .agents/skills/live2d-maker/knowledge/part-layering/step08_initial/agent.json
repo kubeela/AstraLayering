@@ -1,0 +1,11 @@
+{
+  "main": {
+    "initial": [
+      "prompts/4-初始分组.md"
+    ],
+    "tools": [
+      "view_bitmap",
+      "write_groups"
+    ]
+  }
+}

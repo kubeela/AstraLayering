@@ -27,8 +27,8 @@ async function api(operation, data) {
   return value;
 }
 export class LayerPanel {
-  constructor({ composite, changed, busy, error, download, rendered, retry, selected }) {
-    this.callbacks = { composite, changed, busy, error, download, rendered, retry, selected };
+  constructor({ composite, changed, busy, error, rendered }) {
+    this.callbacks = { composite, changed, busy, error, rendered };
     this.epoch = 0;
     this.layers = [];
     this.collapsed = new Set();
@@ -45,7 +45,7 @@ export class LayerPanel {
           : this.collapsed.add(l.id);
       } else if (e.target.closest("[data-eye]") && this.session) {
         this.change(l.id, "visible", !l.visible);
-      } else {this.select(l.id,{reveal:false});return;}
+      } else this.selected = l.id;
       this.render();
     };
     for (const id of ["layer-opacity", "layer-opacity-number"]) {
@@ -82,9 +82,8 @@ export class LayerPanel {
       this.queue();
     };
     $("#layer-retry").onclick = () => {
-      if (this.owner) void (this.callbacks.retry ? this.callbacks.retry() : this.open({ ...this.owner, layerKey: "reopen" }));
+      if (this.owner) void this.open({ ...this.owner, layerKey: "reopen" });
     };
-    $("#layer-save").onclick = () => void this.save();
     this.render();
   }
   release(session) {
@@ -111,9 +110,8 @@ export class LayerPanel {
     this.redo = [];
     this.selected = null;
     this.collapsed.clear();
-    this.loading = this.working = this.saving = this.gesture = false;
+    this.loading = this.working = this.gesture = false;
     this.message = "";
-    this.openError = "";
     this.callbacks.busy(false);
     this.render();
   }
@@ -151,14 +149,15 @@ export class LayerPanel {
       if (epoch !== this.epoch) return;
       if (!availability.available)
         throw Error("图层只读 · 未配置 Krita 合成服务");
-      const project = owner.project;
-      const r = project ? await fetch('./api/studio/layers/open-project', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: project.name, dir: project.dir, preview: project.previewMode,
-          path: project.files.document.path, version: project.files.document.version }),
-      }) : await fetch('./api/studio/layers/open?format=' + owner.name.split('.').at(-1).toLowerCase(), {
-        method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: owner.file,
-      });
+      const r = await fetch(
+        "./api/studio/layers/open?format=" +
+          owner.name.split(".").at(-1).toLowerCase(),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/octet-stream" },
+          body: owner.file,
+        },
+      );
       const data = await r.json();
       if (!r.ok) throw Error(data.error || r.statusText);
       if (epoch !== this.epoch) {
@@ -176,7 +175,7 @@ export class LayerPanel {
         await this.callbacks.composite(owner, data, null);
       this.message = "Krita 合成 · 原尺寸";
     } catch (e) {
-      if (epoch === this.epoch) this.openError = this.message = e.message;
+      if (epoch === this.epoch) this.message = e.message;
     } finally {
       if (epoch === this.epoch) {
         this.loading = false;
@@ -192,7 +191,6 @@ export class LayerPanel {
     const l = this.layers.find((l) => l.id === id);
     if (
       !this.session ||
-      this.saving ||
       !l ||
       l[key] === value ||
       l.type === "selectionmask"
@@ -207,22 +205,21 @@ export class LayerPanel {
     l[key] = value;
     this.queue();
   }
-  select(id,{notify=true,reveal=true}={}) {
+  select(id) {
     const row = this.layers.find(l => l.id === id);
     if (!row) return;
     this.selected = id;
-    if(reveal)$('#layer-filter').value = '';
+    $('#layer-filter').value = '';
     let parent = row.parentId;
     while (parent) {
       this.collapsed.delete(parent);
       parent = this.layers.find(l => l.id === parent)?.parentId;
     }
     this.render();
-    if(reveal)[...document.querySelectorAll('[data-layer]')].find(el => el.dataset.layer === id)?.scrollIntoView({ block: 'nearest' });
-    if(notify)this.callbacks.selected?.(row);
+    [...document.querySelectorAll('[data-layer]')].find(el => el.dataset.layer === id)?.scrollIntoView({ block: 'nearest' });
   }
   history(from, to) {
-    if (!from.length || !this.session || this.saving) return;
+    if (!from.length || !this.session) return;
     to.push(layerState(this.layers));
     this.assign(from.pop());
     this.queue();
@@ -293,36 +290,6 @@ export class LayerPanel {
       })
     );
   }
-  async save() {
-    if (!this.session || this.pending || this.saving) return;
-    const epoch = this.epoch;
-    this.saving = true;
-    this.message = "正在保存 KRA…";
-    this.render();
-    try {
-      await api("export", { session: this.session, revision: this.revision });
-      if (epoch !== this.epoch) return;
-      const r = await fetch(this.assetURL("kra"));
-      if (!r.ok) throw Error("KRA 下载失败");
-      const file = await r.blob();
-      if (epoch !== this.epoch) return;
-      this.callbacks.download(
-        file,
-        this.owner.name.replace(/\.[^.]+$/, "") + "-edited.kra",
-      );
-      this.message = "KRA 已保存";
-    } catch (e) {
-      if (epoch === this.epoch) {
-        this.message = e.message;
-        this.callbacks.error(e.message);
-      }
-    } finally {
-      if (epoch === this.epoch) {
-        this.saving = false;
-        this.render();
-      }
-    }
-  }
   get pending() {
     return (
       this.loading ||
@@ -331,6 +298,7 @@ export class LayerPanel {
     );
   }
   render() {
+    this.callbacks.rendered?.();
     const rows = layerTree(
         this.layers,
         this.collapsed,
@@ -360,7 +328,7 @@ export class LayerPanel {
                   ? "已启用"
                   : "可见";
         return `<div class="layer-row ${l.id === this.selected ? "selected" : ""} ${!l.visible ? "hidden-layer" : ""} ${l.inheritedHidden ? "inherited-hidden" : ""} ${l.mask ? "mask-layer" : ""}" data-layer="${esc(l.id)}" role="listitem" style="--depth:${Math.min(l.depth, 12)}" title="${esc(l.name)} · ${type} · ${status}">
-        <button class="layer-eye" data-eye aria-label="${esc((l.mask ? "启用蒙版 " : "显示图层 ") + l.name)}" aria-pressed="${l.visible}" ${!this.session || this.saving || l.type === "selectionmask" ? "disabled" : ""}>${eye}${!l.visible ? "<i></i>" : ""}</button>
+        <button class="layer-eye" data-eye aria-label="${esc((l.mask ? "启用蒙版 " : "显示图层 ") + l.name)}" aria-pressed="${l.visible}" ${!this.session || l.type === "selectionmask" ? "disabled" : ""}>${eye}${!l.visible ? "<i></i>" : ""}</button>
         <button class="layer-fold" data-fold aria-label="${this.collapsed.has(l.id) ? "展开" : "收起"} ${esc(l.name)}" ${l.hasChildren ? "" : "disabled"}>${l.hasChildren ? (this.collapsed.has(l.id) ? "▸" : "▾") : ""}</button>
         <button class="layer-select" aria-label="选择 ${esc(l.name)}" aria-pressed="${l.id === this.selected}">${l.thumbnail ? `<img src="${l.thumbnail}" alt="" loading="lazy">` : `<span class="layer-thumb">${l.group ? "▱" : "▧"}</span>`}<span class="layer-name">${esc(l.name)}</span><span class="layer-badge">${l.mask ? "M" : l.group ? "组" : l.inheritAlpha ? "α" : ""}</span></button></div>`;
       })
@@ -368,7 +336,7 @@ export class LayerPanel {
     list.scrollTop = scroll;
     $("#layer-note").textContent =
       this.message ||
-      (this.owner ? "合成图，无图层" : "打开 KRA / PSD 以编辑图层");
+      (this.owner ? "合成图，无图层" : "打开项目以编辑图层");
     $("#layer-retry").hidden =
       !this.owner ||
       !/\.(kra|psd)$/i.test(this.owner.name) ||
@@ -377,16 +345,13 @@ export class LayerPanel {
         !this.message.includes("失败") &&
         !this.message.includes("重新"));
     $("#layer-undo").disabled =
-      !this.session || !this.undo.length || this.saving;
+      !this.session || !this.undo.length;
     $("#layer-redo").disabled =
-      !this.session || !this.redo.length || this.saving;
+      !this.session || !this.redo.length;
     $("#layer-restore").disabled =
       !this.session ||
-      stateKey(this.layers) === stateKey(this.original) ||
-      this.saving;
-    $("#layer-save").disabled = !this.session || this.pending || this.saving;
+      stateKey(this.layers) === stateKey(this.original);
     $("#layer-properties").hidden = !selected || !this.session;
-    this.callbacks.rendered?.();
     if (!selected || !this.session) return;
     $("#layer-selected").textContent = selected.name;
     $("#layer-kind").textContent = layerTypes[selected.type] || selected.type;
@@ -400,7 +365,7 @@ export class LayerPanel {
       selected.opacity / 2.55,
     );
     $("#layer-opacity").disabled = $("#layer-opacity-number").disabled =
-      !!selected.passThrough || this.saving;
+      !!selected.passThrough;
     const modes = { ...blends };
     if (!modes[selected.blend])
       modes[selected.blend] = "原模式 · " + selected.blend;
@@ -408,11 +373,11 @@ export class LayerPanel {
       .map(([v, n]) => `<option value="${esc(v)}">${esc(n)}</option>`)
       .join("");
     $("#layer-blend").value = selected.blend;
-    $("#layer-blend").disabled = !!selected.passThrough || this.saving;
+    $("#layer-blend").disabled = !!selected.passThrough;
     $("#layer-inherit").checked = selected.inheritAlpha;
-    $("#layer-inherit").disabled = this.saving;
+    $("#layer-inherit").disabled = false;
     $("#layer-passthrough-row").hidden = !selected.group;
     $("#layer-passthrough").checked = !!selected.passThrough;
-    $("#layer-passthrough").disabled = this.saving;
+    $("#layer-passthrough").disabled = false;
   }
 }

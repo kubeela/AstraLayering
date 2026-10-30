@@ -3,6 +3,7 @@ import { readFile, mkdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -32,10 +33,21 @@ const cases = [
       if (isBody(layer)) return /^hair\/back_hair\/(long_|cap :: (nape|back))/.test(name) ? 1 : 2;
       return name.startsWith('trailing_skirt_') ? 0 : /^(waist_bow|chest_pendant)/.test(name) ? 4 : 3;
     } },
+  { id: 'black-white-doll', title: 'Black White Doll', source: '.web/showcase-layers/black-white-doll', reference: 'demos/black-white-doll/input/original.png',
+    composite: 'demos/black-white-doll/character-assembly/step01/character-assembled.png', counts: [81, 19],
+    titles: ['Rear hair', 'Character', 'Camisole', 'Pleated skirt', 'Chest bow'],
+    classify(layer, name) {
+      if (isBody(layer)) return /^hair\/(back_hair|ponytail_)/.test(name) ? 0 : 1;
+      return name.startsWith('pleated_skirt/') ? 3 : name.startsWith('chest_bow/') ? 4 : 2;
+    } },
 ];
 
+const { values } = parseArgs({ options: { case: { type: 'string' } } });
+if (values.case && !cases.some(profile => profile.id === values.case)) throw new Error(`Unknown case: ${values.case}. Choose ${cases.map(profile => profile.id).join(', ')}.`);
 await mkdir(output, { recursive: true });
-for (const [caseIndex, profile] of cases.entries()) await render(profile, caseIndex);
+for (const [caseIndex, profile] of cases.entries()) {
+  if (!values.case || profile.id === values.case) await render(profile, caseIndex);
+}
 
 async function render(profile, caseIndex) {
   const source = join(root, profile.source);
@@ -51,7 +63,8 @@ async function render(profile, caseIndex) {
     if (hash !== manifest.sourceSha256) throw new Error(`${profile.id}: source KRA changed; export its layers again.`);
   }
   const [cw, ch] = manifest.canvas;
-  const modules = profile.titles.map((title, index) => ({ title, z: [-280, 0, 245, 505, 775][index] * ch / 1536, layers: [] }));
+  const depths = profile.depths ?? [-280, 0, 245, 505, 775];
+  const modules = profile.titles.map((title, index) => ({ title, z: depths[index] * ch / 1536, layers: [] }));
   for (const layer of manifest.layers) {
     if (layer.visible === false || (layer.blend && layer.blend !== 'normal')) throw new Error(`Review source layer: ${layer.name}`);
     const file = join(source, layer.original.file), metadata = await sharp(file).metadata();
@@ -163,11 +176,15 @@ async function render(profile, caseIndex) {
     svg.push(`<circle cx="${p.x}" cy="${axisY(p)}" r="3" fill="#7f8ea6"/>`);
     svg.push(text(p.x, axisY(p)+30, `0${index+1}`, 17, '#7f8c9e', 'text-anchor="middle"'));
   }
-  svg.push(text(1575, 1630, profile.titles.map((title,index)=>`0${index+1} ${title}`).join('   /   '), 20, '#7c8698'));
+  const legend = profile.titles.map((title,index)=>`0${index+1} ${title}`);
+  if (legend.length > 5) {
+    svg.push(text(1575, 1605, legend.slice(0,4).join('   /   '), 20, '#7c8698'));
+    svg.push(text(1575, 1640, legend.slice(4).join('   /   '), 20, '#7c8698'));
+  } else svg.push(text(1575, 1630, legend.join('   /   '), 20, '#7c8698'));
   svg.push('<path d="M76 1670 H2924" stroke="#adb5c4" stroke-opacity=".3"/>');
   svg.push(text(76, 1720, `${rendered} PAINT LAYERS`, 21, '#546176', 'letter-spacing="2"'));
   svg.push(text(430, 1720, `${profile.counts[0]} character  +  ${profile.counts[1]} clothing`, 21));
-  svg.push(text(2924, 1720, 'Source KRA pixels / five structural assemblies / perspective projection', 20, '#8a93a2', 'text-anchor="end"'));
+  svg.push(text(2924, 1720, `Source KRA pixels / ${modules.length === 5 ? 'five' : modules.length} structural assemblies / perspective projection`, 20, '#8a93a2', 'text-anchor="end"'));
   svg.push('</svg>');
   if (rendered !== manifest.layers.length) throw new Error('Every source layer must appear exactly once.');
   await sharp(Buffer.from(svg.join(''))).png().toFile(join(output, `${profile.id}-reference-composite-exploded.png`));

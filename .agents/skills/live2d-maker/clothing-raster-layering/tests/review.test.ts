@@ -1,10 +1,11 @@
+import { readStepSession } from '../../shared/agents/step-session.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 import { splitStructure } from '../../shared/tests/structure-fixture.ts';
 import { seedUpstream } from '../../shared/tests/upstream-fixture.ts';
 import assert from 'node:assert/strict';
 import { mkdtemp, realpath, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { test, type TestContext } from 'node:test';
 import type { AgentRequest, StepResult } from '../../shared/raster/agent.ts';
 import { steps, type StepDefinition } from '../steps.ts';
@@ -12,8 +13,7 @@ import { runWorkflow } from '../run.ts';
 
 const completed: StepResult = { status: 'completed', summary: 'fixture completed' };
 const forbidden = async (): Promise<never> => assert.fail('unexpected model call');
-const preflight = async (executable: string) => ({ executable, version: 'fixture' });
-const config = async (directory: string) => JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
+const preflight = async (executable: string) => ({ executable });
 async function absent(path: string) { await assert.rejects(readFile(path), { code: 'ENOENT' }); }
 const isReview = (request: AgentRequest) => request.prompt.startsWith('你负责对第一步交付');
 function reportName(request: AgentRequest): string {
@@ -45,7 +45,7 @@ async function fixture(t: TestContext) {
     index++;
     return completed;
   } });
-  return { directory, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options, resume: { name: 'test' }, deps };
+  return { directory, output: join(runsDirectory, 'test', 'clothing-raster-layering'), options, resume: { name: 'test', krita: process.execPath }, deps };
 }
 
 test('旧第一步交付直接补 review；无问题时一次结束，reviewer ID 不覆盖或保存为主上下文', async t => {
@@ -62,7 +62,7 @@ test('旧第一步交付直接补 review；无问题时一次结束，reviewer I
     await readFile(join(f.output, 'step01/.running'));
     await absent(join(f.output, 'step01/.completed'));
     await request.onEvent({ type: 'thread.started', thread_id: 'disposable-reviewer' });
-    assert.equal((await config(f.output)).threadId, 'drawing-thread');
+    assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-thread');
     return report(request, '通过');
   } });
   assert.equal(calls, 1);
@@ -99,7 +99,7 @@ test('每轮全部修完再推进；第二轮允许继续修复直到解决，�
     return report(request, '已修复');
   } });
   assert.deepEqual(calls, ['review-01.md.tmp', 'repair-01.md.tmp', 'review-02.md.tmp', 'repair-02.md.tmp', 'repair-02.md.tmp']);
-  assert.equal((await config(f.output)).threadId, 'drawing-thread');
+  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-thread');
   await readFile(join(f.output, 'step01/repair-02.md'));
   await absent(join(f.output, 'step01/review-03.md'));
   await readFile(join(f.output, 'step01/.completed'));
@@ -123,7 +123,7 @@ test('reviewer 中断不留下正式报告，再启动使用新上下文检查�
     await request.onEvent({ type: 'thread.started', thread_id: 'new-reviewer' });
     return report(request, '通过');
   } });
-  assert.equal((await config(f.output)).threadId, 'drawing-thread');
+  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-thread');
 });
 
 test('正式报告已发布但总步骤标记尚未完成时，恢复只完成标记，不重复调用 agent', async t => {
@@ -209,19 +209,19 @@ test('删除 review 报告只重启检查及后续反馈，保留工程和绘制
   await mkdir(join(f.output, 'step02'));
   await writeFile(join(f.output, 'step02/.completed'), '');
   const original = await readFile(join(f.output, 'step01/clothing-depth.kra'));
-  const before = await readFile(join(f.output, 'run.json'));
+  const before = (await readdir(f.output)).sort();
   const dryPrompt = await runWorkflow({ ...f.resume, dryRun: true }, { ...f.deps, agent: forbidden });
   assert.ok(dryPrompt.startsWith('你负责对第一步交付'));
   assert.ok(dryPrompt.includes('step01/review-01.md.tmp'));
   await readFile(join(f.output, 'step01/.completed'));
   await readFile(join(f.output, 'step01/repair-01.md'));
-  assert.deepEqual(await readFile(join(f.output, 'run.json')), before);
+  assert.deepEqual((await readdir(f.output)).sort(), before);
   await runWorkflow(f.resume, { ...f.deps, agent: async request => {
     assert.equal(reportName(request), 'review-01.md.tmp');
     await absent(join(f.output, 'step01/repair-01.md'));
     await absent(join(f.output, 'step01/review-02.md'));
     await readFile(join(f.output, 'step02/.completed'));
-    assert.equal((await config(f.output)).threadId, 'drawing-thread');
+    assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-thread');
     assert.deepEqual(await readFile(join(f.output, 'step01/clothing-depth.kra')), original);
     return report(request, '通过');
   } });
@@ -272,8 +272,7 @@ test('缺失、不完整、无法检查的报告以及取消均不发布正式 r
 
 test('step01 返修修改分层文件后中断，续跑保留结构且保留未改动的 KRA', async t => {
   const f = await fixture(t);
-  const configBefore = await config(f.output);
-  const source = configBefore.sourceInput.directory;
+  const source = join(dirname(f.output), 'clothing-part-layering');
   const baseline = await readFile(join(f.output, 'step01/clothing-depth.kra'));
   let changed: Record<string, string> = {};
   await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: async request => {

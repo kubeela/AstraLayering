@@ -1,5 +1,4 @@
 import { groupStepId } from './part-steps.ts';
-import {renderPrompt} from '../prompts/render.ts';
 import { partStep } from '../agents/models.ts';
 import { agentOutcomeError } from '../codex/diagnostics.ts';
 import { toolDefinition } from '../codex/tool-config.ts';
@@ -10,10 +9,11 @@ import sharp from 'sharp';
 import type { CodexAgents } from '../codex/agents.ts';
 import { createBitmapTool } from './bitmap-tool.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { readGroupPrompt, readGroupReferences } from './group-prompts.ts';
+import { groupValues, partKnowledge } from './group-prompts.ts';
 import { normalizeGroups } from './groups.ts';
 import type { ChildrenAnalysis, GroupContext, GroupSeed, SvgArtifact } from './layering-types.ts';
 import { createSvgPreviewTool, type SvgObservation } from './svg-tools.ts';
+import { taskRootOf } from '../task-paths.ts';
 
 
 export function decodeChildren(parentId: string, value: unknown): ChildrenAnalysis {
@@ -24,31 +24,28 @@ export function decodeChildren(parentId: string, value: unknown): ChildrenAnalys
   const groups: GroupSeed[] = raw.children.map((item: unknown) => {
     if (!item || typeof item !== 'object' || Array.isArray(item)) throw new Error('子节点必须是对象');
     const child = item as Record<string, unknown>;
-    if (Object.keys(child).some(key => !['name', 'kind', 'note'].includes(key)) ||
+    if (Object.keys(child).some(key => !['name', 'kind', 'note', 'allowOutsideParent', 'hiddenInReference'].includes(key)) ||
         typeof child.name !== 'string' || !/^[a-z][a-z0-9_]*$/.test(child.name) ||
         (child.kind !== 'group' && child.kind !== 'part') || typeof child.note !== 'string' || !child.note.trim()) {
       throw new Error('子节点须包含 snake_case name、group/part kind 和具体范围及独立性 note，不提交子树或进度');
     }
-    return { id: `${parentId}/${child.name}`, name: child.name, kind: child.kind, note: child.note };
+    return { id: `${parentId}/${child.name}`, name: child.name, kind: child.kind, note: child.note,
+      ...(child.allowOutsideParent !== undefined ? { allowOutsideParent: child.allowOutsideParent as boolean } : {}),
+      ...(child.hiddenInReference !== undefined ? { hiddenInReference: child.hiddenInReference as boolean } : {}) };
   });
   normalizeGroups(groups);
   if (groups.length === 1 && groups[0].kind === 'part') throw new Error('不要用 group 包装唯一 part；当前完整形体已不可再拆时提交空 children，并说明终止依据');
   return { groups, note: raw.note };
 }
 
-export async function analyzeChildren(context: GroupContext & { completed: SvgArtifact }, agents: Pick<CodexAgents, 'run'>,
-  promptDirectory?: string): Promise<ChildrenAnalysis> {
+export async function analyzeChildren(context: GroupContext & { completed: SvgArtifact }, agents: Pick<CodexAgents, 'run'>): Promise<ChildrenAnalysis> {
   const profile = partProfile(context);
-  const rulesPath = join(profile.promptsDirectory, '10-拆分操作约定.md');
   if (context.group.kind === 'part') throw new Error('part 不调用子组分析');
   const reference = resolve(context.directory, context.references.baseSubject);
   const sourceSvg = await realpath(context.completed.path), source = await readFile(sourceSvg);
   const meta = await sharp(reference).metadata();
   const canvas = { width: meta.autoOrient.width, height: meta.autoOrient.height };
-  const prompt = await readGroupPrompt(context.group.id, 'children', promptDirectory ?? profile.promptsDirectory);
-  const references = [...await readGroupReferences(prompt.groupDirectory, 'children'), ...(profile.originalChildrenReference && context.references.originalImage ? [{ path: context.references.originalImage, description: profile.originalChildrenReference }] : [])];
-  const rules = await readFile(rulesPath, 'utf8');
-  if (!rules.trim()) throw new Error('拆分操作约定提示词为空');
+  const knowledge = partKnowledge(profile, 'children');
   const observations: SvgObservation[] = [];
   const directory = join(context.directory, 'observations', 'children', context.group.id);
   let submitted: ChildrenAnalysis | undefined;
@@ -68,17 +65,13 @@ export async function analyzeChildren(context: GroupContext & { completed: SvgAr
       return textResult({ ids: result.groups.map(group => group.id), terminal: result.groups.length === 0, note: result.note });
     },
   };
-  const response = await agents.run({ step: partStep(partProfile(context).id, 'children'), name: `直属结构拆分-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 3)), sandboxMode: 'read-only', imageGeneration: false,
-    images: [{ path: reference, description: profile.references.children }, ...(profile.attachChildrenReferences ? references : [])],
-    tools: [createBitmapTool(context.directory, directory, references.map(image => image.path)), createSvgPreviewTool({ directory: context.directory, reference, canvas,
-      observationDirectory: directory, observed: entry => observations.push(entry) }), submit],
-    prompt: renderPrompt(prompt.text, {prompt_source: prompt.path,
-      runtime_context: JSON.stringify({
-      group: { id: context.group.id, name: context.group.name, kind: context.group.kind ?? 'group', note: context.group.note },
-      sourceSvg, reference, additionalReferences: references, canvas, parentGroup: context.parent?.id ?? null,
-    }, null, 2),
-      fixed_rules: rules,
-      fixed_rules_source: rulesPath}, prompt.path, ["prompt_source","runtime_context","fixed_rules","fixed_rules_source"]),
+  const root = taskRootOf(context.directory);
+  const response = await agents.run({ step: partStep(partProfile(context).id, 'children'), name: `直属结构拆分-${context.group.id}`, cwd: context.directory, outputDirectory: join(context.directory, groupStepId(context.group.id, 'children')), imageGeneration: false,
+    tools: knowledge.tools('main', [createBitmapTool(context.directory, directory), createSvgPreviewTool({ directory: context.directory, reference, canvas,
+      observationDirectory: directory, observed: entry => observations.push(entry) }), submit]),
+    prompt: knowledge.render('main', {
+      ...groupValues(context.group.id, canvas),
+    }, { taskRoot: root, group: context.group.id }),
   });
   await verifySource();
   if (!submitted) throw agentOutcomeError('子组分析未通过 submit_children 提交', response);

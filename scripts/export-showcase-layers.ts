@@ -8,10 +8,16 @@ import { parseArgs } from 'node:util';
 import { preparePrivateKrita } from '../.agents/skills/live2d-maker/shared/krita/private-environment.ts';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const { values } = parseArgs({ options: { krita: { type: 'string', default: process.platform === 'darwin' ? '/Applications/krita.app/Contents/MacOS/krita' : 'krita' } } });
+const { values } = parseArgs({ options: {
+  krita: { type: 'string', default: process.platform === 'darwin' ? '/Applications/krita.app/Contents/MacOS/krita' : 'krita' },
+  case: { type: 'string' },
+} });
+const supportedCases = ['pink-doll', 'pink-elf', 'black-white-doll'];
+if (values.case && !supportedCases.includes(values.case)) throw new Error(`Unknown case: ${values.case}. Choose ${supportedCases.join(', ')}.`);
+const selectedCases = values.case ? [values.case] : supportedCases;
 const temporary = await mkdtemp(join(process.platform === 'darwin' ? '/tmp' : tmpdir(), 'astra-showcase-'));
 try {
-  const cases = await Promise.all(['pink-doll', 'pink-elf'].map(async name => {
+  const cases = await Promise.all(selectedCases.map(async name => {
     const relativeKra = `demos/${name}/character-assembly/step01/character-assembled.kra`;
     const kra = join(root, relativeKra);
     return { name, kra, relativeKra, output: join(root, '.web/showcase-layers', name),

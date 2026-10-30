@@ -1,5 +1,5 @@
 import { mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
-import { join, relative, resolve, isAbsolute } from 'node:path';
+import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import type { WorkflowEnvironment } from '../codex/environment.ts';
@@ -9,6 +9,7 @@ import { toolDefinition } from '../codex/tool-config.ts';
 import { needsSolidBackground, providerImageArguments, transparentGeneratedImage } from './image-background.ts';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { recommendBackground, type BackgroundRecommendation } from './background-selection.ts';
+import { imagePath } from '../task-paths.ts';
 
 export function validateImageSelection(settings: WorkflowEnvironment, step: AgentStep): void {
   const image = settings.stepImages[step];
@@ -23,37 +24,34 @@ export function validateImageSelection(settings: WorkflowEnvironment, step: Agen
 }
 
 export function imageGenerationTool(settings: WorkflowEnvironment, step: AgentStep, output: string,
-  roots: readonly string[], normalization: ImageProcessingOptions = {}): FunctionTool | undefined {
+  normalization: ImageProcessingOptions = {}): FunctionTool | undefined {
   const model = settings.stepImages[step];
   if (!model || model === 'codex-native') return;
   validateImageSelection(settings, step);
   const provider = imageModelProviders[model] as 'openai' | 'google';
   const api = settings.imageApis[provider]!;
   return {
-    ...toolDefinition('image_generation'),
+    ...toolDefinition('imagegen'),
     async execute(raw, signal) {
-      const args = raw as { prompt?: unknown; input_images?: unknown; background?: string; size?: string };
+      const args = raw as { prompt?: unknown; input_images?: unknown; background?: string; size?: string; output_path?: unknown };
       if (!args || typeof args.prompt !== 'string' || !args.prompt.trim() || !Array.isArray(args.input_images)
-        || args.input_images.some(x => typeof x !== 'string') || Object.keys(args).some(key => !['prompt', 'input_images', 'background', 'size'].includes(key))
+        || args.input_images.some(x => typeof x !== 'string') || Object.keys(args).some(key => !['prompt', 'input_images', 'background', 'size', 'output_path'].includes(key))
+        || args.output_path !== undefined && (typeof args.output_path !== 'string' || !args.output_path.trim())
         || args.background !== undefined && !['transparent', 'auto'].includes(args.background) || args.size !== undefined && typeof args.size !== 'string') {
         throw new Error('生图参数必须包含 prompt 和 input_images，并遵循工具 schema。');
       }
-      if ((args.input_images as string[]).some(path => !isAbsolute(path))) throw new Error('生图参考图必须使用绝对路径。');
-      const allowed = await Promise.all(roots.map(p => realpath(p)));
+      // Paths are checked before the paid generation call.
+      const savedPath = args.output_path === undefined ? join(output, 'images', `${randomUUID()}.png`) : imagePath(args.output_path as string, 'output_path');
       const inputs = [];
       for (const path of args.input_images as string[]) {
-        const actual = await realpath(resolve(path));
-        if (!allowed.some(root => { const r = relative(root, actual); return !isAbsolute(r) && r !== '..' && !r.startsWith('../'); })) {
-          throw new Error(`参考图不在本次任务允许范围内：${path}`);
-        }
+        const actual = await realpath(imagePath(path, 'input_images 中的路径'));
         const bytes = await readFile(actual), meta = await sharp(bytes).metadata();
         inputs.push({ bytes, mime: meta.format === 'jpeg' ? 'image/jpeg' : meta.format === 'webp' ? 'image/webp' : 'image/png' });
       }
       const png = await generateImage(api, model, step === 'shadow_maps' ? { ...args, background: 'opaque' } as ImageArguments : args as ImageArguments, inputs, signal,
         { ...normalization, env: normalization.env ?? settings.codex.env, directory: output });
       const meta = await sharp(png).metadata();
-      await mkdir(join(output, 'images'), { recursive: true });
-      const savedPath = join(output, 'images', `${randomUUID()}.png`);
+      await mkdir(dirname(savedPath), { recursive: true });
       await writeFile(savedPath, png, { mode: 0o600 });
       return { success: true, contentItems: [{ type: 'inputText', text: JSON.stringify({ savedPath, model,
         width: meta.width, height: meta.height, hasAlpha: meta.hasAlpha }) }] };

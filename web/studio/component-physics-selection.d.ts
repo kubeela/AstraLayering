@@ -1,1 +1,0 @@
-export function physicsComponentsAt(layers: any[], assignments: Map<string, string>, bodies: Map<string, any>, point: number[], size: number[], pose?: { x?: number; y?: number; angle?: number }): string[];

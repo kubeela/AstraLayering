@@ -1,0 +1,11 @@
+{
+  "main": {
+    "initial": [
+      "prompts/03-去除连体服.md",
+      "prompts/runtime.md"
+    ],
+    "tools": [
+      "krita"
+    ]
+  }
+}

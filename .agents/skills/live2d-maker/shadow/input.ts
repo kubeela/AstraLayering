@@ -1,9 +1,11 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { requireUpstream, simplifiedCharacter } from '../shared/upstream.ts';
-import type { ShadowMode } from '../shared/shadow.ts';
+import { readDressup } from '../shared/part/dressup.ts';
+import { taskDirectory } from '../shared/paths.ts';
+import { taskRootOf } from '../shared/task-paths.ts';
+import type { ChainStep } from '../shared/step-chain.ts';
 
 export type ShadowInput = {
   characterKra: string; characterColor: string; simplifiedCharacter: string;
@@ -15,12 +17,17 @@ export function isShadowInput(value: unknown): value is ShadowInput {
     .every(path => typeof path === 'string' && !!path.trim())
     && Array.isArray(input.structureFiles) && input.structureFiles.every(path => typeof path === 'string');
 }
-export async function resolveShadowInput(name: string, root: string, mode: ShadowMode): Promise<ShadowInput> {
+// Both modes read the same input; the mode only picks which step01 runs.
+export async function resolveShadowInput(name: string, root: string): Promise<ShadowInput> {
   const assembly = await requireUpstream(name, 'character-assembly', [
     { path: 'step01/character-assembled.kra' }, { path: 'step01/character-assembled.png' },
   ], root);
   const structureFiles: string[] = [];
-  if (mode === 'mask') for (const id of ['part-layering', 'clothing-part-layering'] as const) {
+  // Without a dress-up the clothing lane is skipped and only the character has
+  // structure; older runs that made clothing parts anyway keep them.
+  const clothing = await readDressup(taskDirectory(name, root)) !== false
+    || await present(name, 'clothing-part-layering', root);
+  for (const id of clothing ? ['part-layering', 'clothing-part-layering'] as const : ['part-layering'] as const) {
     const directory = await requireUpstream(name, id, [{ path: 'groups.json' }, { path: 'occlusion.json' }], root);
     structureFiles.push(join(directory, 'groups.json'), join(directory, 'occlusion.json'));
   }
@@ -28,38 +35,17 @@ export async function resolveShadowInput(name: string, root: string, mode: Shado
     characterColor: join(assembly, 'step01/character-assembled.png'),
     simplifiedCharacter: await simplifiedCharacter(name, root), structureFiles };
 }
+const present = (name: string, id: 'clothing-part-layering', root: string) =>
+  requireUpstream(name, id, [{ path: 'groups.json' }, { path: 'occlusion.json' }], root).then(() => true, () => false);
+// The assembly's last step, which step01 depends on; the parts reach it through raster.
+export function assemblyStep(input: ShadowInput): ChainStep {
+  const directory = dirname(input.characterKra);
+  return { id: 'character-assembly/step01', root: taskRootOf(directory), directory, dependsOn: [] };
+}
 export function inputDirectories(input: ShadowInput): string[] {
   return [...new Set([dirname(dirname(input.characterKra)), dirname(dirname(input.simplifiedCharacter)),
     ...input.structureFiles.map(dirname)])];
 }
 export async function fileHash(path: string): Promise<string> {
   return createHash('sha256').update(await readFile(path)).digest('hex');
-}
-export async function inputFingerprint(input: ShadowInput, mode: ShadowMode, prompt: URL, rules: URL[] = []): Promise<string> {
-  const hashes = await Promise.all([input.characterKra, input.characterColor, input.simplifiedCharacter,
-    ...input.structureFiles].map(fileHash));
-  return createHash('sha256').update(JSON.stringify({ version: 1, mode, hashes,
-    prompt: await readFile(prompt, 'utf8'), ...(rules.length ? { rules: await Promise.all(rules.map(p => fileHash(fileURLToPath(p)))) } : {}) })).digest('hex');
-}
-
-// Code/path-only upgrades keep completed art. Change recipe deliberately when
-// drawing behavior changes; inputs, instructions and visual guides stay hashed.
-export async function shadowInputFingerprint(input: ShadowInput, mode: ShadowMode, prompt: URL, rules: URL[] = []): Promise<string> {
-  const hashes = await Promise.all([input.characterKra, input.characterColor, input.simplifiedCharacter, ...input.structureFiles].map(fileHash));
-  return createHash('sha256').update(JSON.stringify({ version: 2, recipe: 1, mode, hashes,
-    prompt: await readFile(prompt, 'utf8'), rules: await Promise.all(rules.map(p => fileHash(fileURLToPath(p)))) })).digest('hex');
-}
-export async function compatibleShadowFingerprint(input: ShadowInput, recorded: string | undefined, mode: ShadowMode, prompt: URL, rules: URL[] = []): Promise<boolean> {
-  if (!recorded) return false;
-  if (recorded === await shadowInputFingerprint(input, mode, prompt, rules)) return true;
-  const currentPrompt = await readFile(prompt, 'utf8');
-  const oldPrompt = currentPrompt.replace('先读运行信息中列出的 inputs.json、production.md', '先读 references/inputs.json、production.md');
-  const promptHash = createHash('sha256').update(oldPrompt).digest('hex');
-  const currentRules = await Promise.all(rules.map(p => fileHash(fileURLToPath(p))));
-  const recipes: { mode: ShadowMode; promptHash: string; rules: string[] }[] = JSON.parse(await readFile(new URL('./legacy-recipes.json', import.meta.url), 'utf8'));
-  const hashes = await Promise.all([input.characterKra, input.characterColor, input.simplifiedCharacter, ...input.structureFiles].map(fileHash));
-  return recipes.some(recipe => recipe.mode === mode && recipe.promptHash === promptHash
-    && JSON.stringify(recipe.rules.slice(0, currentRules.length)) === JSON.stringify(currentRules)
-    && recorded === createHash('sha256').update(JSON.stringify({ version: 1, mode, hashes, prompt: oldPrompt,
-      ...(recipe.rules.length ? { rules: recipe.rules } : {}) })).digest('hex'));
 }

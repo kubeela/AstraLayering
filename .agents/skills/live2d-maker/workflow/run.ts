@@ -5,71 +5,82 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { formatAgentError } from '../shared/codex/diagnostics.ts';
-import { directoryFor, pipelineId, taskStatus, type TaskOptions } from './state.ts';
+import { fromTaskPath } from '../shared/task-paths.ts';
+import { directoryFor, sectionId, taskStatus, type TaskOptions } from './state.ts';
 import { lastLog, runTask } from './runner.ts';
-import { replaceThread } from './recovery.ts';
+import { requestTaskStop } from './control.ts';
+import { preflightKrita } from './krita.ts';
+import { applyStepAction, applyTaskAction } from './step-actions.ts';
 import { taskLogName } from './log.ts';
 
 export const help = [
-  'live2d-maker — 制作、后台运行与恢复整条管线',
+  'live2d-maker — 制作、后台运行与恢复整条管线；与网页工作台的操作一一对应',
   '',
-  '首次：pnpm start --name <任务名> --image <参考图> --krita <可执行文件> --background',
-  '续跑：pnpm start --name <任务名> --background',
-  '进度：pnpm start --name <任务名> --status [--json]',
-  '导出：pnpm export --name <任务名> [--dir <运行根目录>] [--output <目录或.zip>]',
+  '开始制作：pnpm start --name <任务名> --image <参考图> --krita <可执行文件> [--background]',
+  '继续：    pnpm start --name <任务名> [--continue] [--background]   保留产物与会话，从中断处继续运行',
+  '恢复：    pnpm start --name <任务名> --resume [--background]       清除会话、保留产物，在新会话中继续运行',
+  '重试：    pnpm start --name <任务名> --retry [--background]        删除这些步骤的产物、会话与 agent 尝试记录后重做；依赖它们的后续步骤自动重跑',
+  '停止：    pnpm start --name <任务名> --stop                        停止运行，保留产物与续跑记录',
+  '进度：    pnpm start --name <任务名> --status [--json]',
+  '导出成果：pnpm export --name <任务名> [--dir <运行根目录>] [--output <目录或.zip>]',
+  '',
+  '继续、恢复、重试作用于所有中断或失败的步骤，然后按保存的路线运行；没有这类步骤时继续即从未完成处续跑。',
+  '--section <管线> --step <步骤> 只处理一个步骤（如 step02、step11_completion/head）；只给 --section 时仅可继续。',
+  '路线含 Krita（raster、character-assembly、shadow）时，启动前先检查记录的 Krita 路径；不可用则拒绝运行，',
+  '  请加 --krita <可执行文件> 重新指定。继续、恢复、重试同样先检查，检查通过后才改动步骤。',
+  '',
   '--dir <绝对路径> 指定运行根目录，任务记录在 <dir>/<name>/run.json。',
-  '--from / --to <管线> 选择连续范围，默认从人物 part 到阴影制作。',
-  '管线：part-layering、raster-layering、clothing-part-layering、clothing-raster-layering、character-assembly、shadow、physics',
+  '--knowledge <目录> 用该目录完整替换 skill 自带的 knowledge/ 先验知识，不回退；记录在 run.json，续跑省略沿用。',
+  '  启动、继续、恢复、重试前先检查其中全部文件，缺失则拒绝运行并写入 workflow.log。',
+  '--from / --to <管线> 选择连续范围，默认从人物 part 到阴影制作；只制作一个管线时两者相同。',
+  '管线：part-layering、raster-layering、clothing-part-layering、clothing-raster-layering、character-assembly、shadow',
   '--shadow-mode mask|normal-depth 选择阴影路线，首次默认 mask；续跑省略沿用保存值。',
-  '--physics 开启末尾物理工作流；--physics-profile primary|all（默认 primary）。--no-physics 显式关闭。',
-  '--physics-reference <认可配置.json> 为物理提供明确的初始化／运动目标，续跑沿用。',
-  '--jobs <正整数> part 的 agent 并发，默认 3。',
+  '--jobs <正整数> 整次运行所有管线（含 raster、组装、阴影）共用的 agent 名额，默认 3；并行管线不增加总并发。',
   '--standard 在人物 preparation 中先判断姿态，必要时生成 standard.png；默认关闭，仅复制原图。',
   '续跑省略选项则沿用已保存配置；--no-standard 显式关闭。切换选项须通过 preparation 指纹检查。',
   '省略 --background 则在前台执行；总入口不会自行创建定时任务。',
-  '',
-  '恢复损坏的绘制会话（先确认任务已停止，保留产物和标记）：',
-  'pnpm start --name <任务名> --replace-thread <raster管线、character-assembly、shadow或physics> --handoff <交接.md> --reason <原因>',
-  '此命令只准备恢复；之后用正常续跑命令启动。相对输入路径均以 <dir>/<name> 为基准。',
 ].join('\n');
 
 export function parseArguments(args: string[]) {
   const { values } = parseArgs({ args, options: {
-    name: { type: 'string' }, dir: { type: 'string' }, image: { type: 'string' }, krita: { type: 'string' },
-    physics: { type: 'boolean' }, 'no-physics': { type: 'boolean' }, 'physics-profile': { type: 'string' }, 'physics-reference':{type:'string'}, 'shadow-mode': { type: 'string' }, from: { type: 'string' }, to: { type: 'string' }, jobs: { type: 'string' },
+    name: { type: 'string' }, dir: { type: 'string' }, image: { type: 'string' }, krita: { type: 'string' }, knowledge: { type: 'string' },
+    'shadow-mode': { type: 'string' }, from: { type: 'string' }, to: { type: 'string' }, jobs: { type: 'string' },
     standard: { type: 'boolean' }, 'no-standard': { type: 'boolean' },
     background: { type: 'boolean' }, 'background-worker': { type: 'boolean' },
     status: { type: 'boolean' }, json: { type: 'boolean' }, help: { type: 'boolean', short: 'h' },
-    'replace-thread': { type: 'string' }, handoff: { type: 'string' }, reason: { type: 'string' },
+    continue: { type: 'boolean' }, resume: { type: 'boolean' }, retry: { type: 'boolean' },
+    section: { type: 'string' }, step: { type: 'string' }, stop: { type: 'boolean' },
   }, strict: true, allowPositionals: false });
   if (values.help) return { mode: 'help' as const };
   if (!values.name) throw new Error('请提供 --name <任务名>。');
   if (values.standard && values['no-standard']) throw new Error('--standard 与 --no-standard 不能同时使用。');
-  if (values.physics && values['no-physics']) throw Error('--physics 与 --no-physics 不可同时使用');
-  if (values['physics-profile'] && !['primary','all'].includes(values['physics-profile'])) throw Error('物理范围必须为 primary 或 all');
-  const options: TaskOptions = { name: values.name, dir: values.dir, image: values.image, krita: values.krita,
-    physicsEnabled: values['no-physics'] ? false : values.physics, physicsProfile: values['physics-profile'] as TaskOptions['physicsProfile'],
-    physicsReference:values['physics-reference'],
+  const options: TaskOptions = { name: values.name, dir: values.dir, image: values.image, krita: values.krita, knowledge: values.knowledge,
     standard: values['no-standard'] ? false : values.standard,
     shadowMode: values['shadow-mode'] === undefined ? undefined : shadowMode(values['shadow-mode']),
-    from: values.from ? pipelineId(values.from) : undefined, to: values.to ? pipelineId(values.to) : undefined,
+    from: values.from ? sectionId(values.from) : undefined, to: values.to ? sectionId(values.to) : undefined,
     jobs: values.jobs === undefined ? undefined : Number(values.jobs) };
   directoryFor(options);
   if (options.jobs !== undefined && (!Number.isSafeInteger(options.jobs) || options.jobs < 1)) throw new Error('--jobs 必须为正整数。');
-  if ([values.background, values['background-worker'], values.status, values['replace-thread'] !== undefined].filter(Boolean).length > 1) {
-    throw new Error('--background、--status 和 --replace-thread 不能同时使用。');
+  const actions = (['continue', 'resume', 'retry'] as const).filter(action => values[action]);
+  if (actions.length > 1) throw new Error('--continue、--resume 和 --retry 只能选一个。');
+  if ((values.section !== undefined || values.step !== undefined) && !actions.length) throw new Error('--section / --step 需与 --continue、--resume 或 --retry 一起使用。');
+  if (values.step !== undefined && values.section === undefined) throw new Error('--step 需同时提供 --section。');
+  if (values.section !== undefined && values.step === undefined && actions[0] !== 'continue') throw new Error('只给 --section 时仅可 --continue；恢复或重试请用 --step 指定步骤。');
+  if ([values.background, values['background-worker'], values.status, values.stop].filter(Boolean).length > 1) {
+    throw new Error('--background、--status 和 --stop 不能同时使用。');
+  }
+  if (actions.length && (values.status || values.stop || values['background-worker'])) {
+    throw new Error('--continue、--resume、--retry 不能与 --status 或 --stop 同时使用。');
   }
   if (values.json && !values.status) throw new Error('--json 只能与 --status 一起使用。');
-  if ((values.handoff || values.reason) && !values['replace-thread']) throw new Error('--handoff / --reason 只能与 --replace-thread 一起使用。');
-  if (values.status || values['replace-thread']) {
-    if (values.image || values.krita || values.from || values.to || values.jobs || options.standard !== undefined || options.shadowMode !== undefined) throw new Error('查询或替换 thread 时不修改启动配置。');
+  if (values.status || values.stop) {
+    if (values.image || values.krita || values.knowledge || values.from || values.to || values.jobs || options.standard !== undefined || options.shadowMode !== undefined) throw new Error('查询或停止时不修改启动配置。');
   }
-  if (values['replace-thread']) {
-    if (!values.handoff || !values.reason?.trim()) throw new Error('请提供 --handoff <交接.md> 和 --reason <原因>。');
-    return { mode: 'replace' as const, options, pipeline: pipelineId(values['replace-thread']), handoff: values.handoff, reason: values.reason };
-  }
+  if (values.stop) return { mode: 'stop' as const, options };
+  // Without --section the action applies to the whole task; with it and no --step, to that section.
+  const action = actions[0] && { action: actions[0], section: values.section === undefined ? undefined : sectionId(values.section), step: values.step ?? '' };
   return { mode: values.status ? 'status' as const : values.background ? 'background' as const : 'run' as const,
-    options, json: values.json, worker: values['background-worker'] };
+    options, json: values.json, worker: values['background-worker'], action };
 }
 
 export async function startBackground(options: TaskOptions): Promise<number> {
@@ -78,11 +89,8 @@ export async function startBackground(options: TaskOptions): Promise<number> {
   const log = await open(join(directory, taskLogName), 'a', 0o600);
   const args = ['--background-worker', '--name', options.name];
   if (options.shadowMode !== undefined) args.push('--shadow-mode', options.shadowMode);
-  if (options.physicsEnabled !== undefined) args.push(options.physicsEnabled ? '--physics' : '--no-physics');
-  if (options.physicsProfile) args.push('--physics-profile', options.physicsProfile);
-  if (options.physicsReference) args.push('--physics-reference', options.physicsReference);
   if (options.standard !== undefined) args.push(options.standard ? '--standard' : '--no-standard');
-  for (const key of ['dir', 'image', 'krita', 'from', 'to', 'jobs'] as const) {
+  for (const key of ['dir', 'image', 'krita', 'knowledge', 'from', 'to', 'jobs'] as const) {
     if (options[key] !== undefined) args.push('--' + key, String(options[key]));
   }
   try {
@@ -124,17 +132,27 @@ export async function main(args = process.argv.slice(2)): Promise<void> {
     if (parsed.json) console.log(JSON.stringify(status, null, 2));
     else {
       console.log('任务：' + status.directory + '\n状态：' + status.status + '；进程存活：' + status.runnerAlive + '；任务锁：' + status.lockHeld);
-      for (const stage of status.pipelines) console.log(stage.id + '：' + (stage.status ?? 'pending')
+      for (const stage of status.sections) console.log(stage.id + '：' + (stage.status ?? 'pending')
         + (stage.threadId ? '；threadId=' + stage.threadId : '') + '\n  ' + stage.steps.map(step => step.name + '=' + step.status).join(' '));
       if (status.error) console.log('错误：' + status.error);
       if (status.lastMessage) console.log('最近消息：' + status.lastMessage);
       console.log('日志：' + status.log);
-      if (status.output) console.log('交付：' + status.output);
+      if (status.output) console.log('交付：' + fromTaskPath(status.directory, status.output));
     }
-  } else if (parsed.mode === 'replace') {
-    console.log('交接已保存：' + await replaceThread({ ...options, pipeline: parsed.pipeline, handoff: parsed.handoff, reason: parsed.reason })
-      + '\n产物和标记已保留；请用总入口继续运行。');
-  } else if (parsed.mode === 'background') {
+    return;
+  }
+  if (parsed.mode === 'stop') {
+    await requestTaskStop(options);
+    console.log('已请求停止，将保留产物和续跑记录。');
+    return;
+  }
+  if (parsed.action) {
+    // The same order as the workbench: Krita first, so a refused start changes no step.
+    await preflightKrita(options);
+    console.log(parsed.action.section === undefined ? await applyTaskAction({ ...options, action: parsed.action.action })
+      : await applyStepAction({ ...options, section: parsed.action.section, step: parsed.action.step, action: parsed.action.action }));
+  }
+  if (parsed.mode === 'background') {
     const pid = await startBackground(options);
     console.log('后台总调度已启动，PID=' + pid + '\n任务：' + directoryFor(options) + '\n用相同 --name / --dir 加 --status 查看进度。');
   } else {

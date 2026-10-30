@@ -1,18 +1,21 @@
 import { referencesDirectory } from '../agents/inputs.ts';
 import sharp from 'sharp';
-import { copyFile, mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
-
+import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
+import { copyAsPng } from '../png.ts';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { keyReferencePixels } from './reference-key.ts';
-import { pipelineDirectory, type PipelineId } from '../paths.ts';
+import { sectionDirectory, type SectionId } from '../paths.ts';
+import { clothingPreparationStep } from '../step-paths.js';
+
+const stepCompleted = (directory: string) => stat(join(directory, '.completed')).then(info => info.isFile(), () => false);
 
 // This only decides whether preparation may generate a new reference. Its own
 // fingerprint checks remain authoritative; no cache or artifact is changed here.
-export async function referenceNeedsGeneration(pipeline: PipelineId, name: string, root?: string): Promise<boolean> {
-  if (pipeline !== 'part-layering' && pipeline !== 'clothing-part-layering') return false;
-  const directory = join(pipelineDirectory(name, pipeline, root), 'references');
+export async function referenceNeedsGeneration(section: SectionId, name: string, root?: string): Promise<boolean> {
+  if (section !== 'part-layering' && section !== 'clothing-part-layering') return false;
+  const directory = join(sectionDirectory(name, section, root), 'references');
   let names: string[];
   try { names = await readdir(directory); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return true; throw error; }
@@ -20,16 +23,16 @@ export async function referenceNeedsGeneration(pipeline: PipelineId, name: strin
     try { return (await stat(join(directory, name))).isFile() ? name : ''; }
     catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return ''; throw error; }
   })));
-  return pipeline === 'part-layering'
-    ? !files.has('base-subject.png') || ![...files].some(name => name.startsWith('simplified-subject.') && !name.endsWith('.tmp'))
-    : !files.has('clothing.png') || !files.has('preparation.json');
+  return section === 'part-layering'
+    ? !files.has('base-subject.png') || !files.has('simplified-subject.png')
+    : !files.has('clothing.png') || !await stepCompleted(join(dirname(directory), clothingPreparationStep));
 }
 
 // Archives are write-only history, never preparation inputs or recovery checkpoints.
 export async function normalizeGeneratedReference(input: string, standard: string, outputDirectory: string, name: string, options: ImageProcessingOptions = {}): Promise<void> {
   const archive = join(dirname(referencesDirectory(outputDirectory)), 'generation', `${name}-${Date.now()}-${randomUUID()}`);
   await mkdir(archive, { recursive: true });
-  await copyFile(input, join(archive, 'original.png'));
+  await copyAsPng(input, join(archive, 'original.png'));
   const report = await normalizeReference(input, standard, input, options);
   await writeFile(join(archive, 'normalization.json'), JSON.stringify(report, null, 2) + '\n');
 }

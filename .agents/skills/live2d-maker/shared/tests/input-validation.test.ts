@@ -1,8 +1,8 @@
+import { rasterAppServer } from './raster-app-server.ts';
 import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import type { ThreadEvent } from '@openai/codex-sdk';
 import { normalizeGroups } from '../part/groups.ts';
 import { createSvgPreviewTool, type SvgObservation } from '../part/svg-tools.ts';
 import { reviewGroupOutline } from '../part/outline-agent.ts';
@@ -61,15 +61,12 @@ test('review 拒绝非字符串结论，允许修正参数后正常提交且不�
   }
 });
 
-test('raster 拒绝数组完成状态，返回格式错误不进入临时服务重试', async () => {
-  const execute = (status: unknown) => runAgent({ prompt: 'test', directory: '/tmp', model: 'fixture', effort: 'xhigh', onEvent: async () => {} }, {
-    startThread() { return { async runStreamed() { return { events: (async function* () {
-      yield { type: 'thread.started', thread_id: 'drawing-thread' } as ThreadEvent;
-      yield { type: 'item.completed', item: { id: 'answer', type: 'agent_message', text: JSON.stringify({ status, summary: '步骤结果' }) } } as ThreadEvent;
-      yield { type: 'turn.completed', usage: {} } as ThreadEvent;
-    })() }; } }; },
-    resumeThread() { throw new Error('unexpected resume'); },
-  }, new AgentRuntime(1, async () => assert.fail('invalid result must not retry')));
+test('raster 拒绝数组完成状态，返回格式错误不进入临时服务重试', async t => {
+  const execute = async (status: unknown) => {
+    const server = await rasterAppServer(t, JSON.stringify({ status, summary: '步骤结果' }));
+    return runAgent({ prompt: 'test', directory: server.directory, model: 'gpt-6.1-sol', effort: 'xhigh', environment: server.environment,
+      onEvent: async () => {} }, new AgentRuntime(1, async () => assert.fail('invalid result must not retry')));
+  };
   for (const status of ['completed', 'blocked']) {
     await assert.rejects(execute([status]), /未返回有效/);
     assert.equal((await execute(status)).status, status);

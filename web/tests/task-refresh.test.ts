@@ -7,7 +7,7 @@ const source = await readFile(new URL('../app.js', import.meta.url), 'utf8');
 const refresh = source.slice(source.indexOf('let refreshVersion='), source.indexOf('function artifacts('));
 
 function fixture(status: string, interaction: string) {
-  const next = { status, runnerAlive: status === 'running', lockHeld: status === 'running', files: [], pipelines: [] };
+  const next = { status, runnerAlive: status === 'running', lockHeld: status === 'running', files: [], sections: [] };
   const calls: string[] = [];
   const context: any = {
     data: { status: 'running', runnerAlive: true, lockHeld: true },

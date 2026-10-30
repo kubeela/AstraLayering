@@ -41,6 +41,7 @@ test('选框使用原图坐标且先裁剪再放大；图片回传与落盘一�
   assert.equal(metadata.height, 6);
   assert.deepEqual(metadata.crop, [2, 0, 2, 2]);
   const data = bitmap(result);
+  assert.equal(metadata.path, f.reference);
   assert.deepEqual(await readFile(metadata.savedPath), data);
   const raw = await sharp(data).raw().toBuffer({ resolveWithObject: true });
   for (let i = 0; i < raw.data.length; i += 4) assert.deepEqual([...raw.data.subarray(i, i + 4)], [0, 0, 255, 255]);
@@ -60,7 +61,7 @@ test('全图查看与 EXIF 正向后的裁剪坐标一致', async t => {
   assert.equal(cropped.height, 6);
 });
 
-test('无效选框、倍率、外部路径及 symlink 不读图、不落预览', async t => {
+test('无效选框与倍率返回具体错误，不落预览', async t => {
   const f = await fixture(t);
   const outside = await mkdtemp(join(tmpdir(), 'part-layering-outside-'));
   t.after(() => rm(outside, { recursive: true, force: true }));
@@ -70,15 +71,14 @@ test('无效选框、倍率、外部路径及 symlink 不读图、不落预览',
   for (const args of [
     { path: f.reference, crop: [3, 0, 2, 2] }, { path: f.reference, crop: [-1, 0, 2, 2] },
     { path: f.reference, crop: [0, 0, 0, 2] }, { path: f.reference, scale: 0 }, { path: f.reference, scale: 9 },
-    { path }, { path: 'references/escape/outside.png' },
   ]) await assert.rejects(f.view.execute(args, signal));
   assert.ok(!(await readdir(f.directory)).includes('observations'));
 });
 
-test('仅明确绑定的外部参考可按需放大读取，不开放相邻文件或目录链接', async t => {
+test('外部参考、相邻文件及符号链接均可按需查看，原图保持完整', async t => {
   const f = await fixture(t), external = await fixture(t);
   const path = await realpath(external.reference), before = await readFile(path);
-  const allowed = createBitmapTool(f.directory, f.observations, [path]);
+  const allowed = createBitmapTool(f.directory, f.observations);
   const viewed = await allowed.execute({ path, crop: [2, 0, 2, 2], scale: 2 }, signal);
   assert.equal(text(viewed).path, path);
   assert.deepEqual(text(viewed).crop, [2, 0, 2, 2]);
@@ -88,8 +88,5 @@ test('仅明确绑定的外部参考可按需放大读取，不开放相邻文�
   const other = join(external.directory, 'other.png');
   await sharp(external.reference).toFile(other);
   await symlink(external.directory, join(f.directory, 'outside'), process.platform === 'win32' ? 'junction' : 'dir');
-  const previews = await readdir(f.observations);
-  await assert.rejects(allowed.execute({ path: other }, signal), /明确配置/);
-  await assert.rejects(allowed.execute({ path: 'outside/other.png' }, signal), /明确配置/);
-  assert.deepEqual(await readdir(f.observations), previews);
+  for (const path of [other, 'outside/other.png']) assert.equal((await allowed.execute({ path }, signal)).success, true);
 });

@@ -24,7 +24,7 @@ test('preview masks multiline and inherited credentials while exposing resolved 
  const serialized=JSON.stringify(data);
  for(const secret of ['test-secret-value','file-claude-secret','shell-secret-value','first\\nsecond'])assert.ok(!serialized.includes(secret));
  assert.match(data.preview,/CUSTOM_TOKEN=\[已隐藏\]/);
- assert.equal(data.fields.filter(f=>f.section==='llm').length,16);
+ assert.equal(data.fields.filter(f=>f.section==='llm').length,13);
  assert.equal(data.fields.filter(f=>f.section==='image').length,18);
  const claude=data.fields.find(f=>f.key==='layering_claude_api_key')!;
  assert.equal(claude.overridden,true);assert.equal(claude.sourceKey,'ANTHROPIC_API_KEY');
@@ -87,7 +87,7 @@ test('refuses symlinked .env and keeps its external target untouched',async t=>{
 test('HTTP save is same-origin, revision-checked, and the next task start reads the saved configuration',async t=>{
  const f=await fixture(t,'layering_agent_preparation_model=gpt-6.1-sol-low\n');
  let observed='';const runs=join(f.directory,'runs');
- const server=await createWorkbench({settingsPath:join(f.directory,'settings.json'),defaultDir:runs,environment:f.environment,start:async()=>{observed=loadWorkflowEnvironment({},f.directory).stepModels.part_standardize.effort;return 123;}});
+ const server=await createWorkbench({settingsPath:join(f.directory,'settings.json'),defaultDir:runs,environment:f.environment,preflight:async()=>{},start:async()=>{observed=loadWorkflowEnvironment({},f.directory).stepModels.part_standardize.effort;return 123;}});
  await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));t.after(()=>new Promise<void>(resolve=>server.close(()=>resolve())));
  const url='http://127.0.0.1:'+(server.address() as any).port;
  const post=(path:string,body:any,extra={})=>fetch(url+'/api/'+path,{method:'POST',headers:{'Content-Type':'application/json',...extra},body:JSON.stringify({dir:runs,...body})});

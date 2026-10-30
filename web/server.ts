@@ -3,28 +3,34 @@ import { readFile, readdir, mkdir, mkdtemp, lstat, rm, writeFile, realpath } fro
 import { tmpdir } from 'node:os';
 import { createReadStream } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { extname, resolve, join, isAbsolute, dirname } from 'node:path';
+import { basename, extname, resolve, join, isAbsolute, dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import sharp from 'sharp';
 import { shadowMode } from '../.agents/skills/live2d-maker/shared/shadow.ts';
-import { referenceUrl } from '../.agents/skills/live2d-maker/shadow/preparation.ts';
-import { runsDirectory, pipelineIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
-import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedPipelines, pipelineId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
+import { referencePath } from '../.agents/skills/live2d-maker/shadow/preparation.ts';
+import { encodePng } from '../.agents/skills/live2d-maker/shared/png.ts';
+import { runsDirectory, sectionIds, workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
+import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedSections, sectionId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
+import { convertLayout } from '../.agents/skills/live2d-maker/workflow/layout.ts';
 import { applyStepAction, applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
-import { configAPI } from './config.ts';
+import { configAPI, configRaw } from './config.ts';
 import { createEnvironmentConfig, EnvironmentConflict } from './environment-config.ts';
-import { atomicJSON, agentRecord, artifactExtensions, inside, jsonFile, safePath } from './files.ts';
+import { atomicJSON, agentRecord, artifactExtensions, browse, inside, jsonFile, safePath } from './files.ts';
+import { createKritaScan } from './krita-scan.ts';
 import { snapshot, summary } from './snapshot.ts';
 import { SVGThumbnails } from './svg-thumbnail.ts';
 import { KRAPreviews } from './kra-preview.ts';
 import { launch } from './worker.ts';
-import { validatePhysicsConfig } from './studio/component-physics-schema.js';
 import { requestTaskStop } from '../.agents/skills/live2d-maker/workflow/control.ts';
+import { KritaUnavailable, preflightKrita, workflowKrita, type KritaCheck } from '../.agents/skills/live2d-maker/workflow/krita.ts';
+import { MissingDependencyError } from '../.agents/skills/live2d-maker/shared/missing-dependency.ts';
+import { checkKnowledge, defaultKnowledgeDirectory } from '../.agents/skills/live2d-maker/shared/knowledge.ts';
 import { exportCompletedRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { LayerCompositor } from './layer-compositor.ts';
-import { studioProject } from './studio-project.ts';
-import { studioPhysicsWorkflow, studioPhysicsArtifact } from './studio-physics-workflow.ts';
+import { isStudioPath, studioProject } from './studio-project.ts';
 import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
+import { createUpdateCheck } from './update-check.ts';
+import { installedVersion } from '../.agents/skills/live2d-maker/shared/version.ts';
 import { projectDisplayName, saveProjectDisplayName, validateDisplayName } from './project-metadata.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -48,11 +54,9 @@ function options(value: any, dir: string): TaskOptions {
       if (value[key].trim()) result[key] = value[key].trim();
     }
   }
-  if (value.from) result.from = pipelineId(value.from);
-  if (value.to) result.to = pipelineId(value.to);
-  if (result.from || result.to) selectedPipelines(result.from ?? pipelineIds[0], result.to ?? pipelineIds.at(-1)!);
-  if (value.physicsProfile !== undefined) { if(!['primary','all'].includes(value.physicsProfile)) throw Error('物理范围无效'); result.physicsProfile=value.physicsProfile; }
-  if (value.physicsEnabled !== undefined) { if(typeof value.physicsEnabled!=='boolean') throw Error('物理开关无效'); result.physicsEnabled=value.physicsEnabled; }
+  if (value.from) result.from = sectionId(value.from);
+  if (value.to) result.to = sectionId(value.to);
+  if (result.from || result.to) selectedSections(result.from ?? sectionIds[0], result.to ?? sectionIds.at(-1)!);
   if (value.shadowMode !== undefined) result.shadowMode = shadowMode(value.shadowMode);
   if (value.standard !== undefined) {
     if (typeof value.standard !== 'boolean') throw new Error('standard 必须是布尔值');
@@ -64,8 +68,16 @@ function options(value: any, dir: string): TaskOptions {
   }
   return result;
 }
+// Global web settings: the run directory, the Krita used by every start, and the
+// knowledge directory recorded by new tasks (absent: the skill's own knowledge/).
+type Settings = { directory: string; krita?: string; knowledge?: string };
 export async function createWorkbench({ settingsPath = join(root, '.web/settings.json'), defaultDir = runsDirectory,
-  start = launch, environment = createEnvironmentConfig() }: { settingsPath?: string; defaultDir?: string; start?: typeof launch; environment?: ReturnType<typeof createEnvironmentConfig> } = {}) {
+  start = launch, environment = createEnvironmentConfig(), kritaCheck = workflowKrita,
+  preflight = (options: TaskOptions) => preflightKrita(options, kritaCheck), kritaScan = createKritaScan(),
+  updates = createUpdateCheck({ cachePath: join(dirname(settingsPath), 'update-check.json') }) }: {
+  settingsPath?: string; defaultDir?: string; start?: typeof launch; environment?: ReturnType<typeof createEnvironmentConfig>;
+  kritaCheck?: KritaCheck; preflight?: (options: TaskOptions) => Promise<unknown>; kritaScan?: ReturnType<typeof createKritaScan>;
+  updates?: ReturnType<typeof createUpdateCheck> } = {}) {
   async function validateDir(path: string) {
     if (typeof path !== 'string' || !isAbsolute(path)) throw new Error('运行目录必须是绝对路径');
     await mkdir(path, { recursive: true });
@@ -73,15 +85,76 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
     if (inside(skill, directory)) throw new Error('运行目录不能位于 skill 内');
     return directory;
   }
-  let settings = { directory: await validateDir(defaultDir) };
-  try { settings = { directory: await validateDir(JSON.parse(await readFile(settingsPath, 'utf8')).directory) }; }
+  async function validateKrita(path: string) {
+    if (!isAbsolute(path)) throw new Error('Krita 路径必须是绝对路径');
+    // A missing Xvfb is not the path's fault; the run reports it.
+    try { await kritaCheck(path); } catch (error) { if (!(error instanceof MissingDependencyError)) throw error; }
+    return resolve(path);
+  }
+  async function validateKnowledge(path: string) {
+    if (!isAbsolute(path)) throw new Error('先验知识目录必须是绝对路径');
+    const directory = await realpath(path).catch(() => { throw new Error('先验知识目录不存在：' + path); });
+    checkKnowledge(directory);
+    return directory;
+  }
+  // An empty string clears an optional field; an absent one keeps it.
+  async function validateSettings(value: any, previous?: Settings): Promise<Settings> {
+    const next: Settings = { directory: await validateDir(value.directory) };
+    for (const [key, validate] of [['krita', validateKrita], ['knowledge', validateKnowledge]] as const) {
+      const given = value[key];
+      if (given === undefined) { if (previous?.[key]) next[key] = previous[key]; continue; }
+      if (typeof given !== 'string') throw new Error(key + ' 必须是路径');
+      if (given.trim()) next[key] = await validate(given.trim());
+    }
+    return next;
+  }
+  const defaults = { directory: await validateDir(defaultDir), knowledge: defaultKnowledgeDirectory };
+  let settings: Settings = { directory: defaults.directory };
+  try {
+    // Recorded Krita and knowledge are checked again when a task starts.
+    const saved = JSON.parse(await readFile(settingsPath, 'utf8'));
+    settings = { directory: await validateDir(saved.directory),
+      ...(typeof saved.krita === 'string' && saved.krita ? { krita: saved.krita } : {}),
+      ...(typeof saved.knowledge === 'string' && saved.knowledge ? { knowledge: saved.knowledge } : {}) };
+  }
   catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+  const kritaRefused = (error: KritaUnavailable) =>
+    ({ error: error.reason + '\n请在「全局设置」中选择可用的 Krita 可执行文件。', krita: { path: error.path ?? null } });
   const starts = new Set<string>();
   async function task(name: string, dir = settings.directory) {
     const path = directoryFor({ name, dir });
     if (!(await lstat(path)).isDirectory() || (await lstat(path)).isSymbolicLink()) throw new Error('任务必须是运行目录下的普通文件夹');
     await safePath(dir, name);
     return path;
+  }
+  // The studio opens a whole task folder: one under the run directory, or one imported from
+  // elsewhere on the server, which must be a task (it has run.json).
+  async function studioFolder(folder: string) {
+    if (!isAbsolute(folder)) throw new Error('项目文件夹必须是绝对路径');
+    const info = await lstat(resolve(folder)).catch(() => { throw new Error('项目文件夹不存在：' + folder); });
+    if (!info.isDirectory() || info.isSymbolicLink()) throw new Error('请选择项目文件夹（不能是文件或符号链接）');
+    const directory = await realpath(folder), name = basename(directory), dir = dirname(directory);
+    if (dir === settings.directory) { await task(name, dir); return { directory, name, dir }; }
+    directoryFor({ name, dir });
+    // Only marks it as a task; the studio reads fixed outputs, whatever the run's layout version.
+    if (!(await lstat(join(directory, 'run.json')).catch(() => undefined))?.isFile()) throw new Error('不是 AstraLayering 任务文件夹（缺少 run.json）：' + directory);
+    return { directory, name, dir };
+  }
+  // The studio lists task folders (with run.json) under a base folder the browser chose,
+  // or under the run directory by default. A base that is gone answers 404, so the
+  // browser drops its stored choice and falls back to the default.
+  async function studioProjects(base: string | null) {
+    const folder = base || settings.directory;
+    if (!isAbsolute(folder)) throw new Error('基准文件夹必须是绝对路径');
+    const info = await lstat(resolve(folder)).catch(() => undefined);
+    if (!info?.isDirectory() || info.isSymbolicLink()) return;
+    const directory = await realpath(folder), projects = [];
+    for (const entry of (await readdir(directory, { withFileTypes: true })).filter(entry => entry.isDirectory() && !entry.name.startsWith('.'))) {
+      const project = join(directory, entry.name);
+      if (!(await lstat(join(project, 'run.json')).catch(() => undefined))?.isFile()) continue;
+      projects.push({ name: entry.name, folder: project, displayName: await projectDisplayName(project, entry.name).catch(() => entry.name) });
+    }
+    return { directory, default: settings.directory, projects };
   }
   const compositor = new LayerCompositor(root);
   const thumbnails = new SVGThumbnails();
@@ -101,23 +174,8 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           json({ error: '不接受跨站运行操作' }, 403); return;
         }
         if (path.startsWith('/api/studio/layers/')) {
-          if (path === '/api/studio/layers/open' || path === '/api/studio/layers/open-project') {
-            let document;
-            if (path.endsWith('/open-project')) {
-              const value = await body(request);
-              if (value.dir !== requestDir) { json({ error: '追踪目录已改变，请刷新页面后重试' }, 409); return; }
-              const directory = await task(value.name, requestDir);
-              const project = await studioProject(directory, value.name, requestDir, value.preview);
-              const source = project.files.document;
-              if (!source.available || value.path !== source.path || value.version !== source.version) {
-                json({ error: '项目工程已变化，请更新项目后重试' }, 409); return;
-              }
-              // The project already owns this file. Reuse it on the server instead
-              // of uploading the browser's downloaded KRA/PSD back to the same host.
-              const file = await safePath(directory, source.path);
-              async function* bytes() { yield* createReadStream(file); }
-              document = await compositor.create(bytes(), extname(source.path).slice(1).toLowerCase());
-            } else document = await compositor.create(request, url.searchParams.get('format') ?? '');
+          if (path === '/api/studio/layers/open') {
+            const document = await compositor.create(request, url.searchParams.get('format') ?? '');
             if (response.destroyed) { await compositor.closeDocument(document.session); return; }
             response.once('close', () => {
               if (!response.writableFinished) void compositor.closeDocument(document.session).catch(() => {});
@@ -140,14 +198,25 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           return;
         }
         if (path === '/api/settings') {
-          const next = { directory: await validateDir(value.directory) };
-          await atomicJSON(settingsPath, next); settings = next; json(settings); return;
+          const next = await validateSettings(value, settings);
+          await atomicJSON(settingsPath, next); settings = next; json({ ...settings, defaults }); return;
         }
-        if(path==='/api/studio/physics') { const directory=await task(value.name); const config=validatePhysicsConfig(value.config); config.review={status:'draft',...(config.review?.baseConfigHash?{baseConfigHash:config.review.baseConfigHash}:{})}; await mkdir(join(directory,'physics'),{recursive:true}); await atomicJSON(join(directory,'physics/physics.draft.json'),config); json({saved:true},201); return; }
+        if (path === '/api/krita-scan') {
+          if (value.action === 'start') json(kritaScan.start());
+          else if (value.action === 'stop') json(kritaScan.stop());
+          else json({ error: '未知的扫描操作' }, 400);
+          return;
+        }
         if (path === '/api/studio/review') { json(await saveStudioReview(root, dirname(settingsPath), value), 201); return; }
         const opts = options(value, requestDir), directory = directoryFor(opts);
+        // Starts use the global Krita; a task records it, and the knowledge directory, when created.
+        if (!opts.krita && settings.krita) opts.krita = settings.krita;
         if (path === '/api/tasks') {
           const displayName = validateDisplayName(value.displayName ?? '');
+          if (settings.knowledge) opts.knowledge = settings.knowledge;
+          // A route with Krita steps is refused before anything is created.
+          try { await preflight(opts); }
+          catch (error) { if (error instanceof KritaUnavailable) { json(kritaRefused(error), 409); return; } throw error; }
           // Exclusive creation prevents changing the original of an existing named task.
           await mkdir(directory);
           let committed = false;
@@ -161,8 +230,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
               if (!['png', 'jpeg', 'webp'].includes(meta.format) || (meta.pages ?? 1) > 1) throw new Error('请选择单张 PNG、JPG 或 WebP 图片');
               await image.resize(1, 1).raw().toBuffer();
               await mkdir(join(directory, 'input'));
-              const retained = join(directory, 'input/original.' + (meta.format === 'jpeg' ? 'jpg' : meta.format));
-              await writeFile(retained, bytes, { flag: 'wx', mode: 0o600 });
+              await writeFile(join(directory, 'input/original.png'), await encodePng(bytes), { flag: 'wx', mode: 0o600 });
               delete opts.image;
             } else {
               if (!opts.image) throw new Error('新任务需要一张输入参考图');
@@ -183,37 +251,30 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           return;
         }
         await task(opts.name, requestDir);
-        if (['/api/start', '/api/step-action', '/api/task-action', '/api/stop'].includes(path) && (await readRun(directory, opts.name))?.archive) {
+        if (path === '/api/convert-layout') { json(await convertLayout(directory)); return; }
+        if (['/api/start', '/api/step-action', '/api/task-action', '/api/stop'].includes(path) && (await readRun(directory))?.archive) {
           json({ error: '这是成果归档；请在原运行目录继续制作。' }, 409); return;
         }
         if (path === '/api/project-name') {
           await saveProjectDisplayName(directory, value.displayName);
           json({ name: opts.name, displayName: await projectDisplayName(directory, opts.name) }); return;
         }
-        if (path === '/api/start') {
-          if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
-          starts.add(directory);
-          try { json({ pid: await start(opts), name: opts.name }, 202); }
-          finally { starts.delete(directory); }
-          return;
-        }
-        if (path === '/api/step-action') {
-          // Recover one interrupted, failed or redone step, then run the saved route again.
+        if (path === '/api/start' || path === '/api/step-action' || path === '/api/task-action') {
+          // The same commands as pnpm start: plain start / continue, or --continue / --resume / --retry
+          // for every interrupted or failed step (task-action) or for one step (step-action).
           if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
           starts.add(directory);
           try {
-            const message = await applyStepAction({ name: opts.name, dir: opts.dir, pipeline: value.pipeline, step: value.step, action: value.action });
-            json({ message, pid: await start(opts), name: opts.name }, 202);
-          } finally { starts.delete(directory); }
-          return;
-        }
-        if (path === '/api/task-action') {
-          // The toolbar form: recover every interrupted or failed step, then run the saved route again.
-          if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
-          starts.add(directory);
-          try {
-            const message = await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action });
-            json({ message, pid: await start(opts), name: opts.name }, 202);
+            // Krita is checked before an action changes any step.
+            try { await preflight(opts); }
+            catch (error) {
+              if (!(error instanceof KritaUnavailable)) throw error;
+              json(kritaRefused(error), 409); return;
+            }
+            const message = path === '/api/step-action'
+              ? await applyStepAction({ name: opts.name, dir: opts.dir, section: value.section, step: value.step, action: value.action })
+              : path === '/api/task-action' ? await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action }) : undefined;
+            json({ ...(message === undefined ? {} : { message }), pid: await start(opts), name: opts.name }, 202);
           } finally { starts.delete(directory); }
           return;
         }
@@ -223,10 +284,14 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         }
         json({ error: 'Not found' }, 404); return;
       }
-      if (path === '/healthz') { json({ status: 'ok', application: 'astra-layering', mode: 'workbench' }); return; }
-      if (path === '/api/settings') { json(settings); return; }
+      if (path === '/healthz') { json({ status: 'ok', application: 'astra-layering', mode: 'workbench', version: (await installedVersion()).label }); return; }
+      if (path === '/api/version') { json(await updates()); return; }
+      if (path === '/api/settings') { json({ ...settings, defaults }); return; }
+      if (path === '/api/fs') { json(await browse(url.searchParams.get('path'), url.searchParams.get('kind') === 'file' ? 'file' : 'dir')); return; }
+      if (path === '/api/krita-scan') { json(kritaScan.state()); return; }
       if (path === '/api/config/environment') { json(await environment.read()); return; }
-      if (path.startsWith('/api/config/')) { json(await configAPI(path, url.searchParams)); return; }
+      if (path === '/api/config/raw') { await configRaw(url.searchParams, settings.knowledge ?? defaults.knowledge, request, response); return; }
+      if (path.startsWith('/api/config/')) { json(await configAPI(path, url.searchParams, settings.knowledge ?? defaults.knowledge)); return; }
       if (path === '/api/tasks') {
         const entries = (await readdir(requestDir, { withFileTypes: true })).filter(entry => entry.isDirectory() && !entry.name.startsWith('.'));
         const tasks = [];
@@ -291,21 +356,24 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         response.writeHead(200, { 'Content-Type': kind === 'png' ? 'image/png' : 'application/octet-stream' });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
-      if (path === '/api/studio/project') {
-        if (url.searchParams.get('dir') !== requestDir) { json({ error: '项目目录已改变，请刷新后重新打开' }, 409); return; }
-        const name = url.searchParams.get('name') ?? '';
-        const directory = await task(name, requestDir);
-        const project = await studioProject(directory, name, requestDir, url.searchParams.get('preview'));
-        json({ ...project, physicsWorkflow: await studioPhysicsWorkflow(directory, name, requestDir, project.files.physics.available ? project.files.physics.path : undefined), displayName: await projectDisplayName(directory, name) }); return;
-      }
-      if (path === '/studio-physics-artifact') {
-        if (url.searchParams.get('dir') !== requestDir) { json({ error: '项目目录已改变，请刷新页面' }, 409); return; }
-        const name = url.searchParams.get('name') || '', directory = await task(name, requestDir);
-        const project = await studioProject(directory, name, requestDir);
-        const file = await studioPhysicsArtifact(directory, project.files.physics.path, url.searchParams.get('path') || '', url.searchParams.get('hash') || '');
-        response.setHeader('Content-Security-Policy', "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
-        response.writeHead(200, { 'Content-Type': file.endsWith('.svg') ? 'image/svg+xml' : 'image/png' });
+      if (path === '/api/studio/project' || path === '/studio-artifact') {
+        const { directory, name, dir } = await studioFolder(url.searchParams.get('folder') ?? '');
+        if (path === '/api/studio/project') {
+          json({ ...await studioProject(directory, name, dir, url.searchParams.get('preview')), folder: directory, displayName: await projectDisplayName(directory, name),
+            inDirectory: dir === settings.directory }); return;
+        }
+        // Only the studio's fixed outputs are readable, wherever the folder is.
+        const selected = url.searchParams.get('path') ?? '';
+        if (!isStudioPath(selected)) throw new Error('工作台只读取角色组装、光照、投影与九轴产物');
+        const file = await safePath(directory, selected);
+        if (!(await lstat(file)).isFile()) throw new Error('产物不是文件');
+        response.writeHead(200, { 'Content-Type': extname(file).toLowerCase() === '.png' ? 'image/png' : extname(file).toLowerCase() === '.json' ? 'application/json' : 'application/octet-stream' });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
+      }
+      if (path === '/api/studio/projects') {
+        const list = await studioProjects(url.searchParams.get('dir'));
+        if (!list) { json({ error: '基准文件夹不存在或不是文件夹：' + url.searchParams.get('dir'), missing: true }, 404); return; }
+        json(list); return;
       }
       if (path === '/api/studio/samples') { json(await studioCatalog(root)); return; }
       if (path === '/studio-document') {
@@ -322,17 +390,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       }
       if (path === '/shadow-reference/skirt.png' || path === '/shadow-reference/hair.png') {
         response.writeHead(200, { 'Content-Type': 'image/png' });
-        response.end(await readFile(referenceUrl(path.split('/').at(-1)!))); return;
-      }
-      // Existing browser sessions can still request the former module URLs.
-      // Redirect to the owner so its relative imports resolve within the skill.
-      const oldModule = path.slice('/studio/'.length);
-      if (path.startsWith('/studio/')) {
-        const core = ['component-physics-binding.js', 'component-physics-geometry.js', 'component-physics-model.js', 'component-physics-schema.js', 'physics-airflow.js', 'vendor/psd2live/xpbd.js', 'vendor/psd2live/pendulum.js', 'vendor/inochi2d/pendulum.js'];
-        const evidence = ['component-physics-worker.js', 'physics-motion-review.js', 'physics-recorded-frame.js', 'physics-test-input.js'];
-        const render = ['renderer.js', 'physics-renderer.js', 'surface-lighting.js', 'surface-shadow.js', 'projection-field.js', 'lighting-model.js', 'part-maps.js', 'harmonic-fill.js', 'surface-coverage.js'];
-        const owner = core.includes(oldModule) ? 'physics-core' : evidence.includes(oldModule) ? 'physics-evidence' : render.includes(oldModule) ? 'character-render' : null;
-        if (owner) { response.writeHead(307, { Location: '../'.repeat(oldModule.split('/').length) + 'shared/' + owner + '/' + oldModule }); response.end(); return; }
+        response.end(await readFile(referencePath(path.split('/').at(-1)!))); return;
       }
       const vendor: Record<string,string> = {
         '/vendor/three.module.js': 'node_modules/three/build/three.module.js',
@@ -340,22 +398,12 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         '/vendor/mtoon.js': 'node_modules/@pixiv/three-vrm-materials-mtoon/lib/three-vrm-materials-mtoon.module.js',
         '/vendor/ag-psd.js': 'node_modules/ag-psd/dist/bundle.js',
         '/vendor/fflate.js': 'node_modules/fflate/umd/index.js',
-        '/shared/vendor/three.module.js': 'node_modules/three/build/three.module.js',
-        '/shared/vendor/three.core.js': 'node_modules/three/build/three.core.js',
       };
       if (vendor[path]) { response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' }); response.end(await readFile(join(root, vendor[path]))); return; }
-      if (/^\/shared\/(physics-core|physics-evidence|character-render)\/[a-z-]+\.js$/.test(path)
-        || ['/shared/physics-core/vendor/psd2live/xpbd.js', '/shared/physics-core/vendor/psd2live/pendulum.js', '/shared/physics-core/vendor/inochi2d/pendulum.js'].includes(path)) {
-        const file = await safePath(join(root, '.agents/skills/live2d-maker/shared'), path.slice('/shared/'.length));
-        response.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' });
-        response.end(await readFile(file)); return;
-      }
-      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/process-files.js': 'process-files.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/env-editor.js': 'env-editor.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
+      const staticFiles: Record<string, string> = { '/': 'index.html', '/app.js': 'app.js', '/process-files.js': 'process-files.js', '/progress.js': 'progress.js', '/report-markdown.js': 'report-markdown.js', '/task-selection.js': 'task-selection.js', '/dom-morph.js': 'dom-morph.js', '/env-editor.js': 'env-editor.js', '/settings-dialog.js': 'settings-dialog.js', '/server-picker.js': 'server-picker.js', '/styles.css': 'styles.css', '/studio': 'studio/index.html', '/studio/app.js': 'studio/app.js', '/studio/styles.css': 'studio/styles.css', '/studio/renderer.js': 'studio/renderer.js', '/studio/lighting-model.js': 'studio/lighting-model.js' };
       staticFiles['/report-links.js'] = '../.agents/skills/live2d-maker/shared/report-links.js';
-      staticFiles['/step-paths.js'] = '../.agents/skills/live2d-maker/shared/part/step-paths.js';
-      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'projection-field.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js', 'component-physics-binding.js', 'component-physics-geometry.js', 'component-physics-model.js', 'component-physics-schema.js', 'component-physics-panel.js', 'physics-test-input.js', 'physics-airflow.js']) staticFiles['/studio/' + name] = 'studio/' + name;
-      for (const name of ['component-physics-selection.js','component-physics-runner.js','component-physics-worker.js','surface-shadow.js','surface-lighting.js','vendor/psd2live/xpbd.js','vendor/psd2live/pendulum.js','vendor/inochi2d/pendulum.js']) staticFiles['/studio/' + name] = 'studio/' + name;
-      for (const name of ['physics-workflow-model.js', 'physics-workflow-panel.js', 'physics-recorded-frame.js', 'physics-motion-review.js']) staticFiles['/studio/' + name] = 'studio/' + name;
+      staticFiles['/step-paths.js'] = '../.agents/skills/live2d-maker/shared/step-paths.js';
+      for (const name of ['document-loader.js', 'document-worker.js', 'layer-panel.js', 'layer-model.js', 'surface-preview.js', 'surface-worker.js', 'surface-coverage.js', 'part-maps.js', 'harmonic-fill.js', 'projection-model.js', 'projection-panel.js', 'physics-model.js', 'physics-panel.js', 'physics-recipe.js', 'physics-renderer.js', 'physics-cases.js', 'nine-axis-model.js', 'nine-axis-panel.js']) staticFiles['/studio/' + name] = 'studio/' + name;
       if (!staticFiles[path]) { json({ error: 'Not found' }, 404); return; }
       const type = path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html';
       response.writeHead(200, { 'Content-Type': type + '; charset=utf-8' });
@@ -365,7 +413,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       json({ error: (error as NodeJS.ErrnoException).code === 'EEXIST' ? '任务名已存在，请选择该任务续跑或使用新名称' : (error as Error).message }, 400);
     }
   });
-  server.once('close', () => { void compositor.dispose(); });
+  server.once('close', () => { void compositor.dispose(); kritaScan.stop(); });
   return Object.assign(server, { disposeLayers: () => compositor.dispose() });
 }
 if (import.meta.main) {

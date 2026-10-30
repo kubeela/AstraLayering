@@ -33,9 +33,6 @@
 | raster step03（仅人物） | `gpt-6.1-sol-medium` | `layering_agent_raster_step03_model` |
 | 穿戴组装 | `gpt-6.1-sol-xhigh` | `layering_agent_assembly_model` |
 | 阴影 | `gpt-6.1-sol-medium` | `layering_agent_shadow_model` |
-| 物理结构分析 A | `gpt-6.1-sol-high` | `layering_agent_physics_analysis_model` |
-| 物理制作／标定／返修 B | `gpt-6.1-sol-xhigh` | `layering_agent_physics_authoring_model` |
-| 物理独立复核 C | `gpt-6.1-sol-xhigh` | `layering_agent_physics_review_model` |
 
 生图设置为 `layering_default_image_model=codex-native`，全部步骤的生图覆盖键留空，继承宿主 Codex 内置生图工具。具体图像模型版本由宿主决定，复用当前 Codex 登录和 provider。逐步骤键与自定义服务配置见下方[生图表](#生图模型与配置键)。图片数 compact 留空时关闭，已有配置的启停与阈值保持原样。
 
@@ -84,7 +81,7 @@ SVG 合并由程序执行，不配置 LLM。步骤职责、绘图提示词、rev
 
 OpenAI 兼容服务的 base URL 通常包含 `/v1`，程序追加 `/images/generations` 或 `/images/edits`；Gemini 原生服务的 base URL 通常包含 `/v1beta`，程序追加 `/models/<模型>:generateContent`。按服务提供的地址和协议填写，API 密钥在本机保存。
 
-Codex 调用具体 GPT／Nano 生图模型时使用补丁版原生 imagegen，`layering_codex_path` 留空即可自动准备；Claude／AGV 使用共享生图函数工具。为 Claude／AGV 步骤选择上述 GPT／Nano 服务，并准备对应 API；`codex-native` 对应 Codex 步骤。
+所有 Codex 步骤都使用补丁版 Codex（`layering_codex_path` 留空即自动准备，构建见 [setup](setup.md#codex-补丁构建与恢复)）；Codex 步骤选具体 GPT／Nano 生图模型时，补丁还须具备原生 image provider v2。Claude／AGV 使用共享生图函数工具。为 Claude／AGV 步骤选择上述 GPT／Nano 服务，并准备对应 API；`codex-native` 对应 Codex 步骤。
 
 ### 全局默认与逐步骤覆盖
 
@@ -138,7 +135,7 @@ layering_raster_step01_repair_image_model=gpt-image-2.5-flare
 
 | CLI | 模型枚举 | 入口 |
 | --- | --- | --- |
-| Codex | `gpt-6.1-sol`、`gpt-6-astra` | `layering_codex_path` 留空自动准备补丁版，填写时检查指定入口 |
+| Codex | `gpt-6.1-sol`、`gpt-6-astra` | `layering_codex_path` 留空自动准备补丁版，填写时检查指定入口的补丁能力；`layering_codex_home` 设置 Codex 子进程的 `CODEX_HOME`（留空沿用 shell 的 `CODEX_HOME`／`~/.codex`） |
 | Claude Code | `claude-sonnet-5-5`、`claude-opus-5-5`、`claude-haiku-5-5` | `layering_claude_path`，未填则找全局 `claude` |
 | Antigravity（agv） | `gemini-4-argon` | `layering_agv_path`，未填则找全局 `agy`／`agv`／`antigravity` |
 
@@ -162,7 +159,7 @@ layering_agent_part_review_model=gemini-4-argon-high
 
 | CLI | 协议 | 自定义连接 | 模型列表的原生适配 |
 | --- | --- | --- | --- |
-| Codex | `responses` | key 必填；URL 留空为 `https://api.openai.com/v1` | 启动前校验列表，SDK 传入步骤选定模型，保留宿主模型元数据 |
+| Codex | `responses` | key 必填；URL 留空为 `https://api.openai.com/v1` | 启动前校验列表，App Server 传入步骤选定模型，保留宿主模型元数据 |
 | Claude Code | `anthropic`（Messages） | key 必填；URL 留空为 `https://api.anthropic.com` | 每次请求的私有 settings 中生成 `modelPicker` |
 | AGV | `genai` 或 `openai` | key 与 URL 都必填；协议留空默认 `genai` | 映射到原生 `AGY_LLM_GATEWAY_MODELS` |
 
@@ -180,9 +177,9 @@ AGV 的 GenAI 网关 base URL 可以包含 `/v1beta`，转发会保留供应商�
 
 ## 生图执行与透明处理
 
-Codex 的自定义生图请求通过[原生补丁](../patches/README.md)接入；启动会核对 `image_provider_version: 2`，为本次请求准备本地生图路由。原生 imagegen 负责工具调用、保存图片与事件，路由复用共享 OpenAI／Google 适配器，模型与凭据通过运行配置传递。`codex-native` 直接使用宿主生图能力。
+Codex 的自定义生图请求通过[原生补丁](../patches/README.md)接入；启动会核对补丁的 `image_provider_version: 2`，为本次请求准备本地生图路由。原生 imagegen 负责工具调用、保存图片与事件，路由复用共享 OpenAI／Google 适配器，模型与凭据通过运行配置传递。`codex-native` 直接使用宿主生图能力。
 
-Claude／AGV 注册共享 `image_generation` 函数工具，其 [description.md](../shared/tools/image_generation/description.md) 与 [schema.json](../shared/tools/image_generation/schema.json) 保持统一；Codex 使用原生工具定义。两条路径共用底层接口实现，绘图任务与验收要求由各管线自己的提示词约定。
+Claude／AGV 注册与 Codex 原生工具同名的共享 `imagegen` 函数工具，其 [description.md](../knowledge/shared/tools/imagegen/description.md) 与 [schema.json](../shared/tools/imagegen/schema.json) 保持统一；Codex 使用原生工具定义。两条路径共用底层接口实现，绘图任务与验收要求由各管线自己的提示词约定。
 
 参考图按顺序传入，生成结果保存在任务请求目录。共享函数工具返回 `hasAlpha`，原生工具路径也检查实际 PNG 的透明通道，并结合看图验收。
 
@@ -206,10 +203,12 @@ part 遮挡补全分别使用 `layering_part_completion_image_model` 和 `layeri
 
 ## 会话与记录
 
-Codex、Claude／agv 共用 `<步骤>/workspace/` 工作区，中间文件在其内部自由组织。请求配置、日志和 CLI 私有会话数据在管线的 `agents/` 下；鉴权复用用户环境，不修改全局配置。同一步骤续跑复用工作区；恢复同一 session 时复用原私有会话数据，切换 CLI 或重建会话仍保留已有产物。Antigravity 的 GenAI 自定义网关会转发原始工具定义，并保留工具返回的图片。
+Codex、Claude／agv 共用 `<步骤>/workspace/` 工作区，中间文件在其内部自由组织。暂不设写入沙箱，各 CLI 均以完全访问权限运行，写入范围由提示词与工具路径约定管理。请求配置、日志和 CLI 私有会话数据在管线的 `agents/` 下；鉴权复用用户环境，不修改全局配置。同一步骤续跑复用工作区；恢复同一 session 时复用原私有会话数据，切换 CLI 或重建会话仍保留已有产物。Antigravity 的 GenAI 自定义网关会转发原始工具定义，并保留工具返回的图片。
 
-part 绘制 ID 和 harness 记录在各管线 `agents/steps/groups/<完整groupID>/step01/session.json`（子组嵌套为 `groups/<父>/children/<名>`），绘制与返修共用，重跑轮廓步骤时同步重置会话记录；补全会反复修改草稿，同样把 ID 记在对应 `agents/steps/<组步骤>/step02/session.json`，中断续跑时恢复同一会话，重跑补全步骤时同步重置会话记录。独立 reviewer、去重和子组分析等一次性 agent 每次新建，不记录 ID。换线程时旧记录追加到 `session.json.history.jsonl`。raster 的绘制 ID 仍记录在本管线 `run.json`，`.running`／`.completed`、两轮 review 和产物检查规则不变。
+所有管线的 agent 步骤共用同一套会话记录：`<管线>/agents/steps/<步骤>/session.json` 保存 ID 和 harness，替换或清除时旧记录追加到同目录的 `session.json.history.jsonl`。part 轮廓绘制与返修共用 `agents/steps/step09_outline/<组路径>/session.json`，补全会反复修改草稿，记在 `agents/steps/step11_completion/<组路径>/session.json`（子组路径为 `<父>/children/<名>`）；raster、组装记在 `agents/steps/<stepNN>/session.json`，阴影记在 `shadow/agents/steps/step01_<模式>/session.json`，同一步骤的绘制与返修共用。独立 reviewer、去重和子组分析等一次性 agent 每次新建，不记录 ID。
 
-同一 CLI 内改变模型或力度继续恢复原会话。Codex 的生图模型改变时，重启本请求的原生通道并恢复原 thread，已有产物保留。切换 CLI、删除 ID 或会话不可用时新建会话，旧请求记录与产物保留，ID 替换写入历史；新会话读取已有输入、产物及反馈继续。缺产物的正常退出仍报错并展示最后消息，不增加自动空产物重试。
+每个步骤新建自己的 thread：Codex 恢复 thread 时沿用创建时的工具定义，不接受新工具。重试步骤会连同 `agents/steps/<步骤>/` 一起清除会话。布局转换删除旧任务 `run.json` 中的 `threadId`／`threadHarness`／`threadStep`／`threadHandoff`，不迁移，转换前的会话不再续接；`.running`／`.completed`、两轮 review 和产物检查规则不变。
+
+同一 CLI 内改变模型或力度继续恢复原会话。Codex 的生图模型改变时，重启本请求的原生通道并恢复原 thread，已有产物保留。切换 CLI、以 `--resume`（网页“恢复”）清除会话或会话不可用时新建会话，旧请求记录与产物保留，ID 替换写入历史；不要手动删除会话 ID。新会话读取已有输入、产物及反馈继续。缺产物的正常退出仍报错并展示最后消息，不增加自动空产物重试。
 
 旧 `layering_image_compact_threshold` 仅作用于 Codex，沿用原生带图压缩补丁。新增各 CLI 独立的图片数和请求体 MiB 预算，可按实际路由开启；留空保持原行为。AGV／Claude 接入补丁复用同一视觉压缩模块，原生自动压缩仍保留。配置和恢复边界见 [图片容量保护](../patches/README.md#图片容量保护)。

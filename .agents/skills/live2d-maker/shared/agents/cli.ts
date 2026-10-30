@@ -1,15 +1,16 @@
-import {renderPromptFile} from '../prompts/render.ts';
+import { knowledgeDirectory } from '../knowledge.ts';
 import { access, mkdir, readFile, writeFile, copyFile, rename, chmod, realpath, stat } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, resolve, delimiter, relative, isAbsolute } from 'node:path';
-import { spawn } from 'node:child_process';
+import spawn from 'cross-spawn';
+import { stopCliProcess } from './process.ts';
 import { createInterface } from 'node:readline';
 import { once } from 'node:events';
 import { randomUUID } from 'node:crypto';
 import { genaiGateway } from './agv-gateway.ts';
 import { claudeGateway } from '../../patches/claude/gateway.ts';
-import { VisualContext, imageBudget, protectedImages } from '../../patches/shared/visual-context.ts';
+import { VisualContext, imageBudget } from '../../patches/shared/visual-context.ts';
 import { AgvTurn } from './agv-turn.ts';
 import { createMcpBridge } from './mcp.ts';
 import type { WorkflowEnvironment } from '../codex/environment.ts';
@@ -25,7 +26,17 @@ import { resolveRunsDirectory } from '../paths.ts';
 import { withNodePath } from '../process-environment.ts';
 import { claudeProviderSettings, validateProviderModel } from './providers.ts';
 import { prepareWorkspace, workspacePrompt, workspaceTools } from './workspace.ts';
-import { contextImages } from './inputs.ts';
+import { fromTaskPath, toTaskPath } from '../task-paths.ts';
+
+// AGV reports its Go transport timeouts only as text; these two exact forms are tagged where the CLI ends.
+const agvTransportTimeout = /net\/http: timeout awaiting response headers|stream idle timeout \(\w+\): context deadline exceeded/;
+
+// Agent CLIs run in their own process groups, so a signal to the worker's group misses them; a worker
+// stopping on a signal exits before each call's abort can follow up, and ends them here instead.
+const agentGroups = new Map<number, import('node:child_process').ChildProcess>();
+export function signalAgentProcesses(signal: NodeJS.Signals) {
+  for (const child of agentGroups.values()) stopCliProcess(child, signal === 'SIGKILL');
+}
 
 export async function cliExecutable(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
   const explicit = settings.cliPaths[harness];
@@ -48,9 +59,6 @@ export async function cliExecutable(settings: WorkflowEnvironment, harness: Harn
     return resolvePatchedAgv(executable);
   }
   throw new Error(`所选步骤需要 ${harness} CLI，但没有可用的全局入口${explicit ? `：${explicit}` : ''}。工作流不会自动安装；请安装并登录，或设置 layering_${harness}_path / 改用已有模型。`);
-}
-export function unavailableSession(error: unknown): boolean {
-  return /(?:thread|session|conversation).{0,80}(?:not found|does not exist|unavailable|invalid|不存在|不可用)|no (?:conversation|session|rollout) found|rollout path.{0,40}not found/i.test(String(error instanceof Error ? error.message : error));
 }
 type StoredSession = { harness: Harness; data: string; workspace: string };
 async function readSessions(root: string): Promise<Record<string, StoredSession>> {
@@ -78,20 +86,26 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
   const executable = await cliExecutable(settings, model.harness, options.imageNormalization?.runsRoot);
   const root = resolve(options.logDirectory || join(task.cwd || options.cwd!, 'agents'));
   const paths = await prepareWorkspace(task, options.cwd!);
-  task = { ...task, images: contextImages(task.images, paths.directory), tools: workspaceTools(task.tools || [], paths) };
+  task = { ...task, tools: workspaceTools(task.tools || [], paths) };
   const log = await AgentLog.create(root, task.name, { task: { ...task, tools: task.tools?.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) },
     workspace: paths.workspace, outputDirectory: paths.outputDirectory,
-    prompt: task.prompt, sessionThreadId: resumed || null, threadOptions: { model: model.model, modelReasoningEffort: model.effort, harness: model.harness } });
+    prompt: task.prompt, sessionThreadId: resumed || null, threadOptions: { model: model.model, modelReasoningEffort: model.effort, harness: model.harness } }, paths.root);
   let mcpServer: Awaited<ReturnType<typeof createMcpBridge>> | undefined;
   const requestedSession = resumed;
   let bridge: Awaited<ReturnType<typeof genaiGateway>>;
   let threadId = resumed, text = '', final: any, stderr = '';
   let processExitCode: number | null | undefined;
+  let upstreamStatus: number | undefined;
   const eventErrors: unknown[] = [];
+  let refusal: string | undefined;
+  // Tool calls this turn made: Claude's tool_use items, AGV's tool steps.
+  let toolCalls = 0;
   const agvTurn = model.harness === 'agv' ? new AgvTurn() : undefined;
   try {
     const records = await readSessions(root);
     let previous = resumed ? records[resumed] : undefined;
+    // The registry records task-relative directories; older entries hold absolute ones.
+    if (previous) previous = { ...previous, data: fromTaskPath(paths.root, previous.data) };
     if (resumed && previous?.harness !== model.harness) {
       await options.onThreadReplacement?.(resumed, 'CLI 已改变或原会话记录不可用'); resumed = undefined;
       threadId = undefined;
@@ -110,6 +124,8 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       resumed = undefined; threadId = undefined; previous = undefined;
     }
     const workspace = paths.workspace;
+    // The CLI works in the step workspace; a resumed session keeps the directory it started in.
+    const cwd = previous?.workspace ? fromTaskPath(paths.root, previous.workspace) : workspace;
     const data = previous?.harness === model.harness ? previous.data : join(log.directory, 'cli-data');
     await mkdir(data, { recursive: true, mode: 0o700 });
     // Some CLI releases ignore their config-directory overrides for native history.
@@ -153,14 +169,17 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     const mcp = { mcpServers: { layering: mcpServer.config } };
     const budget = imageBudget(env, model.harness);
     const visual = new VisualContext({ directory: join(data, 'visual-context'), protocol: model.harness === 'agv' ? 'genai' : 'anthropic', budget,
-      protectedImageHashes: protectedImages(await Promise.all((task.images ?? []).map(async image => ({ data: (await readFile(image.path)).toString('base64') })))),
       observe: async event => {
         await log.recordProtocol(event);
         if (event.phase !== 'prepared' || model.harness === 'claude') options.progress?.(`[${task.name}] 图片容量保护 ${event.phase}；${event.images} 张；${event.requestBytes} 字节${event.batchImages ? `；本批 ${event.batchImages} 张 / ${event.batchBytes ?? 0} 字节` : ''}`);
       } });
     if (model.harness === 'agv') {
-      bridge = await genaiGateway(env, task.tools || [], root, signal, task.images, workspace,
-        event => log.recordProtocol(event).then(() => {}), visual);
+      bridge = await genaiGateway(env, task.tools || [], root, signal,
+        event => {
+          // AGV reports upstream failures only as text; the gateway sees the real status. A later success clears it.
+          if (event.phase === 'headers' && event.status) upstreamStatus = event.status >= 400 ? event.status : undefined;
+          return log.recordProtocol(event).then(() => {});
+        }, visual);
       if (bridge) Object.assign(env, { AGY_LLM_GATEWAY_URL: bridge.url });
     } else if (budget.images || budget.bytes || budget.deduplicate) {
       const nativeEnv: NodeJS.ProcessEnv = { ...inherited.env, ...env };
@@ -178,35 +197,41 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     const configPath = join(log.directory, 'mcp.json'); await writeFile(configPath, JSON.stringify(mcp), { mode: 0o600 });
     await mkdir(join(env.GEMINI_DIR, 'config'), { recursive: true, mode: 0o700 });
     await writeFile(join(env.GEMINI_DIR, 'config/mcp_config.json'), JSON.stringify(mcp), { mode: 0o600 });
+    // A --print run ends with its turn: nothing re-invokes a session that scheduled a wakeup, so the
+    // CLI forces the structured result early and the step stops as unfinished.
     const args = model.harness === 'claude'
       ? ['--print', '--verbose', '--input-format', 'stream-json', '--output-format', 'stream-json', '--model', model.model, '--effort', model.effort,
-        '--strict-mcp-config', '--mcp-config', configPath, '--settings', authSettings, '--setting-sources', '', '--disable-slash-commands', '--dangerously-skip-permissions', '--add-dir', task.cwd || options.cwd!]
+        '--strict-mcp-config', '--mcp-config', configPath, '--settings', authSettings, '--setting-sources', '', '--disable-slash-commands', '--dangerously-skip-permissions',
+        '--disallowedTools', 'ScheduleWakeup,CronCreate,CronDelete,CronList', '--add-dir', task.cwd || options.cwd!]
       : ['--input-format', 'stream-json', '--output-format', 'stream-json', '--model', model.model, '--effort', model.effort,
         '--disable-slash-commands', '--dangerously-skip-permissions', '--log-file', join(env.TMPDIR, 'native.log'), '--add-dir', task.cwd || options.cwd!];
     if (resumed) args.push(model.harness === 'claude' ? '--resume' : '--conversation', resumed);
-    for (const directory of new Set((task.images || []).map(image => resolve(image.path, '..')))) args.push('--add-dir', directory);
+    // Reference images are paths in the prompt; the agent opens them itself.
+    args.push('--add-dir', knowledgeDirectory());
     if (task.outputSchema) args.push('--json-schema', JSON.stringify(task.outputSchema));
     // agy requires an explicit empty --print value when prompts come from stdin.
     if (model.harness === 'agv') args.push('--print=');
     const reportId = async (id: string) => {
       if (!id || id === threadId) return;
-      if (threadId) throw new Error('CLI 返回了不同的原会话 ID');
-      threadId = id; await remember(root, id, { harness: model.harness, data, workspace });
+      // AGV opens a new conversation when the one asked for is gone, so the old session is unavailable and gets replaced.
+      if (threadId) throw new Error(threadId === resumed ? `原 session 不可用：CLI 未恢复 ${resumed}，返回了新的会话 ID ${id}` : 'CLI 返回了不同的原会话 ID');
+      threadId = id; await remember(root, id, { harness: model.harness, data: toTaskPath(paths.root, data), workspace: toTaskPath(paths.root, cwd) });
       await options.onEvent?.({ type: 'thread.started', thread_id: id });
     };
     options.progress?.(`开始：${task.name}；${model.harness} / ${model.model} / ${model.effort}；记录：${log.directory}`);
     signal.throwIfAborted();
-    const child = spawn(executable, args, { cwd: workspace, env, detached: process.platform !== 'win32', stdio: ['pipe', 'pipe', 'pipe'] });
+    const child = spawn(executable, args, { cwd, env, detached: process.platform !== 'win32', stdio: ['pipe', 'pipe', 'pipe'] });
+    if (child.pid) agentGroups.set(child.pid, child);
     let spawnError: Error | undefined;
     child.on('error', error => { spawnError = error; });
     let childClosed = false;
-    const close = new Promise<number | null>(done => child.once('close', code => { childClosed = true; done(code); }));
+    const close = new Promise<number | null>(done => child.once('close', code => { childClosed = true; agentGroups.delete(child.pid!); done(code); }));
     let killTimer: ReturnType<typeof setTimeout> | undefined;
     const abort = () => {
       if (childClosed) return;
-      try { if (process.platform === 'win32') child.kill('SIGTERM'); else if (child.pid) process.kill(-child.pid, 'SIGTERM'); } catch {}
+      stopCliProcess(child);
       if (!killTimer) { killTimer = setTimeout(() => {
-        try { if (process.platform === 'win32') child.kill('SIGKILL'); else if (child.pid) process.kill(-child.pid, 'SIGKILL'); } catch {}
+        stopCliProcess(child, true);
       }, 5000); killTimer.unref(); }
     };
     const nativeLog = model.harness === 'agv' ? followNativeLog(join(env.TMPDIR, 'native.log'), log, message => { spawnError = new Error(message); abort(); }) : undefined;
@@ -217,22 +242,18 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const prompt = !resumed && requestedSession && task.recoveryPrompt ? task.recoveryPrompt : task.prompt;
       const input: any[] = [{ type: 'text', text: workspacePrompt(prompt, paths) }];
       await writeFile(join(log.directory,'prompt.md'),input[0].text);
-      for (const image of task.images || []) {
-        if (model.harness === 'agv') { input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-reference.md',import.meta.url),{image_description:image.description,image_path:resolve(image.path)}).trimEnd() }); continue; }
-        const bytes = await readFile(image.path);
-        input.push({ type: 'text', text: renderPromptFile(new URL('../prompts/image-description.md',import.meta.url),{image_description:image.description}).trimEnd() }, { type: 'image', source: {
-          type: 'base64', media_type: bytes[0] === 0xff ? 'image/jpeg' : 'image/png', data: bytes.toString('base64') } });
-      }
       child.stdin!.end(JSON.stringify(model.harness === 'agv' ? { event: 'user', message: { role: 'user', content: input } } : { type: 'user', message: { role: 'user', content: input } }) + '\n');
       for await (const line of createInterface({ input: child.stdout!, crlfDelay: Infinity })) {
         if (!line.trim()) continue;
         let event: any; try { event = JSON.parse(line); } catch { await log.recordProtocol({ text: line }); continue; }
         await log.recordProtocol(event);
         if (event.type === 'error' || event.event === 'error') eventErrors.push(errorDetails(event));
+        if (event.type === 'system' && /^model_refusal/.test(event.subtype ?? '')) refusal = event.api_refusal_category ?? 'unknown';
         const completedText = agvTurn?.record(event);
         const id = event.session_id || event.conversation_id || event.step_update?.conversation_id;
         if (id) await reportId(id);
         if (event.type === 'assistant') {
+          for (const item of event.message?.content || []) if (item.type === 'tool_use') toolCalls++;
           for (const item of event.message?.content || []) if (item.type === 'text') {
             text = item.text; options.progress?.(`[${task.name}] 消息：${text}`);
             await options.onEvent?.({ type: 'item.completed', item: { type: 'agent_message', id: event.uuid || randomUUID(), text } });
@@ -256,7 +277,21 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
       const recoveredError = code === 0 && final && agvTurn?.recoveredError(final, threadId);
       const successfulStatus = model.harness === 'agv' ? final?.status === 'SUCCESS' || recoveredError : final?.status !== 'ERROR';
       if (code !== 0 || !final || final.is_error || !successfulStatus) {
-        const error = agentCallError(final?.error || final?.errors || stderr || eventErrors, 'CLI 未返回成功终态');
+        // Name the failure from structured signals: the API status Claude reports, the upstream status AGV's
+        // response carried through our gateway, a CLI killed before any result, or one of AGV's two Go
+        // transport timeouts, which it reports only as the terminal error string.
+        const status = final?.api_error_status ?? (model.harness === 'agv' ? upstreamStatus : undefined);
+        // Claude's safeguards refused the turn (stop_reason refusal), often a false flag on its own compacted history.
+        if (final?.stop_reason === 'refusal') refusal ??= final.stop_details?.category ?? 'unknown';
+        const info = refusal ? { refusal: { category: refusal, turns: final?.num_turns ?? null } }
+          : typeof status === 'number' ? { apiError: { httpStatusCode: status, code: final?.api_error_code ?? null } }
+          : code === null && !final ? 'processKilled'
+          : model.harness === 'agv' && final?.status === 'ERROR' && agvTransportTimeout.test(final.error ?? '') ? 'transportTimeout'
+          // Any other terminal failure the CLI reported: unknown, so it waits and retries unless the text or subtype says otherwise.
+          : { cliFailed: { subtype: final?.subtype ?? null, cliStatus: final?.status ?? null, exitCode: code } };
+        // Claude puts the upstream error ("API Error: …") in result and leaves stderr with an unrelated line.
+        const reported = final?.is_error && typeof final.result === 'string' && final.result.trim() ? final.result : undefined;
+        const error = agentCallError(final?.error || final?.errors || reported || stderr || eventErrors, 'CLI 未返回成功终态', info);
         error.details = errorDetails({ error: final?.error, errors: final?.errors, events: eventErrors,
           stderr, processExitCode, cliStatus: final?.status, subtype: final?.subtype });
         throw error;
@@ -277,6 +312,9 @@ export async function runCliTask(task: AgentTask, model: AgentModel, settings: W
     reported.details ??= errorDetails(error);
     await log.finish({ status: 'failed', threadId: threadId || null, finalResponse: text, error: reported.message,
       errorDetails: reported.details, stderr, processExitCode, cliStatus: final?.status });
-    reported.threadId = threadId; reported.finalResponse = text; reported.logDirectory = log.directory; throw reported;
+    reported.threadId = threadId; reported.finalResponse = text; reported.logDirectory = log.directory;
+    // Claude counts an API turn per tool round, so more than one turn is progress even if the stream missed the calls.
+    reported.progress = Math.max(toolCalls, agvTurn?.toolSteps ?? 0, typeof final?.num_turns === 'number' ? final.num_turns - 1 : 0);
+    throw reported;
   } finally { await bridge?.close(); await mcpServer?.close(); }
 }

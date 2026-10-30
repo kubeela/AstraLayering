@@ -1,5 +1,5 @@
 // Relative to <dir>/<name>. Keep producer output and workbench discovery aligned.
-// The lighting files reserve the output contract for the upcoming lighting pipeline;
+// The lighting files reserve the output contract for the upcoming lighting section;
 // their absence does not prevent previewing the assembled character.
 export const studioArtifacts = {
   document: "character-assembly/step01/character-assembled.kra",

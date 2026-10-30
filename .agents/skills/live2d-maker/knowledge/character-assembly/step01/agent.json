@@ -1,0 +1,12 @@
+{
+  "main": {
+    "initial": [
+      "prompts/01-人物与衣服组装.md",
+      "prompts/assembly-runtime.md"
+    ],
+    "tools": [
+      "locate_pixel_differences",
+      "krita"
+    ]
+  }
+}

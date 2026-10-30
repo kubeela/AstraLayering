@@ -1,9 +1,7 @@
-import {renderPrompt, renderPromptFile} from '../prompts/render.ts';
-import {kritaEnvironmentPrompt} from '../krita/environment.ts';
+import { stepKnowledge } from '../knowledge.ts';
 import { readFile, rename, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { StepResult } from './agent.ts';
-import type { KritaInstallation } from './krita.ts';
 import { fileInfo } from './run-store.ts';
 import type { StepDefinition } from './steps.ts';
 import { publishReportAssets } from '../report-assets.ts';
@@ -39,21 +37,10 @@ export async function nextReviewTask(directory: string): Promise<ReviewTask | un
   // The second repair completed all findings and its self-check. No third review.
 }
 
-export async function buildReviewPrompt(step: StepDefinition, task: ReviewTask, krita: KritaInstallation): Promise<string> {
+export async function buildReviewPrompt(step: StepDefinition, task: ReviewTask): Promise<string> {
   if (!step.review) throw new Error('步骤未配置 reviewer');
-  const source = task.kind === 'review' ? step.review.prompt : step.review.repairPrompt;
-  const reviewFilename = task.kind === 'review' ? `${task.filename}.tmp` : reports[task.index - 1];
-  const responsibilities = task.kind === 'repair' ? await readFile(new URL('./drawing-responsibilities.md', import.meta.url), 'utf8') : '';
-  const body = await readFile(source, 'utf8');
-  return renderPrompt(body, {
-    review_report_filename: reviewFilename, repair_report_filename: task.filename + '.tmp',
-    drawing_responsibilities: responsibilities,
-    krita_environment: await kritaEnvironmentPrompt(krita),
-    runtime_context: renderPromptFile(new URL('../prompts/raster-review-runtime.md', import.meta.url), {
-      krita_executable: JSON.stringify(krita.executable),
-      krita_version: krita.version
-    })
-  }, String(source), ['drawing_responsibilities','krita_environment','runtime_context','review_report_filename',...(task.kind==='repair'?['repair_report_filename']:[])]);
+  // review-NN.md and repair-NN.md share their round; the prompts name the files.
+  return stepKnowledge(step.knowledge.section, step.knowledge.step).render(task.kind, { review_round: String(Math.floor(task.index / 2) + 1) });
 }
 
 export async function discardReviewReports(directory: string, from = 0): Promise<void> {
@@ -66,7 +53,6 @@ export async function discardReviewReports(directory: string, from = 0): Promise
 type ReviewOptions = {
   step: StepDefinition;
   directory: string;
-  krita: KritaInstallation;
   signal?: AbortSignal;
   progress?: (message: string) => void;
   invoke: (prompt: string, task: ReviewTask) => Promise<StepResult>;
@@ -81,7 +67,7 @@ export async function runReviews(options: ReviewOptions): Promise<void> {
     await discardReviewReports(options.directory, task.index + 1);
     const draft = `${task.filename}.tmp`;
     await rm(join(options.directory, draft), { force: true });
-    const result = await options.invoke(await buildReviewPrompt(options.step, task, options.krita), task);
+    const result = await options.invoke(await buildReviewPrompt(options.step, task), task);
     if (result.status !== 'completed') throw new Error(`本次${task.kind === 'review' ? '检查' : '修复'}未完成：${result.summary}`);
     const conclusion = await verdict(options.directory, draft, task.kind);
     if (!conclusion) throw new Error(`缺少完整报告：${draft}`);

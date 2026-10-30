@@ -1,13 +1,14 @@
 import { profile } from '../profile.ts';
-import { mkdir, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, realpath, rm, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { taskRootOf } from '../../shared/task-paths.ts';
 import type { TestContext } from 'node:test';
 import sharp from 'sharp';
 import { svgHash } from '../../shared/part/artifact-facts.ts';
-import { writeAtomic } from '../../shared/part/groups.ts';
-import type { GroupSeed, LayeringSteps, Subject, SvgMerger } from '../../shared/part/layering-types.ts';
-import { initialStepId } from '../../shared/part/part-steps.ts';
+import { GroupStore, writeAtomic } from '../../shared/part/groups.ts';
+import type { GroupInput, GroupSeed, LayeringSteps, Subject, SvgMerger } from '../../shared/part/layering-types.ts';
+import { partSteps } from '../../shared/step-paths.js';
 import { beginStep, completeStep } from '../../shared/step-chain.ts';
 import { occlusionSourceHash, terminalParts } from '../../shared/part/occlusion-plan.ts';
 
@@ -15,15 +16,25 @@ export function shape(id: string, left = 10, right = 90, empty = false) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g id="shape" data-group-path="${id}">${empty ? '' : `<path fill="#55b9ad" d="M${left} 10H${right}V90H${left}Z"/>`}</g></svg>`;
 }
 export async function fixture(t: TestContext) {
-  const directory = await realpath(await mkdtemp(join(tmpdir(), 'part-layering-bfs-')));
-  t.after(() => rm(directory, { recursive: true, force: true }));
+  // The task layout of a real run, so the prompt's task paths resolve.
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'part-layering-bfs-'))), directory = join(root, 'part-layering');
+  t.after(() => rm(root, { recursive: true, force: true }));
   const references = { directory: join(directory, 'references'),
-    simplifiedSubject: join(directory, 'references/simplified.png'), baseSubject: join(directory, 'references/base.png') };
-  await mkdir(references.directory);
+    simplifiedSubject: join(directory, 'references/simplified-subject.png'), baseSubject: join(directory, 'references/base-subject.png') };
+  await mkdir(references.directory, { recursive: true });
   const png = await sharp({ create: { width: 100, height: 100, channels: 4, background: '#ffffff' } }).png().toBuffer();
   await writeAtomic(references.baseSubject, png);
   await writeAtomic(references.simplifiedSubject, png);
   return { profile, directory, references };
+}
+// A task reached through a symlink: previews record realpaths, the program holds the linked path.
+export async function linkedFixture(t: TestContext, f: Awaited<ReturnType<typeof fixture>>) {
+  const parent = await mkdtemp(join(tmpdir(), 'part-layering-link-')), directory = join(parent, 'part-layering');
+  t.after(() => rm(parent, { recursive: true, force: true }));
+  await symlink(f.directory, directory);
+  const at = (path: string) => join(directory, path.slice(f.directory.length + 1));
+  return { ...f, directory, references: { directory: at(f.references.directory),
+    simplifiedSubject: at(f.references.simplifiedSubject), baseSubject: at(f.references.baseSubject) } };
 }
 export function workingSteps(events: string[], roots: GroupSeed[] = [{ id: 'head' }], children: Record<string, GroupSeed[]> = {}): LayeringSteps {
   return {
@@ -49,10 +60,16 @@ export function workingMerger(events: string[]): SvgMerger {
   return async context => { events.push('merge'); await writeAtomic(context.outputPath, shape('character'));
     return { status: 'completed', output: { path: context.outputPath } }; };
 }
-// Records a finished first grouping, as if initial/step01 had run.
+// groups.json as the scheduler publishes it, for steps called without the scheduler.
+export function publishGroups(directory: string, groups: GroupInput[]) {
+  return writeAtomic(join(directory, 'groups.json'), JSON.stringify({ version: 1, groups }, null, 2) + '\n');
+}
+// Records a finished first grouping, as if step08_initial had run.
 export async function seedInitialGroups(directory: string, groups: GroupSeed[], subject?: Subject) {
-  const step = { id: initialStepId, directory: join(directory, initialStepId), dependsOn: [], outputs: ['groups.json'] };
+  const root = taskRootOf(directory), step = { id: partSteps.initial, root, directory: join(directory, partSteps.initial), dependsOn: [], outputs: ['groups.json'] };
   await beginStep(step.directory, {});
   await writeAtomic(join(step.directory, 'groups.json'), JSON.stringify({ ...(subject !== undefined ? { subject } : {}), groups }, null, 2) + '\n');
-  await completeStep(step, id => ({ id, directory: join(directory, id), dependsOn: [] }));
+  await completeStep(step, id => ({ id, root, directory: join(directory, id), dependsOn: [] }));
+  // The scheduler publishes groups.json before any group agent runs; prompts name its nodes.
+  await (await GroupStore.open(directory)).update(() => {});
 }

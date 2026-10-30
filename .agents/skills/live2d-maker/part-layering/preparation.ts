@@ -1,32 +1,40 @@
 import { normalizeGeneratedReference } from '../shared/part/reference-normalization.ts';
 import type { ImageProcessingOptions } from '../shared/image-processing.ts';
-import { pipelineDirectory, resolveInput, taskDirectory } from '../shared/paths.ts';
-import { copyFile, mkdir, readFile } from 'node:fs/promises';
+import { sectionDirectory, resolveInput, taskDirectory } from '../shared/paths.ts';
+import { mkdir, readFile } from 'node:fs/promises';
+import { copyAsPng, pngBytes } from '../shared/png.ts';
 import { dirname, join, resolve } from 'node:path';
 import sharp from 'sharp';
-import { clearPreparedParts, fileHash, readPreparationOptions } from '../shared/part/preparation-cache.ts';
+import { clearPreparedParts, readPreparationOptions } from '../shared/part/preparation-cache.ts';
 import { modifiedError, type ChainPlan, type ChainStep } from '../shared/step-chain.ts';
 import { inspectSection, runSection } from '../shared/step-section.ts';
 import type { PreparationInput, PreparationReferences } from '../shared/part/preparation-types.ts';
-import { checkStandardJudgment, copyAsPng, exists, findImage, poseJudgmentPath, preparationSteps, present, produce,
-  sectionDirectory, stageStep, stepStage, writeJson, type PreparationStage, type StandardJudgment } from './preparation-state.ts';
-import { migratePreparation, migrateStepLayout } from './preparation-migration.ts';
+import { checkStandardJudgment, exists, findImage, poseJudgmentPath, preparationSteps, present, produce,
+  sectionOf, stageNumber, stageStep, stepStage, writeJson, type PreparationStage, type StandardJudgment } from './preparation-state.ts';
+import { stepKnowledge } from '../shared/knowledge.ts';
+import { taskRootOf } from '../shared/task-paths.ts';
+import type { DressupDecision } from '../shared/part/dressup.ts';
 
 export type { PreparationInput, PreparationReferences, StandardJudgment };
 export type ProcessGenerated = (image: string) => Promise<void>;
+// A reference step either generated its image or copied its input.
+export type ReferenceChoice = { generated: boolean; reason: string };
 export type PreparationSteps = {
   judgeStandard(image: string, prompt: string): Promise<StandardJudgment>;
   standardize(inputImage: string, outputImage: string, prompt: string): Promise<void>;
   simplify(inputImage: string, outputImage: string, prompt: string, processGenerated?: ProcessGenerated): Promise<void>;
-  baseSubject(inputImage: string, outputImage: string, prompt: string, processGenerated?: ProcessGenerated): Promise<void>;
+  // Returns whether a dress-up base body was drawn (false: the reference was copied).
+  baseSubject(inputImage: string, outputImage: string, prompt: string, processGenerated?: ProcessGenerated): Promise<ReferenceChoice | void>;
 };
 
-function readPrompt(name: string): Promise<string> {
-  return readFile(new URL(`prompts/${name}`, import.meta.url), 'utf8');
-}
+// {input} is the user's original image, whose extension varies; the prepared
+// references sit at fixed task paths.
+const readPrompt = (step: string, refs: PreparationReferences): string => stepKnowledge('part-layering', step)
+  .render('main', { ...(refs.originalImage ? { input: resolve(refs.originalImage) } : {}) },
+    { taskRoot: taskRootOf(dirname(refs.directory)) });
 const readJson = async (path: string): Promise<unknown> => JSON.parse(await readFile(path, 'utf8'));
 export function getPreparationDirectory(runName: string, root?: string): string {
-  return join(pipelineDirectory(runName, 'part-layering', root), 'references');
+  return join(sectionDirectory(runName, 'part-layering', root), 'references');
 }
 const inputDirectory = (runName: string, root?: string) => join(taskDirectory(runName, root), 'input');
 async function references(runName: string, root?: string): Promise<PreparationReferences> {
@@ -34,33 +42,22 @@ async function references(runName: string, root?: string): Promise<PreparationRe
   const standard = join(directory, 'standard.png');
   return { directory, originalImage: await findImage(inputDirectory(runName, root), 'original'),
     ...(await exists(standard) ? { standardImage: standard } : {}),
-    simplifiedSubject: await findImage(directory, 'simplified-subject') ?? join(directory, 'simplified-subject.png'),
+    simplifiedSubject: join(directory, 'simplified-subject.png'),
     baseSubject: join(directory, 'base-subject.png') };
 }
 const output = (step: ChainStep) => resolve(step.directory, step.outputs![0]);
 const unfinished = (plan: ChainPlan, id: string) => plan.reset.includes(id) || plan.statuses.get(id) !== 'completed';
 
 function modeError(directory: string, saved: boolean): Error {
-  return new Error(`preparation 已按 --${saved ? '' : 'no-'}standard 制作，不能直接切换。需要切换时请对 options 步骤执行重试：删除 ${join(sectionDirectory(directory), stageStep('options'), '.completed')} 后带新选项重跑，之后的参考会随之重做；或使用新的 --name。已有文件已保留。`);
+  return new Error(`preparation 已按 --${saved ? '' : 'no-'}standard 制作，不能直接切换。需要切换时请对 options 步骤执行重试：删除 ${join(sectionOf(directory), stageStep('options'), '.completed')} 后带新选项重跑，之后的参考会随之重做；或使用新的 --name。已有文件已保留。`);
 }
 
 // Explicit groups only read prepared inputs; no conversion, model call, copying or cache reset.
 export async function loadPreparedReferences(runName: string, root?: string, standard?: boolean): Promise<PreparationReferences> {
   const refs = await references(runName, root), directory = refs.directory;
-  if (!await present(sectionDirectory(directory))) {
-    if (await present(join(directory, '.steps')) || await present(join(directory, 'preparation.json'))) {
-      throw new Error('preparation 记录尚未转换为步骤记录；请先不带 --groups 运行一次默认流程。');
-    }
-    // Bare references of tasks older than any record are read as they are.
-    const missing = [];
-    for (const path of [refs.simplifiedSubject, refs.baseSubject]) if (!await exists(path)) missing.push(path);
-    if (standard && !missing.length) throw modeError(directory, false);
-    if (missing.length) throw new Error(`显式 groups 的前置参考未完成：\n${missing.join('\n')}\n请先使用默认流程完成参考准备。`);
-    return refs;
-  }
   const saved = await readPreparationOptions(directory);
   if (standard !== undefined && saved !== undefined && standard !== saved) throw modeError(directory, saved);
-  const plan = await inspectSection(sectionDirectory(directory), await preparationSteps(refs, saved ?? standard ?? false, inputDirectory(runName, root)), false);
+  const plan = await inspectSection(sectionOf(directory), taskDirectory(runName, root), await preparationSteps(refs, saved ?? standard ?? false, inputDirectory(runName, root)), { scan: false });
   const modified = modifiedError(plan, plan.chain);
   if (modified) throw modified;
   const missing = plan.chain.filter(step => plan.defined.has(step.id) && unfinished(plan, step.id))
@@ -74,24 +71,24 @@ export async function loadPreparedReferences(runName: string, root?: string, sta
 // replaced while the run was interrupted stop the run until that step is retried.
 export async function prepareReferences(input: PreparationInput, steps: PreparationSteps,
   progress?: (message: string) => void, options: ImageProcessingOptions = {}): Promise<PreparationReferences> {
-  const normalization = { ...options, runsRoot: input.dir ?? options.runsRoot, progress: progress ?? options.progress, krita: options.krita ?? (input.krita && resolveInput(input.runName, input.krita, input.dir)) };
+  const normalization = { ...options, runsRoot: input.dir ?? options.runsRoot, progress: progress ?? options.progress };
   const directory = getPreparationDirectory(input.runName, input.dir), inputs = inputDirectory(input.runName, input.dir);
   const source = input.image === undefined ? undefined : resolveInput(input.runName, input.image, input.dir);
   if (source) {
     if (!await exists(source)) throw new Error(`Input image is missing: ${source}`);
     const original = await findImage(inputs, 'original');
-    if (original && await fileHash(source) !== await fileHash(original)) {
+    if (original && !(await pngBytes(source)).equals(await pngBytes(original))) {
       throw new Error(`任务已有不同的原图：${original}。制作另一张图请使用新的 --name。`);
     }
   }
   await mkdir(directory, { recursive: true });
-  await migrateStepLayout(directory);
-  await migratePreparation(await references(input.runName, input.dir), inputs, progress);
-  const standard = input.standard ?? await readPreparationOptions(directory) ?? false;
+  const standard = input.standard ?? false;
   const initial = await references(input.runName, input.dir);
   let partsBuilt = false;
   await runSection({
-    directory: sectionDirectory(directory), steps: await preparationSteps(initial, standard, inputs, source), progress,
+    directory: sectionOf(directory), root: taskDirectory(input.runName, input.dir), steps: await preparationSteps(initial, standard, inputs, source), progress,
+    // The layering steps after ready check themselves; resetting ready clears them.
+    last: stageNumber('ready'),
     async check(plan) {
       const saved = await readPreparationOptions(directory);
       if (saved !== undefined && saved !== standard && !unfinished(plan, stageStep('options'))) throw modeError(directory, saved);
@@ -123,18 +120,18 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
     await produce(target, temporary => generate(temporary, async image => {
       if (!refs.standardImage) throw new Error('参考后处理缺少 standard.png');
       // Raw generation is retained outside the final reference filenames for diagnosis.
-      await normalizeGeneratedReference(image, refs.standardImage, join(sectionDirectory(directory), stageStep(stage)), stage, normalization);
+      await normalizeGeneratedReference(image, refs.standardImage, join(sectionOf(directory), stageStep(stage)), stage, normalization);
     }));
   }
   async function run(id: PreparationStage, step: ChainStep, refs: PreparationReferences) {
     switch (id) {
       case 'original':
         await mkdir(inputs, { recursive: true });
-        if (!await exists(output(step))) await produce(output(step), temporary => copyFile(source!, temporary));
+        if (!await exists(output(step))) await produce(output(step), temporary => copyAsPng(source!, temporary));
         return;
       case 'options': return writeJson(output(step), { standard });
       case 'pose': {
-        const decision = await steps.judgeStandard(refs.originalImage!, await readPrompt('0-姿态判断.md'));
+        const decision = await steps.judgeStandard(refs.originalImage!, readPrompt('step03_pose', refs));
         checkStandardJudgment(decision);
         return writeJson(output(step), decision);
       }
@@ -148,7 +145,7 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
         }
         const original = refs.originalImage!;
         await produce(output(step), async temporary => {
-          if (adjust) await steps.standardize(original, temporary, await readPrompt('0-标准姿态.md'));
+          if (adjust) await steps.standardize(original, temporary, readPrompt('step04_standard', refs));
           else await copyAsPng(original, temporary);
           if ((await sharp(temporary).metadata()).format !== 'png') throw new Error('标准姿态输出必须为 PNG');
         });
@@ -157,10 +154,19 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
       }
       case 'simplified':
         return prepared('simplified', output(step), refs, async (temporary, processGenerated) =>
-          steps.simplify(refs.standardImage!, temporary, await readPrompt('2-简化图片.md'), processGenerated));
-      case 'base':
-        return prepared('base', output(step), refs, async (temporary, processGenerated) =>
-          steps.baseSubject(refs.simplifiedSubject, temporary, await readPrompt('3-素体参考.md'), processGenerated));
+          steps.simplify(refs.standardImage!, temporary, readPrompt('step05_simplified', refs), processGenerated));
+      case 'base': {
+        let choice: ReferenceChoice | undefined;
+        await prepared('base', output(step), refs, async (temporary, processGenerated) => {
+          choice = await steps.baseSubject(refs.simplifiedSubject, temporary, readPrompt('step06_base', refs), processGenerated) || undefined;
+        });
+        // Read by the scheduler to decide whether the clothing lane runs.
+        const records = join(sectionOf(directory), stageStep('base'));
+        const made = choice as ReferenceChoice | undefined;
+        if (made) await mkdir(records, { recursive: true }).then(() => writeJson(join(records, 'decision.json'),
+          { version: 1, dressed: made.generated, reason: made.reason } satisfies DressupDecision));
+        return;
+      }
       case 'ready':
         await clearPreparedParts(dirname(directory));
         if (partsBuilt) progress?.('preparation：参考内容已重新生成，已重置本人物 part 的拆分缓存。');

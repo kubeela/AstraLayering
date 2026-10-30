@@ -1,15 +1,18 @@
 import { lstat, readFile } from 'node:fs/promises';
 import { safePath } from './files.ts';
+import { retryWaitFile } from '../.agents/skills/live2d-maker/shared/codex/agent-log.ts';
 
-export type AgentCall = { name: string; step: string; request: string; mtime: number; finished: boolean; failed: boolean };
+// throttledUntil: the call holds its slot while waiting to retry until then; retryError is the error as logged, verbatim.
+export type AgentCall = { name: string; step: string; request: string; mtime: number; finished: boolean; failed: boolean; throttledUntil?: number; retryError?: string };
+export const throttled = (call: AgentCall, now = Date.now()) => !call.finished && (call.throttledUntil ?? 0) > now;
 const requests = new Map<string, { version: string; name: string; step: string }>();
 
 // A request is recorded after acquiring a slot. Read these records, never infer activity from a draft.
-export async function currentAgentCalls(directory: string, pipeline: string, files: Set<string>,
+export async function currentAgentCalls(directory: string, section: string, files: Set<string>,
   errors: string[], activeSince?: string, readFailures = false): Promise<AgentCall[]> {
   if (!activeSince) return [];
   const since = Date.parse(activeSince), calls: AgentCall[] = [];
-  const paths = [...files].filter(path => path.startsWith(pipeline + '/agents/') && path.endsWith('/request.json'));
+  const paths = [...files].filter(path => path.startsWith(section + '/agents/') && path.endsWith('/request.json'));
   for (let offset = 0; offset < paths.length; offset += 16) {
     await Promise.all(paths.slice(offset, offset + 16).map(async request => {
       try {
@@ -23,10 +26,19 @@ export async function currentAgentCalls(directory: string, pipeline: string, fil
           if (requests.size >= 2048) requests.delete(requests.keys().next().value!);
           requests.set(path, cached);
         }
-        const result = request.replace(/request.json$/, 'result.json'), finished = files.has(result);
+        // A CLI attempt writes its failed result and then the retry wait; the call goes on in the next attempt's record.
+        // A result written after the wait (Codex keeps one record across retries) ends the call.
+        const result = request.replace(/request.json$/, 'result.json'), waitPath = request.replace(/request.json$/, retryWaitFile);
+        const [resultTime, waitTime] = await Promise.all([result, waitPath].map(path => files.has(path)
+          ? safePath(directory, path).then(lstat).then(info => info.mtimeMs, () => undefined) : undefined));
+        const pending = waitTime !== undefined && (resultTime === undefined || waitTime >= resultTime);
+        const finished = resultTime !== undefined && !pending;
         const failed = readFailures && finished
           ? JSON.parse(await readFile(await safePath(directory, result), 'utf8')).status === 'failed' : false;
-        calls.push({ name: cached.name, step: cached.step, request, mtime: info.mtimeMs, finished, failed });
+        const wait = pending ? JSON.parse(await readFile(await safePath(directory, waitPath), 'utf8')) : undefined;
+        const throttledUntil = Date.parse(wait?.until) || undefined;
+        calls.push({ name: cached.name, step: cached.step, request, mtime: info.mtimeMs, finished, failed,
+          ...(throttledUntil ? { throttledUntil, retryError: String(wait.error ?? '') } : {}) });
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== 'ENOENT') errors.push(request + ': ' + String(error));
       }

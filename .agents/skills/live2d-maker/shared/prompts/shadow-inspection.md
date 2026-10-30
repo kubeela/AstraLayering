@@ -1,2 +1,0 @@
-- 制作参考：{reference_files}。
-- 原生检查：{inspection_command}。查看 inspection/overview.png 与每处 relation-*-review.png，必要时打开其中原尺寸 PNG。

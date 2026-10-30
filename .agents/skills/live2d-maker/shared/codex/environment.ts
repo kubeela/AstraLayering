@@ -6,6 +6,7 @@ import { execFile } from 'node:child_process';
 import type { CodexOptions, ThreadOptions } from '@openai/codex-sdk';
 import { workflowsDirectory } from '../paths.ts';
 import { readDefaultConfiguration } from '../default-configuration.ts';
+import { kritaLimit, kritaLimitKey } from '../krita/section-krita.ts';
 import { withNodePath } from '../process-environment.ts';
 import { imageBudget, type ImageBudget } from '../../patches/shared/visual-context.ts';
 import { resolveModelDefaults, resolveImageDefaults, stepModelSlots, imageSteps, imageModelProviders, parseAgentModel, type ModelSlot, type AgentModel, type AgentStep, type Harness, type ImageModel, type ImageApi } from '../agents/models.ts';
@@ -69,6 +70,8 @@ export function parseWorkflowEnvironment(source: string, env: NodeJS.ProcessEnv 
   const agvPatch = get('layering_agv_unlimited_response_header_timeout');
   if (agvPatch && !['true', 'false'].includes(agvPatch)) throw new Error('layering_agv_unlimited_response_header_timeout 只能为 true 或 false。');
   if (agvPatch) effective.layering_agv_unlimited_response_header_timeout = agvPatch;
+  // Normalized here so a bad value fails before any section starts.
+  effective[kritaLimitKey] = String(kritaLimit(effective, defaults));
   const config: NonNullable<CodexOptions['config']> = {};
   const providers = resolveHarnessProviders(file, env, effective, flag === 'true' || flag === '1');
   const unifiedCodex = providers.codex.connection === 'unified';

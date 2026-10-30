@@ -1,15 +1,17 @@
+import { readStepSession } from '../../shared/agents/step-session.ts';
 import assert from 'node:assert/strict';
 import { mkdir, mkdtemp, realpath, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
-import { runWorkflow, pipeline, parseRunArguments } from '../run.ts';
+import { runWorkflow, section, parseRunArguments } from '../run.ts';
 import { resolveAssemblyInput, isAssemblyInput } from '../input.ts';
 import { steps } from '../steps.ts';
 import { formatAgentError } from '../../shared/codex/diagnostics.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
-import { loadConfig } from '../../shared/raster/run-store.ts';
-import { rasterCodexConfig, type AgentRequest } from '../../shared/raster/agent.ts';
+import { type AgentRequest } from '../../shared/raster/agent.ts';
+import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
+import sharp from 'sharp';
 
 async function fixture(t: TestContext) {
   const root = await realpath(await mkdtemp(join(tmpdir(), 'character-assembly-')));
@@ -18,7 +20,7 @@ async function fixture(t: TestContext) {
   const inputs = {
     characterKra: join(task, 'raster-layering/step03/character-dressup-base.kra'),
     clothingKra: join(task, 'clothing-raster-layering/step02/clothing-soft-edges.kra'),
-    simplifiedCharacter: join(task, 'part-layering/references/simplified-subject.webp'),
+    simplifiedCharacter: join(task, 'part-layering/references/simplified-subject.png'),
   };
   for (const [kind, path] of Object.entries(inputs)) {
     await mkdir(dirname(path), { recursive: true }); await writeFile(path, kind);
@@ -26,7 +28,7 @@ async function fixture(t: TestContext) {
   const output = join(task, 'character-assembly');
   const options = { name: 'case', dir: root, krita: process.execPath };
   const environment = loadWorkflowEnvironment({}, root);
-  const deps = { environment, preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+  const deps = { environment, preflight: async (executable: string) => ({ executable }) };
   return { root, task, inputs, output, options, deps };
 }
 async function deliver(request: AgentRequest) {
@@ -38,7 +40,7 @@ async function deliver(request: AgentRequest) {
 test('按 name 和 dir 定位两份 KRA 与实际扩展名的参考图，不需要 part SVG 或上游会话', async t => {
   const f = await fixture(t);
   assert.deepEqual(await resolveAssemblyInput('case', f.root), f.inputs);
-  assert.equal(parseRunArguments(['--name', 'case', '--dir', f.root]).dir, f.root);
+  assert.equal(parseRunArguments(['--name', 'case', '--dir', f.root, '--knowledge', 'knowledge']).dir, f.root);
   assert.equal(isAssemblyInput(f.inputs), true);
   assert.equal(isAssemblyInput({ directory: f.task, parts: f.task }), false);
 });
@@ -66,7 +68,8 @@ test('dry-run 展开组装专用提示词与绝对路径，不混入拆层和深
   const prompt = await runWorkflow({ ...f.options, dryRun: true }, { ...f.deps,
     agent: async () => assert.fail('dry run must not call agent'),
   });
-  for (const input of Object.values(f.inputs)) assert.ok(prompt.includes(input));
+  // Agents are shown absolute task paths.
+  for (const input of Object.values(f.inputs)) assert.ok(prompt.includes(JSON.stringify(input)));
   for (const file of steps[0].requiredFiles) assert.ok(prompt.includes(join(f.output, 'step01', file)));
   assert.match(prompt, /局部修画/);
   assert.match(prompt, /parts 填入要检查的衣物部件路径/);
@@ -85,22 +88,20 @@ test('只调一次组装 agent，提供像素比对且无 reviewer 和深度工�
     assert.equal(request.directory, f.output);
     assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'xhigh');
     assert.equal(request.threadId, undefined);
-    assert.deepEqual(request.tools?.map(tool => tool.name), ['locate_pixel_differences']);
+    assert.deepEqual(request.tools?.map(tool => tool.name), ['locate_pixel_differences', 'krita']);
     assert.ok((request.tools?.[0].inputSchema.properties as any).parts);
 
-    assert.equal('mcp_servers' in rasterCodexConfig(), false);
     await stat(join(f.output, 'step01/.running'));
     return deliver(request);
   };
-  assert.equal(pipeline.steps.length, 1); assert.equal(pipeline.steps[0].review, undefined);
+  assert.equal(section.steps.length, 1); assert.equal(section.steps[0].review, undefined);
   await runWorkflow(f.options, { ...f.deps, agent });
   await stat(join(f.output, 'step01/.completed'));
   await assert.rejects(stat(join(f.output, 'step01/.running')), { code: 'ENOENT' });
-  await runWorkflow({ name: 'case', dir: f.root }, { ...f.deps, agent });
+  await runWorkflow(f.options, { ...f.deps, agent });
   assert.equal(calls, 1);
-  const config = await loadConfig(f.output, 'case', isAssemblyInput);
-  assert.equal(config?.threadId, 'assembly-thread');
-  assert.deepEqual(config?.sourceInput, f.inputs);
+  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'assembly-thread');
+  await assert.rejects(stat(join(f.output, 'run.json')), { code: 'ENOENT' });
   assert.ok(!(await readdir(join(f.output, 'step01'))).some(name => /review|repair/.test(name)));
   for (const [kind, file] of Object.entries(f.inputs)) assert.equal(await readFile(file, 'utf8'), kind);
 });
@@ -112,13 +113,13 @@ test('中断恢复同一组装 thread；删 completed 重建 thread，只清理�
     await writeFile(join(f.output, 'step01/work.kra'), 'progress');
     throw new Error('interrupted');
   } }), /interrupted/);
-  await runWorkflow({ name: 'case', dir: f.root }, { ...f.deps, agent: async request => {
+  await runWorkflow({ name: 'case', dir: f.root, krita: f.options.krita }, { ...f.deps, agent: async request => {
     assert.equal(request.threadId, 'in-progress');
     assert.equal(await readFile(join(f.output, 'step01/work.kra'), 'utf8'), 'progress');
     return deliver(request);
   } });
   await rm(join(f.output, 'step01/.completed'));
-  await runWorkflow({ name: 'case', dir: f.root }, { ...f.deps, agent: async request => {
+  await runWorkflow({ name: 'case', dir: f.root, krita: f.options.krita }, { ...f.deps, agent: async request => {
     assert.equal(request.threadId, undefined);
     await assert.rejects(stat(join(f.output, 'step01/work.kra')), { code: 'ENOENT' });
     return deliver(request);
@@ -151,5 +152,29 @@ test('正常退出但缺 PNG 时显示最后消息，保留 running 和 thread',
   await stat(join(f.output, 'step01/.running'));
   await assert.rejects(stat(join(f.output, 'step01/.completed')), { code: 'ENOENT' });
   assert.match(await readFile(join(f.output, 'agents/steps/step01/error.txt'), 'utf8'), /PNG 导出失败/);
-  assert.equal((await loadConfig(f.output, 'case', isAssemblyInput))?.threadId, 'missing-output');
+  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'missing-output');
+});
+
+test('素体未换装时不需要衣服 KRA，不调用 agent，直接复制人物结果作为组装交付', async t => {
+  const f = await fixture(t);
+  await markBaseStep(f.task, false);
+  await rm(dirname(dirname(f.inputs.clothingKra)), { recursive: true });
+  const characterPng = await sharp({ create: { width: 2, height: 2, channels: 4, background: '#8040c0' } }).png().toBuffer();
+  await writeFile(f.inputs.characterKra.replace(/\.kra$/, '.png'), characterPng);
+  const agent = async () => assert.fail('no clothing: assembly must not call agent');
+  await runWorkflow(f.options, { ...f.deps, agent });
+  assert.equal(await readFile(join(f.output, 'step01/character-assembled.kra'), 'utf8'), 'characterKra');
+  assert.deepEqual(await readFile(join(f.output, 'step01/character-assembled.png')), characterPng);
+  assert.match(await readFile(join(f.output, 'step01/report.md'), 'utf8'), /没有衣服需要组装/);
+  await stat(join(f.output, 'step01/.completed'));
+  await runWorkflow(f.options, { ...f.deps, agent });
+});
+
+test('旧任务未换装但已画出衣服 KRA 时继续按原输入组装，不改变已完成的输入', async t => {
+  const f = await fixture(t);
+  await markBaseStep(f.task, false);
+  assert.deepEqual(await resolveAssemblyInput('case', f.root), f.inputs);
+  await markBaseStep(f.task, true);
+  await rm(f.inputs.clothingKra);
+  await assert.rejects(resolveAssemblyInput('case', f.root), /clothing-raster-layering/);
 });

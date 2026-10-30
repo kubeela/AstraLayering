@@ -10,10 +10,7 @@
       {
         "imports": {
           "three": "./vendor/three.module.js",
-          "@pixiv/three-vrm-materials-mtoon": "./vendor/mtoon.js",
-          "#physics-core/": "./shared/physics-core/",
-          "#physics-evidence/": "./shared/physics-evidence/",
-          "#character-render/": "./shared/character-render/"
+          "@pixiv/three-vrm-materials-mtoon": "./vendor/mtoon.js"
         }
       }
     </script>
@@ -30,15 +27,8 @@
       <aside class="sources">
         <section class="panel">
           <h1>角色文件</h1>
-          <label class="button primary open-file"
-            >打开 KRA / PSD<input
-              id="file-document"
-              type="file"
-              accept=".kra,.psd,.png"
-              hidden
-          /></label>
           <div class="file-actions">
-            <button id="open-task">从项目加载</button>
+            <button id="open-task" class="primary">打开项目</button>
           </div>
           <div id="document-info" hidden>
             <div class="document-heading">
@@ -52,9 +42,6 @@
               </button>
             </div>
             <p id="document-meta" class="muted"></p>
-            <button id="download-document" class="text-button">
-              下载源文件 ↗
-            </button>
             <button
               id="refresh-project"
               class="text-button"
@@ -71,6 +58,7 @@
             <button data-workspace="mask" role="tab" aria-controls="projection-workspace">贴图投影</button>
             <button data-workspace="lighting" role="tab" aria-controls="lighting-workspace">光照</button>
             <button data-workspace="physics" role="tab" aria-controls="physics-workspace">物理</button>
+            <button data-workspace="nine-axis" role="tab" aria-controls="nine-axis-workspace">头部九轴</button>
           </div>
           <div class="preview-effects" aria-label="预览效果">
             <label class="toggle"><input id="effect-lighting" type="checkbox" checked>实时光照</label>
@@ -103,8 +91,7 @@
             >
               ↷
             </button>
-            <button id="layer-restore">还原</button
-            ><button id="layer-save">保存 KRA</button>
+            <button id="layer-restore">还原</button>
           </div>
           <div id="layers" role="list" aria-label="图层与蒙版"></div>
           <div id="layer-properties" hidden>
@@ -156,7 +143,7 @@
             重新读取图层
           </button>
           <p class="muted layer-note" id="layer-note">
-            打开 KRA / PSD 以编辑图层
+            打开项目以编辑图层
           </p>
         </section>
       </aside>
@@ -169,25 +156,17 @@
               ☼ 移动光源
             </button>
             <button data-tool="disturb" title="悬停划过施力，无需按住" hidden>◌ 扰动</button>
-            <button data-tool="physics-select" title="点击可见部件选择编辑组件；再次点击切换重叠组件" hidden>⌖ 选组件</button>
           </div>
           <span class="divider"></span><button id="fit">适应</button
           ><button id="actual">100%</button><span id="zoom">100%</span>
-          <button
-            id="export-image"
-            class="right"
-            title="透明背景，按原图完整分辨率导出"
-          >
-            导出 PNG ↗
-          </button>
         </div>
         <div class="viewport" id="drop-zone">
           <canvas id="stage" aria-label="角色光照预览"></canvas>
           <div id="empty-state">
             <div class="file-symbol">＋</div>
-            <b>打开角色文件</b>
-            <p>KRA / PSD · 拖放到此处</p>
-            <label class="button" for="file-document">选择文件</label>
+            <b>打开项目</b>
+            <p>选择基准文件夹，从其中的任务中选择项目</p>
+            <div class="file-actions"><button data-open-task>打开项目</button></div>
           </div>
           <div id="project-empty" hidden>
             <b id="project-empty-name"></b>
@@ -220,7 +199,11 @@
             </button>
             <div class="light-guide">拖动灯位 · Alt + 滚轮调整前后</div>
           </div>
-          <div id="drop-hint" hidden>松开以打开角色文件</div>
+          <div id="nine-axis-view" hidden>
+            <canvas id="nine-axis-canvas" aria-label="头部九轴预览"></canvas>
+            <svg id="nine-axis-overlay" width="100%" height="100%"></svg>
+            <span id="nine-axis-hud"></span>
+          </div>
           <svg id="physics-overlay" width="100%" height="100%" aria-hidden="true" hidden>
             <path class="physics-mesh"/><path class="physics-fixed"/>
             <polyline class="physics-boundary"/><polyline class="physics-boundary"/>
@@ -245,62 +228,14 @@
         <div id="physics-workspace" role="tabpanel" hidden>
           <div class="panel-heading"><h2>摆动物理</h2><span id="physics-draft" class="muted">草稿</span></div>
           <section class="panel">
-            <div class="file-actions"><button id="physics-prepare">准备当前图层</button></div>
+            <div class="file-actions"><button id="physics-prepare">准备当前图层</button><button id="physics-close" hidden>释放部件</button></div>
             <p id="physics-status" class="muted">从角色原始图层建立物理绑定</p>
-            <label class="toggle"><input id="physics-guides" type="checkbox">显示网格与边界</label>
           </section>
-          <section class="panel" id="physics-workflow" aria-label="物理制作记录">
-            <div class="section-heading"><h3>制作记录</h3><button id="physics-workflow-refresh" class="text-button">更新</button></div>
-            <p id="physics-workflow-status" class="muted" role="status">从项目加载后查看制作记录</p>
-            <div id="physics-workflow-stages" class="workflow-stages" aria-label="三个制作阶段"></div>
-            <p id="physics-workflow-source" class="workflow-source" hidden></p>
-            <p id="physics-workflow-provenance" class="workflow-note" hidden></p>
-            <details class="workflow-details">
-              <summary>覆盖与装配 <span id="physics-coverage-count">待生成</span></summary>
-              <div id="physics-workflow-coverage"></div>
-              <h4>当前组件的连接</h4><div id="physics-workflow-assemblies"></div>
-            </details>
-            <details class="workflow-details">
-              <summary>标定比较</summary>
-              <label class="field">标定轮次<select id="physics-tuning-round" disabled></select></label>
-              <label class="field">比较输入<select id="physics-tuning-test" disabled></select></label>
-              <div id="physics-tuning-curve" class="physics-response-curve"></div>
-              <div id="physics-workflow-tuning"></div>
-            </details>
-            <details class="workflow-details">
-              <summary>独立复核</summary>
-              <div id="physics-workflow-findings"></div>
-              <h4 id="physics-evidence-state">记录证据 · 待生成</h4>
-              <label class="field">标准输入<select id="physics-evidence-test" disabled></select></label>
-              <div id="physics-evidence-curve" class="physics-response-curve"></div>
-              <div id="physics-evidence-metrics"></div>
-              <ul id="physics-evidence-events" class="workflow-events" aria-label="复核事件"></ul>
-              <button id="physics-evidence-play" disabled>当前配置试播</button>
-            </details>
-          </section>
-          <div id="component-controls" hidden>
-            <section class="panel"><h3>环境风</h3><label class="toggle"><input id="component-wind" type="checkbox" checked>启用微风</label><div class="slider"><div class="slider-head"><label for="component-wind-strength">风力</label><output id="component-wind-value">20%</output></div><input id="component-wind-strength" type="range" min="0" max="100" step="5" value="20"></div><label class="field">风向<select id="component-wind-direction"><option value="0">向右</option><option value="180">向左</option><option value="-90">向上</option><option value="90">向下</option></select></label></section>
-            <section class="panel"><p id="component-info" class="muted"></p><div id="component-response"></div></section>
-            <section class="panel physics-limit-panel"><h3>最大约束</h3><div id="component-limits"></div><p id="component-stats" role="status"></p></section>
-            <section class="panel" id="physics-live-panel" hidden>
-              <details><summary>实时响应</summary>
-                <div class="section-heading"><p id="physics-live-name" class="workflow-note"></p><button id="physics-live-reset" class="text-button">清空</button></div>
-                <div id="physics-live-curve" class="physics-response-curve"></div>
-                <div class="response-legend"><span class="response-root">固定残差</span><span class="response-mid">中段</span><span class="response-tip">末端</span></div>
-                <p class="workflow-note">相对当前支撑姿态的位移；仅观察实时预览。</p>
-              </details>
-            </section>
-            <section class="panel"><label class="field">复核动画<select id="component-test"></select></label><button id="component-save">保存到项目</button></section>
-            <section class="panel"><button id="component-edit">编辑绑定</button><p id="component-edit-hint" class="muted" hidden>拖动绿色固定区、蓝色中心线或橙色轮廓控制点。</p><details><summary>坐标与网格密度</summary><textarea id="component-geometry" rows="14" aria-label="源像素坐标中的固定区、轮廓与网格" spellcheck="false"></textarea><button id="component-geometry-apply">应用活动范围</button></details></section>
-          </div>
           <div id="physics-controls" hidden>
             <section class="panel">
-              <h3>物理组件</h3>
-              <input id="physics-filter" type="search" placeholder="查找名称或类型" aria-label="查找物理组件">
-              <div id="physics-part" class="physics-component-list" role="listbox" aria-label="物理组件"></div>
-              <p id="physics-empty" class="muted" hidden>没有匹配的组件</p>
-              <p class="physics-current">当前编辑：<strong id="physics-selected-name">未选择组件</strong></p>
-              <label class="toggle"><input id="physics-enabled" type="checkbox">开启当前组件</label>
+              <input id="physics-filter" type="search" placeholder="查找部件" aria-label="查找物理部件">
+              <label class="field">部件<select id="physics-part"></select></label>
+              <label class="toggle"><input id="physics-enabled" type="checkbox">启用摆动</label>
               <label class="field">类型<select id="physics-kind"><option value="cloth">布片 / 裙摆</option><option value="ribbon">飘带</option></select></label>
               <label class="field">固定侧<select id="physics-direction"><option value="down">上方固定 · 向下放开</option><option value="up">下方固定 · 向上放开</option><option value="right">左侧固定 · 向右放开</option><option value="left">右侧固定 · 向左放开</option></select></label>
             </section>
@@ -316,19 +251,57 @@
               <label id="physics-case-playback" class="toggle" hidden><input id="physics-demo" type="checkbox">循环演示</label>
               <div class="file-actions"><button id="physics-pause">暂停</button><button id="physics-step">单帧</button><button id="physics-reset">复位</button></div>
               <button id="physics-pulse" class="physics-pulse">单次扰动</button>
-              <label class="field">扰动对象<select id="physics-category"><option value="secondary">飘动物体</option><option value="jelly" disabled>果冻物体 · 未配置</option><option value="all">全部物理</option></select></label>
-              <label class="field">扰动范围<select id="physics-scope"><option value="all">范围内所有组件</option><option value="current">仅当前组件</option></select></label>
+              <label class="field">扰动范围<select id="physics-scope"><option value="current">当前部件</option><option value="all">全部摆动物体</option></select></label>
               <div class="slider"><div class="slider-head"><label for="physics-radius">受力半径</label><output id="physics-radius-value">90 px</output></div><input id="physics-radius" type="range" min="20" max="240" step="5" value="90"></div>
               <div class="slider"><div class="slider-head"><label for="physics-force">扰动力度</label><output id="physics-force-value">70%</output></div><input id="physics-force" type="range" min="10" max="200" step="5" value="70"></div>
-              <p class="muted">选择“扰动”后，鼠标划过施力；当前编辑组件不限制“所有组件”的受力范围。</p>
+              <label class="toggle"><input id="physics-guides" type="checkbox" checked>显示网格与活动边界</label>
+              <p class="muted">绿色为固定区，虚线为活动边界。选择“扰动”后，鼠标划过即可施力。</p>
             </section>
-            <section class="panel"><div class="file-actions"><button id="physics-export">导出配置</button><label class="button">导入配置<input id="physics-import" type="file" accept=".json" hidden></label></div></section>
+          </div>
+        </div>
+        <div id="nine-axis-workspace" role="tabpanel" hidden>
+          <div class="panel-heading"><h2>头部九轴</h2><span class="muted">只预览头部</span></div>
+          <section class="panel">
+            <p id="nine-axis-status" class="muted">打开含头部九轴数据的项目后预览</p>
+            <p id="nine-axis-notes" class="muted"></p>
+          </section>
+          <div id="nine-axis-controls" hidden>
+            <section class="panel">
+              <h3>预览层级</h3>
+              <div class="segmented nine-levels">
+                <button data-nine-level="face">脸＋五官</button><button data-nine-level="hair">＋头发</button><button data-nine-level="accessory">＋头饰</button>
+              </div>
+            </section>
+            <section class="panel">
+              <h3>参数</h3>
+              <div class="nine-param"><span>角度 X</span><input id="nine-axis-angle" type="range" min="-30" max="30" step="0.1" value="0"><input id="nine-axis-angle-number" type="number" min="-30" max="30" step="0.1" value="0"></div>
+              <div class="nine-keys"><span class="muted">关键形</span><div id="nine-axis-keys"></div></div>
+              <label class="toggle"><input id="nine-axis-swing" type="checkbox">自动摆动</label>
+              <p id="nine-axis-other-params" class="muted"></p>
+            </section>
+            <section class="panel">
+              <div class="panel-heading"><h3>变形器</h3><button id="nine-axis-fit">适应</button></div>
+              <div id="nine-axis-tree" aria-label="变形器"></div>
+            </section>
+            <section class="panel" id="nine-axis-selection" hidden>
+              <h3 id="nine-axis-selected-name"></h3>
+              <p id="nine-axis-selected-info" class="muted"></p>
+              <label class="toggle"><input id="nine-axis-grid" type="checkbox" checked>显示变形网格</label>
+              <label class="toggle"><input id="nine-axis-isolate" type="checkbox" checked>淡化其他部件</label>
+              <div class="nine-param"><span>软选择</span><input id="nine-axis-radius" type="range" min="0" max="160" step="2" value="40"><span id="nine-axis-radius-value">40 px</span></div>
+              <p id="nine-axis-edit-hint" class="muted"></p>
+              <button id="nine-axis-reset">还原该关键形</button>
+            </section>
+            <section class="panel">
+              <p id="nine-axis-dirty" class="nine-dirty" hidden></p>
+              <div class="file-actions"><button id="nine-axis-restore">恢复项目数据</button></div>
+            </section>
           </div>
         </div>
         <div id="projection-workspace" role="tabpanel" hidden>
           <div class="panel-heading"><h2>贴图投影</h2><span id="projection-count" class="muted"></span></div>
           <section class="panel">
-            <p id="projection-status" class="muted">从项目加载投影蒙版</p>
+            <p id="projection-status" class="muted">打开项目以加载投影蒙版</p>
             <div id="projection-list" aria-label="投影蒙版"></div>
           </section>
         </div>
@@ -376,40 +349,10 @@
           <div class="map-row">
             <span class="map-icon">N</span>
             <div><b>法线</b><small id="normal-status">未绑定</small></div>
-            <label class="button small map-bind" title="绑定原尺寸法线 PNG"
-              >绑定<input
-                id="file-normal"
-                type="file"
-                accept="image/png"
-                hidden /></label
-            ><button
-              id="remove-normal"
-              class="remove"
-              aria-label="移除法线"
-              hidden
-            >
-              ×
-            </button>
           </div>
           <div class="map-row">
             <span class="map-icon">D</span>
             <div><b>深度</b><small id="depth-status">未绑定</small></div>
-            <label
-              class="button small map-bind"
-              title="绑定白近黑远的原尺寸深度 PNG"
-              >绑定<input
-                id="file-depth"
-                type="file"
-                accept="image/png"
-                hidden /></label
-            ><button
-              id="remove-depth"
-              class="remove"
-              aria-label="移除深度"
-              hidden
-            >
-              ×
-            </button>
           </div>
           <p class="muted" id="map-validity" hidden>
             图层已更改，请为当前合成图更新贴图
@@ -450,29 +393,26 @@
               type="color"
               id="background"
               value="#c9c9ce"
-              title="仅改变预览背景，不写入 PNG"
+              title="仅改变预览背景"
           /></label>
-          <div class="recipe-actions">
-            <button id="export-recipe">保存参数</button
-            ><label class="button"
-              >载入参数<input
-                type="file"
-                id="import-recipe"
-                accept="application/json"
-                hidden
-            /></label>
-          </div>
         </section>
       </aside>
     </main>
     <dialog id="task-dialog">
       <form method="dialog">
-        <h2>从项目加载</h2>
+        <h2>打开项目</h2>
         <button class="dialog-close" aria-label="关闭">×</button>
       </form>
+      <div class="project-base">
+        <span class="muted">基准文件夹</span>
+        <code id="project-directory"></code>
+        <button id="project-base-choose" title="选择服务器上的文件夹，列出其中的任务">选择…</button>
+        <button id="project-base-reset" class="text-button" title="回到设置中的运行目录" hidden>恢复默认</button>
+      </div>
       <div id="project-list" aria-label="项目列表"></div>
       <p id="project-status" class="muted" role="status"></p>
     </dialog>
+    <dialog id="picker-dialog"></dialog>
     <dialog id="project-name-dialog">
       <form id="project-name-form">
         <div class="section-heading"><h2>项目显示名称</h2><button type="button" id="project-name-close" class="dialog-close" aria-label="关闭">×</button></div>

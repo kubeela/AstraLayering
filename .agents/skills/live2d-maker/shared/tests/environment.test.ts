@@ -1,3 +1,5 @@
+import { readStepSession } from '../agents/step-session.ts';
+import { rasterAppServer } from './raster-app-server.ts';
 import {deliverRasterStep, isRasterReview} from './raster-delivery.ts';
 import assert from 'node:assert/strict';
 import { chmod, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises';
@@ -8,8 +10,8 @@ import { loadWorkflowEnvironment, checkCodexCapabilities } from '../codex/enviro
 import { formatAgentError } from '../codex/diagnostics.ts';
 import { runAgent } from '../raster/agent.ts';
 import { runWorkflow } from '../raster/workflow.ts';
-import { pipeline as character } from '../../raster-layering/run.ts';
-import { pipeline as clothing } from '../../clothing-raster-layering/run.ts';
+import { section as character } from '../../raster-layering/run.ts';
+import { section as clothing } from '../../clothing-raster-layering/run.ts';
 import { seedUpstream } from './upstream-fixture.ts';
 
 async function fixture(t: { after(callback: () => Promise<unknown>): void }) {
@@ -32,6 +34,16 @@ test('默认继承 Codex 配置，.env 模型后缀是力度，shell 优先且�
   assert.deepEqual(settings.models.high, { model: 'gpt-6-astra', effort: 'high' });
   assert.equal(settings.codex.codexPathOverride, join(root, 'bin/codex'));
   assert.equal(process.env.layering_high_model, undefined);
+});
+
+test('本机 Krita 并发上限来自 .env，默认取 example.env，非正整数直接报错', async t => {
+  const root = await fixture(t);
+  assert.equal(loadWorkflowEnvironment({}, root).codex.env!.layering_krita_max_instances, '4');
+  await writeFile(join(root, '.env'), 'layering_krita_max_instances=2\n');
+  assert.equal(loadWorkflowEnvironment({}, root).codex.env!.layering_krita_max_instances, '2');
+  assert.equal(loadWorkflowEnvironment({ layering_krita_max_instances: '6' }, root).codex.env!.layering_krita_max_instances, '6');
+  await writeFile(join(root, '.env'), 'layering_krita_max_instances=0\n');
+  assert.throws(() => loadWorkflowEnvironment({}, root), /layering_krita_max_instances 须为正整数/);
 });
 
 test('主模型与生图分别鉴权；只填生图模型不启用，按需准备补丁失败时保留原因', async t => {
@@ -99,17 +111,16 @@ test('独立字节预算保留 env 控制权，Codex 明确拒绝缺少字节保
 });
 
 test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺产物诊断带最后消息', async t => {
-  for (const pipeline of [character, clothing]) await t.test(pipeline.id, async t => {
-    const root = await fixture(t); await seedUpstream('case', pipeline.inputPipeline, root);
+  for (const section of [character, clothing]) await t.test(section.id, async t => {
+    const root = await fixture(t); await seedUpstream('case', section.inputSection, root);
     const environment = loadWorkflowEnvironment({ layering_high_model: 'gpt-6-astra-high' }, root);
-    const directory = join(root, 'case', pipeline.id);
-    const deps = { runsDirectory: root, steps: [pipeline.steps[0]], environment,
-      preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
+    const directory = join(root, 'case', section.id);
+    const deps = { runsDirectory: root, steps: [section.steps[0]], environment,
+      preflight: async (executable: string) => ({ executable }) };
     let failure: unknown;
     try {
-      await runWorkflow(pipeline, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
+      await runWorkflow(section, { name: 'case', krita: process.execPath }, { ...deps, agent: async request => {
         assert.equal(request.model, 'gpt-6-astra'); assert.equal(request.effort, 'high');
-        assert.ok(request.imageRoots?.includes(await realpath(join(root, 'case'))));
         await request.onEvent({ type: 'thread.started', thread_id: 'persistent-thread' });
         await request.onEvent({ type: 'item.completed', item: { type: 'agent_message', id: 'message', text: '当前没有 image_generation 工具，无法绘制。' } });
         return { status: 'completed', summary: '回合已结束' };
@@ -122,30 +133,26 @@ test('两套 raster 续跑读取当前环境模型，仍恢复原 threadId，缺
     assert.match(await readFile(join(directory, 'agents/steps/step01/error.txt'), 'utf8'), /模型最后消息/);
     await assert.rejects(readFile(join(directory, 'step01/.completed')), { code: 'ENOENT' });
     const changed = loadWorkflowEnvironment({ layering_high_model: 'gpt-6.1-sol-low' }, root);
-    await runWorkflow(pipeline, { name: 'case' }, { ...deps, environment: changed, agent: async request => {
-      if (isRasterReview(request)) return deliverRasterStep(request, pipeline.steps[0]);
+    await runWorkflow(section, { name: 'case', krita: process.execPath }, { ...deps, environment: changed, agent: async request => {
+      if (isRasterReview(request)) return deliverRasterStep(request, section.steps[0]);
       assert.equal(request.threadId, 'persistent-thread');
       assert.equal(request.model, 'gpt-6.1-sol'); assert.equal(request.effort, 'low');
-      return deliverRasterStep(request, pipeline.steps[0], 'persistent-thread');
+      return deliverRasterStep(request, section.steps[0], 'persistent-thread');
     } });
-    const config = JSON.parse(await readFile(join(directory, 'run.json'), 'utf8'));
-    assert.equal(config.threadId, 'persistent-thread');
-    assert.equal(config.models, undefined);
+    assert.equal((await readStepSession(directory, 'step01'))?.threadId, 'persistent-thread');
+    await assert.rejects(readFile(join(directory, 'run.json')), { code: 'ENOENT' });
     const attempts = (await readFile(join(directory,'agents/steps/step01/attempts.jsonl'),'utf8')).trim().split('\n').map(line=>JSON.parse(line));
     const draw = attempts.filter(attempt=>attempt.phase==='draw').at(-1);
     assert.equal(draw.model,'gpt-6.1-sol'); assert.equal(draw.effort,'low');
   });
 });
 
-test('raster 正常退出却只返回自然语言时报告原文，不变成晦涩 JSON 错误或重试', async () => {
-  const client = { startThread() { return { async runStreamed() { return { events: (async function* () {
-    yield { type: 'thread.started' as const, thread_id: 'diagnostic-thread' };
-    yield { type: 'item.completed' as const, item: { type: 'agent_message' as const, id: 'm', text: '没有可用的 image_generation。' } };
-    yield { type: 'turn.completed' as const, usage: { input_tokens: 1, cached_input_tokens: 0, output_tokens: 1, cache_write_input_tokens: 0, reasoning_output_tokens: 0 } };
-  })() }; } }; }, resumeThread() { throw new Error('unexpected'); } };
-  await assert.rejects(runAgent({ prompt: 'test', directory: '/tmp', model: 'fixture', effort: 'xhigh', onEvent: async () => {} }, client), error => {
+test('raster 正常退出却只返回自然语言时报告原文，不变成晦涩 JSON 错误或重试', async t => {
+  const server = await rasterAppServer(t, '没有可用的 image_generation。');
+  await assert.rejects(runAgent({ prompt: 'test', directory: server.directory, model: 'gpt-6.1-sol', effort: 'xhigh',
+    environment: server.environment, onEvent: async () => {} }), error => {
     assert.match(formatAgentError(error), /没有返回有效的步骤结果 JSON/);
     assert.match(formatAgentError(error), /没有可用的 image_generation/);
-    assert.match(formatAgentError(error), /diagnostic-thread/); return true;
+    assert.match(formatAgentError(error), /native-thread/); return true;
   });
 });

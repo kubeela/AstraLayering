@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import { createReviewAnnotationTool } from '../raster/review-annotation.ts';
+import { toTaskPaths } from '../task-paths.ts';
 
 async function fixture(t: any) {
   const base = await mkdtemp(join(tmpdir(), 'review-annotation-')), task = join(base, 'case'), cwd = join(task, 'raster-layering');
@@ -16,14 +17,17 @@ async function fixture(t: any) {
   const png = await sharp(image, { raw: { width: 32, height: 32, channels: 4 } }).png().toBuffer();
   await writeFile(join(cwd, 'current.png'), png); await writeFile(join(cwd, 'reference.png'), png);
   const output = join(cwd, 'step01/review-evidence'), tool = createReviewAnnotationTool(cwd, task, output);
-  const call = async (args: any) => JSON.parse(((await tool.execute(args, new AbortController().signal)).contentItems[0] as { text: string }).text);
-  return { base, task, cwd, output, png, call };
+  // Agents name files relative to the task root.
+  const at = (args: any) => ({ ...args, ...Object.fromEntries(['image', 'reference'].filter(k => args[k]).map(k => [k, 'raster-layering/' + args[k]])) });
+  const call = async (args: any) => JSON.parse(((await tool.execute(at(args), new AbortController().signal)).contentItems[0] as { text: string }).text);
+  return { base, task, cwd, output, png, call, at };
 }
 const region = { id: 'R1', bounds: [8, 9, 5, 6], layers: ['side_hair'], description: '头发与脸部衔接不自然' };
 
 test('框选完全保留 reviewer 的问题与坐标；同图仍可标记，局部对照保留上下文与原像素', async t => {
   const f = await fixture(t);
   const result = await f.call({ image: 'current.png', reference: 'reference.png', regions: [region], padding: 2 });
+  assert.equal(result.image, join(f.cwd, 'current.png')); assert.ok(result.manifest.startsWith(join(f.output) + '/') && result.manifest.endsWith('/regions.json'));
   assert.deepEqual(result.regions[0].bounds, region.bounds);
   assert.deepEqual(result.regions[0].layers, region.layers); assert.equal(result.regions[0].description, region.description);
   assert.deepEqual(result.regions[0].crop, [6, 7, 9, 10]);
@@ -34,7 +38,8 @@ test('框选完全保留 reviewer 的问题与坐标；同图仍可标记，局�
   assert.deepEqual(await readFile(join(f.cwd, 'current.png')), f.png);
   assert.deepEqual(await readFile(join(f.cwd, 'reference.png')), f.png);
   assert.notDeepEqual(await readFile(result.marked), f.png);
-  assert.deepEqual(JSON.parse(await readFile(result.manifest, 'utf8')), result);
+  // The manifest keeps task-relative paths; the agent sees them absolute.
+  assert.deepEqual(JSON.parse(await readFile(result.manifest, 'utf8')), toTaskPaths(f.task, result));
   const second = await f.call({ image: 'current.png', regions: [{ ...region, bounds: [0, 0, 1, 2] }], padding: 16 });
   assert.deepEqual(second.regions[0].bounds, [0, 0, 1, 2]);
   assert.deepEqual(second.regions[0].crop, [0, 0, 17, 18]);
@@ -53,12 +58,12 @@ test('无效框、重复编号或缺少图层说明先报错，不发布证据�
   await assert.rejects(readdir(f.output), { code: 'ENOENT' });
 });
 
-test('框选证据的输入与输出均限制于同一任务，拒绝 symlink 逃逸和取消后的写入', async t => {
+test('框选证据支持外部输入、输出及符号链接，取消仍停止执行', async t => {
   const f = await fixture(t), outside = join(f.base, 'outside.png');
   await writeFile(outside, f.png); await symlink(outside, join(f.cwd, 'escaped.png'));
-  await assert.rejects(f.call({ image: 'escaped.png', regions: [region] }), /本次任务/);
+  await f.call({ image: 'escaped.png', regions: [region] });
   const tool = createReviewAnnotationTool(f.cwd, f.task, join(f.base, 'outside-output'));
-  await assert.rejects(tool.execute({ image: 'current.png', regions: [region] }, new AbortController().signal), /本次任务/);
+  assert.equal((await tool.execute(f.at({ image: 'current.png', regions: [region] }), new AbortController().signal)).success, true);
   const controller = new AbortController(); controller.abort(new Error('cancelled'));
-  await assert.rejects(tool.execute({ image: 'current.png', regions: [region] }, controller.signal), /cancelled/);
+  await assert.rejects(tool.execute(f.at({ image: 'current.png', regions: [region] }), controller.signal), /cancelled/);
 });

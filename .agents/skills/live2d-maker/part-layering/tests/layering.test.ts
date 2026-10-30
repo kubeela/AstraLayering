@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
+import { taskRootOf } from '../../shared/task-paths.ts';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
 import { artifactPath, draftPath, readJson, reportPath, reviewedArtifact, svgHash } from '../../shared/part/artifact-facts.ts';
@@ -62,8 +63,8 @@ test('去重修改组写到统一目录，未修改组字节一致；补形和�
   await runLayering({ ...f, groups: null, steps: { ...steps,
     async reduceOutlines(context) { const entry = context.entries.find(entry => entry.group.id === 'accessories')!;
       await writeAtomic(entry.outputPath, reduced); return { status: 'completed', output: { changed: [{ groupId: entry.group.id, path: entry.outputPath }] } }; },
-    async completeOcclusion(context) { assert.match(context.reviewed.path, /layers\/depth01\//); return steps.completeOcclusion(context); },
-    async checkCompletion(context) { assert.match(context.before.path, /layers\/depth01\//); return steps.checkCompletion(context); },
+    async completeOcclusion(context) { assert.match(context.reviewed.path, /step10_reduce\/depth01\//); return steps.completeOcclusion(context); },
+    async checkCompletion(context) { assert.match(context.before.path, /step10_reduce\/depth01\//); return steps.checkCompletion(context); },
   } });
   assert.equal(await readFile(artifactPath(f.directory, 'accessories', 'outline'), 'utf8'), shape('accessories'));
   assert.equal(await readFile(artifactPath(f.directory, 'accessories', 'reduction'), 'utf8'), reduced);
@@ -82,16 +83,21 @@ test('只有 .draft.svg 不能跳过绘制；异常草稿不发布正式 SVG，�
   assert.ok(events.includes('head:outline'));
 });
 
-test('所有绘制、去重、补形及最终合并接口只允许交付指定草稿路径', async t => {
-  const f = await fixture(t), events: string[] = [], steps = workingSteps(events);
-  await assert.rejects(runLayering({ ...f, groups: null, steps: { ...steps, async drawOutline(context) {
-    const other = join(f.directory, 'other.svg'); await writeAtomic(other, shape('head'));
-    return { status: 'completed', output: { path: other } };
-  } } }), /指定的 .draft.svg/);
-  await runLayering({ ...f, groups: null, steps: { ...steps, async completeOcclusion(context) {
-    assert.ok(context.outputPath.endsWith('.draft.svg')); return steps.completeOcclusion(context);
-  } }, mergeSvg: async context => { assert.ok(context.outputPath.endsWith('preview.draft.svg')); return workingMerger(events)(context); } });
-  await assert.rejects(readFile(join(f.directory, 'preview.draft.svg')), { code: 'ENOENT' });
+test('绘制、补全、去重和合并可交付自选 SVG 路径，程序保存正式产物且保留原文件', async t => {
+  const f = await fixture(t), external = await fixture(t), events: string[] = [];
+  const steps = workingSteps(events, [{ id: 'a' }, { id: 'b' }]);
+  const paths: string[] = [];
+  const save = async (file: string, content: string | Buffer) => {
+    const path = join(external.directory, file); await writeAtomic(path, content); paths.push(path); return path;
+  };
+  await runLayering({ ...f, groups: null, steps: { ...steps,
+    async drawOutline(context) { return { status: 'completed', output: { path: await save(`${context.group.id}-outline.svg`, shape(context.group.id)) } }; },
+    async reduceOutlines(context) { return { status: 'completed', output: { changed: [{ groupId: 'a', path: await save('a-reduced.svg', shape('a', 15, 85)) }] } }; },
+    async completeOcclusion(context) { return { status: 'completed', output: { path: await save(`${context.group.id}-completed.svg`, await readFile(context.reviewed.path)) } }; },
+  }, mergeSvg: async () => ({ status: 'completed', output: { path: await save('preview.svg', shape('character')) } }) });
+  for (const path of paths) assert.ok((await readFile(path)).length);
+  for (const id of ['a', 'b']) assert.ok((await readFile(artifactPath(f.directory, id, 'completion'))).length);
+  assert.ok((await readFile(join(f.directory, 'preview.svg'))).length);
 });
 
 test('去重输出没有整批提交记录或只有部分输出时，不消费它们，不提前补形', async t => {
@@ -147,7 +153,7 @@ test('自检失败不分析子组；有效 SVG 不等于自检完成，续跑只
     return { status: 'completed', output: { passed: false as true } };
   } } }), /completion check did not pass/);
   assert.ok(!events.includes('head:children'));
-  assert.equal((await readStep(join(f.directory, groupStepId('head', 2)))).status, 'running');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 'completion')), taskRootOf(f.directory))).status, 'running');
   assert.ok(await readFile(artifactPath(f.directory, 'head', 'completion')));
   assert.equal((await GroupStore.open(f.directory)).snapshot().groups[0].steps.completionCheck.status, 'pending');
   events.length = 0;
@@ -164,7 +170,7 @@ test('分析返回空子组有明确事实记录，重启不会重复分析；�
   events.length = 0;
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(events, []);
-  await rm(join(f.directory, groupStepId('head', 3)), { recursive: true });
+  await rm(join(f.directory, groupStepId('head', 'children')), { recursive: true });
   await runLayering({ ...f, groups: null, steps });
   assert.deepEqual(events, ['head:children']);
 });
@@ -175,13 +181,13 @@ test('分析提交后中断，子组记录已完成；续跑直接进入下一�
     if (message === '[head] 子组分析：完成') throw new Error('interrupt after atomic commit');
   } }), /interrupt after atomic commit/);
   assert.equal((await readJson(reportPath(f.directory, 'head', 'children'))).groups[0].id, 'head/eye');
-  assert.equal((await readStep(join(f.directory, groupStepId('head', 3)))).status, 'completed');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 'children')), taskRootOf(f.directory))).status, 'completed');
   events.length = 0;
   await runLayering({ ...f, groups: null, steps });
   assert.ok(!events.includes('head:children'));
   assert.ok(events.includes('head/eye:outline'));
   assert.ok(await readFile(artifactPath(f.directory, 'head/eye', 'outline')));
-  assert.match(artifactPath(f.directory, 'head/eye', 'outline'), /groups\/head\/children\/eye\/step01\/outline\.svg$/);
+  assert.match(artifactPath(f.directory, 'head/eye', 'outline'), /step09_outline\/head\/children\/eye\/outline\.svg$/);
   await writeAtomic(reportPath(f.directory, 'head', 'children'), JSON.stringify({ groupId: 'head', groups: [] }));
   await assert.rejects(runLayering({ ...f, groups: null, steps }), /产物被改动/);
 });
@@ -272,7 +278,7 @@ test('jianma 成果归档恢复 115 节点的完整结构与复核事实', async
     t.skip('仅仓库验收：独立安装的 skill 不携带 demos/jianma 成果归档');
     return;
   }
-  await stat(new URL('initial/step01/.completed', directory));
+  await stat(new URL('step08_initial/.completed', directory));
   const store = await GroupStore.open(fileURLToPath(directory));
   const groups = store.snapshot().groups;
   assert.equal(groups.length, 8);

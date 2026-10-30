@@ -6,10 +6,8 @@ import { completeGroupOcclusion, checkGroupCompletion } from './completion-agent
 import { analyzeChildren } from './children-agent.ts';
 import { planPartOcclusion } from './occlusion-agent.ts';
 import type { LayeringSteps } from './layering-types.ts';
-import { readFile, mkdir, appendFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
 import type { GroupContext } from './layering-types.ts';
-import { writeAtomic } from './groups.ts';
+import { readStepSession, writeStepSession, type StepSession } from '../agents/step-session.ts';
 import type { Harness } from '../agents/models.ts';
 import { groupStepId } from './part-steps.ts';
 
@@ -18,25 +16,18 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
   // Request/session data is separate from artwork. Resetting a step clears
   // its saved session too; continuation retains both session and workspace.
   const sessions = new Map<string, AgentSession>();
-  async function stepSession(context: GroupContext, step: 1 | 2): Promise<AgentSession> {
+  async function stepSession(context: GroupContext, step: 'outline' | 'completion'): Promise<AgentSession> {
     const key = groupStepId(context.group.id, step);
     let session = sessions.get(key);
     if (!session) {
       if (!agents.createSession) throw new Error('轮廓绘制和补全需要可复用的 agent 会话');
-      const path = join(context.directory, 'agents', 'steps', key, 'session.json');
-      let saved: { threadId?: string; harness?: Harness } = {};
-      try { saved = JSON.parse(await readFile(path, 'utf8')); }
-      catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-        try { saved = JSON.parse(await readFile(join(context.directory, key, 'session.json'), 'utf8')); }
-        catch (legacy) { if ((legacy as NodeJS.ErrnoException).code !== 'ENOENT') throw legacy; }
-      }
-      await mkdir(dirname(path), { recursive: true });
+      // The same per-step session store as raster steps (step-session.ts).
+      let saved: StepSession = await readStepSession(context.directory, key) ?? {};
       const persist = async (threadId: string | null, harness?: Harness) => {
-        if (saved.threadId && saved.threadId !== threadId) await appendFile(path + '.history.jsonl', JSON.stringify({
-          ...saved, replacedAt: new Date().toISOString() }) + '\n');
-        saved = { threadId: threadId || undefined, harness: harness || saved.harness };
-        await writeAtomic(path, JSON.stringify(saved, null, 2) + '\n');
+        const next = { threadId: threadId || undefined, harness: harness || saved.harness };
+        if (next.threadId === saved.threadId && next.harness === saved.harness) return;
+        await writeStepSession(context.directory, key, next);
+        saved = next;
       };
       const inner = agents.createSession(saved.threadId, {
         resumeHarness: saved.harness,
@@ -57,7 +48,7 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
     }
     return session;
   }
-  async function closeSession(context: GroupContext, step: 1 | 2) {
+  async function closeSession(context: GroupContext, step: 'outline' | 'completion') {
     const key = groupStepId(context.group.id, step), session = sessions.get(key);
     sessions.delete(key);
     await session?.close();
@@ -70,17 +61,17 @@ export function createLayeringSteps(agents: Pick<CodexAgents, 'run'> & Partial<P
     },
     initialGroups: async context => ({ status: 'completed', output: await recognizeInitialGroups(context, agents) }),
     drawOutline: async context => {
-      try { return { status: 'completed', output: await drawGroupOutline(context, await stepSession(context, 1)) }; }
-      catch (error) { await closeSession(context, 1); throw error; }
+      try { return { status: 'completed', output: await drawGroupOutline(context, await stepSession(context, 'outline')) }; }
+      catch (error) { await closeSession(context, 'outline'); throw error; }
     },
     reviewOutline: async context => {
-      try { return await reviewGroupOutline(context, agents, await stepSession(context, 1)); }
-      finally { await closeSession(context, 1); }
+      try { return await reviewGroupOutline(context, agents, await stepSession(context, 'outline')); }
+      finally { await closeSession(context, 'outline'); }
     },
     reduceOutlines: async context => ({ status: 'completed', output: await reduceGroupOutlines(context, agents) }),
     completeOcclusion: async context => {
-      try { return { status: 'completed', output: await completeGroupOcclusion(context, await stepSession(context, 2)) }; }
-      finally { await closeSession(context, 2); }
+      try { return { status: 'completed', output: await completeGroupOcclusion(context, await stepSession(context, 'completion')) }; }
+      finally { await closeSession(context, 'completion'); }
     },
     checkCompletion: async context => ({ status: 'completed', output: await checkGroupCompletion(context) }),
     splitChildren: async context => ({ status: 'completed', output: await analyzeChildren(context, agents) }),

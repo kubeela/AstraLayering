@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { errorDetails, errorMessage } from '../agents/errors.ts';
 import { agentCallError, agentOutcomeError, formatAgentError } from '../codex/diagnostics.ts';
-import { AgentCallError, AgentRuntime, retryableAgentError } from '../codex/agent-runtime.ts';
+import { AgentCallError, AgentRuntime, recoverableAgentError, retryableAgentError } from '../codex/agent-runtime.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { runCliTask } from '../agents/cli.ts';
@@ -13,12 +13,14 @@ import { parseAgentModel } from '../agents/models.ts';
 import { runAgent } from '../raster/agent.ts';
 import {AgentLog} from '../codex/agent-log.ts';
 import {setTimeout as delay} from 'node:timers/promises';
+import { nodeExecutables } from '../../part-layering/tests/node-executables.ts';
 import { patchedCodexCapabilities } from './fake-codex.ts';
 
 const payload = { message: 'Provider rejected this reference', code: 'bad_reference',
   type: 'invalid_request_error', param: 'input[0]', status: 400, request_id: 'provider-request-123' };
 
 async function fixture(t: TestContext) {
+  nodeExecutables(t);
   const root = await mkdtemp(join(tmpdir(), 'layering-errors-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   const cwd = join(root, 'case'); await mkdir(cwd);
@@ -38,6 +40,31 @@ async function savedFailure(error: AgentCallError, cwd: string) {
   assert.match(formatAgentError(error), /模型最后消息/);
   assert.match(formatAgentError(error), /provider-request-123/);
   return result;
+}
+
+// An app server that fails the turn in the given mode after a saved draft message.
+async function errorServer(root: string, mode: string) {
+  const executable = join(root, 'codex.mjs');
+  await writeFile(executable, `#!${process.execPath}
+import { createInterface } from 'node:readline';
+if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
+const payload=${JSON.stringify(payload)}, mode=${JSON.stringify(mode)};
+const emit=value=>console.log(JSON.stringify(value));
+for await (const line of createInterface({input:process.stdin})) {
+ const message=JSON.parse(line);
+ if(message.method==='initialize')emit({id:message.id,result:{}});
+ if(message.method==='thread/start')emit({id:message.id,result:{thread:{id:'app-server-thread'}}});
+ if(message.method==='turn/start') {
+  if(mode==='rpc'){emit({id:message.id,error:{code:-32603,message:'RPC failed',data:{error:payload}}});continue;}
+  emit({id:message.id,result:{turn:{id:'turn'}}});
+  emit({method:'item/completed',params:{threadId:'app-server-thread',turnId:'turn',item:{type:'agentMessage',text:'当前草稿已保存'}}});
+  emit({method:'error',params:{threadId:'app-server-thread',turnId:'turn',willRetry:true,error:payload}});
+  if(mode==='eof')process.exit(0);
+  emit({method:'turn/completed',params:{threadId:'app-server-thread',turn:{id:'turn',status:mode==='recovered'?'completed':'failed',error:mode==='recovered'?null:{...payload,codexErrorInfo:'other'}}}});
+ }
+}
+`, { mode: 0o700 });
+  return executable;
 }
 
 test('error snapshots retain nested provider details and causes without serializing SDK request credentials', () => {
@@ -71,26 +98,7 @@ for (const mode of ['rpc', 'turn', 'eof', 'recovered']) test(`Codex App Server $
     });
   }
   const f = await fixture(t);
-  const executable = join(f.root, 'codex.mjs');
-  await writeFile(executable, `#!${process.execPath}
-import { createInterface } from 'node:readline';
-if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
-const payload=${JSON.stringify(payload)}, mode=${JSON.stringify(mode)};
-const emit=value=>console.log(JSON.stringify(value));
-for await (const line of createInterface({input:process.stdin})) {
- const message=JSON.parse(line);
- if(message.method==='initialize')emit({id:message.id,result:{}});
- if(message.method==='thread/start')emit({id:message.id,result:{thread:{id:'app-server-thread'}}});
- if(message.method==='turn/start') {
-  if(mode==='rpc'){emit({id:message.id,error:{code:-32603,message:'RPC failed',data:{error:payload}}});continue;}
-  emit({id:message.id,result:{turn:{id:'turn'}}});
-  emit({method:'item/completed',params:{item:{type:'agentMessage',text:'当前草稿已保存'}}});
-  emit({method:'error',params:{threadId:'app-server-thread',willRetry:true,error:payload}});
-  if(mode==='eof')process.exit(0);
-  emit({method:'turn/completed',params:{turn:{status:mode==='recovered'?'completed':'failed',error:mode==='recovered'?null:{...payload,codexErrorInfo:'other'}}}});
- }
-}
-`, { mode: 0o700 });
+  const executable = await errorServer(f.root, mode);
   const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.root), codexPathOverride: executable, cwd: f.cwd, logDirectory: f.logDirectory });
   const session = agents.createSession();
   try {
@@ -117,39 +125,14 @@ for await (const line of createInterface({input:process.stdin})) {
   } finally { await session.close(); }
 });
 
-test('real Codex SDK adapter preserves turn.failed fields and last message in failure records', async t => {
+test('raster steps keep turn failure details without retrying', async t => {
   const f = await fixture(t);
-  const executable = join(f.root, 'codex-sdk.mjs');
-  await writeFile(executable, `#!${process.execPath}
-if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
-for await(const chunk of process.stdin){}
-for(const event of ${JSON.stringify([
-    { type: 'thread.started', thread_id: 'sdk-thread' },
-    { type: 'item.completed', item: { type: 'agent_message', id: 'msg', text: '当前草稿已保存' } },
-    { type: 'turn.failed', error: payload },
-  ])})console.log(JSON.stringify(event));
-`, { mode: 0o700 });
-  const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, f.root), codexPathOverride: executable, cwd: f.cwd, logDirectory: f.logDirectory });
-  let failure: AgentCallError | undefined;
-  await assert.rejects(agents.run({ name: 'sdk-error', prompt: 'same task' }), error => {
-    assert.ok(error instanceof AgentCallError); failure = error;
-    assert.deepEqual(error.details, payload); return true;
-  });
-  const record = await savedFailure(failure!, f.cwd);
-  assert.equal(record.finalResponse, '当前草稿已保存');
-});
-
-test('raw raster SDK path keeps turn.failed details without retrying or replacing its thread', async () => {
-  const client = { startThread() { return { async runStreamed() { return { events: (async function* () {
-    yield { type: 'thread.started', thread_id: 'raster-thread' };
-    yield { type: 'item.completed', item: { id: 'msg', type: 'agent_message', text: '草稿已保存' } };
-    yield { type: 'turn.failed', error: payload };
-  })() }; } }; }, resumeThread() { assert.fail('unexpected replacement'); } };
-  await assert.rejects(runAgent({ prompt: 'same task', directory: '/tmp', model: 'fixture', effort: 'low', onEvent: async () => {} },
-    client as Parameters<typeof runAgent>[1], new AgentRuntime(1, async () => assert.fail('must not retry'))), error => {
+  const environment = loadWorkflowEnvironment({ layering_codex_path: await errorServer(f.root, 'turn') }, f.root);
+  await assert.rejects(runAgent({ prompt: 'same task', directory: f.cwd, model: 'gpt-6.1-sol', effort: 'low', environment, onEvent: async () => {} },
+    new AgentRuntime(1, async () => assert.fail('must not retry'))), error => {
     assert.ok(error instanceof AgentCallError);
-    assert.deepEqual(error.details, payload); assert.equal(error.threadId, 'raster-thread');
-    assert.match(formatAgentError(error), /草稿已保存/); return true;
+    assert.match(JSON.stringify(error.details), /bad_reference/); assert.equal(error.threadId, 'app-server-thread');
+    assert.match(formatAgentError(error), /当前草稿已保存/); return true;
   });
 });
 
@@ -177,4 +160,46 @@ process.exit(3);
   const record = await savedFailure(failure!, f.cwd);
   assert.equal(record.processExitCode, 3);
   assert.equal(record.finalResponse, '当前草稿已保存');
+});
+
+test('known errors with a remedy are recovered at once without the retry budget; without one they fail fast', async () => {
+  assert.equal(recoverableAgentError(new AgentCallError('content_policy_violation', 'other')), 'blockedImages');
+  assert.equal(recoverableAgentError(new AgentCallError('thread not found: 019a', undefined)), 'unavailableSession');
+  assert.equal(recoverableAgentError(new AgentCallError('原 session 不可用：CLI 未恢复 a，返回了新的会话 ID b')), 'unavailableSession');
+  const refused = new AgentCallError("API Error: Opus 5.5's safeguards flagged this message. Try rephrasing the request in a new session or change your model.", { refusal: { category: 'reasoning_extraction' } });
+  assert.equal(recoverableAgentError(refused), 'modelRefusal');
+  assert.equal(retryableAgentError(refused), false);
+  assert.equal(recoverableAgentError(new AgentCallError('x', 'contextWindowExceeded')), 'contextWindow');
+  assert.equal(recoverableAgentError(new AgentCallError('prompt is too long: 210000 tokens', { cliFailed: {} })), 'contextWindow');
+  assert.equal(recoverableAgentError(new AgentCallError('The input token count (1200000) exceeds the maximum number of tokens allowed (1048576).', { apiError: { httpStatusCode: 400 } })), 'contextWindow');
+  assert.equal(recoverableAgentError(new AgentCallError('x', { apiError: { httpStatusCode: 413 } })), 'imageOverflow');
+  assert.equal(recoverableAgentError(new AgentCallError('too many images per request', { apiError: { httpStatusCode: 429 } })), 'imageOverflow');
+  assert.equal(recoverableAgentError(new AgentCallError('too many images per minute, rate limit', { apiError: { httpStatusCode: 429 } })), undefined);
+  for (const kind of ['contextWindowExceeded', { apiError: { httpStatusCode: 413 } }])
+    assert.equal(retryableAgentError(new AgentCallError('x', kind)), false);
+  // Local failures have nothing to do with the channel.
+  assert.equal(retryableAgentError(new AgentCallError('App Server RPC 调用失败')), false);
+  assert.equal(retryableAgentError(new AgentCallError('invalid api key · please run /login', { cliFailed: {} })), false);
+  // A failed turn without a code came from the channel; Gemini's throttle mentions quota but waits.
+  assert.equal(retryableAgentError(new AgentCallError('回合状态：failed', 'turnFailed')), true);
+  for (const text of ['Resource has been exhausted (e.g. check quota).', 'Quota exceeded for metric: generate_content_requests_per_minute. Please retry in 30s.'])
+    assert.equal(retryableAgentError(new AgentCallError(text, { apiError: { httpStatusCode: 429 } })), true);
+  for (const text of ['You exceeded your current quota, please check your plan and billing details.', 'insufficient_quota', 'Quota exceeded for metric generate_requests_per_day'])
+    assert.equal(retryableAgentError(new AgentCallError(text, { apiError: { httpStatusCode: 429 } })), false);
+
+  const waits: number[] = [];
+  const runtime = new AgentRuntime(1, async ms => { waits.push(ms); }, () => 0);
+  const attempts: number[] = [];
+  let recovered = 0;
+  const result = await runtime.run(async attempt => {
+    attempts.push(attempt);
+    if (attempts.length === 1) throw new AgentCallError('x', 'contextWindowExceeded');
+    if (attempts.length === 2) throw new AgentCallError('overloaded', 'serverOverloaded');
+    return 'done';
+  }, { recover: async error => recoverableAgentError(error) === 'contextWindow' && ++recovered === 1 });
+  assert.equal(result, 'done'); assert.equal(recovered, 1);
+  assert.deepEqual(attempts, [1, 1, 2]); assert.deepEqual(waits, [2_500]);
+  await assert.rejects(runtime.run(async () => { throw new AgentCallError('x', 'contextWindowExceeded'); },
+    { recover: async () => false }), /x/);
+  assert.equal(waits.length, 1);
 });

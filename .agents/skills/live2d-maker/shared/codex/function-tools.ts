@@ -8,8 +8,10 @@ export type FunctionTool = {
   name: string;
   description: string;
   inputSchema: Record<string, unknown>;
+  // Stage restrictions also apply after section-specific tool definitions load.
+  omitParameters?: readonly string[];
   execute(argumentsValue: unknown, signal: AbortSignal,
-    context?: { directory: string; outputDirectory: string; workspace: string }): Promise<ToolResult>;
+    context?: { root: string; directory: string; outputDirectory: string; workspace: string }): Promise<ToolResult>;
 };
 
 export function textResult(value: unknown): ToolResult {

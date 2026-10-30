@@ -3,8 +3,8 @@ import { test } from 'node:test';
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { executionPaths, legacyOutputDirectory, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
-import { contextImages, prepareFileInputs, referencesDirectory } from '../agents/inputs.ts';
+import { executionPaths, prepareWorkspace, workspacePrompt } from '../agents/workspace.ts';
+import { prepareFileInputs, referencesDirectory } from '../agents/inputs.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { textResult } from '../codex/function-tools.ts';
@@ -19,8 +19,6 @@ async function fixture(t: { after(callback: () => Promise<unknown>): void }) {
 test('input preparation only materializes requested files in references and leaves upstream/context inputs unchanged', async t => {
   const root = await fixture(t), output = join(root, 'step02'), source = join(root, 'upstream.png');
   const bytes = Buffer.from([0, 1, 2, 255]); await writeFile(source, bytes);
-  assert.deepEqual(contextImages([{ path: 'upstream.png', description: 'reference' }], root),
-    [{ path: source, description: 'reference' }]);
   assert.deepEqual(await prepareFileInputs(output, []), {});
   await assert.rejects(readFile(join(referencesDirectory(output), 'upstream.png')), { code: 'ENOENT' });
   const inputs = await prepareFileInputs(output, [
@@ -60,16 +58,15 @@ test('native Codex executes and resumes in the step workspace; tools keep their 
   }
   for (const result of [first, second]) {
     const request = JSON.parse(await readFile(join(result.logDirectory!, 'request.json'), 'utf8'));
-    assert.equal(request.workspace, paths.workspace); assert.equal(request.outputDirectory, output);
+    // Request records are task-relative.
+    assert.equal(request.workspace, 'step01/workspace'); assert.equal(request.outputDirectory, 'step01');
     assert.ok(result.logDirectory!.startsWith(join(root, 'agents/')));
     assert.equal(request.prompt, workspacePrompt('draw', paths));
   }
   assert.equal(await readFile(join(paths.workspace, 'arbitrary/01/draft.py'), 'utf8'), 'intermediate');
-  assert.equal(legacyOutputDirectory({ cwd: root, step: 'part_children', name: '直属结构拆分-face/eye' }, root),
-    join(root, 'groups/face/children/eye/step03'));
   // Unknown work stays in its own directory instead of a guessed step.
   assert.equal(executionPaths({ cwd: root }, root).workspace, join(root, 'workspace'));
-  assert.equal(executionPaths({ cwd: root, step: 'part_base_subject' }, root).workspace, join(root, 'preparation/step07/workspace'));
+  assert.equal(executionPaths({ cwd: root, step: 'part_base_subject' }, root).workspace, join(root, 'step06_base/workspace'));
 });
 
 test('report publication preserves bytes and the chosen folder, and leaves unrelated intermediates in workspace', async t => {
@@ -88,7 +85,28 @@ test('report publication preserves bytes and the chosen folder, and leaves unrel
   await assert.rejects(readFile(join(paths.outputDirectory, 'unrelated.py')), { code: 'ENOENT' });
 });
 
-test('Codex changes workspace/tools by reconnecting to the same thread and keeps formal write access', async t => {
+test('report publication leaves a cited path that names no file as written', async t => {
+  const root = await fixture(t), paths = await prepareWorkspace({ cwd: root, outputDirectory: 'step01' }, root);
+  const report = join(paths.outputDirectory, 'review-01.md.tmp');
+  const text = `结论：通过\n\n\`${'很长的说明'.repeat(60)}.png\` 与 \`missing/zoom.png\`\n`;
+  await writeFile(report, text);
+  await publishReportAssets(report, paths.workspace);
+  assert.equal(await readFile(report, 'utf8'), text);
+});
+
+test('report publication rewrites the link target even when the label repeats it, and skips non-files', async t => {
+  const root = await fixture(t), paths = await prepareWorkspace({ cwd: root, outputDirectory: 'step01' }, root);
+  await mkdir(join(paths.workspace, 'zoom'), { recursive: true });
+  await writeFile(join(paths.workspace, 'zoom/a.png'), 'image');
+  await mkdir(join(paths.workspace, 'folder.png'));
+  const report = join(paths.outputDirectory, 'review-01.md.tmp');
+  await writeFile(report, '结论：通过\n\n[zoom/a.png](workspace/zoom/a.png) [workspace/zoom/a.png](workspace/zoom/a.png) `workspace/folder.png`\n');
+  await publishReportAssets(report, paths.workspace);
+  assert.equal(await readFile(report, 'utf8'), '结论：通过\n\n[zoom/a.png](zoom/a.png) [workspace/zoom/a.png](zoom/a.png) `workspace/folder.png`\n');
+  assert.equal(await readFile(join(paths.outputDirectory, 'zoom/a.png'), 'utf8'), 'image');
+});
+
+test('Codex changes tools by reconnecting to the same thread and keeps formal write access', async t => {
   const root = await fixture(t), server = await fakeAppServer(root, [{ tool: 'deliver', arguments: {} }]);
   const agents = new CodexAgents({ environment: loadWorkflowEnvironment({}, root), cwd: root,
     logDirectory: join(root, 'agents'), codexPathOverride: server.executable });
@@ -108,8 +126,8 @@ test('Codex changes workspace/tools by reconnecting to the same thread and keeps
   assert.deepEqual(starts.map(call => call.method), ['thread/start', 'thread/resume']);
   assert.equal(starts[1].params.threadId, 'native-thread');
   for (const [index, call] of starts.entries()) {
-    const output = join(root, `step0${index + 1}`);
-    assert.equal(call.params.cwd, join(output, 'workspace'));
-    assert.deepEqual(call.params.config['sandbox_workspace_write.writable_roots'], [output]);
+    assert.equal(call.params.cwd, join(root, ['step01', 'step02'][index], 'workspace'));
+    assert.equal(call.params.sandbox, 'danger-full-access');
+    assert.equal(call.params.config['sandbox_workspace_write.writable_roots'], undefined);
   }
 });

@@ -18,7 +18,7 @@ export type AgentModel = { model: ModelId; effort: ReasoningEffort; harness: Har
 export const modelSlots = [
   'preparation', 'part_draw', 'part_review', 'part_reduce', 'part_completion',
   'part_groups', 'part_depth', 'raster_step01', 'raster_step02', 'raster_step01_review',
-  'raster_step03', 'assembly', 'shadow', 'physics_analysis', 'physics_authoring', 'physics_review',
+  'raster_step03', 'assembly', 'shadow',
 ] as const;
 export type ModelSlot = typeof modelSlots[number];
 export function resolveModelDefaults(configuration: DefaultConfiguration): Readonly<Record<ModelSlot, string>> {
@@ -44,7 +44,7 @@ export const stepModelSlots = {
   raster_step03: 'raster_step03',
   clothing_raster_step01: 'raster_step01', clothing_raster_step02: 'raster_step02',
   clothing_raster_step01_review: 'raster_step01_review', clothing_raster_step01_repair: 'raster_step01',
-  assembly: 'assembly', shadow_mask: 'shadow', shadow_maps: 'shadow', physics_analysis: 'physics_analysis', physics_authoring: 'physics_authoring', physics_review: 'physics_review',
+  assembly: 'assembly', shadow_mask: 'shadow', shadow_maps: 'shadow',
 } as const satisfies Record<string, ModelSlot>;
 export type AgentStep = keyof typeof stepModelSlots;
 export const stepDefaults = Object.fromEntries(Object.entries(stepModelSlots)
@@ -64,8 +64,8 @@ export function parseAgentModel(value: string, key: string): AgentModel {
   const model = match[1] as ModelId;
   return { model, effort: match[2] as ReasoningEffort, harness: modelHarnesses[model] };
 }
-export function partStep(pipeline: 'part-layering' | 'clothing-part-layering', kind: string): AgentStep {
-  const key = `${pipeline === 'part-layering' ? 'part' : 'clothing'}_${kind}`;
+export function partStep(section: 'part-layering' | 'clothing-part-layering', kind: string): AgentStep {
+  const key = `${section === 'part-layering' ? 'part' : 'clothing'}_${kind}`;
   if (!Object.hasOwn(stepDefaults, key)) throw new Error(`未知 agent 小步骤：${key}`);
   return key as AgentStep;
 }

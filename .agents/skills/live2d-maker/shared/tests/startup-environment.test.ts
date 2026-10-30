@@ -63,22 +63,23 @@ test('preflight checks only selected harnesses once, and reports missing interpr
   await assert.rejects(checkAgentCli(settings, 'agv'), /没有可用的全局入口/);
 });
 
-test('Krita preflight preserves a missing library diagnostic and rejects a missing installation', { skip: process.platform === 'win32' }, async t => {
-  const root = await fixture(t), executable = join(root, 'krita');
-  await writeFile(executable, '#!/bin/sh\nprintf "error: libxcb.so missing\\n" >&2\nexit 127\n', { mode: 0o700 });
-  await assert.rejects(checkKrita(executable, undefined, { PATH: '' }), error => {
-    assert.match(String(error), /Krita 无法启动/);
-    assert.match(String((error as Error).cause), /libxcb/);
-    return true;
-  });
+test('Krita preflight rejects a missing installation without starting Krita', { skip: process.platform === 'win32' }, async t => {
+  const root = await fixture(t), executable = join(root, 'krita'), started = join(root, 'started');
+  await writeFile(executable, `#!/bin/sh\ntouch ${JSON.stringify(started)}\n`, { mode: 0o700 });
+  assert.deepEqual(await checkKrita(executable, { PATH: '', DISPLAY: ':1' }), { executable });
+  await assert.rejects(readFile(started), /ENOENT/);
   await assert.rejects(checkKrita(join(root, 'missing')), /不存在或不可执行/);
 });
 
 test('Linux Krita routes reject missing display configuration before drawing and accept explicit desktop/headless settings', { skip: process.platform !== 'linux' }, async t => {
   const root = await fixture(t), executable = join(root, 'krita');
-  await writeFile(executable, '#!/bin/sh\nprintf "krita 5.3.4\\n"\n', { mode: 0o700 });
-  await assert.rejects(checkKrita(executable, undefined, { PATH: '' }), /没有显示配置.*headless/);
+  await writeFile(executable, '#!/bin/sh\n', { mode: 0o700 });
+  await assert.rejects(checkKrita(executable, { PATH: '' }), /找不到虚拟桌面 Xvfb（Xvfb）.*apt install xvfb.*「继续」/);
+  const xvfb = join(root, 'Xvfb');
+  await writeFile(xvfb, '#!/bin/sh\n', { mode: 0o700 });
+  assert.equal((await checkKrita(executable, { PATH: root })).executable, executable);
+  await assert.rejects(checkKrita(executable, { PATH: root, ASTRA_STUDIO_XVFB: join(root, 'missing-xvfb') }), /missing-xvfb/);
   for (const display of [{ DISPLAY: ':1' }, { WAYLAND_DISPLAY: 'wayland-0' }, { QT_QPA_PLATFORM: 'offscreen' }]) {
-    assert.equal((await checkKrita(executable, undefined, { PATH: '', ...display })).version, '5.3.4');
+    assert.equal((await checkKrita(executable, { PATH: '', ...display })).executable, executable);
   }
 });

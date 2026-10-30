@@ -8,9 +8,11 @@ import { drawGroupOutline, reviewGroupOutline } from '../../shared/part/outline-
 import { fixture, seedInitialGroups, shape } from './layering-fixture.ts';
 import { nodeExecutables } from './node-executables.ts';
 import { patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
+import { promptInput } from '../../shared/tests/prompt-input.ts';
 
 const signal = new AbortController().signal;
-const inputs = (task: AgentTask) => JSON.parse(task.prompt.match(/【本次输入】\n([\s\S]*?\n})\n/)![1]);
+// Repair turns rely on the drawing turn's input; without a thread the mock reads it from the recovery text.
+const inputs = (task: AgentTask) => promptInput(task.prompt.includes('【本次输入】') ? task.prompt : task.recoveryPrompt!);
 const tool = (task: AgentTask, name: string) => task.tools!.find(item => item.name === name)!;
 
 async function noteFixture(t: TestContext, note: string) {
@@ -20,10 +22,10 @@ async function noteFixture(t: TestContext, note: string) {
     { id: 'tail', kind: 'part', name: 'tail', note: '独立长幅', metadata: { preserved: true } },
   ]);
   const store = await GroupStore.open(f.directory);
-  const candidate = join(f.directory, 'groups/band/step01/outline.svg');
+  const candidate = join(f.directory, 'step09_outline/band/outline.svg');
   await writeAtomic(candidate, shape('band'));
   return { ...f, store, group: findGroup(store.snapshot(), 'band'), outline: { path: candidate },
-    outputPath: candidate, reportPath: join(f.directory, 'groups/band/step01/review.json') };
+    outputPath: candidate, reportPath: join(f.directory, 'step09_outline/band/review.json') };
 }
 
 test('note-only feedback is persisted and visible to the next reviewer without changing correct geometry', async t => {
@@ -58,6 +60,10 @@ test('note-only feedback is persisted and visible to the next reviewer without c
 test('note repair is bound to one group, requires a unique match and preserves concurrent updates', async t => {
   const f = await noteFixture(t, '重复；重复；原层序');
   await drawGroupOutline(f, { async run(task) {
+    // Without the drawing thread, the recovery prompt restores the drawing task before the repair.
+    assert.doesNotMatch(task.prompt, /对照纯衣服参考与本组 note|【本次输入】/);
+    assert.match(task.prompt, /review.json 中 reviews 最后一条（第 1 轮 review）/);
+    assert.match(task.recoveryPrompt!, /对照纯衣服参考与本组 note[\s\S]*原绘制会话不可用[\s\S]*review.json 中 reviews 最后一条/);
     const update = tool(task, 'update_group_note');
     await assert.rejects(update.execute({ oldText: '原层序', newText: '新层序', groupId: 'tail' }, signal), /仅提交/);
     await assert.rejects(update.execute({ oldText: '重复', newText: '新说明' }, signal), /唯一匹配/);
@@ -71,7 +77,7 @@ test('note repair is bound to one group, requires a unique match and preserves c
     assert.equal(findGroup(f.store.snapshot(), 'band').note, '本组已被其他调用更新');
     await tool(task, 'preview_svg').execute({ path: inputs(task).outputSvg, mode: 'blend' }, signal);
     return { text: 'checked', images: [] };
-  } }, { candidate: f.outline.path, feedback: '修正层序说明' });
+  } }, { candidate: f.outline.path, round: 1 });
   const saved = JSON.parse(await readFile(f.store.path, 'utf8'));
   assert.equal(saved.groups[0].note, '本组已被其他调用更新');
   assert.equal(saved.groups[1].note, '另一组的并发更新');
@@ -100,14 +106,16 @@ import { createInterface } from 'node:readline';
 import { appendFileSync } from 'node:fs';
 const send = value => process.stdout.write(JSON.stringify(value) + '\\n');
 if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))}); process.exit(0); }
+let turns = 0;
 for await (const line of createInterface({ input: process.stdin })) {
   const message = JSON.parse(line);
   appendFileSync(${JSON.stringify(requests)}, JSON.stringify(message) + '\\n');
   if (message.method === 'initialize') send({ id: message.id, result: {} });
   if (message.method === 'thread/start') send({ id: message.id, result: { thread: { id: 'drawing-thread' } } });
   if (message.method === 'turn/start') {
-    send({ id: message.id, result: {} });
-    send({ method: 'turn/completed', params: { turn: { status: 'completed' } } });
+    const turn = { id: 'turn-' + ++turns, status: 'inProgress' };
+    send({ id: message.id, result: { turn } });
+    send({ method: 'turn/completed', params: { threadId: 'drawing-thread', turn: { ...turn, status: 'completed' } } });
   }
 }
 `, 'utf8');
@@ -124,10 +132,15 @@ for await (const line of createInterface({ input: process.stdin })) {
     return result;
   } };
   await drawGroupOutline(f, drawing);
-  await drawGroupOutline(f, drawing, { candidate: f.outline.path, feedback: '只修正说明，保留轮廓' });
+  await drawGroupOutline(f, drawing, { candidate: f.outline.path, round: 1 });
   assert.deepEqual(threads, ['drawing-thread', 'drawing-thread']);
   assert.equal(findGroup((await GroupStore.open(f.directory)).snapshot(), 'band').note, '修正说明');
   const messages = (await readFile(requests, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(messages.filter(message => message.method === 'thread/start').length, 1);
-  assert.equal(messages.filter(message => message.method === 'turn/start').length, 2);
+  const turns = messages.filter(message => message.method === 'turn/start').map(message => JSON.stringify(message.params.input));
+  assert.equal(turns.length, 2);
+  // The repair is the drawing thread's next turn: it points to the review file, not the drawing task or its input again.
+  assert.match(turns[0], /对照纯衣服参考与本组 note[\s\S]*【本次输入】/);
+  assert.doesNotMatch(turns[1], /对照纯衣服参考与本组 note|【本次输入】/);
+  assert.match(turns[1], /review.json 中 reviews 最后一条（第 1 轮 review）/);
 });

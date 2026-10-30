@@ -1,2 +1,1 @@
-// Compatibility export; implementation is owned by the independently installable skill.
-export * from "../../.agents/skills/live2d-maker/shared/character-render/harmonic-fill.js";
+export function harmonicFill(data:Uint8Array,width:number,visited:Uint8Array,hidden:Uint32Array):void;

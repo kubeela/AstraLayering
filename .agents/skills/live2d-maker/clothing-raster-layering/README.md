@@ -1,6 +1,6 @@
 # clothing-raster-layering
 
-运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型表列出默认值，可在 skill 根目录的 `.env` 配置。
+运行根目录默认是 `<仓库>/.run`，独立安装时为 `<skill上一级>/.run`；`--dir <绝对路径>` 可更换根目录，显式路径不再额外套 `.run`。下文 `<运行根目录>/<name>/` 为任务目录。后续管线和续跑使用同一 `--name` 与运行根目录；相对输入从该任务目录解析。模型在 skill 根目录的 `.env` 配置，默认值见 [example.env](../example.env) 与[模型方案](../references/model-presets.md)。
 
 读取 [clothing-part-layering](../clothing-part-layering/README.md) 已完成的衣服 part，顺序生成衣服分层 KRA，完成最多两轮轮廓 review／修复，再精修柔边。最终美术交付为 `step02/clothing-soft-edges.kra`；报告、控制图和检查截图留作内部过程证据。
 
@@ -8,20 +8,22 @@
 
 ## 单独运行本 section
 
-需要 Node 24.12+、pnpm、已安装的 Krita，以及能提供绘制所需工具的外部 Codex 环境。先准备同名衣服 part 的轮廓、参考、分组与深度，停止同任务总调度，再从 skill 根目录执行本 section：
+需要 Node 24.12+、pnpm、已安装的 Krita，以及所配置模型对应 harness（Codex、Claude Code 或 AGV）的 CLI 与登录；`krita` 等流程工具由工作流注册。先准备同名衣服 part 的轮廓、参考、分组与深度，停止同任务总调度，再从 skill 根目录执行本 section：
 
 ```bash
-pnpm clothing-raster-layering --name jianma --krita /path/to/krita
+pnpm clothing-raster-layering --name jianma --krita /path/to/krita --knowledge /path/to/knowledge
 
-# 续跑使用已保存的输入、Krita 路径和绘制会话
-pnpm clothing-raster-layering --name jianma
+# 续跑沿用绘制会话；独立 section 不保存配置，仍须带 --krita 与 --knowledge
+pnpm clothing-raster-layering --name jianma --krita /path/to/krita --knowledge /path/to/knowledge
 ```
+
+素体未换装（`dressed: false`）时总控把本管线记为“完成（跳过）”，见 [总控](../workflow/README.md#姿态与参考)；此时上游衣服 part 没有产物，单独运行会因缺少输入而失败。
 
 按 `--name` 直接读取 `<运行根目录>/<name>/clothing-part-layering/` 的 parts、参考、groups.json 与 occlusion.json，不接受额外输入路径、不复制上游产物。缺失时列出具体路径，提示先执行对应上游管线或手动放置产物。
 
-`--krita` 必须显式指定可执行文件，脚本只校验它，不下载安装或搜索路径。`--check-krita` 仅检查安装；`--dry-run` 检查路径和 Krita 并打印待执行提示词，不调用模型、不创建或重置任务文件。已保存任务可显式更新 `--krita`；换输入应使用新名字。
+`--krita` 必须显式指定可执行文件，脚本只校验它，不下载安装或搜索路径。`--check-krita` 仅检查安装；`--dry-run` 检查路径和 Krita 并打印待执行提示词，不调用模型、不创建或重置任务文件。本 section 不保存配置，每次启动都要传 `--krita` 与 `--knowledge`；总入口由任务根 `run.json` 记录并传入。换输入应使用新名字。
 
-生图按 [模型与通道](../references/model-presets.md) 选择宿主原生能力或自定义接口。订阅或 API、provider、鉴权及工具实际可用性由外部 Codex 配置；按所选 harness 配置，Claude／AGV 可使用共享生图工具。Krita 的显示环境及 computer use / Python 操作能力也沿用外部执行环境。启用工具的配置项不保证服务端实际提供该工具；不可用时应明确受阻，不能生成完成标记。
+生图按 [模型与通道](../references/model-presets.md) 选择宿主原生能力或自定义接口。订阅或 API、provider 与鉴权由所选 harness 的 CLI 配置，Claude／AGV 使用共享生图工具 `imagegen`。Krita 可执行文件由外部提供；工作流不启动 Krita，只准备私有配置、桥接插件与（Linux 无显示时）共享 Xvfb 并占用名额，agent 通过 `krita` 工具自行启动并以 Python 操作，section 结束时由工作流关闭，详见 [Krita 与显示环境](../references/setup.md#krita-与显示环境)。启用工具的配置项不保证服务端实际提供该工具；不可用时应明确受阻，不能生成完成标记。
 
 ## 两步制作
 
@@ -38,7 +40,6 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 
 ```text
 <运行根目录>/jianma/clothing-raster-layering/
-  run.json
   step01/
     .completed                # 完成轮廓 review / 修复后写入
     clothing-depth.kra
@@ -53,7 +54,7 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
     report.md
 ```
 
-各步还会保存实际提示词、请求事件、结果、错误及绘制中间文件。`run.json` 只保存输入来源、Krita、共用绘制 `threadId` 和 `threadHarness`，不保存模型配置或步骤完成状态。模型配置从 `.env`、环境变量及代码默认值读取；旧 `models` 字段在续跑保存时移除。两步绘制与所有修复在同一 harness 中持续使用同一 thread。
+各步还会保存实际提示词、请求事件、结果、错误及绘制中间文件。本 section 没有自己的 `run.json`，配置由每次启动参数或总控传入；各步绘制 threadId 与 harness 记在 `agents/steps/<stepNN>/session.json`。模型配置从 `.env`、环境变量及代码默认值读取；旧任务残留的 `clothing-raster-layering/run.json` 不再读取或改写。每步新建自己的绘制 thread，本步的绘制与所有修复在同一 harness 中持续使用它。
 
 | 文件情况 | 下次同名启动 |
 | --- | --- |
@@ -70,7 +71,7 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 
 ```bash
 rm <运行根目录>/jianma/clothing-raster-layering/step02/.completed
-pnpm clothing-raster-layering --name jianma
+pnpm clothing-raster-layering --name jianma --knowledge /path/to/knowledge
 ```
 
 这会保留第一步及上游产物，清空第二步目录并创建新绘制 thread。要从第一步重跑就删除 `step01/.completed`；未完成步骤也可删除其 `.running` 触发相同重置。重跑会删除对应步骤的工程和日志。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
@@ -81,9 +82,9 @@ pnpm clothing-raster-layering --name jianma
 pnpm check
 ```
 
-[steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [prompts](prompts/)；review / repair 文件名由调度器替换占位符，提示词不固定轮次。
+[steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [knowledge/clothing-raster-layering](../knowledge/clothing-raster-layering/)；review / repair 文件名由 `{review_round}` 给出，提示词不固定轮次。
 
-自动测试模拟 SDK 响应，覆盖上游产物读取、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
+自动测试模拟 App Server 响应，覆盖上游产物读取、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
 
 现已完成 [2026-10-19 真实实跑](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/clothing-raster-layering/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。本次已接入通用多深度与 step01 拆层、写回协议；可选图片压缩功能现已接入，需显式配置并使用补丁版 Codex，见 [配置说明](../workflow/README.md)。
 

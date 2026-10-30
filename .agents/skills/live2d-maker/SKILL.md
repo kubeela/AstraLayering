@@ -5,23 +5,19 @@ description: 从角色参考图制作人物与衣服分层 KRA、透明 PNG、�
 
 # Live2D Maker
 
-从实际安装的 skill 根目录执行命令。整条路线依次为：人物 part → 人物 raster → 衣服 part → 衣服 raster → 穿戴组装 → 阴影；组件摆动物理见 [physics](physics/README.md)。
+从实际安装的 skill 根目录执行命令。整条路线为：人物 part 准备完成后，人物 raster 与衣服 part → 衣服 raster 两条线并行，均完成后进入穿戴组装 → 阴影；两条线共用 `--jobs` 个 agent 名额。
 
 ## 执行流程
 
 1. **询问并确认参数。** 确定新建或续跑、参考图、任务名、运行根目录、制作范围、姿态标准化与阴影方式；只询问缺失或确需选择的项，已确认或已有记录的不重复问。说明实际保存路径。新安装缺少 `.env` 时读取[模型方案](references/model-presets.md)，默认使用方案 1；用户指定其他方案则沿用，已有 `.env` 不覆盖。
-2. **检查并启动。** 首次安装、换机器或依赖异常时读取[安装与前置](references/setup.md)，确认所选 CLI、登录、生图、Krita 及桌面／headless 操作能力。执行 `pnpm env:check` 核对配置（此命令不验证登录）。按下面示例后台启动，查询真实状态；已有活跃任务接管监听，避免重复启动。
+2. **检查并启动。** 首次安装、更新、换机器或依赖异常时读取[安装与前置](references/setup.md)；安装或更新前先按其中[版本选择](references/setup.md#安装方式)确认用户用稳定版还是开发版。确认所选 CLI、登录、生图、Krita 及桌面／headless 操作能力。执行 `pnpm env:check` 核对配置（此命令不验证登录）。按下面示例后台启动，查询真实状态；已有活跃任务接管监听，避免重复启动。
 3. **安排定时检查。** 使用宿主的定时能力每 2 小时检查进展并主动恢复可恢复故障，直到所选路线完成或用户取消。记录定时 ID、实际 skill／任务路径、启动参数和操作环境到任务 `monitor.md`。没有定时能力时明确说明，不安装替代定时器。正常阶段由总调度自行推进。
 4. **打开 web。** 复用或启动真实工作台，核对其运行根目录与本次 `--dir` 一致，打开 `?name=<任务名>` 并提供可访问链接。独立安装缺少前端、远程连接或巡检／恢复细节，只读 [workflow/README.md](workflow/README.md) 的相应部分。
 5. **交付。** 查看合成图，核对实际 KRA、PNG 和报告，给出文件与网页入口及遗留问题；完成或取消后关闭本任务定时检查。
 
-全流程完成后可在工作台点击“导出成果”，或执行 `pnpm export --name <任务名> [--dir <运行根目录>] [--output <目录或.zip>]`。默认写到当前目录的 `<任务名>.zip`，已有目标不会覆盖。导出保留正式 SVG／KRA／PNG、参考图、完成记录、报告及其引用图片，移除 workspace、agent 记录与本机运行配置；解压后以其父目录作为工作台追踪目录即可查看完整流程。成果归档只供查看，续跑使用原运行目录。完整说明见 [workflow/README.md](workflow/README.md#导出成果)。
+全流程完成并停止后，可在工作台点击“导出成果”或执行 `pnpm export --name <任务名> [--dir <运行根目录>] [--output <目录或.zip>]`；归档只供查看，续跑使用原运行目录。条件与内容见 [workflow/README.md](workflow/README.md#导出成果)。
 
-模型工作区统一为各步骤的 `workspace/`（例如 `step01/workspace/`）；草稿、中间图片和临时脚本在其内部自由组织。正式产物、报告及报告引用的图片留在步骤目录，`agents/` 保存请求、日志与 CLI 会话配置。读取旧任务兼容原位置；不在运行期间搬迁文件。
-
-分块合成 `preview.svg` 和确认后的 `occlusion/preview.svg` 属于正式预览，保存在 workspace 外。深度 SVG 用于查看整件的前后排序；多深度部件的实际切片与穿插效果以 raster KRA 为准。
-
-跨步骤切换 workspace、工具或沙箱时，Codex 会重建连接并恢复同一 thread；同 CLI 改模型/力度也沿用原 ID，切换 CLI 才新建会话。`workspace-write` 包含正式输出目录。过程图按所在步骤 workspace 的实际文件夹分类；过程列表总计最多展示 1000 个，由 workspace 根目录与各实际子文件夹平分名额；文件较少的目录完整展示，剩余名额继续平分给其他目录。各目录内取最新文件，同时显示总数和已展示数。原文件保留，正式产物单独展示。`preview_svg` 和 `view_bitmap` 的查看截图属于过程文件，报告引用的证据另行发布；不删除历史查看图。
+任务根目录 `<dir>/<name>/` 是相对路径的唯一基准；向 agent 给出和由 agent 填写的任务文件路径一律用绝对路径（Codex 内置生图只接受绝对路径）。各步骤的 `workspace/` 是 CLI 当前目录和草稿区，正式产物与报告留在步骤目录；工作区与产物约定见 [shared](shared/README.md#工作区与产物)，会话规则见[会话与记录](references/model-presets.md#会话与记录)。不在运行期间搬迁文件。
 
 ## 启动参数
 
@@ -29,27 +25,33 @@ description: 从角色参考图制作人物与衣服分层 KRA、透明 PNG、�
 | --- | --- |
 | `--name <任务名>` | 任务目录名；续跑沿用 |
 | `--image <参考图>` | 首次原图，推荐绝对路径 |
-| `--dir <运行根目录>` | 数据在 `<dir>/<name>/`；默认完整仓库 `.run/`，独立安装为 skill 上一级的 `.run/`，不放 skill 内 |
-| `--krita <可执行文件>` | 绘制、组装与阴影需要；续跑复用保存值 |
+| `--dir <运行根目录>` | 必须是绝对路径；数据在 `<dir>/<name>/`，`.runtime` 为保留名不能作任务名；默认完整仓库 `.run/`，独立安装为 skill 上一级的 `.run/`，不放 skill 内 |
+| `--krita <可执行文件>` | 绘制、组装与阴影需要；总入口续跑复用任务根 `run.json` 记录的值，单独运行 section 时每次都要传。路线含 Krita 时每次启动（含继续／恢复／重试）先检查：只核对可执行文件与显示环境（`DISPLAY`／`WAYLAND_DISPLAY`／`QT_QPA_PLATFORM` 或可用的 Xvfb），不启动 Krita；不通过即拒绝且不改动任何步骤，用 `--krita` 重新指定 |
 | `--from / --to <section>` | 连续范围；默认完整六段，section ID 见下表 |
-| `--standard / --no-standard` | 是否标准化人物姿态；首次默认关闭，续跑沿用；已有参考改选项需按 workflow 规则重试 |
+| `--standard / --no-standard` | 是否标准化人物姿态；首次默认关闭，续跑沿用；本次路线须包含 part-layering；已有参考改选项需按 [workflow 规则](workflow/README.md#姿态与参考)重试 |
 | `--shadow-mode mask\|normal-depth` | 原生投影蒙版／法线深度；首次默认 `mask`，分支独立恢复 |
-| `--jobs <正整数>` | part 全局 agent 并发，默认 3 |
+| `--jobs <正整数>` | 整次运行所有管线（含 part、raster、组装、阴影）共用的 agent 名额，默认 3；两条并行线不增加总并发 |
 | `--background` | 后台制作；省略则前台 |
 | `--status --json` | 只查询，不启动模型 |
+| `--continue` / `--resume` / `--retry` | 三者互斥，对应网页的继续／恢复／重试。不加 `--section` 时作用于全部 `.running`（中断或失败）步骤；`--section <管线> --step <步骤>` 只处理一个步骤，`--step` 相对该管线目录（如 `step02`、`step02_options`、`step11_completion/head`、`step08_initial`、`step13_merge`、`step14_occlusion`、`step10_reduce/depth01`）且必须同时给 `--section`；只给 `--section` 仅可用于 `--continue` |
+| `--stop` | 对应网页的停止，保留产物与续跑记录 |
 
 ```sh
 pnpm start --name my-character --image /绝对路径/角色.png --krita /绝对路径/krita --background
 pnpm start --name my-character --status --json
 # 续跑：自定义运行根目录时，每次都加同一 --dir
 pnpm start --name my-character --background
+# 恢复（新会话、保留产物）/ 重试（删除该步骤产物与会话后重做，可指定已完成步骤；依赖它的后续步骤按指纹重跑）/ 停止
+pnpm start --name my-character --resume --background
+pnpm start --name my-character --retry --section raster-layering --step step02 --background
+pnpm start --name my-character --stop
 ```
 
 相对输入路径均从 `<dir>/<name>/` 解析。已有记录保存范围与选项；续跑优先只给任务名和原运行根目录。普通中断保留完成标记与工程，按原参数续跑。
 
 ## 单独运行一个 section
 
-单跑指使用真实输入制作某一段管线，会调用所选模型并保存该段成果。选择对应 README 检查上游，先停止同任务的总调度，再启动该 section。
+单跑指使用真实输入制作某一段管线，会调用所选模型并保存该段成果。选择对应 README 检查上游，先用 `pnpm start --name <任务名> [--dir …] --stop` 停止同任务的总调度，再启动该 section。
 
 | section ID／pnpm 入口 | 何时读取 |
 | --- | --- |
@@ -60,11 +62,13 @@ pnpm start --name my-character --background
 | [character-assembly](character-assembly/README.md) | 已有两份 KRA，仅做穿戴组装 |
 | [shadow](shadow/README.md) | 阴影蒙版或法线／深度 |
 
+素体未换装时总调度跳过两条衣服管线，换装素体与组装直接复制人物成果，见 [总控](workflow/README.md#姿态与参考)。
+
 ```sh
 # 独立运行穿戴组装：读取已有的人物、衣服 KRA 与简化穿衣参考
-pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita
-# 同名续跑，沿用该段保存的 Krita 和绘制会话
-pnpm character-assembly --name my-character --dir /绝对路径/运行根目录
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita --knowledge /绝对路径/knowledge
+# 同名续跑沿用绘制会话；独立 section 不保存配置，仍须带 --krita 与 --knowledge
+pnpm character-assembly --name my-character --dir /绝对路径/运行根目录 --krita /绝对路径/krita --knowledge /绝对路径/knowledge
 # 通过总入口只运行一段，使用后台、状态查询和范围记录
 pnpm start --name my-character --dir /绝对路径/运行根目录 --from character-assembly --to character-assembly --krita /绝对路径/krita --background
 ```
@@ -74,6 +78,6 @@ pnpm start --name my-character --dir /绝对路径/运行根目录 --from charac
 ## 其他按需参考
 
 - **选择／切换模型方案、配置 LLM 或生图**：读 [model-presets.md](references/model-presets.md)；自定义 CLI、provider、生图协议或会话恢复时，按需阅读同页对应章节。保留未要求修改的配置、凭据和图片预算。
-- **启动、web 连接、巡检、交接或交付定位**：读 [workflow/README.md](workflow/README.md)。
-- **修改模板／工具定义、接入新 CLI 后验证**：读 [shared/README.md](shared/README.md)。绘制提示词、工具 schema 和运行参考是程序输入，保留各自职责与审核轮数。
+- **启动、web 连接、巡检、恢复或交付定位**：读 [workflow/README.md](workflow/README.md)。
+- **修改模板／工具定义、接入新 CLI 后验证**：读 [shared/README.md](shared/README.md)。共享工具在 `shared/tools/<名称>/`，管线专属工具在 `<管线>/tools/<名称>/`（如 `part-layering/tools/reuse_reference`、`shadow/tools/inspect_shadow_mask`）。绘制提示词、工具 schema 和运行参考是程序输入，保留各自职责与审核轮数。
 - **补丁构建、图片／请求体超限或网关错误**：读 [patches/README.md](patches/README.md)。安装补丁不等于启用容量保护。

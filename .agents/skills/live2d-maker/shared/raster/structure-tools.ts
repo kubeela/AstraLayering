@@ -7,7 +7,7 @@ import type { GroupInput, Subject } from '../part/layering-types.ts';
 import { validateOcclusionDocument, type OcclusionPlan } from '../part/occlusion-plan.ts';
 import { depthPreviewPath, publishDepthPreview } from '../part/depth-preview.ts';
 import type { PartLayeringInput } from './input.ts';
-import { within } from './run-store.ts';
+import { fromTaskPath, taskRootOf } from '../task-paths.ts';
 
 type StructureGroups = { version?: 1; subject?: Subject; groups: GroupInput[] };
 function object(value: unknown, path: string): Record<string, unknown> {
@@ -29,7 +29,7 @@ export function validateStructureGroups(value: unknown): StructureGroups {
   function visit(values: unknown[], path: string) {
     values.forEach((value, index) => {
       const location = `${path}[${index}]`, node = object(value, location);
-      fields(node, ['id', 'name', 'note', 'kind', 'metadata', 'groups'], location);
+      fields(node, ['id', 'name', 'note', 'kind', 'metadata', 'allowOutsideParent', 'hiddenInReference', 'groups'], location);
       if (typeof node.id !== 'string' || !/^[\p{L}\p{N}_-]+(?:\/[\p{L}\p{N}_-]+)*$/u.test(node.id)) {
         throw new Error(`${location}.id：必须为安全的部件 ID`);
       }
@@ -46,21 +46,20 @@ export function validateStructureGroups(value: unknown): StructureGroups {
     });
   }
   visit(document.groups, 'groups.groups');
-  normalizeGroups(document.groups); // Share the part pipeline's node/type contract.
+  normalizeGroups(document.groups); // Share the part section's node/type contract.
   return structuredClone(document) as StructureGroups;
 }
 
-async function readWithin(root: string, path: string): Promise<string> {
-  if (!within(await realpath(root), await realpath(path))) throw new Error(`文件位于输入目录以外：${path}`);
+async function readStructureFile(path: string): Promise<string> {
   const info = await stat(path);
   if (!info.isFile() || !info.size) throw new Error(`文件必须为非空普通文件：${path}`);
   return readFile(path, 'utf8');
 }
 async function readGroups(input: PartLayeringInput) {
-  return validateStructureGroups(JSON.parse(await readWithin(input.directory, join(input.directory, 'groups.json'))));
+  return validateStructureGroups(JSON.parse(await readStructureFile(join(input.directory, 'groups.json'))));
 }
 async function readPlan(input: PartLayeringInput): Promise<Record<string, unknown>> {
-  return object(JSON.parse(await readWithin(input.directory, join(input.directory, 'occlusion.json'))), 'occlusion');
+  return object(JSON.parse(await readStructureFile(join(input.directory, 'occlusion.json'))), 'occlusion');
 }
 async function checkReferences(input: PartLayeringInput, groups: StructureGroups, plan: OcclusionPlan) {
   const leaves = walkGroups(normalizeGroups(groups.groups)).filter(({ group }) => !group.groups.length);
@@ -71,8 +70,8 @@ async function checkReferences(input: PartLayeringInput, groups: StructureGroups
   if (ids.size) throw new Error(`occlusion.layers：缺少终止部件 ${[...ids].join('、')}；分组拆分或合并时请在 edit_groups 中一并提供 layers`);
   for (const { group } of leaves) {
     const path = join(input.parts, `${group.id}.svg`);
-    await readWithin(input.parts, path).catch(error => {
-      throw new Error(`groups：终止部件 ${group.id} 缺少有效 SVG ${path}`, { cause: error });
+    await readStructureFile(path).catch(error => {
+      throw new Error(`groups：终止部件 ${group.id} 缺少有效 SVG ${fromTaskPath(taskRootOf(input.directory), path)}`, { cause: error });
     });
   }
 }
@@ -136,7 +135,8 @@ export function createStructureTools(input: PartLayeringInput): FunctionTool[] {
             previewWarning = '深度预览尚未生成：' + (error as Error).message;
           }
         }
-        return textResult({ groupsPath, occlusionPath: planPath, ...(previewWarning ? { previewWarning } : {}), terminalParts: plan.layers.map(row => row.id),
+        const root = taskRootOf(input.directory);
+        return textResult({ groupsPath: fromTaskPath(root, groupsPath), occlusionPath: fromTaskPath(root, planPath), ...(previewWarning ? { previewWarning } : {}), terminalParts: plan.layers.map(row => row.id),
           depthRegions: plan.layers.reduce((count, row) => count + (row.levels?.length ?? 1), 0), validated: true });
       });
     },

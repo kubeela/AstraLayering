@@ -6,26 +6,26 @@
 
 从**简化穿衣图和同一角色的素体图**提取互补的主体衣装，再生成可独立控制的衣服 part 色块及深度表，交给 [clothing-raster-layering](../clothing-raster-layering/README.md) 绘制分层 KRA。衣装保留原款式、局部比例与结构；整套衣装的大小和位置由后续组装适配人物。
 
-调度、Codex SDK / App Server 适配及文件恢复使用 `../shared/` 的公共实现。本目录保留衣服 preparation、提示词和专项配置，不加载人物先验。各职责默认值与覆盖键以 [模型方案](../references/model-presets.md) 为准。
+调度、agent 适配及文件恢复使用 `../shared/` 的公共实现。本目录保留衣服 preparation、提示词和专项配置，不加载人物先验。各职责默认值与覆盖键以 [模型方案](../references/model-presets.md) 为准。
 
 ## 单独运行本 section
 
 需要 Node 24.12+、pnpm，以及外部已配置好的 Codex。先准备同名人物 part 的简化穿衣图与素体图，停止同任务总调度，再从 skill 根目录执行本 section；制作结果保存在衣服 part 目录：
 
 ```bash
-pnpm clothing-part-layering --name jianma
+pnpm clothing-part-layering --name jianma --knowledge /绝对路径/knowledge
 
 # 首次及续跑都通过任务名定位上游
-pnpm clothing-part-layering --name jianma
+pnpm clothing-part-layering --name jianma --knowledge /绝对路径/knowledge
 ```
 
 preparation 使用当前配置的生图工具，将两张参考按顺序放入同一次请求；模型与接口配置见[模型与生图通道](../references/model-presets.md)。工具不可用或生成结果无效时明确失败，保留输入供重试，不以原图或脚本结果冒充生图。
 
-`--jobs` / `-j` 设置所有步骤共用的 agent 并发上限，默认 3；`--agents` / `-a` 是同义参数。`--max-depth 1` 只完成第一层并登记下一层，省略时一直拆到终止 part。`--groups <JSON路径>` 选择本任务已有的组及其子组；不导入新树、不重新 preparation，须有已完成的参考图和相应前置产物。
+总调度下，本管线在人物 part 的 preparation 完成后即启动，与人物线（人物 part 逐层制作 → 人物 raster）并行，共用整次运行的 `--jobs` 名额，见 [workflow](../workflow/README.md#总入口)；素体判断为 `dressed: false` 时整条管线记为跳过。单独运行时 `--jobs` / `-j` 设置本进程所有步骤共用的 agent 并发上限，默认 3；`--agents` / `-a` 是同义参数。`--max-depth 1` 只完成第一层并登记下一层，省略时一直拆到终止 part。`--groups <JSON路径>` 选择本任务已有的组及其子组；不导入新树、不重新 preparation，须有已完成的参考图和相应前置产物。
 
 ## 参考与拆分
 
-1. 按 `--name` 读取同名人物 part 的 `references/simplified-subject.*`（PNG、JPEG、WebP）与 `references/base-subject.png`，不保存输入副本。缺少时明确提示上游命令与手动放置的路径。使用 [preparation 提示词](prompts/preparation.md) 提取两图之间的换装衣物，生成统一画布尺寸的透明 `references/clothing.png`。保留衣料、衣服自身附件、薄纱及正常开口，补全遮住的衣料；允许整套衣装等比缩放和移动，衣片间的相对比例与连接保持一致。
+1. 按 `--name` 读取同名人物 part 的 `references/simplified-subject.png`与 `references/base-subject.png`，以及 `references/standard.png`（决定统一画布尺寸并用于生成图后处理，其指纹写入 preparation.json），不保存输入副本。缺少时明确提示上游命令与手动放置的路径。使用 [preparation 提示词](../knowledge/clothing-part-layering/step01_preparation/prompts/preparation.md) 提取两图之间的换装衣物，生成统一画布尺寸的透明 `references/clothing.png`。保留衣料、衣服自身附件、薄纱及正常开口，补全遮住的衣料；允许整套衣装等比缩放和移动，衣片间的相对比例与连接保持一致。
 2. 查看纯衣服图与原穿衣角色，按外到内检查结构、建立初始 group。纯衣服图是衣片轮廓与绘画标准，原角色用于判断穿插与随动关系。group 表示结构归属，包含关系和数组顺序不代表绘制深度。
 3. 逐层执行轮廓绘制、review / 返修、同层去重、遮挡补全、自检及直属 group / part 分析。完成当前层后继续下一层，实际结构决定拆分深度。
 4. 合成 `preview.svg`，为所有终止 part 规划并逐件、逐区域检查深度，保存 `occlusion.json`。
@@ -33,6 +33,8 @@ preparation 使用当前配置的生图工具，将两张参考按顺序放入�
 绘制者在首次绘制或返修中发现当前组 `note` 的职责或层序说明有误时，可用 `update_group_note` 精确替换唯一匹配的原句。工具只修改本组说明，通过调度器共用的写入队列保存；下一次 review 和后续拆分读取更新后的说明。仅有说明问题时保持正确 SVG，不修改父组或分组树。
 
 此流程的 SVG 是纯色轮廓控制图，review 检查形状、开口、覆盖和归属；配色、纹样、明暗、笔触和透明度表现由后续栅格流程绘制。若反馈混入成品绘画要求，返修者须逐项解释其不适用原因并保留正确色块，不把控制图改成绘画成品。
+
+直属节点支持可选 `allowOutsideParent`（完整形体允许越出直接父轮廓）与 `hiddenInReference`（画布内仍需制作、因遮挡或闭合而整体不可见），省略均按 false。不可见节点使用空底稿直接生图辅助补全 SVG，跳过描边、轮廓 review 和可见轮廓去重，其余格式及归属检查保留。补全生图后使用 `preview_svg` 的 `edge`、`reference`、`referenceRegion` 核对生成图边缘，`referenceOffset` 可选；随后用默认参考图 `blend` 核对定位，并查看独显。`crop` 只控制最终查看窗口。需要的原生显隐蒙版关系由 raster step01 按 note 落实，后续阶段保留。
 
 **独立运动、变形、显隐与控制是拆分的核心标准。** 还要判断一个实体是否需要分处其他部件的前后：若仍是同一运动整体，可保留一个逻辑 part，用多深度区域表达，由 raster step01 拆实际绘画层。开放袖口与衣领只是例子；依据当前衣服的真实结构判断，不机械地给每个开口分两半，不套固定衣服分类。相应职责从 group 的 `note` 传递到具体 part，不能只写在父组里而遗漏具体 part 的区域说明。
 
@@ -44,18 +46,19 @@ preparation 使用当前配置的生图工具，将两张参考按顺序放入�
 
 ```text
 <运行根目录>/jianma/clothing-part-layering/
+  step01_preparation/          # 生图原始结果与步骤记录
   references/
     clothing.png
-    preparation-prompt.md
-    preparation.json           # 来源、生成图和提示词指纹；不保存鉴权
   groups.json                  # 归属树视图，可编辑名称与 part 职责说明
-  initial/step01/              # 首次分组
-  groups/<id>/step01..03/      # 轮廓与复核、补全与检查、子组拆分；子组嵌套在 children/ 下
-  layers/depthNN/              # 同层去重
+  step08_initial/              # 首次分组
+  step09_outline/<id>/         # 轮廓与复核；子组嵌套为 <id>/children/<名>
+  step10_reduce/depthNN/       # 同层去重
+  step11_completion/<id>/      # 补全与检查
+  step12_children/<id>/        # 子组拆分
   parts/                       # 完整的分件 SVG，主要交接产物
-  merge/  occlusion/           # 合并与遮挡规划的步骤记录
+  step13_merge/  step14_occlusion/  # 合并与遮挡规划的步骤记录
   observations/
-  agents/                      # 请求、结果和恢复日志
+  agents/                      # 请求、结果和恢复日志；绘制会话在 steps/<步骤>/session.json
   preview.svg
   occlusion.json               # 全部终止衣片从后到前的深度表
 ```
@@ -72,7 +75,7 @@ preparation 使用当前配置的生图工具，将两张参考按顺序放入�
 pnpm check
 ```
 
-[run.ts](../shared/part/run.ts) 串联 [preparation.ts](preparation.ts) 与共享 [layering.ts](../shared/part/layering.ts)；[agents.ts](../shared/codex/agents.ts) 和 [tool-agent.ts](../shared/codex/tool-agent.ts) 使用同版本 Codex SDK / App Server。首次分组和递归拆分分别在 [initial-groups.ts](../shared/part/initial-groups.ts)、[children-agent.ts](../shared/part/children-agent.ts)。所有衣服提示词都在本目录 [prompts](prompts/)。
+[run.ts](../shared/part/run.ts) 串联 [preparation.ts](preparation.ts) 与共享 [layering.ts](../shared/part/layering.ts)；[agents.ts](../shared/codex/agents.ts) 和 [tool-agent.ts](../shared/codex/tool-agent.ts) 按各步骤配置的 harness（codex／claude／agv）运行，Codex 步骤经 Codex App Server（CLI 版本由 `@openai/codex-sdk` 依赖固定），见 [模型方案](../references/model-presets.md)。首次分组和递归拆分分别在 [initial-groups.ts](../shared/part/initial-groups.ts)、[children-agent.ts](../shared/part/children-agent.ts)。所有衣服提示词都在 [knowledge/clothing-part-layering](../knowledge/clothing-part-layering/)，各步骤由 `agent.json` 声明拼接的文件与工具。
 
 自动测试覆盖 preparation 的内置工具请求、缓存及失败恢复、穿插衣片的独立产物、分组调度与依赖失效。模型响应使用测试替身，不构成实际生图或视觉质量验收。
 

@@ -11,17 +11,56 @@ import { test } from 'node:test';
 import { getPreparationDirectory, loadPreparedReferences } from '../preparation.ts';
 import { formatLayeringSummary, parseRunArguments, readGroupInput } from '../run.ts';
 import { GroupStore, normalizeGroups } from '../../shared/part/groups.ts';
-import sharp from 'sharp';
+import { seedPreparedReferences } from './preparation-fixture.ts';
 import { seedInitialGroups, shape, workingSteps } from './layering-fixture.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import { taskDirectory } from '../../shared/paths.ts';
+import { defaultKnowledgeDirectory } from '../../shared/knowledge.ts';
 
-function runCli(args: string[]) {
+// Every single-section start names its knowledge directory; `knowledge: false` omits it.
+function runCli(args: string[], { knowledge = true } = {}) {
   return promisify(execFile)(process.execPath, [
     '--import', new URL('./forbid-model-processes.ts', import.meta.url).href,
     fileURLToPath(new URL('../run.ts', import.meta.url)), ...args,
+    ...(knowledge ? ['--knowledge', defaultKnowledgeDirectory] : []),
   ], { timeout: 10000, env: { ...process.env, layering_codex_path: process.execPath } });
 }
+
+test('独立 section 每次启动都须提供 --knowledge；目录缺失文件时启动前即失败', async () => {
+  await assert.rejects(runCli(['--name', 'test'], { knowledge: false }), error => {
+    assert.match(String((error as { stderr?: string }).stderr), /必须提供 --knowledge/);
+    return true;
+  });
+  const empty = await mkdtemp(join(tmpdir(), 'knowledge-'));
+  try {
+    await assert.rejects(runCli(['--name', 'test', '--knowledge', empty], { knowledge: false }), error => {
+      assert.match(String((error as { stderr?: string }).stderr), /先验知识缺少文件/);
+      return true;
+    });
+  } finally { await rm(empty, { recursive: true, force: true }); }
+});
+
+test('CLI 隔离模拟本机版本查询，模型调用及其他外部进程仍被拒绝', async () => {
+  const source = `
+    import assert from 'node:assert/strict';
+    import { once } from 'node:events';
+    import { spawn, spawnSync, execFile, execFileSync, exec, execSync } from 'node:child_process';
+    const child = spawn(process.execPath, ['--version']);
+    let stdout = '', stderr = '';
+    child.stdout.on('data', data => stdout += data);
+    child.stderr.on('data', data => stderr += data);
+    const [status] = await once(child, 'close');
+    assert.equal(status, 0); assert.equal(stdout, 'fixture CLI 1.2.3'); assert.equal(stderr, '');
+    const forbidden = /CLI 测试禁止启动模型或其他外部进程/;
+    assert.throws(() => spawn(process.execPath, ['app-server']), forbidden);
+    assert.throws(() => spawn(process.execPath, ['--version', 'app-server']), forbidden);
+    assert.throws(() => spawn('claude', ['--version']), forbidden);
+    for (const launch of [spawnSync, execFile, execFileSync, exec, execSync])
+      assert.throws(() => launch(process.execPath, ['app-server']), forbidden);
+  `;
+  await promisify(execFile)(process.execPath, ['--import', new URL('./forbid-model-processes.ts', import.meta.url).href,
+    '--input-type=module', '-e', source], { timeout: 10000 });
+});
 
 test('--jobs / -j 只设置 agent 并发上限，默认 3，不产生组调度上限', () => {
   assert.equal(parseRunArguments(['--name', 'test']).agentConcurrency, 3);
@@ -55,10 +94,7 @@ test('预览缺失时用模拟步骤重建；实际入口复用完整事实且�
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
   t.after(() => rm(taskDirectory(runName), { recursive: true, force: true }));
-  await mkdir(references, { recursive: true });
-  await writeFile(join(references, 'judgment.json'), JSON.stringify({ needsSimplification: false }));
-  await writeFile(join(references, 'simplified-subject.png'), 'cached reference');
-  await sharp({ create: { width: 100, height: 100, channels: 4, background: '#ffffff' } }).png().toFile(join(references, 'base-subject.png'));
+  await seedPreparedReferences(runName);
   await seedInitialGroups(directory, [{ id: 'head', note: '已有识别的组' }]);
   // 缺预览只重做合并；重建字节不变时层级规划沿用。
   await runLayering({ profile, directory, references: await loadPreparedReferences(runName), groups: null, steps: workingSteps([]) });
@@ -128,10 +164,7 @@ test('实际入口遇到组产物问题时报告组名、步骤和停止派发�
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
   t.after(() => rm(taskDirectory(runName), { recursive: true, force: true }));
-  await mkdir(references, { recursive: true });
-  await writeFile(join(references, 'judgment.json'), JSON.stringify({ needsSimplification: false }));
-  await writeFile(join(references, 'simplified-subject.png'), 'cached reference');
-  await writeFile(join(references, 'base-subject.png'), 'cached base');
+  await seedPreparedReferences(runName);
   await seedInitialGroups(directory, [{ id: 'head_accessories' }]);
   await assert.rejects(runCli(['--name', runName]), error => {
     const failure = error as Error & { code: number; stderr: string };

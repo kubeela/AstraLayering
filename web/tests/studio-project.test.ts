@@ -8,9 +8,8 @@ import { createWorkbench } from "../server.ts";
 import { studioArtifacts } from "../../.agents/skills/live2d-maker/shared/studio-artifacts.ts";
 import { steps } from "../../.agents/skills/live2d-maker/character-assembly/steps.ts";
 import { shadowArtifacts } from '../../.agents/skills/live2d-maker/shared/shadow.ts';
+import { nineAxisArtifacts } from '../../.agents/skills/live2d-maker/shared/nine-axis.ts';
 import sharp from 'sharp';
-import { inputFingerprint, resolveShadowInput } from '../../.agents/skills/live2d-maker/shadow/input.ts';
-import { stepsFor } from '../../.agents/skills/live2d-maker/shadow/steps.ts';
 
 async function fixture(t: any) {
   const root = await realpath(await mkdtemp(join(tmpdir(), "astra-project-"))),
@@ -32,14 +31,14 @@ async function fixture(t: any) {
     fetch(
       base +
         "/api/studio/project?" +
-        new URLSearchParams({ name, dir, ...override }),
+        new URLSearchParams({ folder: project, ...override }),
     );
   const put = async (path: string, value: string | Uint8Array = "fixture") => {
     const file = join(project, path);
     await mkdir(join(file, ".."), { recursive: true });
     await writeFile(file, value);
   };
-  return { root, dir, name, project, get, put };
+  return { root, dir, name, project, base, get, put };
 }
 test("Project preview reads only the fixed assembly and lighting outputs; absent maps are pending", async (t) => {
   const f = await fixture(t);
@@ -84,47 +83,19 @@ test("Project preview reads only the fixed assembly and lighting outputs; absent
     ),
   );
 });
-test("Project preview rejects stale directories, escaping names and symlinked outputs", async (t) => {
+test("Project preview rejects relative and symlinked folders, non-tasks outside the run directory and symlinked outputs", async (t) => {
   const f = await fixture(t);
-  assert.equal((await f.get({ dir: f.root })).status, 409);
-  assert.equal((await f.get({ name: "../outside" })).status, 400);
+  assert.equal((await f.get({ folder: "runs/角色" })).status, 400);
+  await symlink(f.project, join(f.root, "alias"));
+  assert.equal((await f.get({ folder: join(f.root, "alias") })).status, 400);
+  const plain = join(f.root, "elsewhere", "plain");
+  await mkdir(plain, { recursive: true });
+  assert.match(((await (await f.get({ folder: plain })).json()) as any).error, /run\.json/);
   await mkdir(join(f.project, "lighting"));
   const outside = join(f.root, "private.png");
   await writeFile(outside, "private");
   await symlink(outside, join(f.project, studioArtifacts.normal));
   assert.equal((await f.get()).status, 400);
-});
-test('Native project opening rejects a stale source and never accepts an arbitrary file path', async t => {
-  const f = await fixture(t);
-  await f.put(studioArtifacts.document);
-  const preview = await f.get(), project = await preview.json() as any;
-  const post = (overrides: Record<string, unknown>) => fetch(new URL('/api/studio/layers/open-project', preview.url), {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: f.name, dir: f.dir, preview: project.previewMode,
-      path: project.files.document.path, version: project.files.document.version, ...overrides }),
-  });
-  assert.equal((await post({ dir: f.root })).status, 409);
-  assert.equal((await post({ path: '../private.kra' })).status, 409);
-  assert.equal((await post({ name: '../outside' })).status, 400);
-  assert.equal((await post({ preview: 'mixed' })).status, 400);
-  await f.put(studioArtifacts.document, 'new revision');
-  const stale = await post({});
-  assert.equal(stale.status, 409);
-  assert.match((await stale.json() as any).error, /工程已变化/);
-  const file = join(f.project, studioArtifacts.document);
-  await rm(file);
-  await f.put('../private.kra');
-  await symlink(join(f.dir, 'private.kra'), file);
-  assert.equal((await post({})).status, 400);
-});
-test('physics drafts persist under their reviewed parent and cannot mask a newer delivery',async t=>{
-  const f=await fixture(t),formal={kind:'astra-component-physics',version:1,solver:'astra-component-physics-1',source:{canvas:{width:300,height:400}},components:[],review:{status:'accepted',configHash:'revision-a'}};
-  await f.put('physics/physics.json',JSON.stringify(formal));
-  const initial=await f.get(),base=new URL(initial.url).origin;
-  const response=await fetch(base+'/api/studio/physics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:f.name,dir:f.dir,config:{...formal,review:{status:'draft',baseConfigHash:'revision-a'}}})});assert.equal(response.status,201);
-  let data=await(await f.get()).json() as any;assert.equal(data.files.physics.path,'physics/physics.draft.json');assert.equal(data.physicsDraftStale,false);
-  await f.put('physics/physics.json',JSON.stringify({...formal,review:{status:'accepted',configHash:'revision-b'}}));
-  data=await(await f.get()).json() as any;assert.equal(data.physicsDraftStale,true);assert.equal(data.files.physics.path,'physics/physics.json');
 });
 test('Two shadow routes coexist: last complete selection chooses its document and pauses stale maps', async t => {
   const f = await fixture(t), hash = (value: string) => createHash('sha256').update(value).digest('hex');
@@ -144,16 +115,16 @@ test('Two shadow routes coexist: last complete selection chooses its document an
   data = await (await f.get()).json() as any;
   assert.equal(data.shadowStale, true); assert.equal(data.files.normal.available, false);
 });
-test('Explicit mixed preview requires matching branch provenance and preserves production selection', async t => {
+test('Explicit mixed preview requires matching mode provenance and preserves production selection', async t => {
   const f = await fixture(t), hash = (value: string) => createHash('sha256').update(value).digest('hex');
   await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');
   for (const path of [studioArtifacts.normal, studioArtifacts.depth, shadowArtifacts.maskDocument, shadowArtifacts.maskColor, shadowArtifacts.bindings]) await f.put(path);
   const record = { version: 1, mode: 'mask', sourceKraHash: hash('source'), sourceColorHash: hash('color') };
-  await f.put('shadow/mask/step01/source.json', JSON.stringify(record));
+  await f.put('shadow/step01_mask/source.json', JSON.stringify(record));
   await f.put(shadowArtifacts.selection, JSON.stringify(record));
   // Loose maps from an old run are never silently mixed into the current mask.
   assert.equal((await f.get({ preview: 'mixed' })).status, 400);
-  await f.put('shadow/normal-depth/step01/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
+  await f.put('shadow/step01_normal-depth/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
   let data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.shadowMode, 'mask'); assert.equal(data.previewMode, 'mixed');
   const unified = await (await f.get()).json() as any;
@@ -168,16 +139,16 @@ test('Explicit mixed preview requires matching branch provenance and preserves p
   data = await (await f.get({ preview: 'normal-depth' })).json() as any;
   assert.equal(data.files.document.path, studioArtifacts.document); assert.equal(data.files.bindings.available, false);
   assert.equal((await f.get({ preview: '../private' })).status, 400);
-  // Only the new maps branch matches the updated source. The mask remains stale.
+  // Only the new maps match the updated source. The mask remains stale.
   await f.put(studioArtifacts.color, 'new color');
-  await f.put('shadow/normal-depth/step01/source.json', JSON.stringify({ ...record, mode: 'normal-depth', sourceColorHash: hash('new color') }));
+  await f.put('shadow/step01_normal-depth/source.json', JSON.stringify({ ...record, mode: 'normal-depth', sourceColorHash: hash('new color') }));
   await f.put(shadowArtifacts.selection, JSON.stringify({ ...record, mode: 'normal-depth', sourceColorHash: hash('new color') }));
   data = await (await f.get()).json() as any;
   assert.equal(data.maskStale, true); assert.equal(data.mapsStale, false);
   assert.equal(data.previewModes.mixed, false); assert.equal(data.files.normal.available, true);
   assert.equal((await f.get({ preview: 'mixed' })).status, 400);
 });
-test('Unified studio discovers pending maps, ignores legacy light files and prefers formal delivery', async t => {
+test('Unified studio discovers pending maps and prefers formal delivery', async t => {
   const f = await fixture(t), hash = (v: string | Uint8Array) => createHash('sha256').update(v).digest('hex');
   const color = await sharp({ create: { width: 2, height: 2, channels: 4, background: '#cbaa99' } }).png().toBuffer();
   const normal = await sharp({ create: { width: 2, height: 2, channels: 3, background: { r: 128, g: 128, b: 255 } } }).png().toBuffer();
@@ -188,9 +159,12 @@ test('Unified studio discovers pending maps, ignores legacy light files and pref
   const record = { version: 1, mode: 'mask', sourceKraHash: hash('source'), sourceColorHash: hash(color) };
   await f.put(shadowArtifacts.selection, JSON.stringify(record));
   await f.put(shadowArtifacts.draftNormal, normal); await f.put(shadowArtifacts.draftDepth, depth);
-  const input = await resolveShadowInput(f.name, f.dir, 'normal-depth');
-  await f.put('shadow/normal-depth/run.json', JSON.stringify({ inputFingerprint: await inputFingerprint(input, 'normal-depth', stepsFor('normal-depth')[0].prompt) }));
-  await f.put('shadow/normal-depth/step02/light.json', '{"settings":{"lightingMix":0}}');
+  for (const section of ['part-layering', 'clothing-part-layering']) {
+    await f.put(section + '/groups.json', '{"groups":[]}'); await f.put(section + '/occlusion.json', '{"layers":[]}');
+  }
+  const maps = JSON.stringify({ stamp: 'maps', inputs: { 'character-assembly/step01': 'assembly' } });
+  await f.put('character-assembly/step01/.completed', JSON.stringify({ stamp: 'assembly', inputs: {} }));
+  await f.put('shadow/run.json', '{}'); await f.put('shadow/step01_normal-depth/.running', maps);
   let data = await (await f.get()).json() as any;
   assert.equal(data.previewMode, 'mixed'); assert.equal(data.previewDraft, true); assert.equal(data.files.normal.available, true);
   data = await (await f.get({ preview: 'mixed' })).json() as any;
@@ -202,62 +176,78 @@ test('Unified studio discovers pending maps, ignores legacy light files and pref
   await rm(join(f.project, shadowArtifacts.selection));
   data = await (await f.get()).json() as any;
   assert.equal(data.previewDraft, true); assert.equal(data.files.normal.available, true);
-  await f.put('shadow/normal-depth/step01/.completed', '');
+  await rm(join(f.project, 'shadow/step01_normal-depth/.running')); await f.put('shadow/step01_normal-depth/.completed', maps);
   assert.equal((await (await f.get()).json() as any).previewReview, 'awaiting-publication');
   await f.put(shadowArtifacts.selection, JSON.stringify(record));
   await f.put(shadowArtifacts.draftNormal, 'changed');
   assert.equal((await f.get({ preview: 'mixed' })).status, 400);
   await f.put(shadowArtifacts.draftNormal, normal);
+  // A redone assembly retires the maps made from the previous one.
   await f.put(studioArtifacts.color, 'changed color');
+  await f.put('character-assembly/step01/.completed', JSON.stringify({ stamp: 'assembly-2', inputs: {} }));
   data = await (await f.get({ preview: 'normal-depth' })).json() as any;
   assert.equal(data.files.normal.available, false);
   await f.put(studioArtifacts.color, color);
   for (const path of [studioArtifacts.normal, studioArtifacts.depth]) await f.put(path);
-  await f.put('shadow/normal-depth/step01/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
+  await f.put('shadow/step01_normal-depth/source.json', JSON.stringify({ ...record, mode: 'normal-depth' }));
   data = await (await f.get({ preview: 'mixed' })).json() as any;
   assert.equal(data.previewDraft, false); assert.equal(data.files.normal.path, studioArtifacts.normal);
 });
-
-test('frozen physics preview keeps exact maps across review-rule changes without accepting a shadow delivery', async t => {
-  const f = await fixture(t), hash = (v: string) => createHash('sha256').update(v).digest('hex');
-  await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');
-  await f.put(shadowArtifacts.draftNormal, 'normal'); await f.put(shadowArtifacts.draftDepth, 'depth');
-  await f.put('physics/physics.json', JSON.stringify({ source: { documentHash: hash('source'), colorHash: hash('color') }, components: [] }));
-  await f.put('physics/source/surface-inputs.json', JSON.stringify({ version: 1, documentHash: hash('source'), maps: {
-    normal: { path: shadowArtifacts.draftNormal, contentHash: hash('normal') },
-    depth: { path: shadowArtifacts.draftDepth, contentHash: hash('depth') },
-  } }));
-  let data = await (await f.get()).json() as any;
-  assert.equal(data.files.normal.available, true); assert.equal(data.files.depth.available, true);
-  assert.equal(data.previewReview, 'frozen-preview-input'); assert.equal(data.previewFrozen, true);
-  assert.equal(data.shadowMode, undefined);
-  await f.put(shadowArtifacts.draftNormal, 'changed');
-  data = await (await f.get()).json() as any;
-  assert.equal(data.files.normal.available, false); assert.equal(data.files.depth.available, false);
-  await f.put(shadowArtifacts.draftNormal, 'normal'); await f.put(studioArtifacts.color, 'changed');
-  data = await (await f.get()).json() as any;
-  assert.equal(data.files.normal.available, false);
+test('Project reports the head nine-axis document and prefers its KRA while the source is unchanged', async (t) => {
+  const f = await fixture(t), a = nineAxisArtifacts;
+  let data = (await (await f.get()).json()) as any;
+  assert.deepEqual([data.nineAxis.path, data.nineAxis.available], [a.headDeformers, false]);
+  await f.put(a.headDeformers, '{}');
+  data = (await (await f.get()).json()) as any;
+  assert.equal(data.nineAxis.available, true);
+  // The deformers and their numbered layer textures read through the studio route.
+  await f.put('nine-axis/step01_head/layers/005.png', 'layer');
+  const read = (path: string) => fetch(f.base + '/studio-artifact?' + new URLSearchParams({ folder: f.project, path }));
+  assert.equal(await (await read('nine-axis/step01_head/layers/005.png')).text(), 'layer');
+  assert.equal((await read('nine-axis/step01_head/layers/../source.json')).status, 400);
+  await f.put(studioArtifacts.document, 'kra'); await f.put(studioArtifacts.color, 'png');
+  await f.put(a.headDocument, 'nine kra'); await f.put(a.headColor, 'nine png');
+  const hash = (s: string) => createHash('sha256').update(s).digest('hex');
+  await f.put(a.headSource, JSON.stringify({ version: 1, sourceDocument: studioArtifacts.document, sourceColor: studioArtifacts.color, sourceKraHash: hash('kra'), sourceColorHash: hash('png'), updatedAt: 'x' }));
+  data = (await (await f.get()).json()) as any;
+  assert.deepEqual([data.files.document.path, data.files.color.path, data.nineAxisDocument], [a.headDocument, a.headColor, true]);
+  // A changed source KRA falls back to it and marks the nine-axis KRA stale.
+  await f.put(studioArtifacts.document, 'kra 2');
+  data = (await (await f.get()).json()) as any;
+  assert.deepEqual([data.files.document.path, data.nineAxisDocument, data.nineAxisStale], [studioArtifacts.document, false, true]);
 });
-
-test('normalized physics uses extractor source identity and refuses changed source or maps', async t => {
-  const f = await fixture(t), hash = (v: string) => createHash('sha256').update(v).digest('hex');
-  await f.put(studioArtifacts.document, 'source'); await f.put(studioArtifacts.color, 'color');
-  await f.put(shadowArtifacts.draftNormal, 'normal'); await f.put(shadowArtifacts.draftDepth, 'depth');
-  await f.put('physics/physics.json', JSON.stringify({ source: { canvas: { width: 2, height: 2 } }, components: [] }));
-  await f.put('physics/source/surface-inputs.json', JSON.stringify({ version: 1, documentHash: hash('source'), maps: {
-    normal: { path: shadowArtifacts.draftNormal, contentHash: hash('normal') },
-    depth: { path: shadowArtifacts.draftDepth, contentHash: hash('depth') },
-  } }));
-  assert.equal((await (await f.get()).json() as any).files.normal.available, false);
-  await f.put('physics/source/catalog.json', JSON.stringify({ version: 1, documentHash: hash('source'), colorHash: hash('color') }));
-  let data = await (await f.get()).json() as any;
-  assert.equal(data.files.normal.available, true); assert.equal(data.files.depth.available, true);
-  assert.equal(data.previewReview, 'frozen-preview-input'); assert.equal(data.previewDraft, true);
-  await f.put(studioArtifacts.color, 'changed');
-  assert.equal((await (await f.get()).json() as any).files.normal.available, false);
-  await f.put(studioArtifacts.color, 'color'); await f.put(shadowArtifacts.draftDepth, 'changed');
-  assert.equal((await (await f.get()).json() as any).files.depth.available, false);
-  await f.put(shadowArtifacts.draftDepth, 'depth');
-  await f.put('physics/source/catalog.json', JSON.stringify({ version: 1, documentHash: hash('another source'), colorHash: hash('color') }));
-  assert.equal((await (await f.get()).json() as any).files.normal.available, false);
+test('An imported task folder outside the run directory opens; only studio outputs are readable', async t => {
+  const f = await fixture(t), folder = join(f.root, 'elsewhere', 'imported');
+  await mkdir(join(folder, 'character-assembly/step01'), { recursive: true });
+  await writeFile(join(folder, 'run.json'), JSON.stringify({ version: 1, sections: {}, jobs: 1, status: 'completed', from: 'part-layering', to: 'shadow' }));
+  await writeFile(join(folder, studioArtifacts.document), 'document');
+  await writeFile(join(folder, studioArtifacts.color), 'color');
+  await writeFile(join(folder, 'run.md'), 'private');
+  const response = await f.get({ folder });
+  assert.equal(response.status, 200);
+  const data = await response.json() as any;
+  assert.equal(data.folder, folder); assert.equal(data.name, 'imported'); assert.equal(data.inDirectory, false);
+  assert.equal(data.files.document.available, true);
+  const read = (path: string) => fetch(f.base + '/studio-artifact?' + new URLSearchParams({ folder, path }));
+  assert.equal(await (await read(studioArtifacts.document)).text(), 'document');
+  for (const path of ['run.json', 'run.md', '../imported/run.json']) assert.equal((await read(path)).status, 400);
+  const listed = await (await f.get()).json() as any;
+  assert.equal(listed.inDirectory, true);
+});
+test('The project list reads task folders under a chosen base folder, the run directory by default', async t => {
+  const f = await fixture(t), base = join(f.root, 'elsewhere');
+  await mkdir(join(base, 'task'), { recursive: true }); await mkdir(join(base, 'notes'));
+  await mkdir(join(base, '.hidden')); await writeFile(join(base, '.hidden', 'run.json'), '{}');
+  await writeFile(join(base, 'task', 'run.json'), '{}');
+  await writeFile(join(f.project, 'run.json'), '{}');
+  const list = (dir?: string) => fetch(f.base + '/api/studio/projects?' + new URLSearchParams(dir ? { dir } : {}));
+  const fallback = await (await list()).json() as any;
+  assert.equal(fallback.directory, f.dir); assert.equal(fallback.default, f.dir);
+  assert.deepEqual(fallback.projects.map((project: any) => project.folder), [f.project]);
+  const chosen = await (await list(base)).json() as any;
+  assert.equal(chosen.directory, base);
+  assert.deepEqual(chosen.projects, [{ name: 'task', folder: join(base, 'task'), displayName: 'task' }]);
+  const missing = await list(join(f.root, 'gone'));
+  assert.equal(missing.status, 404); assert.equal((await missing.json() as any).missing, true);
+  assert.equal((await list('relative')).status, 400);
 });

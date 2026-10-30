@@ -1,11 +1,12 @@
-import { mkdir, readFile, realpath, writeFile } from 'node:fs/promises';
-import { extname, join, resolve } from 'node:path';
+import { mkdir, readFile, realpath, stat, writeFile } from 'node:fs/promises';
+import { extname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import { toolDefinition } from '../codex/tool-config.ts';
 import { textResult, type FunctionTool } from '../codex/function-tools.ts';
-import { canonicalPath, within } from './run-store.ts';
-import { exportKraLayers, partScope, type PartScopeOptions } from './pixel-part-scope.ts';
+import { agentPaths, canonicalPath, taskPaths } from './run-store.ts';
+import { fromTaskPath } from '../task-paths.ts';
+import { partScope, type PartSource } from './pixel-part-scope.ts';
 
 type Box = [number, number, number, number];
 type Region = { kind: 'missing' | 'extra' | 'color'; bounds: Box; pixels: number };
@@ -14,20 +15,19 @@ const colors = ['#ff4040', '#00b8ff', '#ffbd00'];
 
 // Coordinates stay in the original canvas. These are candidate differences,
 // never an automatic acceptance verdict or a generated painting repair.
-export function createPixelTool(directory: string, taskRoot: string, output: string,
-  options: PartScopeOptions & { namespace?: 'character' | 'clothing' } = {}): FunctionTool {
+// Path arguments, results and differences.json use the task root as their base.
+export function createPixelTool(_directory: string, taskRoot: string, output: string,
+  options: { sources?: PartSource[]; namespace?: 'character' | 'clothing' } = {}): FunctionTool {
   const definition = toolDefinition('locate_pixel_differences');
   return {
     ...definition,
     async execute(value, signal, context) {
       if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('参数须为对象');
-      const args = value as Record<string, unknown>;
-      const root = await realpath(taskRoot);
+      const args = value as Record<string, unknown>, root = context?.root ?? taskRoot;
       const source = async (key: string, fallback?: string) => {
         const requested = args[key] ?? fallback;
-        if (typeof requested !== 'string' || !requested.trim()) throw new Error(`${key} 须为任务内的文件路径`);
-        const path = await realpath(resolve(directory, requested));
-        if (!within(root, path)) throw new Error('输入文件必须位于本次任务目录内');
+        if (typeof requested !== 'string' || !requested.trim()) throw new Error(`${key} 须为文件路径`);
+        const path = await realpath(fromTaskPath(root, requested));
         return path;
       };
       const image = async (bytes: Buffer) => sharp(bytes, { limitInputPixels: 16_000_000 })
@@ -60,17 +60,21 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       }
       const parts = (args.parts ?? []) as string[], padding = setting('part_padding', 8, 64, 0);
       const destination = await canonicalPath(context ? join(context.workspace, 'pixel-review') : output);
-      if (!within(root, destination)) throw new Error('诊断输出必须位于本次任务目录内');
       await mkdir(destination, { recursive: true });
       const folder = join(await realpath(destination), randomUUID());
       await mkdir(folder);
-      const currentKra = parts.length ? await source('current_kra', current.slice(0, current.length - extname(current).length) + '.kra') : undefined;
+      // Part ranges come from the layers the agent exported from the saved
+      // KRA (OpenRaster keeps each layer's transformed, masked pixels); the
+      // tool itself never runs Krita.
+      const layers = parts.length ? await source('layers') : undefined;
+      const currentKra = layers ? await source('current_kra', current.slice(0, current.length - extname(current).length) + '.kra') : undefined;
       let selection: Awaited<ReturnType<typeof partScope>> | undefined;
-      if (currentKra) {
-        if (!options.krita) throw new Error('按部件检测需要当前工作流已配置的 Krita');
+      if (layers && currentKra) {
+        if (extname(layers).toLowerCase() !== '.ora') throw new Error('layers 须为从当前 KRA 导出的 .ora 文件');
+        if ((await stat(layers)).mtimeMs < (await stat(currentKra)).mtimeMs)
+          throw new Error(`layers 早于 ${currentKra} 的最后保存；请保存 KRA 后重新导出 .ora 再检测`);
         const sources = options.sources ?? (options.namespace ? [{ namespace: options.namespace, document: currentKra }] : []);
-        for (const source of sources) if (!within(root, await realpath(source.document))) throw new Error('部件来源 KRA 必须位于本次任务目录内');
-        const ora = await (options.exportLayers ?? exportKraLayers)(currentKra, folder, options.krita, options.env ?? process.env, signal);
+        const ora = await readFile(layers);
         selection = await partScope(ora, parts, padding, [width, height], sources, signal);
         for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
           const pos = y * width + x, i = pos * 4;
@@ -147,11 +151,12 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       const files = { diagnostics: join(folder, 'differences.json'), heatmap: join(folder, 'heatmap.png'),
         marked: join(folder, 'marked.png'), comparison: join(folder, 'comparison.png'),
         ...(selection ? { scope: join(folder, 'scope.png'), scopePreview: join(folder, 'scope-preview.png') } : {}) };
+      // differences.json keeps task-relative paths; the agent sees absolute ones.
       const meta = { reference, current, visibleMask: maskPath, canvas: [width, height], crop,
-        ...(selection ? { partSelection: { parts, padding, currentKra, layers: selection.bounds } } : {}),
+        ...(selection ? { partSelection: { parts, padding, currentKra: currentKra!, layersFile: layers!, layers: selection.bounds } } : {}),
         thresholds: { color: colorThreshold, coarseColor: coarseThreshold, blurSigma: 2, regionGapPixels: gap, alpha: alphaThreshold, minRegionPixels: minPixels },
         counts, regions, note: '以候选框为局部检查入口，依据当前阶段职责和参考确认修复范围。候选不决定通过或内容归属；选择部件时只统计其当前范围及周边。' };
-      await writeFile(files.diagnostics, JSON.stringify(meta, null, 2) + '\n');
+      await writeFile(files.diagnostics, JSON.stringify(await taskPaths(root, meta), null, 2) + '\n');
       if (selection) {
         await sharp(selection.mask, { raw: { width, height, channels: 1 } }).png().toFile(files.scope!);
         const tint = Buffer.alloc(width * height * 4);
@@ -175,7 +180,7 @@ export function createPixelTool(directory: string, taskRoot: string, output: str
       await sharp({ create: { width: w * 2, height: h, channels: 4, background: '#888888' } })
         .composite([{ input: original, left: 0, top: 0 }, { input: marked, left: w, top: 0 }]).png().toFile(files.comparison);
       signal.throwIfAborted();
-      return textResult({ ...meta, regions: selected, totalRegions: regions.length, files,
+      return textResult({ ...await agentPaths(root, meta), regions: selected, totalRegions: regions.length, files: await agentPaths(root, files),
         comparisonLayout: '左参考、右当前标记；两侧同尺寸，坐标为原画布坐标；热图是 crop 区域。' });
     },
   };

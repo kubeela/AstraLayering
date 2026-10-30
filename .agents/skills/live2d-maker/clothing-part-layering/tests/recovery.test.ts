@@ -2,12 +2,13 @@ import assert from 'node:assert/strict';
 import { cp, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { test, type TestContext } from 'node:test';
+import { taskRootOf } from '../../shared/task-paths.ts';
+import { test } from 'node:test';
 import { artifactPath, readJson, reportPath } from '../../shared/part/artifact-facts.ts';
 import { GroupStore, walkGroups, writeAtomic } from '../../shared/part/groups.ts';
 import { runLayering } from '../../shared/part/layering.ts';
 import type { LayeringSteps } from '../../shared/part/layering-types.ts';
-import { groupDirectory, groupStepId } from '../../shared/part/part-steps.ts';
+import { groupStepId } from '../../shared/part/part-steps.ts';
 import { readStep } from '../../shared/step-chain.ts';
 import { fixture, shape, workingMerger, workingSteps } from './layering-fixture.ts';
 
@@ -38,7 +39,7 @@ test('删 outline 后原样重画：只重做轮廓与复核，本层去重、�
   events.length = 0;
   await runLayering({ ...f, groups: null, steps: { ...steps, async drawOutline(context) {
     // 重做 step01 会先删掉整个步骤目录：旧复核记录和会话不会带进新一轮。
-    await missing([reportPath(f.directory, 'a', 'review'), join(f.directory, groupStepId('a', 1), 'session.json')]);
+    await missing([reportPath(f.directory, 'a', 'review'), join(f.directory, groupStepId('a', 'outline'), 'session.json')]);
     return steps.drawOutline(context);
   } }, mergeSvg: workingMerger(events) });
   assert.deepEqual(events, ['a:outline', 'a:review']);
@@ -74,7 +75,7 @@ test('父稿变化后重新分析子组：保留的子组按新父稿重画，�
   const children: Record<string, { id: string; kind?: 'part' }[]> = { head: [{ id: 'head/eye', kind: 'part' }, { id: 'head/ear', kind: 'part' }] };
   const steps = redrawn(workingSteps(events, [{ id: 'head' }], children), ['head']);
   await runLayering({ ...f, groups: null, steps });
-  const ear = [artifactPath(f.directory, 'head/ear', 'completion'), groupDirectory(f.directory, 'head/ear')];
+  const ear = [artifactPath(f.directory, 'head/ear', 'completion'), join(f.directory, groupStepId('head/ear', 'outline'))];
   for (const path of ear) await stat(path);
   children.head = [{ id: 'head/eye', kind: 'part' }];
   await rm(artifactPath(f.directory, 'head', 'outline'));
@@ -105,7 +106,7 @@ test('复核中断后续跑沿用同一轮廓与复核记录，不重画也不�
   await assert.rejects(runLayering({ ...f, groups: null, steps: { ...steps, async reviewOutline(context) {
     await writeAtomic(context.reportPath, JSON.stringify(report)); throw new Error('review interrupted');
   } } }), /review interrupted/);
-  assert.equal((await readStep(join(f.directory, groupStepId('head', 1)))).status, 'running');
+  assert.equal((await readStep(join(f.directory, groupStepId('head', 'outline')), taskRootOf(f.directory))).status, 'running');
   events.length = 0;
   await runLayering({ ...f, groups: null, steps: { ...steps, async reviewOutline(context) {
     assert.deepEqual(await readJson(context.reportPath), report);
@@ -114,31 +115,7 @@ test('复核中断后续跑沿用同一轮廓与复核记录，不重画也不�
   assert.ok(!events.includes('head:outline'));
 });
 
-async function referencing(t: TestContext, source: string, from: string, sibling: string) {
-  const prompts = await mkdtemp(join(tmpdir(), 'part-layering-prompts-'));
-  t.after(() => rm(prompts, { recursive: true, force: true }));
-  await cp(source, prompts, { recursive: true });
-  await writeAtomic(join(prompts, 'groups', from, 'completion.references.json'), JSON.stringify([{ sibling }]));
-  return prompts;
-}
-
-test('掌片去重稿变化只重跑引用它的补全，不重画引用者轮廓或无关部件', async t => {
-  const f = await fixture(t), events: string[] = [];
-  const profile = { ...f.profile, promptsDirectory: await referencing(t, f.profile.promptsDirectory, 'hand/finger', 'palm') };
-  const steps = redrawn(workingSteps(events, [{ id: 'hand' }], { hand: ['palm', 'finger', 'ornament'].map(name => ({ id: `hand/${name}`, kind: 'part' as const })) }), ['hand/palm']);
-  await runLayering({ ...f, profile, groups: null, steps });
-  const ornament = [artifactPath(f.directory, 'hand/ornament', 'completion'), reportPath(f.directory, 'hand/ornament', 'completion-check')];
-  const before = await snapshot(ornament);
-  await rm(artifactPath(f.directory, 'hand/palm', 'outline'));
-  events.length = 0;
-  const result = await runLayering({ ...f, profile, groups: { id: 'hand/palm' }, steps });
-  assert.equal(result.status, 'completed');
-  assert.ok(events.includes('hand/palm:completion') && events.includes('hand/finger:completion'));
-  assert.ok(!events.includes('hand/finger:outline') && !events.some(event => event.startsWith('hand/ornament:')));
-  assert.deepEqual(await snapshot(ornament), before);
-});
-
-test('去重实际改变别件时只重跑变化的补全；未改变的去重结果保持，提交后中断也安全', async t => {
+test('去重每次从轮廓重新判断；字节不变的去重结果保持，只重跑变化的补全，提交后中断也安全', async t => {
   const f = await fixture(t), events: string[] = [];
   const base = redrawn(workingSteps(events, ['a', 'b', 'd'].map(id => ({ id }))), ['a']);
   await runLayering({ ...f, groups: null, steps: { ...base, async reduceOutlines(context) {
@@ -150,12 +127,10 @@ test('去重实际改变别件时只重跑变化的补全；未改变的去重�
   const before = await snapshot(preserved);
   await rm(artifactPath(f.directory, 'a', 'outline'));
   await assert.rejects(runLayering({ ...f, groups: { id: 'a' }, steps: { ...base, async reduceOutlines(context) {
-    // 轮廓未变的组把当前去重稿交给适配器参考。
-    assert.equal(context.entries.find(entry => entry.group.id === 'd')!.current?.path, preserved[0]);
-    assert.equal(context.entries.find(entry => entry.group.id === 'a')!.current, undefined);
-    const entry = context.entries.find(entry => entry.group.id === 'b')!;
-    await writeAtomic(entry.outputPath, shape('b', 20, 80));
-    return { status: 'completed', output: { changed: [{ groupId: 'b', path: entry.outputPath }] } };
+    // 重新判断后 d 得到与上次相同的去重结果，b 新增改动。
+    const changed = [['d', 20, 80], ['b', 20, 80]] as const;
+    for (const [id, left, right] of changed) await writeAtomic(context.entries.find(entry => entry.group.id === id)!.outputPath, shape(id, left, right));
+    return { status: 'completed', output: { changed: changed.map(([groupId]) => ({ groupId, path: context.entries.find(entry => entry.group.id === groupId)!.outputPath })) } };
   } }, progress(message) { if (message === '第 0 层轮廓去重：完成') throw new Error('interrupt after changed reduction'); } }), /interrupt after changed reduction/);
   events.length = 0;
   await runLayering({ ...f, groups: null, steps: base });

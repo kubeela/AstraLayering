@@ -1,36 +1,12 @@
-import { execFile } from 'node:child_process';
-import { readFile, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { promisify } from 'node:util';
+import { readFile } from 'node:fs/promises';
 import { unzipSync } from 'fflate';
 import sharp from 'sharp';
 import { layerPartName } from '../layer-names.ts';
-import { preparePrivateKritaEnvironment } from '../krita/private-environment.ts';
 import { parseXml } from '../xml.ts';
 
 export type Box = [number, number, number, number];
 export type PartSource = { namespace: 'character' | 'clothing'; document: string };
-export type PartScopeOptions = { krita?: string; env?: NodeJS.ProcessEnv; sources?: PartSource[];
-  exportLayers?: typeof exportKraLayers };
 export type PartScope = { parts: string[]; padding: number; bounds: { part: string; layer: string; bounds: Box }[]; mask: Buffer };
-
-// Krita supplies the transformed, masked layer pixels. Do not approximate a
-// scaled garment using its upstream SVG coordinates or decode Krita tiles here.
-export async function exportKraLayers(document: string, folder: string, krita: string,
-  inherited: NodeJS.ProcessEnv, signal: AbortSignal): Promise<Uint8Array> {
-  const root = join(folder, 'krita-export'), ora = join(root, 'layers.ora');
-  const { resource, env } = await preparePrivateKritaEnvironment(root, inherited);
-  try {
-    const result = await promisify(execFile)(krita, ['--nosplash', '--resource-location', resource,
-      '--export', '--export-filename', ora, document], { cwd: root, env, signal, timeout: 180_000, maxBuffer: 1_000_000 });
-    await writeFile(join(folder, 'krita-export.log'), result.stdout + result.stderr);
-    return await readFile(ora);
-  } catch (error) {
-    const failure = error as Error & { stdout?: string; stderr?: string };
-    await writeFile(join(folder, 'krita-export.log'), (failure.stdout ?? '') + (failure.stderr ?? '') + '\n' + failure.message);
-    throw new Error('无法读取当前 KRA 的部件范围；请检查已保存工程、Krita 和显示环境。诊断：' + join(folder, 'krita-export.log'), { cause: error });
-  } finally { await rm(root, { recursive: true, force: true }); }
-}
 
 async function sourceNames(sources: PartSource[]) {
   const names = new Map<string, Set<string>>();
@@ -66,11 +42,11 @@ function fillHoles(mask: Buffer, width: number, height: number) {
 export async function partScope(ora: Uint8Array, parts: string[], padding: number, canvas: [number, number],
   sources: PartSource[] = [], signal?: AbortSignal): Promise<PartScope> {
   const files = unzipSync(ora, { filter: file => file.name === 'stack.xml' || /^data\/layer\d+\.png$/.test(file.name) });
-  if (!files['stack.xml']) throw new Error('Krita 导出缺少 OpenRaster 图层目录');
+  if (!files['stack.xml']) throw new Error('layers 不是 OpenRaster 文件：缺少 stack.xml');
   const xml = parseXml(new TextDecoder().decode(files['stack.xml'])), image = xml.documentElement;
-  if (!image) throw new Error('Krita 导出的图层目录为空');
+  if (!image) throw new Error('layers 的图层目录为空');
   const [width, height] = canvas;
-  if (Number(image.getAttribute('w')) !== width || Number(image.getAttribute('h')) !== height) throw new Error('当前 KRA 与 current PNG 画布尺寸不同');
+  if (Number(image.getAttribute('w')) !== width || Number(image.getAttribute('h')) !== height) throw new Error('layers 与 current PNG 画布尺寸不同');
   const origins = await sourceNames(sources), rows = [];
   for (const layer of Array.from(xml.getElementsByTagName('layer'))) {
     const label = layer.getAttribute('name') ?? '', parsed = layerPartName(label);
@@ -99,7 +75,7 @@ export async function partScope(ora: Uint8Array, parts: string[], padding: numbe
     for (const row of selected) {
       signal?.throwIfAborted();
       if (!row.visible) continue;
-      if (!files[row.src]) throw new Error('Krita 导出缺少部件像素：' + row.label);
+      if (!files[row.src]) throw new Error('layers 缺少部件像素：' + row.label);
       const raster = await sharp(files[row.src], { limitInputPixels: 16_000_000 }).toColourspace('srgb').ensureAlpha().raw().toBuffer({ resolveWithObject: true });
       let x0 = width, y0 = height, x1 = -1, y1 = -1;
       for (let yy = 0; yy < raster.info.height; yy++) for (let xx = 0; xx < raster.info.width; xx++) {

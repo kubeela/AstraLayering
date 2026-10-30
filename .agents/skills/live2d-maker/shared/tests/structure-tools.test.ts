@@ -5,8 +5,8 @@ import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import { createStructureTools, validateRasterStructure } from '../raster/structure-tools.ts';
 import { validateOcclusionDocument, type OcclusionLayer } from '../part/occlusion-plan.ts';
-import { pipeline as character } from '../../raster-layering/run.ts';
-import { pipeline as clothing } from '../../clothing-raster-layering/run.ts';
+import { section as character } from '../../raster-layering/run.ts';
+import { section as clothing } from '../../clothing-raster-layering/run.ts';
 import { runWorkflow } from '../raster/workflow.ts';
 import { seedUpstream } from './upstream-fixture.ts';
 import { deliverRasterStep } from './raster-delivery.ts';
@@ -20,11 +20,11 @@ import { prepareGenaiTools } from '../agents/agv-gateway.ts';
 
 const signal = new AbortController().signal;
 const row = (id: string, level: number): OcclusionLayer => ({ id, level, note: '按当前工程确认层序', check: { passed: true, note: '已独显检查' } });
-async function fixture(t: TestContext, pipeline: typeof character | typeof clothing = character) {
+async function fixture(t: TestContext, section: typeof character | typeof clothing = character) {
   const root = await realpath(await mkdtemp(join(tmpdir(), 'structure-tools-')));
   t.after(() => rm(root, { recursive: true, force: true }));
-  const directory = await seedUpstream('case', pipeline.inputPipeline, root);
-  const input = { directory, parts: join(directory, 'parts') };
+  const directory = await seedUpstream('case', section.inputSection, root);
+  const input = { directory, parts: join(directory, 'parts'), ...(section === clothing ? { originalCharacter: join(directory, 'references/clothing.png') } : {}) };
   const tools = createStructureTools(input);
   const tool = (name: string) => tools.find(tool => tool.name === name)!;
   const json = async (file: string) => JSON.parse(await readFile(join(directory, file), 'utf8'));
@@ -33,20 +33,19 @@ async function fixture(t: TestContext, pipeline: typeof character | typeof cloth
 }
 
 test('两套 step01 绘制与两轮返修提供编辑工具；reviewer 和后续阶段保持原工具边界', async t => {
-  for (const pipeline of [character, clothing]) {
-    const f = await fixture(t, pipeline), step = pipeline.steps[0];
-    const output = join(f.root, 'case', pipeline.id, 'step01');
+  for (const section of [character, clothing]) {
+    const f = await fixture(t, section), step = section.steps[0];
+    const output = join(f.root, 'case', section.id, 'step01');
     for (const phase of ['draw', 'repair-01', 'repair-02']) {
-      assert.deepEqual(pipeline.tools!(output, f.input, step, phase).map(tool => tool.name), ['edit_groups', 'edit_occlusion']);
+      assert.deepEqual(section.tools!(output, f.input, step, phase).map(tool => tool.name), ['edit_groups', 'edit_occlusion']);
     }
     for (const phase of ['review-01', 'review-02']) {
-      assert.deepEqual(pipeline.tools!(output, f.input, step, phase).map(tool => tool.name), ['annotate_review_regions']);
+      assert.deepEqual(section.tools!(output, f.input, step, phase).map(tool => tool.name), ['annotate_review_regions']);
     }
-    assert.deepEqual(pipeline.tools!(output, f.input, pipeline.steps[1], 'draw').map(tool => tool.name), ['locate_pixel_differences']);
-    if (pipeline.id === character.id) assert.deepEqual(pipeline.tools!(output, f.input, pipeline.steps[2], 'draw'), []);
-    const krita = { executable: process.execPath, version: 'fixture' };
-    const draw = await pipeline.buildPrompt(step, f.input, output, krita, []);
-    const repair = await buildReviewPrompt(step, { kind: 'repair', filename: 'repair-01.md', index: 1 }, krita);
+    assert.deepEqual(section.tools!(output, f.input, section.steps[1], 'draw').map(tool => tool.name), ['locate_pixel_differences']);
+    if (section.id === character.id) assert.deepEqual(section.tools!(output, f.input, section.steps[2], 'draw'), []);
+    const draw = await section.buildPrompt(step, f.input, output, []);
+    const repair = await buildReviewPrompt(step, { kind: 'repair', filename: 'repair-01.md', index: 1 });
     for (const prompt of [draw, repair]) {
       assert.ok(prompt.includes('修改 groups.json 使用 edit_groups，修改 occlusion.json 使用 edit_occlusion'));
       assert.ok(!prompt.includes('直接编辑上游 groups.json'));
@@ -111,6 +110,19 @@ test('分组工具保留 subject、metadata 和未调整节点，终止 group �
   }
 });
 
+test('raster 结构写回保留可选显隐标签，错误类型返回当前 agent 且原文件保持完整', async t => {
+  const f = await fixture(t);
+  const group = { id: 'fixture', kind: 'part', hiddenInReference: true, allowOutsideParent: true, groups: [] };
+  await f.tool('edit_groups').execute({ groups: [group] }, signal);
+  assert.deepEqual((await f.json('groups.json')).groups, [group]);
+  await validateRasterStructure(f.input);
+  const before = await f.snapshot();
+  for (const field of ['hiddenInReference', 'allowOutsideParent']) {
+    await assert.rejects(f.tool('edit_groups').execute({ groups: [{ ...group, [field]: 'true' }] }, signal), /must be a boolean/);
+    assert.deepEqual(await f.snapshot(), before);
+  }
+});
+
 test('拆分必须联动完整深度表与已有 SVG；所有校验通过后才保存两个文件', async t => {
   const f = await fixture(t), before = await f.snapshot();
   const groups = [{ id: 'fixture', kind: 'group', groups: [{ id: 'fixture/left', kind: 'part', groups: [] }, { id: 'fixture/right', kind: 'part', groups: [] }] }];
@@ -132,27 +144,29 @@ test('拆分必须联动完整深度表与已有 SVG；所有校验通过后才�
   await validateRasterStructure(f.input);
 });
 
-test('取消和指向任务外的 SVG 不改变结构文件', async t => {
+test('取消保留结构文件；SVG 支持指向外部文件的符号链接', async t => {
   const f = await fixture(t), before = await f.snapshot();
   const canceled = AbortSignal.abort(new Error('用户取消'));
   await assert.rejects(f.tool('edit_occlusion').execute({ layers: [row('fixture', 0)] }, canceled), /用户取消/);
+  assert.deepEqual(await f.snapshot(), before);
   await writeFile(join(f.root, 'outside.svg'), 'other task');
   await rm(join(f.input.parts, 'fixture.svg'));
   await symlink(join(f.root, 'outside.svg'), join(f.input.parts, 'fixture.svg'));
-  await assert.rejects(f.tool('edit_occlusion').execute({ layers: [row('fixture', 0)] }, signal), /缺少有效 SVG/);
-  assert.deepEqual((await f.snapshot()).slice(0, 2), before.slice(0, 2));
+  await f.tool('edit_occlusion').execute({ layers: [row('fixture', 0)] }, signal);
+  assert.deepEqual((await f.snapshot())[0], before[0]);
+  assert.deepEqual((await f.json('occlusion.json')).layers, [row('fixture', 0)]);
 });
 
 test('两套 step01 结束时结构诊断仅记日志，保留完成状态并推进下一步', async t => {
-  for (const pipeline of [character, clothing]) {
-    const f = await fixture(t, pipeline), step = { ...pipeline.steps[0], review: undefined };
+  for (const section of [character, clothing]) {
+    const f = await fixture(t, section), step = { ...section.steps[0], review: undefined };
     const original = await f.json('occlusion.json');
-    const next = pipeline.steps[1];
+    const next = section.steps[1];
     const deps = { runsDirectory: f.root, environment: loadWorkflowEnvironment({}, f.root), steps: [step, next],
-      preflight: async (executable: string) => ({ executable, version: 'fixture' }) };
-    const output = join(f.root, 'case', pipeline.id, 'step01');
+      preflight: async (executable: string) => ({ executable }) };
+    const output = join(f.root, 'case', section.id, 'step01');
     const messages: string[] = [], calls: string[] = [];
-    await runWorkflow(pipeline, { name: 'case', krita: process.execPath, progress: message => messages.push(message) }, { ...deps, agent: async request => {
+    await runWorkflow(section, { name: 'case', krita: process.execPath, progress: message => messages.push(message) }, { ...deps, agent: async request => {
       const isFirst = request.step === step.modelStep;
       calls.push(isFirst ? 'step01' : 'step02');
       if (isFirst) {
@@ -168,7 +182,7 @@ test('两套 step01 结束时结构诊断仅记日志，保留完成状态并推
     await assert.rejects(readFile(join(output, 'error.txt')), { code: 'ENOENT' });
     assert.equal((await f.json('occlusion.json')).layers[0].layer, '051 | fixture');
     // A retained completed step diagnoses the same issue without rerunning it.
-    await runWorkflow(pipeline, { name: 'case' }, { ...deps, agent: async () => assert.fail('already completed') });
+    await runWorkflow(section, { name: 'case', krita: process.execPath }, { ...deps, agent: async () => assert.fail('already completed') });
   }
 });
 

@@ -5,7 +5,7 @@ import { patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
 export type FakeToolCall = { tool: string; arguments: unknown; threadId?: string; namespace?: string | null };
 
 export async function fakeAppServer(directory: string, calls: FakeToolCall[], mode = 'completed', completedItems: unknown[] = [],
-  behavior: { failedTurns?: number; blockedTurns?: number; errorInfo?: unknown; nativeReconnect?: boolean; skipCallsAfterFailure?: boolean } = {}) {
+  behavior: { failedTurns?: number; blockedTurns?: number; errorInfo?: unknown; nativeReconnect?: boolean; skipCallsAfterFailure?: boolean; finalText?: string } = {}) {
   const executable = join(directory, 'fake-app-server.mjs');
   const capture = join(directory, 'protocol.jsonl');
   await writeFile(executable, `#!${process.execPath}
@@ -17,6 +17,7 @@ const mode = ${JSON.stringify(mode)};
 const completedItems = ${JSON.stringify(completedItems)};
 const capture = ${JSON.stringify(capture)};
 const behavior = ${JSON.stringify(behavior)};
+const finalText = behavior.finalText ?? '文件已保存，不返回 JSON。';
 const write = value => process.stdout.write(JSON.stringify(value) + '\\n');
 if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))}); process.exit(0); }
 if (process.argv[2] === 'exec') {
@@ -33,23 +34,24 @@ async function advance() {
   if (mode === 'hang') return;
   if (index < calls.length) {
     const call = calls[index++];
+    await record([{ type: 'function_call', call_id: 'item-' + index, name: call.tool, arguments: JSON.stringify(call.arguments) }]);
     write({ method: 'item/tool/call', id: 'call-' + index,
       params: { threadId, turnId: 'native-turn', callId: 'item-' + index, namespace: null, ...call } });
   } else if (mode === 'eof') process.exit(0);
   else {
     if (!(behavior.skipCallsAfterFailure && turns > 1)) {
-      for (const item of completedItems) write({ method: 'item/completed', params: { threadId: 'native-thread', item } });
+      for (const item of completedItems) write({ method: 'item/completed', params: { threadId, turnId: 'native-turn', item } });
     }
-    write({ method: 'item/completed', params: { threadId: 'native-thread', item: { type: 'reasoning', summary: ['测试工具选择摘要'] } } });
-    write({ method: 'item/completed', params: { threadId: 'native-thread', item: { type: 'agentMessage', text: '文件已保存，不返回 JSON。' } } });
-    write({ method: 'thread/tokenUsage/updated', params: { threadId: 'native-thread', tokenUsage: { total: { inputTokens: 12, outputTokens: 3 } } } });
+    write({ method: 'item/completed', params: { threadId, turnId: 'native-turn', item: { type: 'reasoning', summary: ['测试工具选择摘要'] } } });
+    write({ method: 'item/completed', params: { threadId, turnId: 'native-turn', item: { type: 'agentMessage', text: finalText } } });
+    write({ method: 'thread/tokenUsage/updated', params: { threadId, turnId: 'native-turn', tokenUsage: { total: { inputTokens: 12, outputTokens: 3 } } } });
     const blocked = turns === 1 && threads > 0 && threads <= (behavior.blockedTurns ?? 0);
     const failed = blocked || mode === 'failed' || turns <= (behavior.failedTurns ?? 0);
     const error = blocked ? {message:'Image processing blocked due to content policy violation.',codexErrorInfo:'other'}
-      : mode === 'failed' ? {message:'测试回合失败'} : {message:'Selected model is at capacity. Please try a different model.',codexErrorInfo:behavior.errorInfo ?? 'serverOverloaded'};
-    if (!blocked) await record([{ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: '文件已保存，不返回 JSON。' }] }]);
-    if (failed) write({method:'error',params:{threadId:'native-thread',error,willRetry:false}});
-    write({ method: 'turn/completed', params: { threadId: 'native-thread', turn: {
+      : mode === 'failed' ? {message:'测试回合失败',codexErrorInfo:'badRequest'} : {message:'Selected model is at capacity. Please try a different model.',codexErrorInfo:behavior.errorInfo ?? 'serverOverloaded'};
+    if (!blocked) await record([{ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: finalText }] }]);
+    if (failed) write({method:'error',params:{threadId,turnId:'native-turn',error,willRetry:false}});
+    write({ method: 'turn/completed', params: { threadId, turn: {
       id: 'native-turn', status: failed ? 'failed' : 'completed', error: failed ? error : null } } });
   }
 }
@@ -73,9 +75,14 @@ for await (const line of createInterface({ input: process.stdin })) {
       : [{ type: 'input_text', text: part.text }]) }]);
     index = behavior.skipCallsAfterFailure && turns > 1 ? calls.length : 0;
     write({ id: msg.id, result: { turn: { id: 'native-turn', status: 'inProgress' } } });
-    if (behavior.nativeReconnect) write({method:'error',params:{threadId:'native-thread',willRetry:true,error:{message:'Reconnecting... 2/5',codexErrorInfo:{responseStreamDisconnected:{httpStatusCode:503}}}}});
+    if (behavior.nativeReconnect) write({method:'error',params:{threadId,turnId:'native-turn',willRetry:true,error:{message:'Reconnecting... 2/5',codexErrorInfo:{responseStreamDisconnected:{httpStatusCode:503}}}}});
     await advance();
-  } else if (typeof msg.id === 'string') await advance();
+  } else if (typeof msg.id === 'string') {
+    // A tool response: record what the model saw, images included.
+    await record([{ type: 'function_call_output', call_id: 'item-' + msg.id.slice('call-'.length), output: (msg.result?.contentItems ?? []).map(part =>
+      part.type === 'inputImage' ? { type: 'input_image', image_url: part.imageUrl } : { type: 'input_text', text: part.text }) }]);
+    await advance();
+  }
 }
 `, 'utf8');
   await chmod(executable, 0o755);

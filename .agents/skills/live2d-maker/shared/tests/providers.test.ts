@@ -187,8 +187,9 @@ test('Claude private settings apply model lists and explicit credentials, preser
     layering_claude_api_key: 'EXPLICIT_FIXTURE_KEY', layering_claude_base_url: 'https://claude.test', layering_claude_models: 'claude-sonnet-5-5,claude-opus-5-5' };
   const settings = loadWorkflowEnvironment(env, root), options = { cwd, logDirectory: join(cwd, 'agents') }, task = { name: 'fixture', cwd, prompt: 'unchanged prompt' };
   const first = await runCliTask(task, parseAgentModel('claude-sonnet-5-5-xhigh', 'fixture'), settings, options, new AbortController().signal);
-  const a = JSON.parse(await readFile(join(cwd, 'workspace/fixture.json'), 'utf8'));
+  const a = JSON.parse(await readFile(join(cwd, 'workspace', 'fixture.json'), 'utf8'));
   assert.equal(a.env.ANTHROPIC_API_KEY, 'EXPLICIT_FIXTURE_KEY');
+  assert.equal(a.args[a.args.indexOf('--disallowedTools') + 1], 'ScheduleWakeup,CronCreate,CronDelete,CronList', 'a one-turn run cannot be woken later');
   assert.equal(a.env.ANTHROPIC_BASE_URL, 'https://claude.test');
   assert.equal(a.env.ANTHROPIC_AUTH_TOKEN, undefined);
   assert.equal(a.settings.apiKeyHelper, undefined);
@@ -199,7 +200,7 @@ test('Claude private settings apply model lists and explicit credentials, preser
   await writeFile(join(cwd, 'keep.kra'), 'existing-artifact');
   const changed = loadWorkflowEnvironment({ ...env, layering_claude_api_key: 'NEXT_FIXTURE_KEY', layering_claude_models: 'claude-opus-5-5' }, root);
   const second = await runCliTask(task, parseAgentModel('claude-opus-5-5-high', 'fixture'), changed, options, new AbortController().signal, first.threadId!);
-  const b = JSON.parse(await readFile(join(cwd, 'workspace/fixture.json'), 'utf8'));
+  const b = JSON.parse(await readFile(join(cwd, 'workspace', 'fixture.json'), 'utf8'));
   assert.equal(second.threadId, first.threadId);
   assert.equal(a.env.CLAUDE_CONFIG_DIR, b.env.CLAUDE_CONFIG_DIR);
   assert.equal(b.env.ANTHROPIC_API_KEY, 'NEXT_FIXTURE_KEY');
@@ -223,7 +224,7 @@ test('AGV receives native key, protocol and comma model list in its controlled w
       layering_agv_base_url: 'https://agv.test/v1beta', layering_agv_models: 'gemini-4-argon, gemini-3-flash-preview', layering_agv_protocol: protocol }, root);
     const result = await runCliTask({ name: 'agv', cwd, prompt: 'fixture' }, parseAgentModel('gemini-4-argon-high', 'fixture'), settings,
       { cwd, logDirectory: join(cwd, 'agents') }, new AbortController().signal, previous);
-    const meta = JSON.parse(await readFile(join(cwd, 'workspace/fixture.json'), 'utf8'));
+    const meta = JSON.parse(await readFile(join(cwd, 'workspace', 'fixture.json'), 'utf8'));
     assert.equal(meta.env.AGY_LLM_GATEWAY_API_KEY, 'AGV_FIXTURE_KEY');
     assert.equal(meta.env.AGY_LLM_GATEWAY_WIRE_PROTOCOL, protocol);
     assert.equal(meta.env.AGY_LLM_GATEWAY_MODELS, 'gemini-4-argon,gemini-3-flash-preview');

@@ -5,13 +5,15 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'nod
 import { once } from 'node:events';
 import { finished } from 'node:stream/promises';
 import { Zip, ZipPassThrough, unzipSync } from 'fflate';
-import { pipelineIds } from '../shared/paths.ts';
+import { sectionIds } from '../shared/paths.ts';
 import { reportReferences } from '../shared/report-links.js';
 import { reportTargets } from '../shared/report-paths.ts';
+import { toTaskPath } from '../shared/task-paths.ts';
 import { artifactPath, reportPath } from '../shared/part/artifact-facts.ts';
 import { normalizeGroups, walkGroups } from '../shared/part/groups.ts';
 import { publishDepthPreview } from '../shared/part/depth-preview.ts';
-import { groupStepId, groupDepth, initialStepId, layerStepId } from '../shared/part/part-steps.ts';
+import { groupStepId, groupDepth, groupSteps, layerStepId } from '../shared/part/part-steps.ts';
+import { partSteps } from '../shared/step-paths.js';
 import { steps as personSteps } from '../raster-layering/steps.ts';
 import { steps as clothingSteps } from '../clothing-raster-layering/steps.ts';
 import { steps as assemblySteps } from '../character-assembly/steps.ts';
@@ -20,21 +22,21 @@ import { shadowMode } from '../shared/shadow.ts';
 import { acquireTaskLock, directoryFor, readRun, taskStatus, type TaskRun } from './state.ts';
 
 const slash = (path: string) => path.split(sep).join('/');
-// Export stops at shadow even when an installation adds a physics pipeline.
-const exportPipelineIds = pipelineIds.slice(0, pipelineIds.indexOf('shadow') + 1);
+// Export stops at shadow even when an installation adds a physics section.
+const exportSectionIds = sectionIds.slice(0, sectionIds.indexOf('shadow') + 1);
 const inside = (root: string, path: string) => path === root || path.startsWith(root + sep);
 const excluded = (path: string) => path.split(/[\\/]/).some(name =>
   ['workspace', 'agents', 'recovery', 'archive', 'node_modules'].includes(name) || name.startsWith('.'));
 export const completeRun = (run?: TaskRun) => !!run && run.status === 'completed'
-  && exportPipelineIds.every(id => run.pipelines[id]?.status === 'completed');
+  && exportSectionIds.every(id => run.sections[id]?.status === 'completed');
 
 // Completion facts are portable. CLI configuration, model selection and thread
 // records stay at the source; an export cannot accidentally resume old sessions.
 export function archiveRun(run: TaskRun): TaskRun {
-  return { version: 1, archive: true, name: run.name, dir: '.', from: 'part-layering', to: 'shadow',
+  return { version: 1, archive: true, from: 'part-layering', to: 'shadow',
     jobs: run.jobs, standard: run.standard, shadowMode: run.shadowMode, status: run.status,
     createdAt: run.createdAt, updatedAt: run.updatedAt,
-    pipelines: Object.fromEntries(Object.entries(run.pipelines).filter(([id]) => (exportPipelineIds as readonly string[]).includes(id)).map(([id, value]) => [id,
+    sections: Object.fromEntries(Object.entries(run.sections).filter(([id]) => (exportSectionIds as readonly string[]).includes(id)).map(([id, value]) => [id,
       { status: value!.status, updatedAt: value!.updatedAt }])) };
 }
 
@@ -58,14 +60,22 @@ async function sourceFile(root: string, path: string): Promise<string | undefine
 
 // Collect formal deliveries from receipts/contracts, then close over report
 // image references. A workspace image is published beside its citing report.
-export async function exportFiles(root: string, run: TaskRun): Promise<{ entries: Map<string, Entry>; warnings: string[] }> {
+// root is the real task directory. Records may name it through another prefix
+// (a symlinked runs root); those aliases map onto root.
+export async function exportFiles(root: string, run: TaskRun, aliases: readonly string[] = []): Promise<{ entries: Map<string, Entry>; warnings: string[] }> {
   const entries = new Map<string, Entry>(), files: string[] = [], steps = new Set<string>(), warnings: string[] = [];
+  const roots = [...new Set(aliases.map(path => resolve(path)))].filter(path => path !== root);
+  // Same conversion as toTaskPath, also accepting the aliases; an outside path stays absolute.
+  const taskPath = (path: string) => {
+    for (const base of [root, ...roots]) { const local = toTaskPath(base, path); if (!isAbsolute(local)) return local; }
+    return path;
+  };
   async function walk(path = '') {
     for (const item of await readdir(join(root, path), { withFileTypes: true })) {
       const child = slash(join(path, item.name));
       if (item.name === '.completed' && item.isFile()) { files.push(child); steps.add(path); }
       else if (!excluded(child) && !item.isSymbolicLink()) {
-        if (item.isDirectory() && (path || ['input', ...exportPipelineIds].includes(item.name))) await walk(child);
+        if (item.isDirectory() && (path || ['input', ...exportSectionIds].includes(item.name))) await walk(child);
         else if (item.isFile()) files.push(child);
       }
     }
@@ -87,7 +97,8 @@ export async function exportFiles(root: string, run: TaskRun): Promise<{ entries
     let receipt: any;
     try { receipt = JSON.parse(await readFile(join(root, marker), 'utf8')); } catch { /* older empty completion marker */ }
     for (const output of Object.keys(receipt?.outputs ?? {})) {
-      const path = resolve(root, step, output);
+      // Output keys are task-relative with paths: 'task', else relative to the step.
+      const path = receipt.paths === 'task' ? resolve(root, output) : resolve(root, step, output);
       if (!inside(root, path)) throw new Error('完成记录的交付越过任务目录：' + marker);
       await add(relative(root, path), true);
     }
@@ -100,27 +111,27 @@ export async function exportFiles(root: string, run: TaskRun): Promise<{ entries
       || /^(?:part-layering|clothing-part-layering)\/references\/[^/]+\.(png|jpe?g|webp)$/i.test(path)) await add(path);
   }
   await add('.web-project.json');
-  for (const pipeline of ['part-layering', 'clothing-part-layering']) {
-    for (const step of [initialStepId, 'merge', 'occlusion']) await add(join(pipeline, step, '.completed'), !run.archive);
-    for (const path of ['groups.json', 'occlusion.json', 'preview.svg']) await add(join(pipeline, path), true);
-    const groups = normalizeGroups(JSON.parse(await readFile(join(root, pipeline, 'groups.json'), 'utf8')).groups);
+  for (const section of ['part-layering', 'clothing-part-layering']) {
+    for (const step of [partSteps.initial, partSteps.merge, partSteps.occlusion]) await add(join(section, step, '.completed'), !run.archive);
+    for (const path of ['groups.json', 'occlusion.json', 'preview.svg']) await add(join(section, path), true);
+    const groups = normalizeGroups(JSON.parse(await readFile(join(root, section, 'groups.json'), 'utf8')).groups);
     for (const { group } of walkGroups(groups)) {
-      for (const step of [1, 2, 3] as const) await add(join(pipeline, groupStepId(group.id, step), '.completed'), !run.archive);
-      await add(join(pipeline, layerStepId(groupDepth(group.id)), '.completed'), !run.archive);
-      for (const stage of ['outline', 'reduction', 'completion'] as const) await add(artifactPath(pipeline, group.id, stage), true);
-      for (const kind of ['review', 'completion-check', 'children'] as const) await add(reportPath(pipeline, group.id, kind));
+      for (const step of groupSteps) await add(join(section, groupStepId(group.id, step), '.completed'), !run.archive);
+      await add(join(section, layerStepId(groupDepth(group.id)), '.completed'), !run.archive);
+      for (const stage of ['outline', 'reduction', 'completion'] as const) await add(artifactPath(section, group.id, stage), true);
+      for (const kind of ['review', 'completion-check', 'children'] as const) await add(reportPath(section, group.id, kind));
     }
   }
   const definitions = [
     ['raster-layering', personSteps], ['clothing-raster-layering', clothingSteps],
-    ['character-assembly', assemblySteps], ['shadow/' + shadowMode(run.shadowMode), stepsFor(shadowMode(run.shadowMode))],
+    ['character-assembly', assemblySteps], ['shadow', stepsFor(shadowMode(run.shadowMode))],
   ] as const;
-  for (const [pipeline, definitionsForPipeline] of definitions) {
-    for (const step of definitionsForPipeline) {
-      await add(join(pipeline, step.id, '.completed'), !run.archive);
-      for (const path of step.requiredFiles) await add(join(pipeline, step.id, path), true);
+  for (const [section, definitionsForSection] of definitions) {
+    for (const step of definitionsForSection) {
+      await add(join(section, step.id, '.completed'), !run.archive);
+      for (const path of step.requiredFiles) await add(join(section, step.id, path), true);
       for (const pattern of ('previewFiles' in step ? step.previewFiles ?? [] : []) as readonly string[]) {
-        const full = slash(join(pipeline, step.id, pattern));
+        const full = slash(join(section, step.id, pattern));
         const matcher = new RegExp('^' + full.split('*').map(piece => piece.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^/]*') + '$');
         for (const path of files.filter(path => matcher.test(path))) await add(path);
       }
@@ -128,12 +139,22 @@ export async function exportFiles(root: string, run: TaskRun): Promise<{ entries
   }
   async function rewriteReport(text: string, path: string): Promise<string> {
     for (const ref of reportReferences(text).reverse()) {
-      const candidates = reportTargets(root, path, ref.target);
+      const candidates = reportTargets(root, path, ref.target, roots);
       if (!candidates.length) continue;
-      let source: string | undefined;
-      for (const candidate of candidates) { source = await sourceFile(root, relative(root, candidate)); if (source) break; }
+      let source: string | undefined, skipped = false;
+      // Report text is free prose: a cited path the file system cannot read is reported, not fatal.
+      // A symlinked image stays refused.
+      for (const candidate of candidates) {
+        try { source = await sourceFile(root, relative(root, candidate)); }
+        catch (error) {
+          const code = (error as NodeJS.ErrnoException).code;
+          if (!code) throw error;
+          skipped = true; warnings.push(path + '：跳过图片 ' + ref.target + '（' + code + '）');
+        }
+        if (source) break;
+      }
       if (!source) {
-        warnings.push(path + '：未找到图片 ' + (isAbsolute(ref.target) ? basename(ref.target) : ref.target));
+        if (!skipped) warnings.push(path + '：未找到图片 ' + (isAbsolute(ref.target) ? basename(ref.target) : ref.target));
         continue;
       }
       const local = slash(relative(root, source)), segments = local.split('/'), workspace = segments.indexOf('workspace');
@@ -147,16 +168,14 @@ export async function exportFiles(root: string, run: TaskRun): Promise<{ entries
       }
       entries.set(target, { source });
       const link = slash(relative(dirname(path), target)).split('/').map(encodeURIComponent).join('/');
-      const fragment = text.slice(ref.start, ref.end).replace(ref.target, link);
-      text = text.slice(0, ref.start) + fragment + text.slice(ref.end);
+      text = text.slice(0, ref.targetStart) + link + text.slice(ref.targetEnd);
     }
     return text;
   }
   async function rewriteJSON(value: any, path: string, key = ''): Promise<any> {
     if (typeof value === 'string') {
       if (key === 'feedback') return rewriteReport(value, path);
-      if (isAbsolute(value) && inside(root, value)) return slash(relative(root, value));
-      return value;
+      return isAbsolute(value) ? taskPath(value) : value;
     }
     if (Array.isArray(value)) return Promise.all(value.map(item => rewriteJSON(item, path, key)));
     if (value && typeof value === 'object') return Object.fromEntries(await Promise.all(Object.entries(value)
@@ -203,13 +222,13 @@ export async function exportCompletedRun(options: { name: string; dir?: string; 
   if (inside(root, output) || inside(output, root)) throw new Error('导出位置不能覆盖或嵌入原任务目录');
   if (await lstat(output).then(() => true, error => { if (error.code === 'ENOENT') return false; throw error; })) throw new Error('导出位置已存在：' + output);
   const state = await taskStatus(options);
-  if (state.runnerAlive || state.lockHeld || !completeRun(await readRun(root, options.name))) throw new Error('仅能导出全流程已完成且已停止的任务');
+  if (state.runnerAlive || state.lockHeld || !completeRun(await readRun(root))) throw new Error('仅能导出全流程已完成且已停止的任务');
   const release = await acquireTaskLock(root);
   let staging: string | undefined;
   try {
-    const run = await readRun(root, options.name);
+    const run = await readRun(root);
     if (!completeRun(run)) throw new Error('任务状态已改变，请刷新后再导出');
-    const { entries, warnings } = await exportFiles(root, run!);
+    const { entries, warnings } = await exportFiles(root, run!, [source]);
     await mkdir(dirname(output), { recursive: true });
     staging = await mkdtemp(join(dirname(output), '.live2d-export-'));
     const content = join(staging, options.name);
@@ -226,22 +245,22 @@ export async function exportCompletedRun(options: { name: string; dir?: string; 
         await utimes(target, before.atime, before.mtime);
       }
     }
-    for (const pipeline of ['part-layering', 'clothing-part-layering']) {
-      const directory = join(content, pipeline);
+    for (const section of ['part-layering', 'clothing-part-layering']) {
+      const directory = join(content, section);
       const document = JSON.parse(await readFile(join(directory, 'groups.json'), 'utf8'));
       await publishDepthPreview(directory, document.groups, JSON.parse(await readFile(join(directory, 'occlusion.json'), 'utf8')));
-      entries.set(pipeline + '/occlusion/preview.svg', {});
+      entries.set(`${section}/${partSteps.occlusion}/preview.svg`, {});
     }
     // Fill the fixed PNG card from Krita's saved projection, without rendering or
     // modifying the document. KRA remains the authoritative saved artwork.
-    for (const [pipeline, steps] of [['raster-layering', personSteps], ['clothing-raster-layering', clothingSteps]] as const) {
+    for (const [section, steps] of [['raster-layering', personSteps], ['clothing-raster-layering', clothingSteps]] as const) {
       for (const step of steps) {
         if (step.requiredFiles.some(path => path.endsWith('.png'))) continue;
-        const path = pipeline + '/' + step.id + '/composite.png';
+        const path = section + '/' + step.id + '/composite.png';
         if (entries.has(path)) continue;
         const kra = step.requiredFiles.find(path => path.endsWith('.kra'))!;
-        const png = unzipSync(await readFile(join(content, pipeline, step.id, kra)), { filter: entry => entry.name === 'mergedimage.png' })['mergedimage.png'];
-        if (!png) throw new Error('KRA 缺少已保存的合成预览：' + pipeline + '/' + step.id);
+        const png = unzipSync(await readFile(join(content, section, step.id, kra)), { filter: entry => entry.name === 'mergedimage.png' })['mergedimage.png'];
+        if (!png) throw new Error('KRA 缺少已保存的合成预览：' + section + '/' + step.id);
         await writeFile(join(content, path), png); entries.set(path, {});
       }
     }
