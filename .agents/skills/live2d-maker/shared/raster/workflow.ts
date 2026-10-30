@@ -127,7 +127,7 @@ export async function runWorkflow<Input>(section: KritaSection<Input>, options: 
     async keep(chainStep) {
       const step = byId.get(chainStep.id)!;
       try { await checkFiles(chainStep.directory, step.requiredFiles); }
-      catch (error) { throw new Error(`${step.id} 已标记完成但交付缺失；请恢复文件，或删除 ${step.id}/.completed 触发重跑。`, { cause: error }); }
+      catch (error) { throw new Error(`${step.id} 已标记完成但交付缺失；请恢复文件，或重试该步骤（网页「重试」或 --retry）。`, { cause: error }); }
       await section.validateDelivery?.(chainStep.directory, reference, step, krita, options.dryRun);
       if (!options.dryRun) await logDeliveryWarnings(step);
     },

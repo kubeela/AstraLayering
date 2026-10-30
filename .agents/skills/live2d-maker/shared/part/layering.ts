@@ -402,7 +402,7 @@ export async function runLayering(input: {
       const check = await checkStep(step.directory);
       if (check.action === 'keep') {
         completedOcclusion = occlusionPath(directory);
-        if (!await stat(completedOcclusion).then(() => true, () => false)) throw new Error(`${partSteps.occlusion} 已标记完成但交付缺失；请恢复 occlusion.json，或删除 ${partSteps.occlusion}/.completed 触发重跑。`);
+        if (!await stat(completedOcclusion).then(() => true, () => false)) throw new Error(`${partSteps.occlusion} 已标记完成但交付缺失；请恢复 occlusion.json，或重试该步骤（网页「重试」或 --retry）。`);
         report('遮挡层级规划：沿用已完成的独立层级表');
       } else {
         if (check.action === 'run') await rm(occlusionPath(directory), { force: true });

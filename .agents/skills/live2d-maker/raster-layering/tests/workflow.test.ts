@@ -279,7 +279,7 @@ test('完成标记保留但交付丢失时明确报错，不悄悄重跑；每�
   } });
   await assert.rejects(runWorkflow({ name: 'test' }, { ...f.deps, agent: forbidden }), /必须提供 --krita/);
   await rm(join(f.output, 'step01/report.md'));
-  await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: forbidden }), /删除 step01\/.completed/);
+  await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: forbidden }), /重试该步骤/);
   await readFile(join(f.output, 'step01/.completed'));
 });
 

@@ -68,6 +68,8 @@ test('任务级操作作用于全部中断或失败的步骤，已完成步骤�
   }
   const doneSession = sessionPath(part, groupStepId('body', 'completion'));
   await put(join(done, '.completed'), completed({})); await put(doneSession, '{}');
+  // Its deliveries are intact, so retry leaves it.
+  await put(artifactPath(part, 'body', 'completion'), 'body'); await put(join(done, 'check.json'), '{}');
   await put(draftPath(shirtPart), 'draft');
 
   assert.match(await task('continue'), /step12_children\/face[\s\S]*step11_completion\/shirt/);
@@ -82,6 +84,25 @@ test('任务级操作作用于全部中断或失败的步骤，已完成步骤�
   assert.equal((await readStep(done)).status, 'completed');
   await assert.rejects(task('resume'), /没有中断或失败的步骤/);
   assert.match(await task('continue'), /从未完成处续跑/);
+});
+
+test('任务级重试也重做已标记完成但缺少交付的步骤；继续与恢复不碰它们', async t => {
+  const f = await fixture(t), task = (action: string) => applyTaskAction({ name: 'case', dir: f.dir, action });
+  const raster = join(f.task, 'raster-layering'), part = join(f.task, 'part-layering');
+  const intact = join(raster, 'step01'), lost = join(raster, 'step02'), merge = join(part, partSteps.merge);
+  for (const step of [intact, lost]) await put(join(step, '.completed'), '');
+  for (const file of ['character-depth.kra', 'report.md']) await put(join(intact, file), 'x');
+  await put(join(lost, 'report.md'), 'x');
+  await put(join(merge, '.completed'), '');
+  const listed = Object.fromEntries((await listSteps(raster, 'raster-layering')).map(entry => [entry.id, entry.missing]));
+  assert.equal(listed.step01, undefined);
+  assert.ok(listed.step02?.length && listed.step02.every(path => path.startsWith('step02/')));
+  assert.deepEqual((await listSteps(part, 'part-layering')).find(entry => entry.id === partSteps.merge)?.missing, ['preview.svg']);
+  assert.match(await task('continue'), /从未完成处续跑/);
+  await assert.rejects(task('resume'), /没有中断或失败的步骤/);
+  assert.match(await task('retry'), /step02[\s\S]*step13_merge|step13_merge[\s\S]*step02/);
+  assert.equal((await readStep(lost)).status, 'absent'); assert.equal((await readStep(merge)).status, 'absent');
+  assert.equal((await readStep(intact)).status, 'completed');
 });
 
 test('part 合并与遮挡重试删除步骤外的产物；已完成步骤只能重试', async t => {

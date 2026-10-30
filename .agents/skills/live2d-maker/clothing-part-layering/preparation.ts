@@ -72,7 +72,7 @@ async function requireUpstreamSteps(runName: string, root?: string): Promise<voi
 
 async function requireDelivery(refs: PreparationReferences): Promise<void> {
   if (!await lstat(refs.baseSubject).then(info => info.isFile(), () => false)) {
-    throw new Error(`${clothingPreparationStep} 已标记完成但交付缺失：${refs.baseSubject}；请恢复文件，或删除 ${clothingPreparationStep}/.completed 触发重跑。`);
+    throw new Error(`${clothingPreparationStep} 已标记完成但交付缺失：${refs.baseSubject}；请恢复文件，或重试该步骤（网页「重试」或 --retry）。`);
   }
 }
 
