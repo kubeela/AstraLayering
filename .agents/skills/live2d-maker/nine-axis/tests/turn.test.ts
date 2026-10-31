@@ -23,14 +23,15 @@ async function fixture(t: TestContext) {
   return { root, task };
 }
 
-test('上半身从头顶截到胸口，以脸为中心并留边', async t => {
+test('头部特写从头顶截到肩线，以脸为中心并留边，长发不加宽', async t => {
   const { root } = await fixture(t);
   const input = await resolveTurnInput('case', root);
   assert.equal(input.source.id, 'character-assembly/step01');
   assert.equal(input.parts.length, 2, '缺少头饰形状时只用脸与头发');
   const box = await upperBodyBox(input, 200, 400);
-  // Hair top 30, face 60–110 → chest at 110 + 2×50 = 210; height 180 / 0.88.
-  assert.equal(box.size, Math.ceil(180 / 0.88));
+  // Hair top 30, face 60–110 → shoulders at 110 + 0.5×50 = 135; height 105 / 0.88.
+  // The hair (60–130) is wider than the face but does not widen the square.
+  assert.equal(box.size, Math.ceil(105 / 0.88));
   assert.equal(box.x, Math.round(100 - box.size / 2));
   assert.equal(box.y, Math.round(30 - box.size * 0.06));
   const image = sharp(await cropUpperBody(input.color, { x: -10, y: 0, size: 50 }));
@@ -44,7 +45,7 @@ test('胸像的脸靠下时，裁切止于画布底边', async t => {
   const { root, task } = await fixture(t);
   await writeFile(join(task, 'part-layering/parts/face.svg'), rect(200, 400, 60, 200, 80, 150));
   const input = await resolveTurnInput('case', root);
-  // Hair top 30; the chest would fall at 350 + 2×150, so it stops at 400.
+  // Hair top 30; the shoulders would fall at 350 + 0.5×150, so it stops at 400.
   assert.equal((await upperBodyBox(input, 200, 400)).size, Math.ceil(370 / 0.88));
 });
 

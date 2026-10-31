@@ -15,7 +15,7 @@ import { produceTurn, resolveTurnInput, turnOutputs, turnViews, type DrawView, t
 export const help = `nine-axis — 头部九轴
 pnpm nine-axis --name <任务名> --knowledge <先验知识目录> [--dir <绝对运行根目录>] [--dry-run]
 step01_turn：从工作台当前的角色图（阴影蒙版交付后为 shadow/step01_mask/character-shadowed.png，否则为组装图）
-按脸、头发、头饰形状截取头顶到胸口的方形上半身 upper-body.png，再由生图 agent 参照模板角色的正面→姿态，
+按脸、头发、头饰形状截取头顶到肩线的方形头部特写 upper-body.png，再由生图 agent 参照模板角色的正面→姿态，
 画出 ${turnViews.join('、')} 五个视角（右侧由后续步骤镜像脸部形变得到）。
 使用 layering_agent_preparation_model 与 layering_nine_axis_view_image_model（留空继承默认生图模型）。
 提示词：<knowledge>/nine-axis/step01_turn/。上游产物重做后 step01 随之重做。

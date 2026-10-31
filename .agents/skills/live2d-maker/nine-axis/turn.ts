@@ -12,7 +12,7 @@ import { taskRootOf, toTaskPath } from '../shared/task-paths.ts';
 // The right-side poses are not drawn: later steps mirror the face deformation.
 export const turnViews = ['left', 'up', 'down', 'left-up', 'left-down'] as const;
 export type TurnView = typeof turnViews[number];
-const background = 128, margin = 0.06, chestFaces = 2;
+const background = 128, margin = 0.06, neckFaces = 0.5;
 
 export type TurnInput = { color: string; source: ChainStep; parts: string[] };
 export type Box = { x: number; y: number; size: number };
@@ -46,15 +46,17 @@ async function alphaBounds(svg: string, width: number, height: number) {
   return x1 < 0 ? undefined : { x0, y0, x1: x1 + 1, y1: y1 + 1 };
 }
 
-// A square from the top of the head to the chest, centred on the face: the
-// shoulders stay as a turning reference, and the head stays large.
+// A head close-up like the template poses: from the top of the head to the
+// shoulder line half a face below the chin, centred on the face. Long hair does
+// not widen it; only the face and head accessories must fit.
 export async function upperBodyBox(input: TurnInput, width: number, height: number): Promise<Box> {
   const [face, ...rest] = await Promise.all(input.parts.map(path => alphaBounds(path, width, height)));
   if (!face) throw new Error(`脸部形状为空：${input.parts[0]}`);
   const head = [face, ...rest].filter(b => !!b);
-  const top = Math.min(...head.map(b => b.y0)), left = Math.min(...head.map(b => b.x0)), right = Math.max(...head.map(b => b.x1));
-  // A bust drawn to the canvas edge has no chest below it; the crop stops at the canvas.
-  const bottom = Math.min(height, face.y1 + chestFaces * (face.y1 - face.y0)), cx = (face.x0 + face.x1) / 2;
+  const sides = [face, ...rest.filter((b, i) => b && !input.parts[i + 1].endsWith('/hair.svg'))].filter(b => !!b);
+  const top = Math.min(...head.map(b => b.y0)), left = Math.min(...sides.map(b => b.x0)), right = Math.max(...sides.map(b => b.x1));
+  // A bust drawn to the canvas edge has nothing below it; the crop stops at the canvas.
+  const bottom = Math.min(height, face.y1 + neckFaces * (face.y1 - face.y0)), cx = (face.x0 + face.x1) / 2;
   const size = Math.ceil(Math.max(bottom - top, 2 * Math.max(cx - left, right - cx)) / (1 - 2 * margin));
   return { x: Math.round(cx - size / 2), y: Math.round(top - size * margin), size };
 }
