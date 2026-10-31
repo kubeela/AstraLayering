@@ -41,6 +41,7 @@ export function agentRecord(path: string): boolean {
 export async function inventory(root: string, versions?: Record<string, string>) {
   const files: string[] = [];
   const excluded = new Set(['node_modules']);
+  const directories = [{ path: '', depth: 0 }];
   async function walk(path: string, depth: number) {
     if (depth > 40) throw new Error('任务目录嵌套超过 40 层');
     const entries = await readdir(join(root, path), { withFileTypes: true });
@@ -55,7 +56,7 @@ export async function inventory(root: string, versions?: Record<string, string>)
       if (entry.isDirectory()) {
         try { await lstat(join(root, child, 'pyvenv.cfg')); continue; }
         catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
-        await walk(child, depth + 1);
+        directories.push({ path: child, depth: depth + 1 });
       }
       else if (entry.isFile() && artifactExtensions.test(entry.name)) {
         if (versions) {
@@ -66,7 +67,11 @@ export async function inventory(root: string, versions?: Record<string, string>)
       }
     }
   }
-  await walk('', 0);
+  // Keep the same inventory rules, but read independent directories in bounded
+  // batches instead of waiting for every nested directory in sequence.
+  while (directories.length) {
+    await Promise.all(directories.splice(0, 16).map(({ path, depth }) => walk(path, depth)));
+  }
   return files.sort();
 }
 export async function tail(root: string, path: string, bytes = 24 * 1024): Promise<string> {

@@ -151,12 +151,25 @@ function applySnapshot(next) {
   if(!flat(roots).some(node=>node.id===view.selected)){view.selected=roots[0]?.id||'';view.expanded=new Set(roots[0]?[roots[0].id]:[]);}
  }
 }
-let refreshVersion=0, lastSnapshot='';
+let refreshVersion=0, lastSnapshot='', refreshInFlight=null;
 async function refreshTask(force=false) {
+ // A slow snapshot must finish before polling asks for another one. Explicit
+ // selections still supersede it, and only the latest selection can publish.
+ if(!force&&refreshInFlight)return;
  const version=++refreshVersion;
+ const pending=readTaskSnapshot(version,force);
+ refreshInFlight=pending;
+ try{await pending;}
+ catch(error){
+  if(version!==refreshVersion)return;
+  if(state.loading){state.loading=false;state.loadError=error.message;render();}
+  throw error;
+ }finally{if(refreshInFlight===pending)refreshInFlight=null;}
+}
+async function readTaskSnapshot(version,force) {
  const listing=await get('./api/tasks');
  if(version!==refreshVersion)return;
- if(listing.directory!==state.directory){state.directory=listing.directory;state.name='';state.inspect=false;state.asset=null;force=true;}
+ if(listing.directory!==state.directory){state.directory=listing.directory;state.name='';state.inspect=false;state.asset=null;state.loading=true;applySnapshot({files:[],sections:[]});render();force=true;}
  tasks=listing.tasks;
  if(!tasks.some(task=>task.name===state.name))state.name=selectedTask(state.directory,tasks);
  rememberTask(state.directory,state.name);
@@ -167,9 +180,9 @@ async function refreshTask(force=false) {
  const executionChanged=next.status!==data.status||next.runnerAlive!==data.runnerAlive||next.lockHeld!==data.lockHeld;
  const focused=document.activeElement;
  const treeControl=focused?.dataset?.treeSearch!==undefined?'data-tree-search':focused?.dataset?.treeDepth!==undefined?'data-tree-depth':null;
- if(!force&&!executionChanged&&(document.querySelector('dialog[open]')||(!treeControl&&focused?.matches('input,select'))||document.querySelector('.panning,.selecting')))return;
+ if(!force&&!executionChanged&&(document.querySelector('dialog[open]')||(!treeControl&&focused?.id!=='task-select'&&focused?.matches('input,select'))||document.querySelector('.panning,.selecting')))return;
  const focus=treeControl?{selector:`[${treeControl}="${focused.getAttribute(treeControl)}"]`,start:focused.selectionStart,end:focused.selectionEnd}:null;
- if(fingerprint!==lastSnapshot||force){
+ if(fingerprint!==lastSnapshot||force||state.loading||state.loadError){
   const selected=state.asset;
   if(selected?.kind==='file'&&next.fileVersions?.[selected.path]!==data.fileVersions?.[selected.path]) {
    const published=selected.path.replace(/\.md\.tmp$/,'.md');
@@ -179,11 +192,14 @@ async function refreshTask(force=false) {
    if(version!==refreshVersion)return;
    if(state.asset===selected)selected.text=text;
   }
-  lastSnapshot=fingerprint;applySnapshot(next);if(document.querySelector('.app-header')&&(state.page!=='config'||force)){
+  lastSnapshot=fingerprint;state.loading=false;state.loadError=null;applySnapshot(next);if(document.querySelector('.app-header')&&(state.page!=='config'||force)){
    render();
    if(focus){const input=document.querySelector(focus.selector);input?.focus({preventScroll:true});if(focus.start!=null)input?.setSelectionRange(focus.start,focus.end);}
   }
  }
+}
+function taskLoading() {
+ return `${pageHeading()}<div class="run-notice ${state.loadError?'error':''}" role="status">${icon(state.loadError?'info':'clock')}<span>${state.loadError?`读取失败：${esc(state.loadError)}`:`正在读取 ${esc(state.name)} 的进展…`}</span></div>`;
 }
 function artifacts(items, index, stepId, className='') {
  const list=available(items);
@@ -658,7 +674,7 @@ function render() {
  const outputScroll=document.querySelector('.output-scroll')?.scrollTop||0;
  document.querySelectorAll('[data-details]').forEach(node=>state.details.set(node.dataset.details,node.open));
  flowObserver?.disconnect();
- morph(document.querySelector('#app'),header()+`<main class="main ${state.page==='config'?'config-page':state.page==='preview'?'preview-main':'project-main'}">${state.page==='config'?configPage():state.page==='preview'?graph():projectPage()}</main>`);
+ morph(document.querySelector('#app'),header()+`<main class="main ${state.page==='config'?'config-page':state.page==='preview'?'preview-main':'project-main'}">${state.page==='config'?configPage():state.loading||state.loadError?taskLoading():state.page==='preview'?graph():projectPage()}</main>`);
  bind();setConfigBusy(configBusy);
  if(state.page==='config'&&state.configMode==='env')envEditor.bind();
  document.querySelectorAll('[data-details]').forEach(node=>{if(state.details.has(node.dataset.details))node.open=state.details.get(node.dataset.details);});
@@ -669,7 +685,7 @@ function render() {
  saveView();
  if(focusId&&focused&&!focused.isConnected){const replacement=document.getElementById(focusId);replacement?.focus({preventScroll:true});if(selection&&replacement?.tagName==='INPUT')replacement.setSelectionRange(...selection);}
  const output=document.querySelector('.output-scroll');if(output)output.scrollTop=outputScroll;
- if(state.page==='preview'&&state.name) {
+ if(state.page==='preview'&&state.name&&!state.loading&&!state.loadError) {
   connectFlow();
   const viewport=document.querySelector('.flow-scroll');viewport.scrollLeft=state.canvasLeft;
   const [min,max]=laneRange();viewport.scrollTop=laneAnimation?viewport.scrollTop:Math.min(max,Math.max(min,min+state.canvasTop));
@@ -765,7 +781,14 @@ function onText(x,y) {
  return [...range.getClientRects()].some(box=>x>=box.left&&x<=box.right&&y>=box.top&&y<=box.bottom);
 }
 function bind() {
- const select=document.querySelector('#task-select');if(select)select.onchange=async()=>{state.name=select.value;rememberTask(state.directory,state.name);state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);await refreshTask(true);};
+ const select=document.querySelector('#task-select');
+ if(select)select.onchange=async()=>{
+  state.name=select.value;rememberTask(state.directory,state.name);
+  state.inspect=false;state.asset=null;state.canvasLeft=0;state.canvasTop=0;
+  state.loading=true;state.loadError=null;applySnapshot({files:[],sections:[]});render();
+  const url=new URL(location.href);url.searchParams.set('name',state.name);history.replaceState(null,'',url);
+  try{await refreshTask(true);}catch(error){toast('读取失败：'+error.message);}
+ };
  document.querySelectorAll('[data-step-toolbar]').forEach(b=>b.onclick=async()=>{
   const targets=stepTargets(),broken=brokenSteps(targets),action=b.dataset.stepToolbar;
   if(!targets.length){if(action==='continue')showNew(false,true);return;}
