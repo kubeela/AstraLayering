@@ -44,8 +44,7 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
     const result = await agents.run({
       step: 'clothing_preparation', name: '纯衣服参考准备', imageGeneration: true,
       prompt,
-      outputSchema: { type: 'object', additionalProperties: false, required: ['savedPath', 'error'],
-        properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } } },
+      outputSchema: { type: 'object', additionalProperties: false, required: ['error'], properties: { error: { type: ['string', 'null'] } } },
     });
     await validateAgentOutcome(result, async () => {
     const imageResult = result.images.at(-1);

@@ -5,6 +5,7 @@
 
 ## 未发布
 
+- **生图结果由程序接收：** 原生生图回合（九轴视角、标准姿态、纯衣服准备）以本轮记录到的生成图片为准，agent 不再在回复里抄写 savedPath；只有本轮没有生成图片时才判失败，原因取 agent 回复的 error。此前 Codex code mode 下 agent 若没打印出工具结果，会把已生成的图误报为失败。复用参考与简化、素体换装的回复同样去掉 savedPath，只留 error 与 reason。已完成步骤不重做。
 - **头部九轴 step01 视角参考：** 新增 `nine-axis` section（默认流程仍到 shadow 为止，单独启动）。`step01_turn` 按脸、头发、头饰形状截取头顶到胸口的上半身，由生图 agent 参照模板角色的正面→姿态，同时画出左、上、下、左上、左下五个头部视角（右侧由后续脸部形变镜像得到）；agent 使用 preparation 模型，生图模型可用新键 `layering_nine_axis_view_image_model` 单独选择。工作台新增“头部九轴”阶段。
 - **头部九轴产物目录：** 改为 `nine-axis/step02_head/`（变形器 `deformers.json`、`layers/`、补绘工程 `character-nine-axis.kra` / PNG 与 `source.json`），约定见 `shared/nine-axis.ts` 与 `nine-axis/README.md`。来源记录与当前 KRA 一致时，角色工作台优先载入九轴补绘工程。pink-doll 后发按官方样例补绘转头露出的内层与外轮廓线，阴影 KRA 保留不改。
 - **步骤与目录命名（不兼容变更）：** 步骤目录统一为 `stepNN_<说明>`，pipeline 改称 section。part 与衣服分层为 `step01_original`～`step14_occlusion`（衣服准备为 `step01_preparation`），分组步骤为 `step09_outline/<组>`、`step11_completion/<组>`、`step12_children/<组>`，去重为 `step10_reduce/depthNN`；阴影为 `shadow/step01_mask` 或 `shadow/step01_normal-depth`。命令行 `--pipeline` 改为 `--section`，网页单步操作参数同步改为 `section`。

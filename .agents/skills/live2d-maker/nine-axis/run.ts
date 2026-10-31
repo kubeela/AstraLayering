@@ -31,8 +31,7 @@ export function viewPrompt(view: TurnView, taskRoot: string): string {
   return knowledge.render('main', { view, motion }, { taskRoot }).trim();
 }
 
-const outputSchema = { type: 'object', properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } },
-  required: ['savedPath', 'error'], additionalProperties: false };
+const outputSchema = { type: 'object', properties: { error: { type: ['string', 'null'] } }, required: ['error'], additionalProperties: false };
 export function createDrawView(agents: Pick<CodexAgents, 'run'>, taskRoot: string): DrawView {
   return async (view, output) => {
     const result = await agents.run({ step: 'nine_axis_view', name: `视角参考 ${view}`, imageGeneration: true, outputSchema,

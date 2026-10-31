@@ -36,7 +36,7 @@ async function fixture(t: TestContext) {
   const calls: AgentTask[] = [];
   const steps = createPreparationSteps({ async run(task) {
     calls.push(task);
-    return { text: JSON.stringify({ savedPath: generated, error: null }), images: [{ savedPath: generated }] };
+    return { text: JSON.stringify({ error: null }), images: [{ savedPath: generated }] };
   } });
   return { temporary, directory, runName, input, upstream, base, generated, calls, steps };
 }
