@@ -31,3 +31,22 @@ test('Windows and POSIX artifact paths resolve to the same inventory and version
     assert.equal(webFilePath(paths.relative(paths.resolve('task'), paths.resolve('task', native))), key);
   }
 });
+
+test('large directory trees keep all artifacts and versions in sorted order, including observations', async t => {
+  const root = await mkdtemp(join(tmpdir(), 'web-inventory-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const paths = Array.from({ length: 37 }, (_, i) => [
+    `part-layering/step09_outline/group-${i}/outline.svg`,
+    `part-layering/step09_outline/group-${i}/workspace/inspect/local.png`,
+    `part-layering/observations/group-${i}/closeup.png`,
+  ]).flat();
+  for (const path of paths) {
+    const file = join(root, path);
+    await mkdir(join(file, '..'), { recursive: true });
+    await writeFile(file, 'evidence');
+  }
+  const versions: Record<string, string> = {};
+  assert.deepEqual(await inventory(root, versions), paths.sort());
+  assert.deepEqual(Object.keys(versions).sort(), paths);
+  assert.ok(Object.values(versions).every(value => value.endsWith(':8')));
+});
