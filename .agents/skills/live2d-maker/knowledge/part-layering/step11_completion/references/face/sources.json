@@ -1,51 +1,39 @@
 {
   "purpose": "完整正面脸型（脸底图层）的形状先验：发际线下额部平顺、无发缝缺口，太阳穴内收、颊侧到下巴连续；不提供当前角色比例、宽度、肤色、坐标或发型。",
   "file": "complete-faces.png",
-  "sha256": "0bd3cf706477de6e177684b2a0ce988ef416528623f3195b365fc2e235bcdedd",
+  "sha256": "479ee6beddae8910aa4bb4a3f4e79bccdc9a28a13a84353a227d194f9fbf5118",
+  "render": "只取脸底单个像素图层的 alpha（>200）作剪影，统一填平肤色并沿边缘描 2px 线；不带原图的明暗、头发投影、腮红或耳朵，按高 420 等比缩放。",
   "layout": {
     "row": [
-      "haru 輪郭",
-      "koharu _輪郭",
-      "haruto _輪郭",
+      "koharu _輪郭/レイヤー 38",
+      "mark 頭部/顔/輪郭",
       "桃瀬ひより *顔/輪郭"
     ]
   },
   "sources": [
     {
-      "model": "haru",
-      "psdLayer": "輪郭",
-      "bounds": [
-        953,
-        353,
-        1447,
-        873
-      ],
-      "source": "Live2D 官方范例 haru_greeter_ja.zip 内 haru_受付スーツ_素材分け_t07.psd",
-      "extractedSha256": "cd5ea5c700bffa717051d313ace3a311e864947b5ccef5522435e1b67e9dbf3d"
-    },
-    {
       "model": "koharu",
-      "psdLayer": "_輪郭",
+      "psdLayer": "_輪郭/レイヤー 38",
       "bounds": [
-        477,
+        481,
         264,
-        1117,
-        906
+        1113,
+        903
       ],
       "source": "Live2D 官方范例 koharu_haruto_ja.zip 内 こはる_素材分け.psd",
-      "extractedSha256": "382a14da8ea6ba5dc4329adce6aa0d2444aba6cd6e9e5bccdfa83ae1c168964b"
+      "extractedSha256": "99ab56c5e5f841bd0a22da6b1de363d23f4299771c05afe5cfb07034a719630b"
     },
     {
-      "model": "haruto",
-      "psdLayer": "_輪郭",
+      "model": "mark",
+      "psdLayer": "頭部/顔/輪郭",
       "bounds": [
-        477,
-        264,
-        1117,
-        906
+        882,
+        901,
+        1519,
+        1585
       ],
-      "source": "Live2D 官方范例 koharu_haruto_ja.zip 内 はると_素材分け.psd",
-      "extractedSha256": "f1f33747340c46a806ce6d152532555b80db4b5460209ce03b7b25930b8e2f57"
+      "source": "Live2D 官方范例 mark_ja.zip 内 mark.psd",
+      "extractedSha256": "579766b577109c485715a951e724585627d16d4b88ed88687fcbcba2d3ac5cf2"
     },
     {
       "model": "桃瀬ひより",
@@ -57,7 +45,7 @@
         1002
       ],
       "source": "Live2D 官方教程素材 momose1.zip 内 桃瀬ひより_インポート_チュートリアル1.psd（文件名为 Shift-JIS 乱码）",
-      "extractedSha256": "1379528a4b279b1f31553e968bf4e54bbb7cb76a7a5e9c51315dbb86bd2dbe22"
+      "extractedSha256": "933f966154b841e35d64a476fe3f877903e1ad6cca7822b1085d2d41a8800dbf"
     }
   ]
 }
