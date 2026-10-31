@@ -11,11 +11,13 @@ const part = (id: string, bbox: [number, number, number, number], shift: (x: num
   id, group: 'eyes_brows', texture: 'layers/000.png', textureBounds: [0, 0, 1, 1], bbox, cols: 1, rows: 1,
   keyforms: { '0': grid(...bbox), '-30': grid(...bbox, shift) } });
 
-// Two parts over a 200-wide canvas with the face axis at 100.
+// Face base, an eye and an ear pair over a 200-wide canvas with the face axis at 100;
+// the far (right) ear is hidden at −30.
 export async function writeFaceLeft(directory: string) {
   await mkdir(join(directory, 'layers'), { recursive: true });
   await writeFile(join(directory, 'layers/000.png'), '');
-  const parts = [part('face/face_base', [60, 60, 140, 110], (x, y) => [x - 10, y]), part('face/eye_left', [110, 70, 130, 80], (x, y) => [x - 5, y])];
+  const parts = [part('face/face_base', [60, 60, 140, 110], (x, y) => [x - 10, y]), part('face/eye_left', [110, 70, 130, 80], (x, y) => [x - 5, y]),
+    { ...part('face/ear_right', [50, 70, 60, 90], (x, y) => [x + 4, y]), opacity: { '-30': 0 } }, part('face/ear_left', [140, 70, 150, 90], (x, y) => [x - 6, y])];
   await writeFile(join(directory, 'face-left.json'), JSON.stringify({ axis: 100, notes: '测试', parts }));
 }
 
@@ -41,5 +43,7 @@ test('交付检查：缺 face_base 或控制点数不对时报错', () => {
   assert.throws(() => checkFaceLeft({ axis: 100, parts: [part('face/nose', [90, 80, 110, 90], (x, y) => [x, y])] }, [200, 400]), /face_base/);
   assert.throws(() => checkFaceLeft({ axis: 100, parts: [{ ...base, keyforms: { '0': base.keyforms['0'], '-30': [] } }] }, [200, 400]), /-30/);
   assert.throws(() => checkFaceLeft({ axis: 300, parts: [base] }, [200, 400]), /axis/);
+  assert.throws(() => checkFaceLeft({ axis: 100, parts: [{ ...base, opacity: { '-30': 2 } }] }, [200, 400]), /opacity/);
+  assert.throws(() => checkFaceLeft({ axis: 100, parts: [{ ...base, opacity: { '30': 0 } }] }, [200, 400]), /opacity/);
   assert.equal(checkFaceLeft({ axis: 100, parts: [base] }, [200, 400]).parts.length, 1);
 });

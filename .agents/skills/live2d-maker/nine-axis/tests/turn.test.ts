@@ -83,7 +83,7 @@ test('step01 生成五个视角并统一到上半身尺寸，完成后沿用', a
   let fitted = 0;
   const fitHead = async (directory: string) => { fitted++; await writeFaceLeft(directory); };
   const deps = { environment: loadWorkflowEnvironment({}), draw, fitHead };
-  assert.match(await runWorkflow({ name: 'case', dir: root }, deps), /2 个脸部图层/);
+  assert.match(await runWorkflow({ name: 'case', dir: root }, deps), /4 个脸部图层/);
   const step = join(task, 'nine-axis/step01_turn'), size = (await sharp(join(step, 'upper-body.png')).metadata()).width;
   for (const view of turnViews) {
     const { data, info } = await sharp(join(step, `${view}.png`)).raw().toBuffer({ resolveWithObject: true });
@@ -99,6 +99,11 @@ test('step01 生成五个视角并统一到上半身尺寸，完成后沿用', a
   const source = JSON.parse(await readFile(join(task, 'nine-axis/step02_head/source.json'), 'utf8'));
   assert.equal(source.sourceDocument, 'character-assembly/step01/character-assembled.kra');
   assert.equal(source.sourceKraHash.length, 64);
+  // Hidden mirrors with the pair: the right ear hidden turning left means the left ear hidden turning right.
+  const { parts } = JSON.parse(await readFile(join(task, 'nine-axis/step02_head/deformers.json'), 'utf8'));
+  const opacity = Object.fromEntries(parts.map((p: { id: string; opacity: unknown }) => [p.id, p.opacity]));
+  assert.deepEqual(opacity['face/ear_right'], { '0': 1, '-30': 0, '30': 1 });
+  assert.deepEqual(opacity['face/ear_left'], { '0': 1, '-30': 1, '30': 0 });
 });
 
 test('任一视角失败时 step01 不完成，并列出失败的视角', async t => {

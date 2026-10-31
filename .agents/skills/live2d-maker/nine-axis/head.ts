@@ -20,7 +20,7 @@ export async function resolveHeadInput(turn: TurnInput): Promise<HeadInput> {
 
 type Point = [number, number];
 export type Part = { id: string; group: string; texture: string; textureBounds: number[]; bbox: number[];
-  cols: number; rows: number; keyforms: Record<string, Point[]> };
+  cols: number; rows: number; keyforms: Record<string, Point[]>; opacity?: Record<string, number> };
 export type FaceLeft = { axis: number; notes?: string; parts: Part[] };
 
 export function checkFaceLeft(value: unknown, canvas: [number, number]): FaceLeft {
@@ -43,6 +43,10 @@ export function checkFaceLeft(value: unknown, canvas: [number, number]): FaceLef
         throw new Error(`${p.id}：关键形 ${key} 需要 ${count} 个控制点`);
       }
     }
+    // Hidden is opacity, not a warp that tucks the layer away: 0 hides it at that key.
+    if (p.opacity !== undefined && (typeof p.opacity !== 'object' || Object.entries(p.opacity).some(([key, o]) => !['0', '-30'].includes(key) || !Number.isFinite(o) || o < 0 || o > 1))) {
+      throw new Error(`${p.id}：opacity 只能给 "0"、"-30" 两个关键形 0–1 的不透明度`);
+    }
   }
   if (!ids.has('face/face_base')) throw new Error('face-left.json：缺少 face/face_base');
   return face;
@@ -62,6 +66,8 @@ export function warpPoint(part: Part, key: string, x: number, y: number): Point 
   const restX = x0 + (x1 - x0) * u / cols, restY = y0 + (y1 - y0) * v / rows;
   return [at(0) + x - restX, at(1) + y - restY];
 }
+
+const opacityAt = (part: Part, key: string) => part.opacity?.[key] ?? 1;
 
 // +30 of a part = its pair's −30, reflected about the face axis.
 export function mirrorKeyform(part: Part, pair: Part, axis: number): Point[] {
@@ -86,9 +92,10 @@ export async function finishHead(directory: string, input: HeadInput, box: Box):
   catch (error) { throw new Error('agent 未交付可读的 face-left.json', { cause: error }); }
   const face = checkFaceLeft(raw, [width, height]);
   for (const p of face.parts) await access(join(directory, p.texture)).catch(error => { throw new Error(`${p.id}：缺少贴图 ${p.texture}`, { cause: error }); });
-  const byId = new Map(face.parts.map(p => [p.id, p]));
+  const byId = new Map(face.parts.map(p => [p.id, p])), pair = (p: Part) => byId.get(pairId(p.id)) ?? p;
   const parts = face.parts.map(p => ({ id: p.id, level: 'face', group: p.group, texture: p.texture, textureBounds: p.textureBounds, bbox: p.bbox,
-    cols: p.cols, rows: p.rows, keyforms: { '0': p.keyforms['0'], '-30': p.keyforms['-30'], '30': mirrorKeyform(p, byId.get(pairId(p.id)) ?? p, face.axis) } }));
+    cols: p.cols, rows: p.rows, keyforms: { '0': p.keyforms['0'], '-30': p.keyforms['-30'], '30': mirrorKeyform(p, pair(p), face.axis) },
+    opacity: { '0': opacityAt(p, '0'), '-30': opacityAt(p, '-30'), '30': opacityAt(pair(p), '-30') } }));
   const [kraHash, colorHash] = await Promise.all([fileHash(input.document), fileHash(input.color)]);
   const document = toTaskPath(task, input.document), color = toTaskPath(task, input.color);
   await atomic(join(directory, 'deformers.json'), JSON.stringify({ version: 1, kind: 'head-nine-axis', canvas: [width, height],
@@ -96,7 +103,7 @@ export async function finishHead(directory: string, input: HeadInput, box: Box):
     parameters: [{ id: 'ParamAngleX', name: '角度 X', min: -30, max: 30, default: 0, keys: [-30, 0, 30] },
       { id: 'ParamAngleY', name: '角度 Y', min: -30, max: 30, default: 0, keys: [0], status: '未制作' }],
     levels: [{ id: 'face', name: '脸＋五官', includes: ['face'] }],
-    notes: [face.notes?.trim(), '+30 为左右成对镜像。'].filter(Boolean).join(' '), parts }) + '\n');
+    notes: [face.notes?.trim(), '+30 为左右成对镜像（形变与不透明度）。'].filter(Boolean).join(' '), parts }) + '\n');
   await atomic(join(directory, 'source.json'), JSON.stringify({ version: 1, sourceDocument: document, sourceColor: color,
     sourceKraHash: kraHash, sourceColorHash: colorHash, updatedAt: new Date().toISOString() }, null, 2) + '\n');
   return parts.length;
