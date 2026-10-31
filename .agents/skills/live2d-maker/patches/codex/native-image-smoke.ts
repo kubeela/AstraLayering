@@ -76,8 +76,7 @@ try {
       layering_part_simplify_image_model: protocol === 'openai' ? 'gpt-image-2.5-flare' : 'gemini-nano-banana-2.1',
       [`layering_${protocol === 'openai' ? 'openai' : 'google'}_image_base_url`]: base + (protocol === 'openai' ? '/images/v1' : '/images/v1beta'),
       [`layering_${protocol === 'openai' ? 'openai' : 'google'}_image_api_key`]: 'image-fixture' }, directory);
-    const session = new CodexAgents({ environment: settings, cwd: directory, logDirectory: join(directory, 'agents'),
-      configOverrides: ['features.code_mode=false', 'features.code_mode_only=false'] }).createSession();
+    const session = new CodexAgents({ environment: settings, cwd: directory, logDirectory: join(directory, 'agents') }).createSession();
     try {
       const result = await session.run({ step: 'part_simplify', name: 'native fixture', prompt: 'Run the simulated image fixture.',
         imageGeneration: true, timeoutMs: 90_000 });

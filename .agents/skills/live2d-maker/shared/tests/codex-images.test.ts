@@ -10,6 +10,7 @@ import { createCodexImageRoute, usesPatchedImageTool } from '../agents/codex-ima
 import { loadWorkflowEnvironment, checkCodexCapabilities } from '../codex/environment.ts';
 import { CodexAgents } from '../codex/agents.ts';
 import { fakeAppServer } from '../../part-layering/tests/fake-app-server.ts';
+import { fakeDebug } from './fake-codex.ts';
 import { imageGenerationTool } from '../agents/images.ts';
 import { runAgent } from '../raster/agent.ts';
 import { textResult } from '../codex/function-tools.ts';
@@ -21,7 +22,7 @@ test('raster 自定义框选工具与原生生图兼容，保留配置与会话'
   const server = await fakeAppServer(root, [{ tool: 'annotate_review_regions', arguments: {} }]);
   let source = await readFile(server.executable, 'utf8');
   source = source.replace('#!/usr/bin/env node', `#!${process.execPath}`)
-    .replace('const calls =', `if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(capabilities))}); process.exit(0); }\nconst calls =`)
+    .replace('const calls =', `${fakeDebug(capabilities)}\nconst calls =`)
     .replace('文件已保存，不返回 JSON。', '{"status":"completed","summary":"inspected"}');
   await writeFile(server.executable, source);
   const environment = loadWorkflowEnvironment({ layering_codex_path: server.executable,
@@ -42,6 +43,12 @@ test('raster 自定义框选工具与原生生图兼容，保留配置与会话'
   assert.equal(native.status, 'completed');
   const latest = (await readFile(server.capture, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   assert.equal(latest.findLast(event => event.method === 'thread/start').params.config['features.image_generation'], true);
+  // The catalog's tool_mode would hide these tools behind code mode's script; every model calls them directly.
+  const argv: string[] = JSON.parse(await readFile(server.argv, 'utf8'));
+  for (const config of ['features.code_mode=false', 'features.code_mode_only=false']) assert.ok(argv.includes(config), config);
+  const catalog = argv.findLast(value => value.startsWith('model_catalog_json='))!;
+  const models = JSON.parse(await readFile(JSON.parse(catalog.slice('model_catalog_json='.length)), 'utf8')).models;
+  assert.deepEqual(models.map((model: { tool_mode: unknown }) => model.tool_mode), [null]);
 });
 async function fixture(t: { after(fn: () => Promise<unknown>): void }) {
   const root = await mkdtemp(join(tmpdir(), 'codex-native-images-'));
@@ -178,7 +185,7 @@ test('Codex completion uses native image events, resumes after changing image mo
   const server = await fakeAppServer(root, [], 'completed', [{ type: 'imageGeneration', status: 'completed', savedPath }]);
   let source = await readFile(server.executable, 'utf8');
   source = source.replace('#!/usr/bin/env node', `#!${process.execPath}`);
-  source = source.replace('const calls =', `if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(capabilities))}); process.exit(0); }\nconst calls =`);
+  source = source.replace('const calls =', `${fakeDebug(capabilities)}\nconst calls =`);
   await writeFile(server.executable, source);
   const settings = loadWorkflowEnvironment({ layering_codex_path: server.executable,
     layering_part_completion_image_model: 'gpt-image-2.5-flare',
@@ -203,7 +210,7 @@ test('Codex completion uses native image events, resumes after changing image mo
 test('构造会话后才解析的补丁路径传给实际 App Server，不沿用构造时的入口快照', async t => {
   const {root} = await fixture(t), server = await fakeAppServer(root, []);
   const source = (await readFile(server.executable,'utf8')).replace('#!/usr/bin/env node', `#!${process.execPath}`)
-    .replace('const calls =', `if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(capabilities))}); process.exit(0); }\nconst calls =`);
+    .replace('const calls =', `${fakeDebug(capabilities)}\nconst calls =`);
   await writeFile(server.executable,source);
   const environment = loadWorkflowEnvironment({layering_image_compact_threshold:'49'},root);
   const session = new CodexAgents({environment,cwd:root,logDirectory:join(root,'logs')}).createSession();
