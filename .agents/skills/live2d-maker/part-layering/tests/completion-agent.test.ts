@@ -96,7 +96,8 @@ test('补全默认适配器用只读 agent 和新增工具，提交后正式发�
     assert.equal(task.imageGeneration, true);
     assert.ok(task.tools!.some(tool => tool.name === 'view_bitmap'));
     assert.match(task.prompt, /部件完全被遮挡.*必须先.*结构辅助图并查看/);
-    assert.match(task.prompt, /不设计侧面、背面/);
+    assert.match(task.prompt, /不画成侧面视角的形状/);
+    assert.match(task.prompt, /以侧面参考露出被遮挡的一面/);
     const rules = (await readFile(partKnowledge(profile, 'completion').files('main')[1], 'utf8'));
     assert.ok(task.prompt.includes(`【固定范围与操作约定】\n${rules}`));
     assert.doesNotMatch(task.prompt, /提示词来源：/);
