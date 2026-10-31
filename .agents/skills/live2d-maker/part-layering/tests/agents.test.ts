@@ -38,12 +38,12 @@ async function readLog(root: string) {
   };
 }
 
-const saved = (savedPath: string | null, error: string | null = null) => JSON.stringify({ savedPath, error });
+const saved = (error: string | null = null) => JSON.stringify({ error });
 // Codex native imagegen reports absolute savedPath values.
 const generatedPath = '/case/step01/workspace/generated/image.png';
 
 test('无工具一次性回合走 app-server：只读、关闭 shell，记录输入与结果和绝对 savedPath', async t => {
-  const finalText = saved(generatedPath);
+  const finalText = saved();
   const f = await fixture(t, [], 'completed', [{ type: 'imageGeneration', status: 'completed', savedPath: generatedPath }], { finalText });
   const result = await f.agents.run({ name: '生成', prompt: '测试提示词', imageGeneration: true });
   const log = await readLog(f.logDirectory);
@@ -73,7 +73,7 @@ test('任务显式要求时一次性回合可开放 shell', async t => {
 });
 
 test('模型返回生图错误时报错并保留最终回复；文本含 overloaded 也不自动重新生成', async t => {
-  const finalText = saved(null, 'server overloaded');
+  const finalText = saved('server overloaded');
   const f = await fixture(t, [], 'completed', [], { finalText });
   await assert.rejects(f.agents.run({ name: '生图工具失败', prompt: 'test', imageGeneration: true }), (error: AgentCallError) => {
     assert.ok(error instanceof AgentCallError); assert.match(error.message, /server overloaded/);
@@ -87,17 +87,18 @@ test('模型返回生图错误时报错并保留最终回复；文本含 overloa
   assert.equal((await f.protocol()).filter(message => message.method === 'turn/start').length, 1);
 });
 
-test('生图回合缺少 savedPath 不能记为成功', async t => {
-  const f = await fixture(t, [], 'completed', [], { finalText: saved('') });
-  await assert.rejects(f.agents.run({ name: '缺路径', prompt: 'test', imageGeneration: true }), /没有返回生成图片的 savedPath/);
-  assert.equal((await readLog(f.logDirectory)).result.status, 'failed');
+test('生图回合以本轮记录的图片为准，回复误报失败也交付该图', async t => {
+  const f = await fixture(t, [], 'completed', [{ type: 'imageGeneration', status: 'completed', savedPath: generatedPath }],
+    { finalText: saved('工具未提供可读取的图片保存路径') });
+  const result = await f.agents.run({ name: '误报', prompt: 'test', imageGeneration: true });
+  assert.deepEqual(result.images, [{ savedPath: generatedPath }]);
+  assert.equal((await readLog(f.logDirectory)).result.status, 'completed');
 });
 
-test('生图回合回复相对 savedPath 时报错，不按当前目录或任务根猜测', async t => {
-  const f = await fixture(t, [], 'completed', [{ type: 'imageGeneration', status: 'completed', savedPath: generatedPath }], { finalText: saved('workspace/generated.png') });
-  await assert.rejects(f.agents.run({ name: '相对路径', prompt: 'test', imageGeneration: true }), /返回的 savedPath 必须是绝对路径/);
+test('生图回合没有生成图片时不能记为成功', async t => {
+  const f = await fixture(t, [], 'completed', [], { finalText: saved() });
+  await assert.rejects(f.agents.run({ name: '缺图', prompt: 'test', imageGeneration: true }), /缺图 没有生成图片/);
   assert.equal((await readLog(f.logDirectory)).result.status, 'failed');
-  assert.equal((await f.protocol()).filter(message => message.method === 'turn/start').length, 1);
 });
 
 test('回合失败与提前 EOF 都记为失败', async t => {

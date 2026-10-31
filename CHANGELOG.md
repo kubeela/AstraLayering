@@ -5,6 +5,8 @@
 
 ## 未发布
 
+- **Codex 工具改为直接调用：** 模型目录把 gpt-6.1-sol 等模型的 `tool_mode` 设为 `code_mode_only`，所有工具都藏在 code mode 的 exec 脚本后面；自定义工具的结果在脚本里被压成一串“JSON + data URL”文本，agent 常漏看图片或路径。现在每次启动 App Server 先导出同一配置下的模型目录、把 `tool_mode` 清空，再以 `model_catalog_json` 传入，所有模型直接调用原生生图与本流程工具，看图工具的图片直接进入上下文。已完成步骤不重做。
+- **生图结果由程序接收：** 原生生图回合（标准姿态、纯衣服准备）以本轮记录到的生成图片为准，agent 不再在回复里抄写 savedPath；只有本轮没有生成图片时才判失败，原因取 agent 回复的 error。此前 Codex code mode 下 agent 若没打印出工具结果，会把已生成的图误报为失败。复用参考与简化、素体换装的回复同样去掉 savedPath，只留 error 与 reason。已完成步骤不重做。
 - **头部九轴产物目录：** 改为 `nine-axis/step01_head/`（变形器 `deformers.json`、`layers/`、补绘工程 `character-nine-axis.kra` / PNG 与 `source.json`），约定见 `shared/nine-axis.ts` 与 `nine-axis/README.md`。来源记录与当前 KRA 一致时，角色工作台优先载入九轴补绘工程。pink-doll 后发按官方样例补绘转头露出的内层与外轮廓线，阴影 KRA 保留不改。
 - **步骤与目录命名（不兼容变更）：** 步骤目录统一为 `stepNN_<说明>`，pipeline 改称 section。part 与衣服分层为 `step01_original`～`step14_occlusion`（衣服准备为 `step01_preparation`），分组步骤为 `step09_outline/<组>`、`step11_completion/<组>`、`step12_children/<组>`，去重为 `step10_reduce/depthNN`；阴影为 `shadow/step01_mask` 或 `shadow/step01_normal-depth`。命令行 `--pipeline` 改为 `--section`，网页单步操作参数同步改为 `section`。
 - **section 无状态（不兼容变更）：** 各 section 不再有自己的 `run.json`，Krita 路径与标准化选项只由任务根 `run.json` 记录并在每次启动时传入；单独运行 section 时每次都要带 `--krita`（part-layering 需要时带 `--standard`）。任务根 `run.json` 不再保存 `name`、`dir`、`image`、`lastMessage` 与 `runner.stopProtocol`，进度只写入 `workflow.log`；停止只用 `.stop-request.json`，旧的 `.web-worker.json`／`.web-cancel.json` 停止兼容已移除。旧任务残留的 section `run.json` 不读取也不改写，转换目录时直接舍弃。

@@ -44,13 +44,13 @@ async function fixture(t: TestContext, needsSimplification: boolean, needsAdjust
         const tool = task.tools!.find(tool => tool.name === 'reuse_reference')!;
         const result = await tool.execute({ reason: task.name === '参考判断与简化' ? '测试画风判断' : '无需替换主体衣装' }, new AbortController().signal);
         const saved = JSON.parse((result.contentItems[0] as { text: string }).text);
-        return { text: JSON.stringify({ savedPath: saved.savedPath, error: null, reason: saved.reason }), images: [] };
+        return { text: JSON.stringify({ error: null, reason: saved.reason }), images: [] };
       }
       if (!task.imageGeneration) {
         return { text: JSON.stringify(task.name === '姿态判断' ? { needsAdjustment, reason: '测试姿态判断' }
           : { needsSimplification, reason: '测试画风判断' }), images: [] };
       }
-      return { text: JSON.stringify({ savedPath: generated, error: null, reason: '测试转换依据' }), images: [{ savedPath: generated }] };
+      return { text: JSON.stringify({ error: null, reason: '测试转换依据' }), images: [{ savedPath: generated }] };
     },
   });
   return { original, generated, runName, calls, steps, bytes };
@@ -165,7 +165,7 @@ test('复制与生图互斥，混合分支保留输入并阻止正式参考发�
   const f = await fixture(t, false);
   const mixed = createPreparationSteps({ async run(task) {
     await task.tools![0].execute({ reason: '先复用' }, new AbortController().signal);
-    return { text: JSON.stringify({ savedPath: f.generated, error: null, reason: '又生图' }), images: [{ savedPath: f.generated }] };
+    return { text: JSON.stringify({ error: null, reason: '又生图' }), images: [{ savedPath: f.generated }] };
   } });
   await assert.rejects(prepareReferences({ runName: f.runName, image: f.original },
     { ...f.steps, baseSubject: mixed.baseSubject }), /同时执行了复制与生图/);
