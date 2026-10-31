@@ -1,4 +1,4 @@
-"""按关键形渲染交付的 face-left.json，检查用。含不透明度；'30' 按左右配对镜像，与程序一致。"""
+"""按关键形渲染交付的 face-left.json，检查用。parts 从上到下即绘制顺序；'30' 按左右配对镜像，与程序一致。"""
 import json
 import re
 
@@ -23,11 +23,11 @@ def pair_id(i):
 
 def keyform(part, key, face):
     if key != '30':
-        return np.array(part['keyforms'][key]), part.get('opacity', {}).get(key, 1)
+        return np.array(part['keyforms'][key])
     pair = {p['id']: p for p in face['parts']}.get(pair_id(part['id']), part)
     r0, axis = np.array(part['keyforms']['0']), face['axis']
     m = warp_point(pair, '-30', 2 * axis - r0[:, 0], r0[:, 1])
-    return np.stack([2 * axis - m[:, 0], m[:, 1]], -1), pair.get('opacity', {}).get('-30', 1)
+    return np.stack([2 * axis - m[:, 0], m[:, 1]], -1)
 
 
 def render(face, out_dir, box, key='-30', ss=4):
@@ -36,9 +36,7 @@ def render(face, out_dir, box, key='-30', ss=4):
     H = size * ss
     canvas = np.zeros((H, H, 4), np.float32)
     for p in reversed(face['parts']):
-        pts, alpha = keyform(p, key, face)
-        if alpha <= 0:
-            continue
+        pts = keyform(p, key, face)
         tex = cv2.imread(f"{out_dir}/{p['texture']}", cv2.IMREAD_UNCHANGED).astype(np.float32) / 255
         tex[..., :3] *= tex[..., 3:4]
         tx, ty, tw, th = p['textureBounds']
@@ -61,7 +59,6 @@ def render(face, out_dir, box, key='-30', ss=4):
                     msk = np.zeros((y1 - y0, x1 - x0), np.uint8)
                     cv2.fillConvexPoly(msk, np.round((dst - off) * 16).astype(np.int32), 1, shift=4)
                     layer[y0:y1, x0:x1] = np.where(msk[..., None] > 0, w, layer[y0:y1, x0:x1])
-        layer *= alpha
         canvas = layer + canvas * (1 - layer[..., 3:4])
     return canvas
 

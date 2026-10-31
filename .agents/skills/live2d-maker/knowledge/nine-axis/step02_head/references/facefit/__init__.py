@@ -12,8 +12,8 @@
 - cylinder  圆柱转向的拟合与查表
 - field     平滑残差网格、采样、父子后向场与牛顿反解
 - losses    外轮廓法向、轮廓带 / 覆盖 / 颜色边缘损失，父级与子级的优化循环
-- ears      耳朵整体跟随父级（平移＋横向透视缩放）
+- ears      近侧耳整体跟随父级（平移＋横向透视缩放）；远侧耳转到脑后，由脸遮挡
 - export    16×16 控制网格、贴图裁切、折叠检查、face-left.json
-- check     按关键形渲染（含不透明度与 +30 镜像），出 left-check.png
+- check     按关键形与绘制顺序渲染（含 +30 镜像），出 left-check.png
 - krita_export.py  在 Krita 里运行的图层导出脚本模板
 """

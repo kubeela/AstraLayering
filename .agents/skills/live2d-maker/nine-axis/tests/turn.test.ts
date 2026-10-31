@@ -99,11 +99,11 @@ test('step01 生成五个视角并统一到上半身尺寸，完成后沿用', a
   const source = JSON.parse(await readFile(join(task, 'nine-axis/step02_head/source.json'), 'utf8'));
   assert.equal(source.sourceDocument, 'character-assembly/step01/character-assembled.kra');
   assert.equal(source.sourceKraHash.length, 64);
-  // Hidden mirrors with the pair: the right ear hidden turning left means the left ear hidden turning right.
+  // The far ear's turn mirrors with the pair: turning right, the left ear goes behind like the right ear turning left.
   const { parts } = JSON.parse(await readFile(join(task, 'nine-axis/step02_head/deformers.json'), 'utf8'));
-  const opacity = Object.fromEntries(parts.map((p: { id: string; opacity: unknown }) => [p.id, p.opacity]));
-  assert.deepEqual(opacity['face/ear_right'], { '0': 1, '-30': 0, '30': 1 });
-  assert.deepEqual(opacity['face/ear_left'], { '0': 1, '-30': 1, '30': 0 });
+  const byId = Object.fromEntries(parts.map((p: { id: string }) => [p.id, p]));
+  assert.deepEqual(byId['face/ear_left'].keyforms['30'][0], [126, 70]);
+  assert.ok(parts.every((p: object) => !('opacity' in p)));
 });
 
 test('任一视角失败时 step01 不完成，并列出失败的视角', async t => {

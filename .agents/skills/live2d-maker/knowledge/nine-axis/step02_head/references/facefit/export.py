@@ -41,15 +41,12 @@ def fold(points, cols=16, rows=16):
     return float((e1[..., 0] * e2[..., 1] - e1[..., 1] * e2[..., 0]).min())
 
 
-def part(layer, group, texture, bounds, bbox, keyform, cols=16, rows=16, opacity=None):
+def part(layer, group, texture, bounds, bbox, keyform, cols=16, rows=16):
     r = lambda pts: [[round(float(x), 2), round(float(y), 2)] for x, y in pts]
-    entry = {'id': layer['id'], 'group': group, 'texture': texture, 'textureBounds': bounds, 'bbox': bbox, 'cols': cols, 'rows': rows,
+    return {'id': layer['id'], 'group': group, 'texture': texture, 'textureBounds': bounds, 'bbox': bbox, 'cols': cols, 'rows': rows,
              'keyforms': {'0': r(lattice(bbox, cols, rows)), '-30': r(keyform)}}
-    if opacity:
-        entry['opacity'] = opacity
-    return entry
 
 
 def write_face_left(path, axis, notes, parts):
-    """parts 按 KRA 从上到下排列；axis 为脸部中轴列（画布像素）。"""
+    """parts 按绘制顺序从上到下排列（KRA 顺序，耳朵在脸底之下）；axis 为脸部中轴列（画布像素）。"""
     json.dump({'axis': float(axis), 'notes': notes, 'parts': parts}, open(path, 'w'), ensure_ascii=False, separators=(',', ':'))
