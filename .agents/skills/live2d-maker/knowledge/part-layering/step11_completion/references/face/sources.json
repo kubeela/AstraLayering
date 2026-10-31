@@ -1,0 +1,63 @@
+{
+  "purpose": "完整正面脸型（脸底图层）的形状先验：发际线下额部平顺、无发缝缺口，太阳穴内收、颊侧到下巴连续；不提供当前角色比例、宽度、肤色、坐标或发型。",
+  "file": "complete-faces.png",
+  "sha256": "0bd3cf706477de6e177684b2a0ce988ef416528623f3195b365fc2e235bcdedd",
+  "layout": {
+    "row": [
+      "haru 輪郭",
+      "koharu _輪郭",
+      "haruto _輪郭",
+      "桃瀬ひより *顔/輪郭"
+    ]
+  },
+  "sources": [
+    {
+      "model": "haru",
+      "psdLayer": "輪郭",
+      "bounds": [
+        953,
+        353,
+        1447,
+        873
+      ],
+      "source": "Live2D 官方范例 haru_greeter_ja.zip 内 haru_受付スーツ_素材分け_t07.psd",
+      "extractedSha256": "cd5ea5c700bffa717051d313ace3a311e864947b5ccef5522435e1b67e9dbf3d"
+    },
+    {
+      "model": "koharu",
+      "psdLayer": "_輪郭",
+      "bounds": [
+        477,
+        264,
+        1117,
+        906
+      ],
+      "source": "Live2D 官方范例 koharu_haruto_ja.zip 内 こはる_素材分け.psd",
+      "extractedSha256": "382a14da8ea6ba5dc4329adce6aa0d2444aba6cd6e9e5bccdfa83ae1c168964b"
+    },
+    {
+      "model": "haruto",
+      "psdLayer": "_輪郭",
+      "bounds": [
+        477,
+        264,
+        1117,
+        906
+      ],
+      "source": "Live2D 官方范例 koharu_haruto_ja.zip 内 はると_素材分け.psd",
+      "extractedSha256": "f1f33747340c46a806ce6d152532555b80db4b5460209ce03b7b25930b8e2f57"
+    },
+    {
+      "model": "桃瀬ひより",
+      "psdLayer": "*顔/輪郭",
+      "bounds": [
+        1236,
+        426,
+        1737,
+        1002
+      ],
+      "source": "Live2D 官方教程素材 momose1.zip 内 桃瀬ひより_インポート_チュートリアル1.psd（文件名为 Shift-JIS 乱码）",
+      "extractedSha256": "1379528a4b279b1f31553e968bf4e54bbb7cb76a7a5e9c51315dbb86bd2dbe22"
+    }
+  ]
+}
