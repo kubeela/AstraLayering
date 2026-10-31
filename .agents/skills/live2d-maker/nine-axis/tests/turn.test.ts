@@ -1,14 +1,12 @@
 import '../../shared/tests/ignore-local-env.ts';
 import assert from 'node:assert/strict';
 import { test, type TestContext } from 'node:test';
-import { createServer } from 'node:http';
 import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import sharp from 'sharp';
-import { cropUpperBody, extractTurnFrame, ffmpegPath, generateVideo, resolveTurnInput, upperBodyBox, turnOutputs } from '../turn.ts';
-import { requireVideoApi, runWorkflow, turnPrompt } from '../run.ts';
-import { MissingDependencyError } from '../../shared/missing-dependency.ts';
+import { cropUpperBody, resolveTurnInput, upperBodyBox, turnViews } from '../turn.ts';
+import { runWorkflow, viewPrompt } from '../run.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 
 const rect = (w: number, h: number, x: number, y: number, rw: number, rh: number) =>
@@ -54,69 +52,47 @@ test('阴影蒙版完成时用阴影角色图', async t => {
   assert.equal(input.color, join(shadow, 'character-shadowed.png'));
 });
 
-test('缺少生视频接口或 ffmpeg 时直接拒绝', async () => {
-  assert.throws(() => requireVideoApi({}), /layering_video_base_url 与 layering_video_api_key/);
-  assert.throws(() => loadWorkflowEnvironment({ layering_video_base_url: 'https://example.com/v1' }), /同时填写/);
-  const env = loadWorkflowEnvironment({ layering_video_base_url: 'https://example.com/v1', layering_video_api_key: 'k' });
-  assert.deepEqual(env.videoApi, { baseUrl: 'https://example.com/v1', apiKey: 'k', model: 'seedance-2.5' });
-  await assert.rejects(ffmpegPath({ PATH: '' }), (error: unknown) => error instanceof MissingDependencyError);
-  assert.match(turnPrompt(), /90/);
+test('每个视角的提示词带入动作与三张参考图', () => {
+  for (const view of turnViews) {
+    const prompt = viewPrompt(view, '/task');
+    assert.match(prompt, /\/task\/nine-axis\/step01_turn\/upper-body\.png/);
+    assert.match(prompt, new RegExp(`pink-doll/front\\.png[\\s\\S]*pink-doll/${view}\\.png`));
+    assert.doesNotMatch(prompt, /\{(view|motion)\}/);
+  }
+  assert.match(viewPrompt('up', '/task'), /抬头/);
 });
 
-test('生视频提交、轮询并下载，错误中不含密钥', async t => {
-  const requests: string[] = [];
-  let polls = 0;
-  const server = createServer((request, response) => {
-    requests.push(`${request.method} ${request.url} ${request.headers.authorization}`);
-    let body = ''; request.on('data', chunk => { body += chunk; });
-    request.on('end', () => {
-      if (request.method === 'POST') {
-        const json = JSON.parse(body);
-        assert.equal(json.model, 'seedance-test'); assert.equal(json.seconds, '5'); assert.match(json.input_reference, /^data:image\/png;base64,/);
-        response.end(JSON.stringify({ id: 'v1', status: 'queued' }));
-      } else if (request.url === '/videos/v1') response.end(JSON.stringify({ id: 'v1', status: ++polls < 2 ? 'in_progress' : 'completed' }));
-      else if (request.url === '/videos/v1/content') response.end('mp4');
-      else { response.statusCode = 500; response.end('bad secret-key'); }
-    });
-  });
-  await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
-  t.after(() => server.close());
-  const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
-  const api = { baseUrl: base, apiKey: 'secret-key', model: 'seedance-test' };
-  const video = await generateVideo(api, 'orbit', Buffer.from('png'), { poll: 1 });
-  assert.equal(video.bytes.toString(), 'mp4');
-  assert.equal(requests[0], 'POST /videos Bearer secret-key');
-  await assert.rejects(generateVideo({ ...api, baseUrl: base + '/x' }, 'orbit', Buffer.from('png'), { poll: 1 }),
-    (error: Error) => !error.message.includes('secret-key') && error.message.includes('[redacted]'));
-});
-
-test('按帧序取出 30° 帧', async t => {
-  const ffmpeg = await ffmpegPath().catch(() => undefined);
-  if (!ffmpeg) { t.skip('没有 ffmpeg'); return; }
-  const root = await mkdtemp(join(tmpdir(), 'astra-turn-frame-'));
-  t.after(() => rm(root, { recursive: true, force: true }));
-  const { spawnSync } = await import('node:child_process');
-  const video = join(root, 'turn.mp4');
-  assert.equal(spawnSync(ffmpeg, ['-v', 'error', '-f', 'lavfi', '-i', 'testsrc=size=32x32:rate=10', '-frames:v', '61', '-pix_fmt', 'yuv420p', video]).status, 0);
-  const frame = await extractTurnFrame(ffmpeg, video, join(root, 'turn-30.png'));
-  assert.deepEqual(frame, { frameCount: 61, frameIndex: 20, angle: 30 });
-  assert.equal((await sharp(join(root, 'turn-30.png')).metadata()).width, 32);
-});
-
-test('step01 完成后沿用，来源角色图变化后重做', async t => {
+test('step01 生成五个视角并统一到上半身尺寸，完成后沿用，来源变化后重做', async t => {
   const { root, task } = await fixture(t);
-  let produced = 0;
-  const produce = async (directory: string) => {
-    produced++;
-    for (const file of turnOutputs) await writeFile(join(directory, file), file);
-    return { frameCount: 121, frameIndex: 40, angle: 30 };
+  const drawn: string[] = [];
+  const draw = async (view: string, output: string) => {
+    drawn.push(view);
+    await sharp({ create: { width: 64, height: 32, channels: 4, background: { r: 10, g: 20, b: 30, alpha: 0 } } }).png().toFile(output);
   };
-  const deps = { environment: { videoApi: { baseUrl: 'https://example.com/v1', apiKey: 'k', model: 'm' } }, ffmpeg: '/bin/true', produce };
-  assert.match(await runWorkflow({ name: 'case', dir: root }, deps), /第 40\/120 帧/);
-  await access(join(task, 'nine-axis/step01_turn/.completed'));
+  const deps = { environment: loadWorkflowEnvironment({}), draw };
+  assert.match(await runWorkflow({ name: 'case', dir: root }, deps), /5 个视角/);
+  const step = join(task, 'nine-axis/step01_turn'), size = (await sharp(join(step, 'upper-body.png')).metadata()).width;
+  for (const view of turnViews) {
+    const { data, info } = await sharp(join(step, `${view}.png`)).raw().toBuffer({ resolveWithObject: true });
+    assert.deepEqual([info.width, info.height, info.channels], [size, size, 3]);
+    assert.deepEqual([...data.subarray(0, 3)], [128, 128, 128], '透明处铺灰');
+  }
+  const record = JSON.parse(await readFile(join(step, 'views.json'), 'utf8'));
+  assert.deepEqual(Object.keys(record.views), [...turnViews]);
+  await access(join(step, '.completed'));
   assert.match(await runWorkflow({ name: 'case', dir: root }, deps), /沿用/);
-  assert.equal(produced, 1);
+  assert.equal(drawn.length, 5);
   await writeFile(join(task, 'character-assembly/step01/.completed'), JSON.stringify({ stamp: 'assembly-2', inputs: {} }));
   await runWorkflow({ name: 'case', dir: root }, deps);
-  assert.equal(produced, 2);
+  assert.equal(drawn.length, 10);
+});
+
+test('任一视角失败时 step01 不完成，并列出失败的视角', async t => {
+  const { root, task } = await fixture(t);
+  const draw = async (view: string, output: string) => {
+    if (view === 'down') throw new Error('模型拒绝');
+    await sharp({ create: { width: 8, height: 8, channels: 3, background: '#fff' } }).png().toFile(output);
+  };
+  await assert.rejects(runWorkflow({ name: 'case', dir: root }, { environment: loadWorkflowEnvironment({}), draw }), /down[\s\S]*模型拒绝/);
+  await assert.rejects(access(join(task, 'nine-axis/step01_turn/.completed')));
 });

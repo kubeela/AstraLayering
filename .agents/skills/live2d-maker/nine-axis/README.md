@@ -1,21 +1,21 @@
 # 头部九轴
 
-入口：`pnpm nine-axis --name <任务名> --knowledge <先验知识目录>`，或 `pnpm start --name <任务名> --from nine-axis --to nine-axis`。默认整条流程只到 shadow；头部九轴需要生视频接口，单独启动。目前 step01 已接入流水线；step02 的变形器与补绘仍由人工拟合制作（pink-doll），用来固定后续工作流应生成的格式。状态只记在任务根 `run.json`。
+入口：`pnpm nine-axis --name <任务名> --knowledge <先验知识目录>`，或 `pnpm start --name <任务名> --from nine-axis --to nine-axis`。默认整条流程只到 shadow；头部九轴单独启动。目前 step01 已接入流水线；step02 的变形器与补绘仍由人工拟合制作（pink-doll），用来固定后续工作流应生成的格式。状态只记在任务根 `run.json`。
 
 | 步骤 | 输入 | 交付 |
 | --- | --- | --- |
-| `step01_turn` | 角色工作台当前的角色图（阴影蒙版完成时为 `shadow/step01_mask/character-shadowed.png`，否则为 `character-assembly/step01/character-assembled.png`），以及 `part-layering/parts/{face,hair,head_accessories}.svg` | `nine-axis/step01_turn/upper-body.png`、`crop.json`、`turn.mp4`、`turn.json`、`turn-30.png` |
-| `step02_head` | 同上的 KRA / PNG 与 `step01_turn/turn-30.png` | `nine-axis/step02_head/deformers.json`、`layers/*.png`、`character-nine-axis.kra`、同名 PNG、`source.json` |
+| `step01_turn` | 角色工作台当前的角色图（阴影蒙版完成时为 `shadow/step01_mask/character-shadowed.png`，否则为 `character-assembly/step01/character-assembled.png`），以及 `part-layering/parts/{face,hair,head_accessories}.svg` | `nine-axis/step01_turn/upper-body.png`、`crop.json`、`{left,up,down,left-up,left-down}.png`、`views.json` |
+| `step02_head` | 同上的 KRA / PNG 与 `step01_turn` 的视角参考 | `nine-axis/step02_head/deformers.json`、`layers/*.png`、`character-nine-axis.kra`、同名 PNG、`source.json` |
 
 路径常量见 `shared/nine-axis.ts`。
 
-## step01_turn：转头视频与 30° 关键帧
+## step01_turn：头部视角参考
 
 1. 按脸、头发、头饰形状的不透明范围截取方形上半身：上沿为头部最高点，下沿为脸底再往下两个脸高（到胸口），以脸中心为横向中心，四周留 6%；超出画布处补灰（128）。裁切框写入 `crop.json`。
-2. 以 `upper-body.png` 为首帧、`knowledge/nine-axis/step01_turn/prompts/orbit.md` 为提示词调用生视频模型：时间冻结，镜头 5 秒内匀速环绕 0→90°，结束于正侧面。
-3. 程序解码统计帧数 N，取第 `round((N-1)×30/90)` 帧为 `turn-30.png`；帧号、帧数与实际角度写入 `turn.json`（另含模型、提示词、视频 id 与各文件哈希，不含密钥）。
+2. 五个视角 left、up、down、left-up、left-down 各由一个生图 agent 同时生成：图1 为 `upper-body.png`，图2、图3 为模板角色 pink-doll 的正面与目标姿态（`knowledge/nine-axis/step01_turn/references/pink-doll/`），提示词为同目录 `prompts/视角参考.md`，各视角的动作说明在 `prompts/views/<视角>.md`。右侧视角不画：角色常不对称，但脸部形变可以镜像复用。
+3. 结果铺在同一灰色上，缩放到上半身同尺寸后写为 `<视角>.png`；模型与各文件哈希写入 `views.json`。
 
-需要 `.env`（或网页「设置 → 生图服务」）中的 `layering_video_base_url`、`layering_video_api_key`，`layering_video_model` 默认 `seedance-2.5`；未配置时启动即报错。还需要 ffmpeg（可用 `ASTRA_STUDIO_FFMPEG` 指定路径）。来源角色图重做后 step01 随之重做。
+agent 使用 `layering_agent_preparation_model`（默认 gpt-6.1-sol-low），生图模型为 `layering_nine_axis_view_image_model`，留空继承 `layering_default_image_model`。来源角色图重做后 step01 随之重做。
 
 ## step02_head
 

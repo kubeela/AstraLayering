@@ -26,7 +26,7 @@ export async function executeSection(id: SectionId, directory: string, run: Task
     const summary = await shadow({ name, dir, krita: run.krita, shadowMode: mode, progress });
     return { summary, output: `shadow/${shadowStep(mode)}/${mode === 'mask' ? 'character-shadowed.kra' : 'normal.png'}` };
   }
-  if (id === 'nine-axis') return { summary: await nineAxis({ name, dir, progress }), output: nineAxisArtifacts.turnFrame };
+  if (id === 'nine-axis') return { summary: await nineAxis({ name, dir, progress }), output: nineAxisArtifacts.turnLeft };
   if (id === 'part-layering' || id === 'clothing-part-layering') {
     const execute = id === 'part-layering' ? runPartLayering : runClothingPartLayering;
     const result = await execute({

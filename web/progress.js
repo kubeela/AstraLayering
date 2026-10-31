@@ -106,8 +106,8 @@ export const sectionSteps = [
       { ...step('normal-depth-maps', '生成与验收贴图', 'pending'), processDirectory: 'shadow/step01_normal-depth' },
     ])],
     '启动时选择其中一种方式执行；另一种方式的已有产物保留。'), childrenMode: 'alternative' }],
-  [{ ...step('step01', '转头视频 · 30° 关键帧', 'pending', [],
-    '截取头顶到胸口的上半身作首帧，生视频镜头匀速环绕 0→90°，按帧序取出 30° 帧。'), processDirectory: 'nine-axis/step01_turn' }],
+  [{ ...step('step01', '头部视角参考', 'pending', [],
+    '截取头顶到胸口的上半身，生图参照模板角色画出左、上、下、左上、左下五个头部视角；右侧由脸部形变镜像得到。'), processDirectory: 'nine-axis/step01_turn' }],
 ];
 
 export function groupLayers(groups) {
@@ -168,8 +168,9 @@ stepArtifacts.push({
   'normal-depth-maps': [image('shadow/step01_normal-depth/normal.png', '法线'), image('shadow/step01_normal-depth/depth.png', '深度'), file('shadow/step01_normal-depth/report.md', '贴图报告')],
 });
 stepArtifacts.push({
-  step01: [image('nine-axis/step01_turn/turn-30.png', '30° 关键帧'), image('nine-axis/step01_turn/upper-body.png', '上半身首帧'),
-    file('nine-axis/step01_turn/turn.mp4', '转头视频'), file('nine-axis/step01_turn/turn.json', '生视频记录'), file('nine-axis/step01_turn/crop.json', '裁切框')],
+  step01: [image('nine-axis/step01_turn/upper-body.png', '正面上半身'), image('nine-axis/step01_turn/left.png', '左'),
+    image('nine-axis/step01_turn/up.png', '上'), image('nine-axis/step01_turn/down.png', '下'), image('nine-axis/step01_turn/left-up.png', '左上'),
+    image('nine-axis/step01_turn/left-down.png', '左下'), file('nine-axis/step01_turn/views.json', '视角记录'), file('nine-axis/step01_turn/crop.json', '裁切框')],
 });
 export function shadowInspectionArtifacts(files) {
   return files.filter(path => /^shadow\/step01_mask\/inspection\/relation-\d{3,}-review\.png$/.test(path)).sort()

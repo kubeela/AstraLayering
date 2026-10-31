@@ -1,55 +1,78 @@
 import { parseArgs } from 'node:util';
 import { existsSync, readFileSync } from 'node:fs';
+import { copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { formatAgentError } from '../shared/codex/diagnostics.ts';
+import { formatAgentError, validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { acquireTaskLock } from '../workflow/state.ts';
 import { sectionDirectory, taskDirectory, resolveInput, resolveRunsDirectory } from '../shared/paths.ts';
-import { knowledgeDirectory, renderKnowledge, selectKnowledge } from '../shared/knowledge.ts';
+import { selectKnowledge, stepKnowledge } from '../shared/knowledge.ts';
 import { runSection } from '../shared/step-section.ts';
-import { loadWorkflowEnvironment, type VideoApi, type WorkflowEnvironment } from '../shared/codex/environment.ts';
-import { ffmpegPath, produceTurn, resolveTurnInput, turnOutputs, type TurnInput } from './turn.ts';
+import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../shared/codex/environment.ts';
+import { CodexAgents } from '../shared/codex/agents.ts';
+import { preflightAgentSteps } from '../shared/agents/preflight.ts';
+import { produceTurn, resolveTurnInput, turnOutputs, turnViews, type DrawView, type TurnInput, type TurnView } from './turn.ts';
 
 export const help = `nine-axis — 头部九轴
 pnpm nine-axis --name <任务名> --knowledge <先验知识目录> [--dir <绝对运行根目录>] [--dry-run]
 step01_turn：从工作台当前的角色图（阴影蒙版交付后为 shadow/step01_mask/character-shadowed.png，否则为组装图）
-按脸、头发、头饰形状截取头顶到胸口的方形上半身，作为首帧交给生视频模型，镜头匀速环绕 0→90°；
-程序按帧序取出 30° 关键帧 turn-30.png。需要 .env 的 layering_video_base_url / layering_video_api_key 和 ffmpeg。
-提示词：<knowledge>/nine-axis/step01_turn/prompts/orbit.md。上游产物重做后 step01 随之重做。
+按脸、头发、头饰形状截取头顶到胸口的方形上半身 upper-body.png，再由生图 agent 参照模板角色的正面→姿态，
+画出 ${turnViews.join('、')} 五个视角（右侧由后续步骤镜像脸部形变得到）。
+使用 layering_agent_preparation_model 与 layering_nine_axis_view_image_model（留空继承默认生图模型）。
+提示词：<knowledge>/nine-axis/step01_turn/。上游产物重做后 step01 随之重做。
 总入口：pnpm start --name <任务名> --from nine-axis --to nine-axis。
 `;
-export const turnPromptPath = () => join(knowledgeDirectory(), 'nine-axis/step01_turn/prompts/orbit.md');
-export function turnPrompt(): string {
-  const path = turnPromptPath();
-  if (!existsSync(path)) throw new Error(`先验知识缺少转头视频提示词：${path}`);
-  const text = renderKnowledge(readFileSync(path, 'utf8'), {}).trim();
-  if (!text) throw new Error(`转头视频提示词为空：${path}`);
-  return text;
+
+// The view's motion is a knowledge file of its own, filled into the shared prompt.
+export function viewPrompt(view: TurnView, taskRoot: string): string {
+  const knowledge = stepKnowledge('nine-axis', 'step01_turn'), path = join(knowledge.directory, 'prompts/views', `${view}.md`);
+  if (!existsSync(path)) throw new Error(`先验知识缺少视角说明：${path}`);
+  const motion = readFileSync(path, 'utf8').trim();
+  if (!motion) throw new Error(`视角说明为空：${path}`);
+  return knowledge.render('main', { view, motion }, { taskRoot }).trim();
 }
-// Checked before any step starts, so a run without the video service fails at once.
-export function requireVideoApi(environment: Pick<WorkflowEnvironment, 'videoApi'>): VideoApi {
-  if (!environment.videoApi) throw new Error('头部九轴转头视频需要生视频接口：请在 live2d-maker/.env（或网页「设置」的生图服务）填写 layering_video_base_url 与 layering_video_api_key。未配置时此步骤无法运行。');
-  return environment.videoApi;
+
+const outputSchema = { type: 'object', properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } },
+  required: ['savedPath', 'error'], additionalProperties: false };
+export function createDrawView(agents: Pick<CodexAgents, 'run'>, taskRoot: string): DrawView {
+  return async (view, output) => {
+    const result = await agents.run({ step: 'nine_axis_view', name: `视角参考 ${view}`, imageGeneration: true, outputSchema,
+      prompt: viewPrompt(view, taskRoot) });
+    await validateAgentOutcome(result, async () => {
+      const image = result.images.at(-1);
+      if (!image) throw new Error('imagegen did not produce an image');
+      await copyFile(image.savedPath, output);
+    });
+  };
 }
 
 export type NineAxisOptions = { name: string; dir?: string; dryRun?: boolean; signal?: AbortSignal; progress?: (message: string) => void };
-export type NineAxisDependencies = { environment?: Pick<WorkflowEnvironment, 'videoApi'>; ffmpeg?: string;
-  produce?: typeof produceTurn; resolveInput?: (name: string, root: string) => Promise<TurnInput> };
+export type NineAxisDependencies = { environment?: WorkflowEnvironment; draw?: DrawView;
+  resolveInput?: (name: string, root: string) => Promise<TurnInput> };
 export async function runWorkflow(options: NineAxisOptions, dependencies: NineAxisDependencies = {}): Promise<string> {
   const root = resolveRunsDirectory(options.dir), progress = options.progress ?? (() => {});
-  const api = requireVideoApi(dependencies.environment ?? loadWorkflowEnvironment());
-  const prompt = turnPrompt(), ffmpeg = dependencies.ffmpeg ?? await ffmpegPath();
+  const task = taskDirectory(options.name, root), directory = sectionDirectory(options.name, 'nine-axis', root);
+  const environment = dependencies.environment ?? loadWorkflowEnvironment();
+  const model = environment.stepModels.nine_axis_view, image = environment.stepImages.nine_axis_view ?? 'codex-native';
+  const label = `${model.model}-${model.effort} / ${image}`;
+  for (const view of turnViews) viewPrompt(view, task);
   const input = await (dependencies.resolveInput ?? resolveTurnInput)(options.name, root);
-  const produce = dependencies.produce ?? produceTurn;
   let summary = 'nine-axis/step01_turn 已完成（沿用已有结果）';
-  await runSection({ directory: sectionDirectory(options.name, 'nine-axis', root), root: taskDirectory(options.name, root),
+  await runSection({ directory, root: task,
     steps: [{ number: 1, note: 'turn', upstream: [input.source.id], outputs: turnOutputs }], upstream: [input.source],
     dryRun: options.dryRun, signal: options.signal, progress, resetNote: '（来源角色图已变化）',
     async step(step, status) {
       if (status === 'completed') return undefined;
       return async () => {
-        if (options.dryRun) { progress(`预览：从 ${input.color} 截取上半身，用 ${api.model} 生成转头视频并取 30° 帧。\n提示词：\n${prompt}`); summary = '预览完成，未调用模型'; return; }
-        const frame = await produce(step.directory, input, api, prompt, { signal: options.signal, progress, ffmpeg });
-        summary = `nine-axis/step01_turn 已完成：第 ${frame.frameIndex}/${frame.frameCount - 1} 帧（约 ${frame.angle.toFixed(1)}°）`;
+        if (options.dryRun) { progress(`预览：从 ${input.color} 截取上半身，用 ${label} 生成 ${turnViews.join('、')} 视角。\n提示词（left）：\n${viewPrompt('left', task)}`); summary = '预览完成，未调用模型'; return; }
+        let draw = dependencies.draw;
+        if (!draw) {
+          const normalization = { runsRoot: root, progress, env: environment.codex.env };
+          await preflightAgentSteps(environment, ['nine_axis_view'], normalization);
+          draw = createDrawView(new CodexAgents({ environment, imageNormalization: normalization, cwd: directory,
+            logDirectory: join(directory, 'agents'), progress }), task);
+        }
+        const box = await produceTurn(step.directory, input, draw, { progress, model: label });
+        summary = `nine-axis/step01_turn 已完成：${box.size}×${box.size} 上半身的 ${turnViews.length} 个视角`;
       };
     } });
   return summary;

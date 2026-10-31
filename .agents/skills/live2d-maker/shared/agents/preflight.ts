@@ -55,7 +55,7 @@ export function sectionAgentSteps(section: SectionId, standard = false, shadowMo
     if (section === 'raster-layering') return step.startsWith('raster_');
     if (section === 'clothing-raster-layering') return step.startsWith('clothing_raster_');
     if (section === 'shadow') return step === (shadowMode === 'mask' ? 'shadow_mask' : 'shadow_maps');
-    if (section === 'nine-axis') return false;
+    if (section === 'nine-axis') return step === 'nine_axis_view';
     return step === 'assembly';
   });
 }

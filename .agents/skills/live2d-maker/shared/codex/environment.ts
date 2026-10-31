@@ -5,7 +5,7 @@ import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import type { CodexOptions, ThreadOptions } from '@openai/codex-sdk';
 import { workflowsDirectory } from '../paths.ts';
-import { readDefaultConfiguration, requiredDefault } from '../default-configuration.ts';
+import { readDefaultConfiguration } from '../default-configuration.ts';
 import { kritaLimit, kritaLimitKey } from '../krita/section-krita.ts';
 import { withNodePath } from '../process-environment.ts';
 import { imageBudget, type ImageBudget } from '../../patches/shared/visual-context.ts';
@@ -32,16 +32,12 @@ export type WorkflowEnvironment = {
   stepModels: Record<AgentStep, AgentModel>;
   stepImages: Partial<Record<AgentStep, ImageModel>>;
   imageApis: Partial<Record<'openai' | 'google', ImageApi>>;
-  // The video API of the nine-axis turn; without it that step cannot run.
-  videoApi?: VideoApi;
   cliPaths: Partial<Record<Harness, string>>;
   codex: CodexOptions;
   imageCompactThreshold?: number;
   imageBudgets?: Record<Harness, ImageBudget>;
   providers?: HarnessProviders;
 };
-
-export type VideoApi = { baseUrl: string; apiKey: string; model: string };
 
 export function parseModel(value: string | undefined, fallback: ModelSelection, name: string): ModelSelection {
   if (!value?.trim()) return { ...fallback };
@@ -138,13 +134,6 @@ export function parseWorkflowEnvironment(source: string, env: NodeJS.ProcessEnv 
       imageApis[provider] = { baseUrl, apiKey, protocol: protocol as ImageApi['protocol'] };
     }
   }
-  const videoUrl = get('layering_video_base_url'), videoKey = get('layering_video_api_key');
-  let videoApi: VideoApi | undefined;
-  if (videoUrl || videoKey) {
-    if (!videoUrl || !videoKey) throw new Error('生视频需要同时填写 layering_video_base_url 和 layering_video_api_key。');
-    validateApiUrl(videoUrl, 'layering_video_base_url');
-    videoApi = { baseUrl: videoUrl, apiKey: videoKey, model: get('layering_video_model') || requiredDefault(defaults, 'layering_video_model') };
-  }
   const stepImages: WorkflowEnvironment['stepImages'] = {};
   const fallbackImage = get('layering_default_image_model') || (imageUrl ? imageModel : imageDefaults.model);
   for (const step of imageSteps) {
@@ -163,7 +152,7 @@ export function parseWorkflowEnvironment(source: string, env: NodeJS.ProcessEnv 
   }
   if (executable) cliPaths.codex = path(executable);
   return {
-    stepModels, stepImages, imageApis, cliPaths, imageBudgets, providers, ...(videoApi ? { videoApi } : {}),
+    stepModels, stepImages, imageApis, cliPaths, imageBudgets, providers,
     models: {
       medium: parseModel(get('layering_medium_model'), tiers.medium, 'layering_medium_model'),
       high: parseModel(get('layering_high_model'), tiers.high, 'layering_high_model'),
