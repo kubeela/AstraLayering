@@ -25,6 +25,30 @@ async function fixture(t: any, section = 'part-layering') {
   return { dir, task, put, get, mark };
 }
 
+for (const section of ['part-layering', 'clothing-part-layering']) test(`${section}: many sibling reads preserve their own missing outputs and review verdicts`, async t => {
+  const f = await fixture(t, section);
+  const groups = Array.from({ length: 12 }, (_, i) => ({ id: 'part_' + i, kind: 'part', groups: [] }));
+  await f.put('groups.json', { groups });
+  for (const [i, group] of groups.entries()) {
+    await f.mark('step09_outline/' + group.id);
+    if (i === 5) continue;
+    await f.put('step09_outline/' + group.id + '/outline.svg', svg);
+    await f.put('step09_outline/' + group.id + '/review.json', {
+      groupId: group.id, reviews: [{ verdict: i === 10 ? 'revise' : 'pass', candidateHash: svgHash(svg), feedback: group.id, observations: [] }],
+    });
+  }
+  const original = await readFile(join(f.task, section, 'groups.json'));
+  const value = await f.get();
+  assert.deepEqual(value.part.groups.map((node: any) => node.id), groups.map(group => group.id));
+  for (const [i, node] of value.part.groups.entries()) {
+    assert.equal(node.webPhases.outline, i === 5 ? 'failed' : 'done', node.id);
+    assert.equal(node.webPhases.review, i === 5 ? 'pending' : i === 10 ? 'available' : 'done', node.id);
+  }
+  assert.match(value.part.groups[5].webDetails.outline, /part_5\/outline\.svg/);
+  assert.equal(value.part.groups[10].webDetails.review, '需要返修');
+  assert.deepEqual(await readFile(join(f.task, section, 'groups.json')), original);
+});
+
 for (const section of ['part-layering', 'clothing-part-layering']) test(`${section}: drafts, publication, hash-matched reviews, reduction, completion and child analysis`, async t => {
   const f = await fixture(t, section);
   const group = { id: 'body', kind: 'group', groups: [] };

@@ -41,7 +41,7 @@ export async function partProgress(directory: string, section: string, groups: a
     if (!steps.has(id)) steps.set(id, stepStatus(directory, section, id).catch(error => { errors.push(`${section}/${id}: ${String(error)}`); return 'absent' as const; }));
     return steps.get(id)!;
   };
-  for (const { node, depth } of entries) {
+  const inspectNode = async ({ node, depth }: typeof entries[number]) => {
     const path = (stage: 'outline' | 'reduction' | 'completion') => webFilePath(artifactPath(section, node.id, stage));
     const draft = (stage: 'outline' | 'reduction' | 'completion') => files.has(webFilePath(stepDraftPath(section, node.id, stage))) || files.has(path(stage).replace(/\.svg$/, '.draft.svg'));
     node.webPhases = Object.fromEntries(phases.map(phase => [phase, 'pending']));
@@ -93,6 +93,11 @@ export async function partProgress(directory: string, section: string, groups: a
     const childrenDone = split === 'completed';
     mark('children', childrenDone, childrenDone || !!node.groups?.length, childrenDone ? `已分析 · ${node.groups?.length ?? 0} 个直属节点` : '已有分组 · 待重新分析');
     if (node.kind === 'part') node.webDetails.children = '终止 part，不再拆分';
+  };
+  // Each node reads independent evidence; bound parallel reads so a large tree
+  // does not serialize the entire preview or flood the filesystem.
+  for (let offset = 0; offset < entries.length; offset += 8) {
+    await Promise.all(entries.slice(offset, offset + 8).map(inspectNode));
   }
 
   // request.json is created only after the agent obtains a concurrency slot.

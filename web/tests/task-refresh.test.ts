@@ -62,6 +62,104 @@ test('the separate preview tab still redraws new progress and artifacts', async 
   assert.deepEqual(f.calls, ['apply', 'render']);
 });
 
+test('a selected task keeps refreshing while its selector has focus', async () => {
+  const f = fixture('running', 'focus');
+  f.context.document.activeElement.id = 'task-select';
+  await f.run();
+  assert.deepEqual(f.calls, ['apply', 'render']);
+});
+
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  let reject!: (error: Error) => void;
+  const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no; });
+  return { promise, resolve, reject };
+}
+
+function persistentRefresh(f: ReturnType<typeof fixture>) {
+  runInNewContext(refresh, f.context);
+  return runInNewContext('refreshTask', f.context) as (force?: boolean) => Promise<void>;
+}
+
+test('polling never supersedes a slow forced selection or issues duplicate snapshots', async () => {
+  const f = fixture('running', 'focus'), response = deferred<any>(), started = deferred<void>();
+  const requests: string[] = [];
+  f.context.get = async (path: string) => {
+    requests.push(path);
+    if (path === './api/tasks') return { directory: '/runs', tasks: [{ name: 'test' }] };
+    started.resolve(); return response.promise;
+  };
+  const run = persistentRefresh(f), selected = run(true);
+  await started.promise;
+  // These ticks represent a snapshot spanning several polling intervals.
+  for (let tick = 0; tick < 3; tick++) await run();
+  assert.deepEqual(requests, ['./api/tasks', './api/task?name=test']);
+  response.resolve(f.next);
+  await selected;
+  assert.deepEqual(f.calls, ['apply', 'render']);
+  f.context.document.activeElement.id = 'task-select';
+  await run();
+  assert.equal(requests.length, 4, 'polling resumes after the selection finishes');
+});
+
+test('a slow background poll also finishes instead of being discarded by the next tick', async () => {
+  const f = fixture('running', 'none'), response = deferred<any>(), started = deferred<void>();
+  f.context.get = async (path: string) => {
+    if (path === './api/tasks') return { directory: '/runs', tasks: [{ name: 'test' }] };
+    started.resolve(); return response.promise;
+  };
+  const run = persistentRefresh(f), pending = run();
+  await started.promise;
+  await run(); await run();
+  response.resolve(f.next);
+  await pending;
+  assert.deepEqual(f.calls, ['apply', 'render']);
+});
+
+test('rapid selection changes keep the newest task even when the older response finishes last', async () => {
+  const f = fixture('running', 'none'), old = deferred<any>(), newer = deferred<any>(), started = deferred<void>();
+  f.context.get = async (path: string) => {
+    if (path === './api/tasks') return { directory: '/runs', tasks: [{ name: 'test' }, { name: 'second' }] };
+    if (path.endsWith('name=test')) { started.resolve(); return old.promise; }
+    return newer.promise;
+  };
+  f.context.taskParams = () => 'name=' + f.context.state.name;
+  const run = persistentRefresh(f), first = run(true);
+  await started.promise;
+  f.context.state.name = 'second';
+  const second = run(true), current = { ...f.next, name: 'second' };
+  newer.resolve(current); await second;
+  old.resolve({ ...f.next, name: 'test' }); await first;
+  assert.equal(f.context.data, current);
+  assert.deepEqual(f.calls, ['apply', 'render']);
+});
+
+test('a failed selection shows an error and releases polling so the next request can recover', async () => {
+  const f = fixture('running', 'none');
+  f.context.state.loading = true;
+  f.context.get = async () => { throw new Error('offline'); };
+  const run = persistentRefresh(f);
+  await assert.rejects(run(true), /offline/);
+  assert.equal(f.context.state.loadError, 'offline');
+  assert.equal(f.context.state.loading, false);
+  f.context.get = async (path: string) => path === './api/tasks' ? { directory: '/runs', tasks: [{ name: 'test' }] } : f.next;
+  await run();
+  assert.equal(f.context.state.loadError, null);
+  assert.equal(f.context.data, f.next);
+});
+
+test('retrying a failed read restores the preview even when the snapshot matches the last successful read', async () => {
+  const f = fixture('running', 'none'), run = persistentRefresh(f), get = f.context.get;
+  await run(true);
+  f.context.state.loading = true;
+  f.context.get = async () => { throw new Error('offline'); };
+  await assert.rejects(run(true), /offline/);
+  f.context.get = get;
+  await run();
+  assert.equal(f.context.state.loadError, null);
+  assert.deepEqual(f.calls, ['apply', 'render', 'render', 'apply', 'render']);
+});
+
 test('loss of runner updates even before persisted status leaves running', async () => {
   const f = fixture('running', 'focus');
   f.next.runnerAlive = false;
