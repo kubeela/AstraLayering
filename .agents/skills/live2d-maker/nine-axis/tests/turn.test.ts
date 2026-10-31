@@ -40,6 +40,14 @@ test('上半身从头顶截到胸口，以脸为中心并留边', async t => {
   assert.deepEqual([...data.subarray(30 * 3, 30 * 3 + 3)], [200, 100, 50]);
 });
 
+test('胸像的脸靠下时，裁切止于画布底边', async t => {
+  const { root, task } = await fixture(t);
+  await writeFile(join(task, 'part-layering/parts/face.svg'), rect(200, 400, 60, 200, 80, 150));
+  const input = await resolveTurnInput('case', root);
+  // Hair top 30; the chest would fall at 350 + 2×150, so it stops at 400.
+  assert.equal((await upperBodyBox(input, 200, 400)).size, Math.ceil(370 / 0.88));
+});
+
 test('阴影蒙版完成时用阴影角色图', async t => {
   const { root, task } = await fixture(t);
   const shadow = join(task, 'shadow/step01_mask');

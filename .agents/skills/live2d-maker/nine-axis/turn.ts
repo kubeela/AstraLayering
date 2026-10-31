@@ -53,7 +53,8 @@ export async function upperBodyBox(input: TurnInput, width: number, height: numb
   if (!face) throw new Error(`脸部形状为空：${input.parts[0]}`);
   const head = [face, ...rest].filter(b => !!b);
   const top = Math.min(...head.map(b => b.y0)), left = Math.min(...head.map(b => b.x0)), right = Math.max(...head.map(b => b.x1));
-  const bottom = face.y1 + chestFaces * (face.y1 - face.y0), cx = (face.x0 + face.x1) / 2;
+  // A bust drawn to the canvas edge has no chest below it; the crop stops at the canvas.
+  const bottom = Math.min(height, face.y1 + chestFaces * (face.y1 - face.y0)), cx = (face.x0 + face.x1) / 2;
   const size = Math.ceil(Math.max(bottom - top, 2 * Math.max(cx - left, right - cx)) / (1 - 2 * margin));
   return { x: Math.round(cx - size / 2), y: Math.round(top - size * margin), size };
 }
