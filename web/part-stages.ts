@@ -21,26 +21,34 @@ export async function partStages(directory: string, section: string, groups: any
   step: (id: string) => Promise<StepStatus> = async () => 'absent') {
   const states: Record<string, Status> = {}, messages: Record<string, string> = {};
   const present = (path: string) => files.has(section + '/' + path);
-  const artifact = (...paths: string[]): Status => paths.some(present) ? 'available' : 'pending';
+  // A product counts only in a marked step; a completed step missing its product failed.
+  const missing = (phase: string, path: string) => { messages[phase] = '.completed 存在但缺少交付：' + section + '/' + path; return 'failed' as const; };
+  const stage = async (phase: string, id: string, path: string | undefined, delivery: string, ...drafts: string[]): Promise<Status> => {
+    const status = await step(id);
+    if (status === 'completed') return path ? 'done' : missing(phase, delivery);
+    return status === 'running' && (path || drafts.some(present)) ? 'available' : 'pending';
+  };
   const reference = (name: string) => [`references/${name}.png`].find(present);
-  states.initial = await step(partSteps.initial) === 'completed' ? 'done' : groups.length ? 'available' : 'pending';
+  const initial = await step(partSteps.initial);
+  states.initial = initial === 'completed' ? 'done' : initial === 'running' && groups.length ? 'available' : 'pending';
   if (section === 'part-layering') {
     for (const [phase, name] of [['standard', 'standard'], ['simplified', 'simplified-subject'], ['base', 'base-subject']] as const) {
-      const path = reference(name);
-      states[phase] = path && await step(partSteps[phase]) === 'completed' ? 'done' : path ? 'available' : 'pending';
+      states[phase] = await stage(phase, partSteps[phase], reference(name), `references/${name}.png`);
     }
-    states.preparation = ['standard', 'simplified', 'base'].every(phase => states[phase] === 'done') ? 'done'
+    states.preparation = ['standard', 'simplified', 'base'].some(phase => states[phase] === 'failed') ? 'failed'
+      : ['standard', 'simplified', 'base'].every(phase => states[phase] === 'done') ? 'done'
       : ['standard', 'simplified', 'base'].some(phase => states[phase] !== 'pending') ? 'available' : 'pending';
   } else {
-    states.clothing = await step(clothingPreparationStep) === 'completed' ? 'done' : artifact('references/clothing.png');
+    states.clothing = await stage('clothing', clothingPreparationStep, reference('clothing'), 'references/clothing.png');
     states.preparation = states.clothing;
   }
-  states.merge = artifact('preview.svg', 'preview.draft.svg');
   const all = (nodes: any[]): any[] => nodes.flatMap(node => [node, ...all(node.groups ?? [])]);
-  if (present('preview.svg') && groups.length && await step(partSteps.merge) === 'completed' &&
-      all(groups).every(node => Object.values(node.webPhases).every(value => value === 'done'))) states.merge = 'done';
-  states.occlusion = artifact('occlusion.json', `${partSteps.occlusion}/preview.svg`, `${partSteps.occlusion}/workspace/candidate.svg`);
-  if (present('occlusion.json') && await step(partSteps.occlusion) === 'completed') {
+  states.merge = await stage('merge', partSteps.merge, present('preview.svg') ? 'preview.svg' : undefined, 'preview.svg', 'preview.draft.svg');
+  if (states.merge === 'done' && !(groups.length && all(groups).every(node => Object.values(node.webPhases).every(value => value === 'done')))) states.merge = 'available';
+  states.occlusion = await stage('occlusion', partSteps.occlusion, present('occlusion.json') ? 'occlusion.json' : undefined, 'occlusion.json',
+    `${partSteps.occlusion}/preview.svg`, `${partSteps.occlusion}/workspace/candidate.svg`);
+  if (states.occlusion === 'done') {
+    states.occlusion = 'available';
     try {
       const plan = validateOcclusionDocument(await json(section + '/occlusion.json'));
       const leaves = all(groups).filter(node => !node.groups?.length);

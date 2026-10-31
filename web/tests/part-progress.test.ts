@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { snapshot } from '../snapshot.ts';
 import { acquireTaskLock, configureRun, saveRun } from '../../.agents/skills/live2d-maker/workflow/state.ts';
-import { stampedSvg, svgHash } from '../../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
+import { svgHash } from '../../.agents/skills/live2d-maker/shared/part/artifact-facts.ts';
 
 const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0L10 10Z"/></svg>');
 async function fixture(t: any, section = 'part-layering') {
@@ -31,6 +31,8 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
   await f.put('groups.json', { groups: [group] });
   const original = await readFile(join(f.task, section, 'groups.json'));
   await f.put('step09_outline/body/outline.draft.svg', svg);
+  assert.equal((await f.get()).part.groups[0].webPhases.outline, 'pending', 'a draft in an unmarked step is a leftover the run deletes');
+  await f.mark('step09_outline/body', 'running');
   let value = await f.get();
   assert.equal(value.part.groups[0].webPhases.outline, 'available');
   assert.equal(value.part.groups[0].webMessages.outline, '已有产物');
@@ -56,9 +58,11 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
   assert.equal((await f.get()).part.groups[0].webMessages.review, '已完成');
   assert.match((await f.get()).part.groups[0].webDetails.review, /不再复审/);
   await f.put('step10_reduce/depth01/body.svg', svg);
+  assert.equal((await f.get()).part.groups[0].webPhases.reduction, 'pending', 'an unmarked reduction is a leftover');
+  await f.mark('step10_reduce/depth01', 'running');
   assert.equal((await f.get()).part.groups[0].webPhases.reduction, 'available');
   await f.mark('step10_reduce/depth01');
-  const completed = stampedSvg(svg, svgHash(svg));
+  const completed = svg;
   await f.put('parts/body.svg', completed);
   await f.put('step11_completion/body/check.json', { groupId: 'body', passed: true });
   await f.mark('step11_completion/body');
@@ -85,7 +89,7 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
     { verdict: 'pass', candidateHash: svgHash(svg), feedback: '通过', observations: [] },
   ] });
   await f.put(`step10_reduce/depth03/${id}.svg`, svg);
-  await f.put(`parts/${id}.svg`, stampedSvg(svg, svgHash(svg)));
+  await f.put(`parts/${id}.svg`, svg);
   await f.put(`step11_completion/${item}/check.json`, { groupId: id, passed: true });
   for (const step of [`step09_outline/${item}`, 'step10_reduce/depth03', `step11_completion/${item}`, `step12_children/${item}`]) await f.mark(step);
   const value = await f.get(), node = value.part.groups[0].groups[0].groups[0];
@@ -131,7 +135,8 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
   await f.put('groups.json', { groups: [group] });
   await rm(join(f.task, section, 'step09_outline/iris/outline.svg'));
   value = await f.get();
-  assert.equal(value.part.groups[0].webPhases.outline, 'pending');
+  assert.equal(value.part.groups[0].webPhases.outline, 'failed', 'a completed step missing its product failed');
+  assert.match(value.part.groups[0].webDetails.outline, /缺少交付/);
   assert.equal(value.part.groups[0].webPhases.review, 'pending', 'missing skip output is not a completed review');
 });
 
@@ -152,6 +157,7 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
   assert.equal((await f.get()).part.states.initial, 'done');
   await f.put('agents/depth/request.json', { task: { name: '最终遮挡层级规划' } });
   assert.equal((await f.get()).part.states.occlusion, 'running');
+  await f.mark('step14_occlusion', 'running');
   await f.put('step14_occlusion/workspace/candidate.svg', svg);
   let value = await f.get();
   assert.equal(value.part.states.occlusion, 'running');
@@ -165,7 +171,9 @@ for (const section of ['part-layering', 'clothing-part-layering']) test(`${secti
   assert.equal((await f.get()).part.states.occlusion, 'done');
   await rm(join(f.task, section, 'occlusion.json'));
   run.runner.finishedAt = new Date().toISOString(); await saveRun(f.task, run);
-  assert.equal((await f.get()).part.states.occlusion, 'available', 'a stopped request cannot keep a candidate running');
+  value = await f.get();
+  assert.equal(value.part.states.occlusion, 'failed', 'a stopped request cannot keep a candidate running');
+  assert.match(value.part.messages.occlusion, /缺少交付/);
 });
 
 test('preparation activity is visible before an image, and matching published references complete independently', async t => {
@@ -188,13 +196,13 @@ test('preparation activity is visible before an image, and matching published re
   let value = await f.get();
   assert.equal(value.part.states.preparation, 'done');
   assert.deepEqual(['standard', 'simplified', 'base'].map(phase => value.part.states[phase]), ['done', 'done', 'done']);
-  // An upstream redo deletes the downstream step records.
+  // Without its marker the step is a leftover the next run deletes and redoes.
   await rm(join(f.task, 'part-layering/step06_base/.completed'));
   value = await f.get();
-  assert.equal(value.part.states.base, 'available'); assert.equal(value.part.states.preparation, 'available');
+  assert.equal(value.part.states.base, 'pending'); assert.equal(value.part.states.preparation, 'available');
 });
 
-test('人物参考仅凭图片与步骤完成记录展示完成，缺图时仍显示待制作', async t => {
+test('人物参考仅凭图片与步骤完成记录展示完成，已完成但缺图时显示执行失败', async t => {
   const f = await fixture(t);
   for (const [step, name] of [['step04_standard', 'standard'], ['step05_simplified', 'simplified-subject'], ['step06_base', 'base-subject']] as const) {
     await f.put(`references/${name}.png`, svg);
@@ -206,8 +214,9 @@ test('人物参考仅凭图片与步骤完成记录展示完成，缺图时仍�
   assert.equal(value.files.some(file => file.endsWith('/judgment.json')), false);
   await rm(join(f.task, 'part-layering/references/base-subject.png'));
   value = await f.get();
-  assert.equal(value.part.states.base, 'pending');
-  assert.equal(value.part.states.preparation, 'available');
+  assert.equal(value.part.states.base, 'failed');
+  assert.match(value.part.messages.base, /缺少交付.*base-subject\.png/);
+  assert.equal(value.part.states.preparation, 'failed');
 });
 
 test('a completed merge step is complete before the whole part section finishes', async t => {
@@ -216,10 +225,12 @@ test('a completed merge step is complete before the whole part section finishes'
   await f.put('step09_outline/body/outline.svg', svg);
   await f.put('step09_outline/body/review.json', { groupId: 'body', reviews: [{ verdict: 'pass', candidateHash: svgHash(svg), feedback: 'ok', observations: [] }] });
   await f.put('step10_reduce/depth01/body.svg', svg);
-  await f.put('parts/body.svg', stampedSvg(svg, svgHash(svg)));
+  await f.put('parts/body.svg', svg);
   await f.put('step11_completion/body/check.json', { groupId: 'body', passed: true });
   for (const step of ['step08_initial', 'step09_outline/body', 'step10_reduce/depth01', 'step11_completion/body', 'step12_children/body']) await f.mark(step);
   await f.put('preview.svg', svg);
+  assert.equal((await f.get()).part.states.merge, 'pending', 'a merge output without its step marker is a leftover');
+  await f.mark('step13_merge', 'running');
   assert.equal((await f.get()).part.states.merge, 'available');
   await f.mark('step13_merge');
   assert.equal((await f.get()).part.states.merge, 'done');
@@ -244,6 +255,8 @@ test('running phases require current agent requests; queued groups, old calls an
   await f.put('agents/current/request.json', { task: { name: '组轮廓绘制-body' } });
   await f.put('agents/old/request.json', { task: { name: '组轮廓绘制-hair' } });
   await utimes(join(f.task, 'part-layering/agents/old/request.json'), 1, 1);
+  await f.mark('step09_outline/body', 'running');
+  await f.mark('step09_outline/hair', 'running');
   await f.put('step09_outline/hair/outline.draft.svg', svg);
   let value = await f.get();
   assert.deepEqual(value.part.groups.map(node => node.webPhases.outline), ['running', 'available', 'pending']);
@@ -325,6 +338,7 @@ test('a failed current group and initial request are marked failed while their d
   run.sections['part-layering']!.status = 'failed'; await saveRun(f.task, run);
   await f.put('groups.json', { groups: [{ id: 'body', groups: [] }] });
   await f.mark('step08_initial');
+  await f.mark('step09_outline/body', 'running');
   await f.put('step09_outline/body/outline.draft.svg', svg);
   await f.put('agents/draw/request.json', { task: { name: '组轮廓绘制-body' } });
   await f.put('agents/draw/result.json', { status: 'failed' });
@@ -395,4 +409,19 @@ test('a lane that failed shows as failed while the other lane runs on', async t 
   const review = (await f.get()).sections.find(item => item.id === 'clothing-raster-layering')!;
   assert.equal(review.states['review-01'], 'failed');
   assert.deepEqual(review.messages, { 'review-01': 'ENAMETOOLONG' });
+});
+
+test('after a run fails, a step another lane left running is not shown as failed', async t => {
+  const f = await fixture(t, 'clothing-raster-layering');
+  const run = await configureRun({ name: 'test', dir: f.dir, from: 'part-layering', to: 'shadow' }, f.task);
+  run.status = 'failed'; run.activeSections = [];
+  run.sections['clothing-raster-layering'] = { status: 'failed', updatedAt: new Date().toISOString(), summary: 'ENAMETOOLONG' };
+  await saveRun(f.task, run);
+  await f.mark('step01', 'running');
+  await mkdir(join(f.task, 'raster-layering/step01'), { recursive: true });
+  await writeFile(join(f.task, 'raster-layering/step01/.running'), '');
+  const { sections } = await f.get();
+  assert.equal(sections.find(item => item.id === 'clothing-raster-layering')!.states.step01, 'failed');
+  // Stopped or interrupted, it continues on the next run.
+  assert.equal(sections.find(item => item.id === 'raster-layering')!.states.step01, 'unconfirmed');
 });

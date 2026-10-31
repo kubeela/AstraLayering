@@ -45,17 +45,15 @@ test('页面与状态查询读取同一份最新日志，不被旧 run.json 摘�
   const run = await configureRun({ name: 'test', dir: f.dir }, task);
   await saveRun(task, run);
   await put(task, 'workflow.log', '[2026-10-20T14:40:00.000Z] [review-hair] 旧消息\n');
-  await utimes(join(task, 'workflow.log'), 1, 1);
-  await put(task, 'service.log', '[返修-hair] 工具调用：write_outline_svg\n{\n  "svg": "省略"\n}\n');
+  // A stray service.log from an old background worker is not read.
+  await put(task, 'service.log', '[返修-hair] 工具调用：write_outline_svg\n');
   let value = await snapshot(task, 'test', f.dir);
-  assert.match(value.logs, /write_outline_svg/);
-  assert.equal(value.lastLogMessage, '[返修-hair] 工具调用：write_outline_svg');
-  assert.equal(value.logPath, join(task, 'service.log'));
+  assert.equal(value.lastLogMessage, '[review-hair] 旧消息');
+  assert.equal(value.logPath, join(task, 'workflow.log'));
   await appendFile(join(task, 'workflow.log'), '[2026-10-20T16:00:00.000Z] [返修-hair] 自检完成\n'
     + '[2026-10-20T16:00:01.000Z] [返修-hair] 收到 skills/changed：{}\n'
     + '[2026-10-20T16:00:02.000Z] [返修-hair] 思考摘要：\n'
     + '[2026-10-20T16:00:03.000Z] [返修-hair] 完成：{\n}\n');
-  await utimes(join(task, 'service.log'), 1, 1);
   value = await snapshot(task, 'test', f.dir);
   assert.equal(value.logPath, join(task, 'workflow.log'));
   assert.equal(value.lastLogMessage, '[返修-hair] 自检完成');
@@ -107,8 +105,10 @@ test('web forwards shadow mode to the existing coordinator and shows artifacts o
   assert.equal((await f.post('start', { name: 'shadow-case', shadowMode: '../mask' })).status, 400);
   const root = join(f.dir, 'shadow-case');
   await put(root, 'shadow/step01_mask/character-shadowed.png');
+  assert.equal((await snapshot(root, 'shadow-case', f.dir)).sections.find(stage => stage.id === 'shadow')!.states.mask, 'pending', 'an unmarked step is a leftover');
+  await put(root, 'shadow/step01_mask/.running');
   const value = await snapshot(root, 'shadow-case', f.dir), stage = value.sections.find(stage => stage.id === 'shadow')!;
-  assert.equal(stage.states.mask, 'available'); assert.equal(stage.states['normal-depth'], 'pending');
+  assert.equal(stage.states.mask, 'unconfirmed'); assert.equal(stage.states['normal-depth'], 'pending');
   for (const path of ['normal.png', 'depth.png', 'report.md', '.completed']) await put(root, 'shadow/step01_normal-depth/' + path);
   const finished = (await snapshot(root, 'shadow-case', f.dir)).sections.find(stage => stage.id === 'shadow')!;
   assert.equal(finished.states['normal-depth'], 'done');
@@ -160,6 +160,10 @@ test('snapshots distinguish artifacts, real group states, missing outputs, revie
   await put(task, 'part-layering/step09_outline/body/outline.svg', '<svg xmlns="http://www.w3.org/2000/svg"></svg>');
   await put(task, 'part-layering/preview.svg');
   let value = await snapshot(task, 'test', f.dir);
+  assert.equal(value.sections[0].states.merge, 'pending', 'a merge output without its step marker is a leftover');
+  await put(task, 'part-layering/step09_outline/body/.completed');
+  await put(task, 'part-layering/step13_merge/.running');
+  value = await snapshot(task, 'test', f.dir);
   assert.equal(value.status, 'untracked');
   assert.equal(value.sections[0].states.standard, 'pending');
   assert.equal(value.sections[0].states.merge, 'available');
@@ -185,6 +189,12 @@ test('snapshots distinguish artifacts, real group states, missing outputs, revie
   }
   value = await snapshot(task, 'test', f.dir);
   assert.equal(value.sections[3].states.step01, 'done');
+  // An unmarked step directory is a leftover the next run deletes and redoes.
+  await put(task, 'clothing-raster-layering/step02/clothing-depth.kra');
+  value = await snapshot(task, 'test', f.dir);
+  assert.equal(value.sections[3].states.step02, 'pending');
+  assert.match(value.sections[3].messages.step02, /残留目录/);
+  await rm(join(task, 'clothing-raster-layering/step02'), { recursive: true });
   const run = await configureRun({ name: 'test', dir: f.dir, from: 'clothing-raster-layering', to: 'clothing-raster-layering' }, task);
   run.status = 'running'; run.runner = { id: 'dead', pid: 2147483647, startedAt: new Date().toISOString() };
   await saveRun(task, run);
@@ -273,8 +283,7 @@ test('开始、继续、恢复、重试先检查 Krita：不可用则 409 且不
   await saveRun(task, await configureRun({ name: 'case', dir: f.dir, krita: '/opt/old-krita' }, task));
   await put(task, 'part-layering/step11_completion/head/.running', JSON.stringify({ inputs: {} }));
   await put(task, 'part-layering/agents/steps/step11_completion/head/session.json', JSON.stringify({ threadId: 'thread-1' }));
-  for (const [path, value] of [['start', {}], ['task-action', { action: 'retry' }], ['task-action', { action: 'resume' }],
-    ['step-action', { section: 'part-layering', step: 'step11_completion/head', action: 'retry' }]] as const) {
+  for (const [path, value] of [['start', {}], ['task-action', { action: 'retry' }], ['task-action', { action: 'resume' }]] as const) {
     const refused = await f.post(path, { name: 'case', ...value });
     assert.equal(refused.status, 409, path); assert.deepEqual(refused.value.krita, { path: '/opt/old-krita' });
     assert.match(refused.value.error, /记录的 Krita 不可用：\/opt\/old-krita[\s\S]*全局设置/);
@@ -286,7 +295,7 @@ test('开始、继续、恢复、重试先检查 Krita：不可用则 409 且不
   assert.equal(started.length, 1); assert.equal(started[0].krita, '/opt/good-krita');
 });
 
-test('步骤操作接口：重试人物与衣服分块的步骤后按保存的路线重新运行，快照列出未完成步骤', async t => {
+test('任务操作接口：恢复、重试人物与衣服分块的未完成步骤后按保存的路线重新运行，快照列出未完成步骤', async t => {
   const started: any[] = [];
   const f = await fixture(t, async options => { started.push(options); return 456; }), task = join(f.dir, 'case');
   await mkdir(task);
@@ -299,14 +308,21 @@ test('步骤操作接口：重试人物与衣服分块的步骤后按保存的�
   for (const id of ['part-layering', 'clothing-part-layering']) {
     assert.deepEqual(sections.find(section => section.id === id)!.steps, [{ id: 'step11_completion/head', status: 'running', session: true }]);
   }
-  const resumed = await f.post('step-action', { name: 'case', section: 'clothing-part-layering', step: 'step11_completion/head', action: 'resume' });
-  assert.equal(resumed.status, 202); assert.equal(resumed.value.pid, 456); assert.match(resumed.value.message, /thread-clothing-part-layering/);
-  await assert.rejects(readFile(join(task, 'clothing-part-layering/step11_completion/head/session.json')), { code: 'ENOENT' });
-  const retried = await f.post('step-action', { name: 'case', section: 'part-layering', step: 'step11_completion/head', action: 'retry' });
+  const resumed = await f.post('task-action', { name: 'case', action: 'resume' });
+  assert.equal(resumed.status, 202); assert.equal(resumed.value.pid, 456);
+  assert.match(resumed.value.message, /thread-part-layering/); assert.match(resumed.value.message, /thread-clothing-part-layering/);
+  for (const section of ['part-layering', 'clothing-part-layering']) {
+    await assert.rejects(readFile(join(task, `${section}/agents/steps/step11_completion/head/session.json`)), { code: 'ENOENT' });
+  }
+  const retried = await f.post('task-action', { name: 'case', action: 'retry' });
   assert.equal(retried.status, 202);
-  await assert.rejects(readFile(join(task, 'part-layering/step11_completion/head/.running')), { code: 'ENOENT' });
+  for (const section of ['part-layering', 'clothing-part-layering']) {
+    await assert.rejects(readFile(join(task, `${section}/step11_completion/head/.running`)), { code: 'ENOENT' });
+  }
   assert.equal(started.length, 2); assert.equal(started[0].name, 'case'); assert.equal(started[0].from, undefined);
-  const refused = await f.post('step-action', { name: 'case', section: 'part-layering', step: 'step11_completion/head', action: 'retry' });
-  assert.equal(refused.status >= 400, true); assert.match(refused.value.error, /不存在/);
+  const refused = await f.post('task-action', { name: 'case', action: 'retry' });
+  assert.equal(refused.status >= 400, true); assert.match(refused.value.error, /没有中断或失败的步骤/);
   assert.equal(started.length, 2);
+  // The removed single-step endpoint is gone; one step is acted on from the CLI.
+  assert.equal((await f.post('step-action', { name: 'case', section: 'part-layering', step: 'step11_completion/head', action: 'retry' })).status, 404);
 });

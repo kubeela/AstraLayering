@@ -4,16 +4,15 @@ import type { ImageProcessingOptions } from '../shared/image-processing.ts';
 import { validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { sectionDirectory, taskDirectory } from '../shared/paths.ts';
 import { inspectSection, runSection } from '../shared/step-section.ts';
-import { readStep, type ChainStep } from '../shared/step-chain.ts';
+import { readStep } from '../shared/step-chain.ts';
 import { clothingPreparationStep, partSteps, stepNumber } from '../shared/step-paths.js';
 import { requireUpstream, simplifiedCharacter } from '../shared/upstream.ts';
 import { randomUUID } from 'node:crypto';
-import { mkdir, readFile, rename, rm } from 'node:fs/promises';
+import { lstat, mkdir, readFile, rename, rm } from 'node:fs/promises';
 import { copyAsPng } from '../shared/png.ts';
 import { dirname, join } from 'node:path';
 import sharp from 'sharp';
 import type { CodexAgents } from '../shared/codex/agents.ts';
-import { clearPreparedParts } from '../shared/part/preparation-cache.ts';
 import type { PreparationInput, PreparationReferences as ImageReferences } from '../shared/part/preparation-types.ts';
 
 export type { PreparationInput };
@@ -56,32 +55,36 @@ export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): Prepar
 }
 
 // The section's one preparation step, built on the person part references it
-// reads; layering checks its own steps and is cleared when this step reruns.
+// reads, which must be completed first.
 const sectionOf = (references: string) => dirname(references);
 const personSteps = [partSteps.standard, partSteps.simplified, partSteps.base];
-const step = { number: stepNumber(clothingPreparationStep)!, note: 'preparation', outputs: ['../references/clothing.png'],
-  upstream: personSteps.map(id => `part-layering/${id}`) };
-async function upstream(runName: string, root?: string): Promise<ChainStep[]> {
-  const person = sectionDirectory(runName, 'part-layering', root), task = taskDirectory(runName, root), steps: ChainStep[] = [];
+const step = { number: stepNumber(clothingPreparationStep)!, note: 'preparation' };
+async function requireUpstreamSteps(runName: string, root?: string): Promise<void> {
+  const person = sectionDirectory(runName, 'part-layering', root);
   for (const id of personSteps) {
-    const upstreamStep = { id: `part-layering/${id}`, root: task, directory: join(person, id), dependsOn: [] };
-    if ((await readStep(upstreamStep.directory, task)).status !== 'completed') {
-      throw new Error(`上游步骤 ${upstreamStep.id} 尚未完成（${upstreamStep.directory}），请先执行同名 part-layering。`);
+    const directory = join(person, id);
+    if ((await readStep(directory)).status !== 'completed') {
+      throw new Error(`上游步骤 part-layering/${id} 尚未完成（${directory}），请先执行同名 part-layering。`);
     }
-    steps.push(upstreamStep);
   }
-  return steps;
 }
-const sectionScan = async (runName: string, root?: string) => ({ upstream: await upstream(runName, root), last: step.number });
+
+async function requireDelivery(refs: PreparationReferences): Promise<void> {
+  if (!await lstat(refs.baseSubject).then(info => info.isFile(), () => false)) {
+    throw new Error(`${clothingPreparationStep} 已标记完成但交付缺失：${refs.baseSubject}；请恢复文件，或重试该步骤（网页「重试」或 --retry）。`);
+  }
+}
 
 // Explicit groups only read an already prepared input; never invoke a model or mutate it.
 export async function loadPreparedReferences(runName: string, root?: string): Promise<PreparationReferences> {
   const directory = getPreparationDirectory(runName, root), image = await simplifiedCharacter(runName, root);
   const refs = references(directory, image);
-  const plan = await inspectSection(sectionOf(directory), taskDirectory(runName, root), [step], await sectionScan(runName, root));
-  if (plan.statuses.get(clothingPreparationStep) !== 'completed' || plan.reset.length) {
-    throw new Error('纯衣服参考尚未完成或上游参考已变化，请先不带 --groups 运行 preparation。');
+  await requireUpstreamSteps(runName, root);
+  const plan = await inspectSection(sectionOf(directory), [step]);
+  if (plan.statuses.get(clothingPreparationStep) !== 'completed') {
+    throw new Error('纯衣服参考尚未完成，请先不带 --groups 运行 preparation。');
   }
+  await requireDelivery(refs);
   await checkImage(refs.baseSubject, join(sectionDirectory(runName, 'part-layering', root), 'references/standard.png'));
   return refs;
 }
@@ -96,8 +99,10 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
   await mkdir(directory, { recursive: true });
   const refs = references(directory, image);
   const standard = join(sectionDirectory(input.runName, 'part-layering', input.dir), 'references/standard.png');
+  await requireUpstreamSteps(input.runName, input.dir);
   await runSection({
-    directory: sectionOf(directory), root: taskDirectory(input.runName, input.dir), steps: [step], progress, ...await sectionScan(input.runName, input.dir),
+    directory: sectionOf(directory), steps: [step], progress,
+    keep: () => requireDelivery(refs),
     async step(_step, status) {
       if (status === 'completed') { progress?.('preparation：沿用已保存的纯衣服参考。'); return; }
       return async () => {
@@ -111,8 +116,6 @@ export async function prepareReferences(input: PreparationInput, steps: Preparat
           await steps.extract(image, baseImage, temporary, prompt);
           await normalizeGeneratedReference(temporary, standard, join(sectionOf(directory), clothingPreparationStep), 'clothing', normalization);
           await checkImage(temporary, standard);
-          // A regenerated clothing reference cannot reuse decomposition of the previous image.
-          await clearPreparedParts(sectionOf(directory));
           await rename(temporary, refs.baseSubject);
         } finally { await rm(temporary, { force: true }); }
       };

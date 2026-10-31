@@ -84,7 +84,10 @@ test('需要简化时先转换画风再换装，续跑不依赖外部原图', as
   assert.equal(f.calls.length, 0);
   assert.equal(messages.filter(message => message.includes('沿用已有')).length, 3);
 
+  // A completed step keeps its delivery; a missing one is refused until the step is retried.
   await rm(refs.baseSubject);
+  await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), /step06_base 已标记完成但交付缺失/);
+  await rm(join(section(refs), step('base'), '.completed'));
   await prepareReferences({ runName: f.runName }, f.steps);
   assert.deepEqual(f.calls.map(task => task.name), ['素体换装']);
 });
@@ -185,7 +188,7 @@ test('素体准备中断后只恢复素体 agent，复用前面已完成的简�
   assert.deepEqual(await readFile(join(directory, 'base-subject.png')), await readFile(join(directory, 'simplified-subject.png')));
 });
 
-test('已有图片直接续跑，缺图只重做对应准备步骤', async t => {
+test('已有图片直接续跑；缺图时拒绝，删除完成标记只重做该步骤', async t => {
   const f = await fixture(t, true);
   const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
   f.calls.length = 0;
@@ -193,8 +196,11 @@ test('已有图片直接续跑，缺图只重做对应准备步骤', async t => 
   await prepareReferences({ runName: f.runName }, f.steps);
   assert.equal(f.calls.length, 0);
   await rm(refs.simplifiedSubject);
+  await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), /交付缺失/);
+  assert.equal(f.calls.length, 0);
+  await rm(join(section(refs), step('simplified'), '.completed'));
   await prepareReferences({ runName: f.runName }, f.steps);
-  assert.deepEqual(f.calls.map(call => call.name), ['参考判断与简化', '素体换装']);
+  assert.deepEqual(f.calls.map(call => call.name), ['参考判断与简化']);
   assert.deepEqual(await loadPreparedReferences(f.runName), refs);
 });
 
@@ -214,10 +220,11 @@ test('简化后处理失败只保留上游，重试重新执行同一个准备 a
   assert.deepEqual(await loadPreparedReferences(f.runName), refs);
 });
 
-test('删除产物即重试该步骤；无效 PNG 明确报错，不留下正式参考', async t => {
+test('重试该步骤时无效 PNG 明确报错，不留下正式参考', async t => {
   const f = await fixture(t, false);
   const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
   await rm(refs.baseSubject);
+  await rm(join(section(refs), step('base'), '.completed'));
   await writeFile(f.generated, 'not a PNG');
   await assert.rejects(prepareReferences({ runName: f.runName }, f.steps), /did not produce a PNG/);
   await assert.rejects(readFile(refs.baseSubject), { code: 'ENOENT' });
@@ -290,55 +297,16 @@ test('无效姿态判断和无效生成图片明确报错，不回退原图', as
   await assert.rejects(readFile(join(getPreparationDirectory(f.runName), 'standard.png')), { code: 'ENOENT' });
 });
 
-test('输入、选项或任一已跟踪参考变化时不修改文件、不调用模型；只读入口同样校验', async t => {
-  for (const change of ['originalImage', 'standardImage', 'simplifiedSubject', 'baseSubject', 'mode'] as const) {
-    await t.test(change, async t => {
-      const f = await fixture(t, false);
-      const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
-      if (change !== 'mode') await writeFile(refs[change]!, 'changed content');
-      const markers = section(refs);
-      const before = await Promise.all((['original', 'standard', 'simplified', 'base', 'ready'] as const).map(id => readFile(join(markers, step(id), '.completed'))));
-      f.calls.length = 0;
-      const standard = change === 'mode' ? true : undefined, error = change === 'mode' ? /不能直接切换/ : /不能直接续跑/;
-      await assert.rejects(prepareReferences({ runName: f.runName, standard }, f.steps), error);
-      await assert.rejects(loadPreparedReferences(f.runName, undefined, standard), error);
-      assert.deepEqual(await Promise.all((['original', 'standard', 'simplified', 'base', 'ready'] as const).map(id => readFile(join(markers, step(id), '.completed')))), before);
-      if (change !== 'mode') assert.equal(await readFile(refs[change]!, 'utf8'), 'changed content');
-      assert.equal(f.calls.length, 0);
-    });
-  }
-});
-
-test('删除参考即重试该步骤：依赖它的后续参考随之重做，只重置本 part 缓存，不动 raster', async t => {
-  const f = await fixture(t, true);
-  const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
-  const parts = join(dirname(refs.directory), 'parts'), group = join(dirname(refs.directory), 'groups.json');
-  await mkdir(parts); await writeFile(join(parts, 'old.svg'), 'old'); await writeFile(group, 'groups');
-  const raster = join(taskDirectory(f.runName), 'raster-layering');
-  await mkdir(join(raster, 'step01'), { recursive: true });
-  await writeFile(join(raster, 'run.json'), '{"threadId":"kept-thread"}');
-  await writeFile(join(raster, 'step01/.completed'), 'done');
-  await rm(refs.simplifiedSubject);
-  await sharp({ create: { width: 24, height: 32, channels: 4, background: '#a0708080' } }).png().toFile(f.generated);
-  f.calls.length = 0;
-  await prepareReferences({ runName: f.runName }, f.steps);
-  assert.deepEqual(f.calls.map(task => task.name), ['参考判断与简化', '素体换装']);
-  await assert.rejects(readFile(group), { code: 'ENOENT' });
-  await assert.rejects(readFile(join(parts, 'old.svg')), { code: 'ENOENT' });
-  assert.equal(JSON.parse(await readFile(join(raster, 'run.json'), 'utf8')).threadId, 'kept-thread');
-  assert.equal(await readFile(join(raster, 'step01/.completed'), 'utf8'), 'done');
-});
-
-test('切换模式须对 options 显式重试，其后的参考随之重做', async t => {
+test('切换模式时不修改文件、不调用模型，提示使用新的 --name；只读入口同样校验', async t => {
   const f = await fixture(t, false);
   const refs = await prepareReferences({ runName: f.runName, image: f.original }, f.steps);
+  const markers = section(refs), ids = ['original', 'options', 'standard', 'simplified', 'base', 'ready'] as const;
+  const before = await Promise.all(ids.map(id => readFile(join(markers, step(id), '.completed'))));
   f.calls.length = 0;
-  await assert.rejects(prepareReferences({ runName: f.runName, standard: true }, f.steps), /不能直接切换[\s\S]*part-layering\/step02_options\/\.completed/);
-  await rm(join(section(refs), step('options'), '.completed'));
-  const resumed = await prepareReferences({ runName: f.runName, standard: true }, f.steps);
-  assert.deepEqual(resumed, refs);
-  assert.deepEqual(f.calls.map(task => task.name), ['姿态判断', '参考判断与简化', '素体换装']);
-  assert.deepEqual(JSON.parse(await readFile(optionsPath(refs), 'utf8')), { standard: true });
+  await assert.rejects(prepareReferences({ runName: f.runName, standard: true }, f.steps), /不能直接切换[\s\S]*新的 --name/);
+  await assert.rejects(loadPreparedReferences(f.runName, undefined, true), /不能直接切换/);
+  assert.deepEqual(await Promise.all(ids.map(id => readFile(join(markers, step(id), '.completed')))), before);
+  assert.equal(f.calls.length, 0);
 });
 
 test('显式组的参考入口只读已有产物，缺失时不补图或调用 agent', async t => {

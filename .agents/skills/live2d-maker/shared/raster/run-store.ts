@@ -4,7 +4,7 @@ import type { StepDefinition } from './steps.ts';
 import type { StepStatus } from '../step-chain.ts';
 import { inspectSection, type SectionPlan, type SectionStep } from '../step-section.ts';
 import { stepNumber, stepPattern } from '../step-paths.js';
-import { fromTaskPath, taskRootOf, toTaskPathReal } from '../task-paths.ts';
+import { fromTaskPath, toTaskPathReal } from '../task-paths.ts';
 
 export type { StepStatus };
 export type RunPlan = SectionPlan;
@@ -51,18 +51,14 @@ async function mapPaths<T>(value: T, at: (path: string) => Promise<string>): Pro
   return value;
 }
 
-// Raster steps form one linear section. Each records the hashes of its
-// artwork (the .kra/.png deliveries), so edits made while a run was stopped are
-// refused instead of silently built upon.
-// step01 also depends on the upstream section's final step, so redoing the
-// parts reruns the artwork built on them.
-export function rasterSteps(steps: readonly StepDefinition[], upstream: readonly string[] = []): SectionStep[] {
+// Raster steps form one linear section, numbered from step01.
+export function rasterSteps(steps: readonly StepDefinition[]): SectionStep[] {
   return steps.map((step, index) => {
     if (stepNumber(step.id) !== index + 1) throw new Error('已定义步骤必须从 step01 开始连续排列。');
-    const outputs = step.requiredFiles.filter(file => /\.(kra|png)$/i.test(file)), note = stepPattern.exec(step.id)![2];
-    return { number: index + 1, ...(note ? { note } : {}), ...(index === 0 && upstream.length ? { upstream } : {}), ...(outputs.length ? { outputs } : {}) };
+    const note = stepPattern.exec(step.id)![2];
+    return { number: index + 1, ...(note ? { note } : {}) };
   });
 }
 
 export const inspectRun = (directory: string, steps: readonly StepDefinition[]): Promise<SectionPlan> =>
-  inspectSection(directory, taskRootOf(directory), rasterSteps(steps));
+  inspectSection(directory, rasterSteps(steps));

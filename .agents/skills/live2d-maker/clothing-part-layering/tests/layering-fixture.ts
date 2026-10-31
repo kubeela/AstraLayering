@@ -2,7 +2,6 @@ import { profile } from '../profile.ts';
 import { mkdir, mkdtemp, readFile, realpath, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { taskRootOf } from '../../shared/task-paths.ts';
 import type { TestContext } from 'node:test';
 import sharp from 'sharp';
 import { svgHash } from '../../shared/part/artifact-facts.ts';
@@ -54,10 +53,10 @@ export function workingMerger(events: string[]): SvgMerger {
 }
 // Records a finished first grouping, as if step08_initial had run.
 export async function seedInitialGroups(directory: string, groups: GroupSeed[], subject?: Subject) {
-  const root = taskRootOf(directory), step = { id: partSteps.initial, root, directory: join(directory, partSteps.initial), dependsOn: [], outputs: ['groups.json'] };
-  await beginStep(step.directory, {});
-  await writeAtomic(join(step.directory, 'groups.json'), JSON.stringify({ ...(subject !== undefined ? { subject } : {}), groups }, null, 2) + '\n');
-  await completeStep(step, id => ({ id, root, directory: join(directory, id), dependsOn: [] }));
+  const step = join(directory, partSteps.initial);
+  await beginStep(step, 'absent');
+  await writeAtomic(join(step, 'groups.json'), JSON.stringify({ ...(subject !== undefined ? { subject } : {}), groups }, null, 2) + '\n');
+  await completeStep(step);
   // The scheduler publishes groups.json before any group agent runs; prompts name its nodes.
   await (await GroupStore.open(directory)).update(() => {});
 }

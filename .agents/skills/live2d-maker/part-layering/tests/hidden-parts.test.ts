@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { taskRootOf } from '../../shared/task-paths.ts';
 import { test } from 'node:test';
 import { decodeChildren } from '../../shared/part/children-agent.ts';
 import { composeCompletion } from '../../shared/part/completion-svg.ts';
@@ -11,8 +10,7 @@ import { GroupStore, nodeSeed, normalizeGroups, walkGroups, writeAtomic } from '
 import { runLayering } from '../../shared/part/layering.ts';
 import { parentBoundsSource, validateGroupSvg } from '../../shared/part/svg-tools.ts';
 import { groupStep } from '../../shared/part/part-steps.ts';
-import { partSteps } from '../../shared/step-paths.js';
-import { beginStep, checkStep, readStep } from '../../shared/step-chain.ts';
+import { beginStep, readStep } from '../../shared/step-chain.ts';
 import { fixture, seedInitialGroups, shape, workingSteps } from './layering-fixture.ts';
 
 test('两个标签独立且可选，省略保持旧格式，true/false 原样保留，错误类型返回具体字段', () => {
@@ -110,8 +108,7 @@ for (const sourceWritten of [false, true]) test(`隐藏步骤在${sourceWritten 
   const f = await fixture(t), events: string[] = [], id = 'iris';
   await seedInitialGroups(f.directory, [{ id, kind: 'part', hiddenInReference: true }]);
   const step = groupStep(f.directory, id, 'outline');
-  const initial = { id: partSteps.initial, root: taskRootOf(f.directory), directory: join(f.directory, partSteps.initial), dependsOn: [] };
-  await beginStep(step.directory, (await checkStep(step, [initial, step])).inputs);
+  await beginStep(step.directory, 'absent');
   if (sourceWritten) await writeAtomic(artifactPath(f.directory, id, 'outline'),
     '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" data-hidden-in-reference="true"><g id="source" data-group-path="iris"/></svg>\n');
   const steps = workingSteps(events);
@@ -123,7 +120,7 @@ for (const sourceWritten of [false, true]) test(`隐藏步骤在${sourceWritten 
       return { status: 'completed' as const, output: { path: context.outputPath } };
     },
   } });
-  assert.equal((await readStep(step.directory, taskRootOf(f.directory))).status, 'completed');
+  assert.equal((await readStep(step.directory)).status, 'completed');
   assert.ok(events.includes('hidden-completion'));
   assert.ok(!events.some(event => /:(outline|review)$/.test(event)));
   await assert.rejects(readFile(reportPath(f.directory, id, 'review')), { code: 'ENOENT' });
@@ -165,6 +162,6 @@ for (const checkpoint of ['draft', 'published'] as const) test(`隐藏部件在�
   assert.equal(draws, checkpoint === 'draft' ? 2 : 1);
   assert.ok(!events.some(event => /:(outline|review)$/.test(event)));
   assert.deepEqual(await readFile(join(groupStep(f.directory, id, 'outline').directory, '.completed')), prepared, '已跳过步骤的完成记录保持不变');
-  assert.equal((await readStep(groupStep(f.directory, id, 'completion').directory, taskRootOf(f.directory))).status, 'completed');
+  assert.equal((await readStep(groupStep(f.directory, id, 'completion').directory)).status, 'completed');
   await assert.rejects(readFile(reportPath(f.directory, id, 'review')), { code: 'ENOENT' });
 });

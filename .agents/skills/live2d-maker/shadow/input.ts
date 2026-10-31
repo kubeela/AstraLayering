@@ -4,7 +4,6 @@ import { dirname, join } from 'node:path';
 import { requireUpstream, simplifiedCharacter } from '../shared/upstream.ts';
 import { readDressup } from '../shared/part/dressup.ts';
 import { taskDirectory } from '../shared/paths.ts';
-import { taskRootOf } from '../shared/task-paths.ts';
 import type { ChainStep } from '../shared/step-chain.ts';
 
 export type ShadowInput = {
@@ -37,10 +36,9 @@ export async function resolveShadowInput(name: string, root: string): Promise<Sh
 }
 const present = (name: string, id: 'clothing-part-layering', root: string) =>
   requireUpstream(name, id, [{ path: 'groups.json' }, { path: 'occlusion.json' }], root).then(() => true, () => false);
-// The assembly's last step, which step01 depends on; the parts reach it through raster.
+// The assembly's last step, which must be completed before shadow runs.
 export function assemblyStep(input: ShadowInput): ChainStep {
-  const directory = dirname(input.characterKra);
-  return { id: 'character-assembly/step01', root: taskRootOf(directory), directory, dependsOn: [] };
+  return { id: 'character-assembly/step01', directory: dirname(input.characterKra) };
 }
 export function inputDirectories(input: ShadowInput): string[] {
   return [...new Set([dirname(dirname(input.characterKra)), dirname(dirname(input.simplifiedCharacter)),

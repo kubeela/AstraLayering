@@ -1,6 +1,7 @@
 import { readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { join, relative } from 'node:path';
 import { readStep, type StepStatus } from '../shared/step-chain.ts';
+import { missingDeliveries } from '../shared/step-deliveries.ts';
 import { fromTaskPath, taskRootOf } from '../shared/task-paths.ts';
 import { within } from '../shared/raster/run-store.ts';
 import { clearStepSession, readStepSession } from '../shared/agents/step-session.ts';
@@ -10,21 +11,24 @@ import { partSteps, stepPattern } from '../shared/step-paths.js';
 import { sectionIds, type SectionId } from '../shared/paths.ts';
 import { acquireTaskLock, directoryFor, sectionId, type TaskOptions } from './state.ts';
 
-// Per-step recovery for an interrupted or failed step, by any client (web, CLI):
+// Step recovery, for one step (CLI --section/--step) or for every step still
+// marked .running (web toolbar and CLI, applyTaskAction); retry also takes the
+// completed steps that lost a delivery, which a run refuses to keep:
 //   continue: change nothing; the next run continues the step with its
 //             products and session.
 //   resume:   drop the step's session and keep its products, so the next run
 //             continues them in a new session.
-//   retry:    reset the step (directory, declared outputs, session and the
-//             agent attempts that worked in it); the next run reruns it from a
-//             clean step, and the steps built on it rerun with it.
+//   retry:    reset the step (directory, its products outside it, session and
+//             the agent attempts that worked in it); the next run reruns it
+//             from a clean step.
 // Every section keeps a step's session in agents/steps/<step>/session.json
 // (shared/agents/step-session.ts). Steps without a session (one-shot agents)
 // simply rerun when they have no product, so resume equals continue.
 // The empty step id continues the whole section.
 export const stepActions = ['continue', 'resume', 'retry'] as const;
 export type StepAction = typeof stepActions[number];
-export type StepEntry = { id: string; status: Exclude<StepStatus, 'absent'>; session: boolean };
+// missing: the deliveries a completed step lost, relative to the section.
+export type StepEntry = { id: string; status: Exclude<StepStatus, 'absent'>; session: boolean; missing?: string[] };
 
 const partSections: readonly SectionId[] = ['part-layering', 'clothing-part-layering'];
 const safeSegment = (segment: string) => !!segment && segment !== '.' && segment !== '..' && !/[\\\0]/.test(segment);
@@ -50,10 +54,11 @@ export async function listSteps(root: string, section: SectionId): Promise<StepE
   const ids = new Set(names.map(name => name.split(/[\\/]/).join('/')).filter(name => validStepId(section, name)));
   const steps: StepEntry[] = [];
   for (const id of [...ids].sort()) {
-    const { status } = await readStep(join(root, id), taskRootOf(root));
+    const { status } = await readStep(join(root, id));
     if (status === 'absent') continue;
     const session = await readStepSession(root, id);
-    steps.push({ id, status, session: !!session?.threadId });
+    const missing = status === 'completed' ? (await missingDeliveries(root, section, id)).map(path => relative(root, path).split(/[\\/]/).join('/')) : [];
+    steps.push({ id, status, session: !!session?.threadId, ...(missing.length ? { missing } : {}) });
   }
   return steps;
 }
@@ -73,9 +78,10 @@ export async function applyStepAction(options: Pick<TaskOptions, 'name' | 'dir'>
   } finally { await release(); }
 }
 
-// The task-wide form the web toolbar uses: the action applies to every
-// interrupted or failed step of every section. Continue with no such step
-// just runs the task on from where it stopped.
+// The task-wide form the web toolbar uses: the action applies to every step
+// still marked .running in every section; interrupted and failed steps both
+// keep that marker. Retry also redoes completed steps that lost a delivery.
+// Continue with no such step just runs the task on from where it stopped.
 export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'> & { action: string }): Promise<string> {
   if (!(stepActions as readonly string[]).includes(options.action)) throw new Error('未知操作：' + options.action + '；可选：' + stepActions.join(', '));
   const action = options.action as StepAction, directory = directoryFor(options);
@@ -85,7 +91,7 @@ export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'>
     for (const section of sectionIds) {
       const root = sectionRoot(directory, section);
       for (const step of await listSteps(root, section)) {
-        if (step.status === 'running') messages.push(`${section}/` + await actOnStep(root, section, step.id, action));
+        if (step.status === 'running' || action === 'retry' && step.missing) messages.push(`${section}/` + await actOnStep(root, section, step.id, action));
       }
     }
     if (!messages.length) {
@@ -98,7 +104,7 @@ export async function applyTaskAction(options: Pick<TaskOptions, 'name' | 'dir'>
 
 async function actOnStep(root: string, section: SectionId, step: string, action: StepAction): Promise<string> {
   const stepDirectory = join(root, step);
-  const { status, record } = await readStep(stepDirectory, taskRootOf(root));
+  const { status } = await readStep(stepDirectory);
   if (status === 'absent') throw new Error(`步骤 ${section}/${step} 不存在，下次运行会直接执行。`);
   const part = partSections.includes(section);
   if (action === 'continue') {
@@ -111,10 +117,8 @@ async function actOnStep(root: string, section: SectionId, step: string, action:
     if (!dropped) return `${step} 没有保存的会话，恢复等同继续：下次运行沿用产物。`;
     return `${step}：已清除会话${dropped.threadId ? ' ' + dropped.threadId : ''}，保留产物；下次运行在新会话中继续。`;
   }
-  // retry: the step directory holds its session; declared outputs may live outside it.
-  const outputs = Object.keys(record?.outputs ?? {}).map(name => resolve(stepDirectory, name));
-  // A running part step has no recorded outputs yet; its drafts and plans outside the
-  // step directory are intermediate products too.
+  // retry: the step directory holds its session; some part products live outside it.
+  const outputs: string[] = [];
   const group = step.startsWith(partSteps.completion + '/') ? step.slice(partSteps.completion.length + 1).split('/children/').join('/') : undefined;
   if (part && group) outputs.push(artifactPath(root, group, 'completion'), draftPath(artifactPath(root, group, 'completion')));
   if (part && step === partSteps.merge) outputs.push(join(root, 'preview.svg'), join(root, 'preview.draft.svg'));
@@ -125,7 +129,7 @@ async function actOnStep(root: string, section: SectionId, step: string, action:
   await rm(stepDirectory, { recursive: true, force: true });
   await rm(join(root, 'agents', 'steps', step), { recursive: true, force: true });
   const attempts = await clearAgentAttempts(root, stepDirectory);
-  return `${step}：已删除步骤产物、会话${attempts ? `和 ${attempts} 次 agent 尝试记录` : ''}；下次运行重做该步骤，依赖它的后续步骤随之重跑。`;
+  return `${step}：已删除步骤产物、会话${attempts ? `和 ${attempts} 次 agent 尝试记录` : ''}；下次运行重做该步骤。`;
 }
 
 // Each agent call leaves agents/<time>-<name>-*/ (request, events, CLI data) and a

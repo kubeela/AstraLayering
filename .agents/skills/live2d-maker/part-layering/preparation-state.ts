@@ -1,6 +1,6 @@
 import { lstat, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
-import { dirname, join, relative } from 'node:path';
+import { dirname, join } from 'node:path';
 import { type SectionStep } from '../shared/step-section.ts';
 import { preparationOptionsPath } from '../shared/part/preparation-cache.ts';
 import type { PreparationReferences } from '../shared/part/preparation-types.ts';
@@ -56,22 +56,18 @@ export const poseJudgmentPath = (references: string) => join(sectionOf(reference
 // the pose judgment live in their own step directories. The input original and
 // the standard image take part when the task has them; older tasks made before
 // the original was kept go on from their references alone. `ready` marks that
-// the prepared parts were split from the current references.
-export async function preparationSteps(refs: PreparationReferences, standard: boolean, inputDirectory: string, source?: string): Promise<SectionStep[]> {
+// the references are prepared for splitting.
+export type PreparationStep = SectionStep & { output?: string };
+export async function preparationSteps(refs: PreparationReferences, standard: boolean, inputDirectory: string, source?: string): Promise<PreparationStep[]> {
   const root = sectionOf(refs.directory);
   const original = refs.originalImage ?? (source || await present(join(root, stageStep('original')))
     ? join(inputDirectory, 'original.png') : undefined);
   const withStandard = !!original || !!refs.standardImage || await present(join(root, stageStep('standard')));
-  const steps: [PreparationStage, PreparationStage[], string[]?][] = [];
-  if (original) steps.push(['original', [], [original]]);
-  steps.push(['options', [], [preparationOptionsPath(refs.directory)]]);
-  if (standard && original) steps.push(['pose', ['original'], [poseJudgmentPath(refs.directory)]]);
-  if (withStandard) steps.push(['standard', ['original', 'options', 'pose'], [join(refs.directory, 'standard.png')]]);
-  steps.push(['simplified', ['standard'], [refs.simplifiedSubject]],
-    ['base', ['simplified'], [refs.baseSubject]], ['ready', ['simplified', 'base']]);
-  return steps.map(([stage, dependsOn, outputs]) => {
-    const directory = join(root, stageStep(stage));
-    return { number: stageNumber(stage), note: stageNote(stage), dependsOn: dependsOn.map(stageNumber),
-      ...(outputs ? { outputs: outputs.map(path => relative(directory, path)) } : {}) };
-  });
+  const steps: [PreparationStage, string?][] = [];
+  if (original) steps.push(['original', original]);
+  steps.push(['options', preparationOptionsPath(refs.directory)]);
+  if (standard && original) steps.push(['pose', poseJudgmentPath(refs.directory)]);
+  if (withStandard) steps.push(['standard', join(refs.directory, 'standard.png')]);
+  steps.push(['simplified', refs.simplifiedSubject], ['base', refs.baseSubject], ['ready']);
+  return steps.map(([stage, output]) => ({ number: stageNumber(stage), note: stageNote(stage), ...(output ? { output } : {}) }));
 }
