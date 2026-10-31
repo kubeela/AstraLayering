@@ -5,6 +5,7 @@
 
 ## 未发布
 
+- **Codex 工具改为直接调用：** 模型目录把 gpt-6.1-sol 等模型的 `tool_mode` 设为 `code_mode_only`，所有工具都藏在 code mode 的 exec 脚本后面；自定义工具的结果在脚本里被压成一串“JSON + data URL”文本，agent 常漏看图片或路径。现在每次启动 App Server 先导出同一配置下的模型目录、把 `tool_mode` 清空，再以 `model_catalog_json` 传入，所有模型直接调用原生生图与本流程工具，看图工具的图片直接进入上下文。已完成步骤不重做。
 - **生图结果由程序接收：** 原生生图回合（九轴视角、标准姿态、纯衣服准备）以本轮记录到的生成图片为准，agent 不再在回复里抄写 savedPath；只有本轮没有生成图片时才判失败，原因取 agent 回复的 error。此前 Codex code mode 下 agent 若没打印出工具结果，会把已生成的图误报为失败。复用参考与简化、素体换装的回复同样去掉 savedPath，只留 error 与 reason。已完成步骤不重做。
 - **头部九轴 step01 视角参考：** 新增 `nine-axis` section（默认流程仍到 shadow 为止，单独启动）。`step01_turn` 按脸、头发、头饰形状截取头顶到胸口的上半身，由生图 agent 参照模板角色的正面→姿态，同时画出左、上、下、左上、左下五个头部视角（右侧由后续脸部形变镜像得到）；agent 使用 preparation 模型，生图模型可用新键 `layering_nine_axis_view_image_model` 单独选择。工作台新增“头部九轴”阶段。
 - **头部九轴产物目录：** 改为 `nine-axis/step02_head/`（变形器 `deformers.json`、`layers/`、补绘工程 `character-nine-axis.kra` / PNG 与 `source.json`），约定见 `shared/nine-axis.ts` 与 `nine-axis/README.md`。来源记录与当前 KRA 一致时，角色工作台优先载入九轴补绘工程。pink-doll 后发按官方样例补绘转头露出的内层与外轮廓线，阴影 KRA 保留不改。
