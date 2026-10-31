@@ -58,8 +58,7 @@ async function prepareImage(agents: Pick<CodexAgents, 'run'>, knowledge: ReturnT
 
 export function createPreparationSteps(agents: Pick<CodexAgents, 'run'>): PreparationSteps {
   const imageOutputSchema = {
-    type: 'object', properties: { savedPath: { type: ['string', 'null'] }, error: { type: ['string', 'null'] } },
-    required: ['savedPath', 'error'], additionalProperties: false,
+    type: 'object', properties: { error: { type: ['string', 'null'] } }, required: ['error'], additionalProperties: false,
   };
   const referenceOutputSchema = {
     ...imageOutputSchema,
