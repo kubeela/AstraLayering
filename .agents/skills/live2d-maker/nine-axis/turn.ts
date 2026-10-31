@@ -5,7 +5,7 @@ import sharp from 'sharp';
 import { requireUpstream } from '../shared/upstream.ts';
 import { readStep, type ChainStep } from '../shared/step-chain.ts';
 import { taskDirectory } from '../shared/paths.ts';
-import { taskRootOf, toTaskPath } from '../shared/task-paths.ts';
+import { toTaskPath } from '../shared/task-paths.ts';
 
 // step01_turn: the upper body around the head is redrawn by an image model in
 // five head poses, each copied from a template character's front → pose pair.
@@ -96,7 +96,7 @@ export async function normalizeView(path: string, size: number): Promise<Buffer>
 // The whole step: crop, then all views at once. Paths in records are task-relative.
 export async function produceTurn(directory: string, input: TurnInput, draw: DrawView,
   { progress, model }: { progress?: (message: string) => void; model: string }) {
-  const task = taskRootOf(dirname(directory)), { width = 0, height = 0 } = await sharp(input.color).metadata();
+  const task = dirname(dirname(directory)), { width = 0, height = 0 } = await sharp(input.color).metadata();
   const box = await upperBodyBox(input, width, height), image = await cropUpperBody(input.color, box);
   await atomic(join(directory, 'upper-body.png'), image);
   await atomic(join(directory, 'crop.json'), JSON.stringify({ version: 1, source: toTaskPath(task, input.color), sourceHash: await fileHash(input.color),

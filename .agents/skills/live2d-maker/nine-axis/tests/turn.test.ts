@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import sharp from 'sharp';
 import { cropUpperBody, resolveTurnInput, upperBodyBox, turnViews } from '../turn.ts';
 import { runWorkflow, viewPrompt } from '../run.ts';
+import { writeFaceLeft } from './head.test.ts';
 import { loadWorkflowEnvironment } from '../../shared/codex/environment.ts';
 
 const rect = (w: number, h: number, x: number, y: number, rw: number, rh: number) =>
@@ -17,6 +18,7 @@ async function fixture(t: TestContext) {
   const task = join(root, 'case'), assembly = join(task, 'character-assembly/step01'), parts = join(task, 'part-layering/parts');
   await mkdir(assembly, { recursive: true }); await mkdir(parts, { recursive: true });
   await writeFile(join(assembly, 'character-assembled.png'), await sharp({ create: { width: 200, height: 400, channels: 4, background: { r: 200, g: 100, b: 50, alpha: 1 } } }).png().toBuffer());
+  await writeFile(join(assembly, 'character-assembled.kra'), 'kra');
   await writeFile(join(assembly, '.completed'), JSON.stringify({ stamp: 'assembly-1', inputs: {} }));
   await writeFile(join(parts, 'face.svg'), rect(200, 400, 80, 60, 40, 50));
   await writeFile(join(parts, 'hair.svg'), rect(200, 400, 60, 30, 70, 70));
@@ -78,8 +80,10 @@ test('step01 生成五个视角并统一到上半身尺寸，完成后沿用', a
     drawn.push(view);
     await sharp({ create: { width: 64, height: 32, channels: 4, background: { r: 10, g: 20, b: 30, alpha: 0 } } }).png().toFile(output);
   };
-  const deps = { environment: loadWorkflowEnvironment({}), draw };
-  assert.match(await runWorkflow({ name: 'case', dir: root }, deps), /5 个视角/);
+  let fitted = 0;
+  const fitHead = async (directory: string) => { fitted++; await writeFaceLeft(directory); };
+  const deps = { environment: loadWorkflowEnvironment({}), draw, fitHead };
+  assert.match(await runWorkflow({ name: 'case', dir: root }, deps), /2 个脸部图层/);
   const step = join(task, 'nine-axis/step01_turn'), size = (await sharp(join(step, 'upper-body.png')).metadata()).width;
   for (const view of turnViews) {
     const { data, info } = await sharp(join(step, `${view}.png`)).raw().toBuffer({ resolveWithObject: true });
@@ -91,6 +95,10 @@ test('step01 生成五个视角并统一到上半身尺寸，完成后沿用', a
   await access(join(step, '.completed'));
   assert.match(await runWorkflow({ name: 'case', dir: root }, deps), /沿用/);
   assert.equal(drawn.length, 5);
+  assert.equal(fitted, 1);
+  const source = JSON.parse(await readFile(join(task, 'nine-axis/step02_head/source.json'), 'utf8'));
+  assert.equal(source.sourceDocument, 'character-assembly/step01/character-assembled.kra');
+  assert.equal(source.sourceKraHash.length, 64);
 });
 
 test('任一视角失败时 step01 不完成，并列出失败的视角', async t => {

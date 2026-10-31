@@ -1,0 +1,45 @@
+import '../../shared/tests/ignore-local-env.ts';
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { checkFaceLeft, mirrorKeyform, pairId, type Part } from '../head.ts';
+
+const grid = (x0: number, y0: number, x1: number, y1: number, shift = (x: number, y: number): [number, number] => [x, y]) =>
+  [[x0, y0], [x1, y0], [x0, y1], [x1, y1]].map(([x, y]) => shift(x, y));
+const part = (id: string, bbox: [number, number, number, number], shift: (x: number, y: number) => [number, number]): Part => ({
+  id, group: 'eyes_brows', texture: 'layers/000.png', textureBounds: [0, 0, 1, 1], bbox, cols: 1, rows: 1,
+  keyforms: { '0': grid(...bbox), '-30': grid(...bbox, shift) } });
+
+// Two parts over a 200-wide canvas with the face axis at 100.
+export async function writeFaceLeft(directory: string) {
+  await mkdir(join(directory, 'layers'), { recursive: true });
+  await writeFile(join(directory, 'layers/000.png'), '');
+  const parts = [part('face/face_base', [60, 60, 140, 110], (x, y) => [x - 10, y]), part('face/eye_left', [110, 70, 130, 80], (x, y) => [x - 5, y])];
+  await writeFile(join(directory, 'face-left.json'), JSON.stringify({ axis: 100, notes: '测试', parts }));
+}
+
+test('左右配对只换整词 left/right', () => {
+  assert.equal(pairId('face/eye_left/iris'), 'face/eye_right/iris');
+  assert.equal(pairId('face/ear_right'), 'face/ear_left');
+  assert.equal(pairId('face/mouth'), 'face/mouth');
+  assert.equal(pairId('face/leftover'), 'face/leftover');
+});
+
+test('+30 取配对图层的 −30 关于中轴的镜像', () => {
+  const left = part('face/eye_left', [110, 70, 130, 80], (x, y) => [x - 5, y + 1]);
+  const right = part('face/eye_right', [70, 70, 90, 80], (x, y) => [x + 3, y]);
+  // The right eye turning right moves like the left eye turning left, mirrored.
+  assert.deepEqual(mirrorKeyform(right, left, 100), [[75, 71], [95, 71], [75, 81], [95, 81]]);
+  // A centred part without a pair mirrors its own field.
+  const nose = part('face/nose', [90, 80, 110, 90], (x, y) => [x - 4, y]);
+  assert.deepEqual(mirrorKeyform(nose, nose, 100), [[94, 80], [114, 80], [94, 90], [114, 90]]);
+});
+
+test('交付检查：缺 face_base 或控制点数不对时报错', () => {
+  const base = part('face/face_base', [60, 60, 140, 110], (x, y) => [x, y]);
+  assert.throws(() => checkFaceLeft({ axis: 100, parts: [part('face/nose', [90, 80, 110, 90], (x, y) => [x, y])] }, [200, 400]), /face_base/);
+  assert.throws(() => checkFaceLeft({ axis: 100, parts: [{ ...base, keyforms: { '0': base.keyforms['0'], '-30': [] } }] }, [200, 400]), /-30/);
+  assert.throws(() => checkFaceLeft({ axis: 300, parts: [base] }, [200, 400]), /axis/);
+  assert.equal(checkFaceLeft({ axis: 100, parts: [base] }, [200, 400]).parts.length, 1);
+});
