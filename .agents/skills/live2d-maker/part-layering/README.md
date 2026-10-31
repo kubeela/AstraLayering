@@ -53,6 +53,8 @@ preparation 完成后，总控同时推进人物线（本管线逐层制作 → 
 
 直属节点可分别标记 `allowOutsideParent` 与 `hiddenInReference`，省略均为 false，通常仅写 true。后者表示确实存在、当前画布内仍需制作，且目标结构因遮挡或闭合而整体不可见的节点。局部可见、局部遮挡或仅肤色/材质被覆盖时走正常流程，例如连体服下仍可辨认形体的 torso、breast。标记为 true 时，程序提供空底稿，跳过描边、轮廓 review 和可见轮廓去重，直接由带生图能力的补全 agent 制作非空 SVG，沿用程序检查。闭眼的眼白、虹膜等可以同时标记两项，可见眼睑继续按常规流程处理。note 写明与实际遮挡/裁切部件的显隐关系，供 raster step01 设计完整纹理、复用对称部件并制作原生显隐蒙版；后续阶段保留蒙版与默认闭合状态。
 
+本段的直属拆分另有 `copy_parent_region`（schema 在 `part-layering/tools/`，说明与用法在 `knowledge/part-layering/step12_children/`）：子节点在父组完成稿中是不与其他形状相连的独立一块时，agent 用整数选框框住这块，框线须全程落在空白处、不切分任何形状。提交后该子节点记为 `outlineFromParent`，程序按选框从父完成稿复制轮廓，跳过描边与轮廓 review，仍做父范围与结构校验，去重和补全照常运行。不能与 `hiddenInReference` 同用。
+
 ### 提示词与专项参考
 
 通用正文位于 [knowledge/part-layering](../knowledge/part-layering/) 各步骤的 `prompts/`（`4`～`11`），由该步骤的 `agent.json` 声明拼接顺序。`knowledge/part-layering/<stepNN>/prompts/groups/<完整ID>/<同名文件>` 存在时完整替换对应正文，只对当前 ID 生效；没有专项文件的组使用通用正文。补全和拆分各自始终带 `9-补全操作约定.md`、`10-拆分操作约定.md`；变量与引用规则见 [shared](../shared/README.md#提示词模板与动态位置)。
