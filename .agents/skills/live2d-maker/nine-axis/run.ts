@@ -4,13 +4,13 @@ import { copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { formatAgentError, validateAgentOutcome } from '../shared/codex/diagnostics.ts';
 import { acquireTaskLock } from '../workflow/state.ts';
-import { sectionDirectory, taskDirectory, resolveInput, resolveRunsDirectory } from '../shared/paths.ts';
+import { taskDirectory, resolveInput, resolveRunsDirectory } from '../shared/paths.ts';
 import { selectKnowledge, stepKnowledge } from '../shared/knowledge.ts';
 import { runSection } from '../shared/step-section.ts';
 import { loadWorkflowEnvironment, type WorkflowEnvironment } from '../shared/codex/environment.ts';
 import { CodexAgents } from '../shared/codex/agents.ts';
 import { preflightAgentSteps } from '../shared/agents/preflight.ts';
-import { produceTurn, resolveTurnInput, turnOutputs, turnViews, type DrawView, type TurnInput, type TurnView } from './turn.ts';
+import { produceTurn, resolveTurnInput, turnViews, type DrawView, type TurnInput, type TurnView } from './turn.ts';
 
 export const help = `nine-axis — 头部九轴
 pnpm nine-axis --name <任务名> --knowledge <先验知识目录> [--dir <绝对运行根目录>] [--dry-run]
@@ -49,16 +49,16 @@ export type NineAxisDependencies = { environment?: WorkflowEnvironment; draw?: D
   resolveInput?: (name: string, root: string) => Promise<TurnInput> };
 export async function runWorkflow(options: NineAxisOptions, dependencies: NineAxisDependencies = {}): Promise<string> {
   const root = resolveRunsDirectory(options.dir), progress = options.progress ?? (() => {});
-  const task = taskDirectory(options.name, root), directory = sectionDirectory(options.name, 'nine-axis', root);
+  const task = taskDirectory(options.name, root), directory = join(task, 'nine-axis');
   const environment = dependencies.environment ?? loadWorkflowEnvironment();
   const model = environment.stepModels.nine_axis_view, image = environment.stepImages.nine_axis_view ?? 'codex-native';
   const label = `${model.model}-${model.effort} / ${image}`;
   for (const view of turnViews) viewPrompt(view, task);
   const input = await (dependencies.resolveInput ?? resolveTurnInput)(options.name, root);
   let summary = 'nine-axis/step01_turn 已完成（沿用已有结果）';
-  await runSection({ directory, root: task,
-    steps: [{ number: 1, note: 'turn', upstream: [input.source.id], outputs: turnOutputs }], upstream: [input.source],
-    dryRun: options.dryRun, signal: options.signal, progress, resetNote: '（来源角色图已变化）',
+  await runSection({ directory,
+    steps: [{ number: 1, note: 'turn' }],
+    dryRun: options.dryRun, signal: options.signal, progress,
     async step(step, status) {
       if (status === 'completed') return undefined;
       return async () => {

@@ -331,9 +331,9 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
             response.end(image); return;
           }
         }
-        const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream', '.psd': 'application/octet-stream', '.mp4': 'video/mp4' };
-        // SVG may be authored by an agent. Keep it inert even when opened in a new tab; a video plays as itself.
-        if (extname(file).toLowerCase() !== '.mp4') response.setHeader('Content-Security-Policy', "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
+        const types: Record<string, string> = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.json': 'application/json', '.md': 'text/plain; charset=utf-8', '.kra': 'application/octet-stream', '.psd': 'application/octet-stream' };
+        // SVG may be authored by an agent. Keep it inert even when opened in a new tab.
+        response.setHeader('Content-Security-Policy', "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
         response.writeHead(200, { 'Content-Type': types[selected.endsWith('.md.tmp') ? '.md' : extname(file).toLowerCase()]
           || (/\.(py|[cm]?js|ts|txt)$/i.test(file) ? 'text/plain; charset=utf-8' : 'application/octet-stream') });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;

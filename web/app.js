@@ -48,10 +48,10 @@ const state = {
 const stages = [
  {name:'人物分块',id:'part-layering'}, {name:'人物绘制',id:'raster-layering'},
  {name:'衣服分块',id:'clothing-part-layering'}, {name:'衣服绘制',id:'clothing-raster-layering'},
- {name:'穿戴组装',id:'character-assembly'}, {name:'阴影制作',id:'shadow'}, {name:'头部九轴',id:'nine-axis'},
+ {name:'穿戴组装',id:'character-assembly'}, {name:'阴影制作',id:'shadow'},
 ];
 // After the character preparation the character and clothing lanes run side by side; both merge into the assembly.
-const flowLanes = [{name:'人物线',stages:[0,1]}, {name:'衣服线',stages:[2,3]}], mergeStages = [4,5,6];
+const flowLanes = [{name:'人物线',stages:[0,1]}, {name:'衣服线',stages:[2,3]}], mergeStages = [4,5];
 const laneOf = index => flowLanes.findIndex(lane=>lane.stages.includes(index));
 const isRasterSection = index => ['raster-layering','clothing-raster-layering'].includes(stages[index]?.id);
 const hasKraPreview = index => isRasterSection(index)||stages[index]?.id==='character-assembly'
@@ -229,8 +229,7 @@ function stepTargets() {
 }
 const brokenSteps=(targets=stepTargets(),action='continue')=>targets.filter(target=>target.status==='running'||action==='retry'&&target.missing?.length);
 const stepLabel=target=>`${stages[target.index].name} ${target.id}${target.status==='completed'?'（缺少交付）':''}`;
-// The snapshot lists an archive's exported sections, and a later section made on top of it.
-const visibleStage=index=>!data.archived||Object.hasOwn(data.run?.sections||{},stages[index].id)||(data.files||[]).some(path=>path.startsWith(stages[index].id+'/'));
+const visibleStage=index=>!data.archived||Object.hasOwn(data.run?.sections||{},stages[index].id);
 function stepToolbar() {
  if(!state.name)return '';
  const exportButton=data.canExport?`<a class="button" data-export href="./api/export?${taskParams()}" title="下载正式产物、完整流程预览与报告；不包含过程文件">导出成果</a>`:'';
@@ -399,7 +398,7 @@ function projectPage() {
  const lanes=[{name:'人物线',stages:[1]},{name:'衣服线',stages:[2,3]}].map(lane=>({...lane,html:cards(lane.stages)})).filter(lane=>lane.html);
  return `${pageHeading()}${runNotice()}<section class="section-overview">
  <div class="overview-heading"><div><h2>管线执行</h2><p>人物分块准备完成后，人物线与衣服线并行执行，共用同一组 agent 名额，在穿戴组装合流。选择管线，打开完整进展图。</p></div></div>
- <div class="overview-flow">${column('overview-start','共同准备',cards([0]))}${lanes.length?`<div class="overview-lanes">${lanes.map(lane=>`<div class="overview-lane"><small class="overview-column-title">${lane.name}</small><div class="overview-lane-cards">${lane.html}</div></div>`).join('')}</div>`:''}${column('overview-merge','合流',cards(mergeStages))}</div></section>`;
+ <div class="overview-flow">${column('overview-start','共同准备',cards([0]))}${lanes.length?`<div class="overview-lanes">${lanes.map(lane=>`<div class="overview-lane"><small class="overview-column-title">${lane.name}</small><div class="overview-lane-cards">${lane.html}</div></div>`).join('')}</div>`:''}${column('overview-merge','合流',cards([4,5]))}</div></section>`;
 }
 // The section's machine-wide Krita slot, beside its own execution state:
 // queued for a slot, or holding one (with Krita running or not yet started).
@@ -589,7 +588,7 @@ function jsonLines(text) {
 // open by themselves; one the user opened or closed stays so until the page reloads.
 function configTree() {
  const scope=file=>file;
- const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['nine-axis','头部九轴'],['shared','公共先验'],['','其他文件']];
+ const families=[['part-layering','人物分块'],['raster-layering','人物绘制'],['clothing-part-layering','衣服分块'],['clothing-raster-layering','衣服绘制'],['character-assembly','穿戴组装'],['shadow','阴影制作'],['shared','公共先验'],['','其他文件']];
  const query=state.configFilter.toLowerCase();
  const owned=file=>families.some(([prefix])=>prefix&&scope(file).startsWith(prefix+'/'));
  const count=node=>node.files.length+[...node.folders.values()].reduce((sum,child)=>sum+count(child),0);
@@ -700,7 +699,7 @@ function showNew(single=false, existing=false) {
   e.preventDefault();const form=e.target,fields=new FormData(form),button=form.querySelector('[type=submit]');button.disabled=true;form.querySelector('.form-error').textContent='';
   try {
    const single=fields.get('scope')==='single',index=Number(fields.get('stage'));
-   const payload={name:fields.get('name').trim(),displayName:fields.get('displayName').trim(),jobs:Number(fields.get('jobs')),from:single?stages[index].id:stages[0].id,to:single?stages[index].id:'shadow'};
+   const payload={name:fields.get('name').trim(),displayName:fields.get('displayName').trim(),jobs:Number(fields.get('jobs')),from:single?stages[index].id:stages[0].id,to:single?stages[index].id:stages.at(-1).id};
    if(!single||index===0)payload.standard=fields.get('standard')==='on';
    if(!single||stages[index].id==='shadow')payload.shadowMode=fields.get('shadowMode');
    if(!created) {

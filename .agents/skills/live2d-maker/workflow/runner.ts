@@ -38,7 +38,6 @@ export const sectionDependencies: Record<SectionId, readonly { id: SectionId; pr
   'clothing-raster-layering': [{ id: 'clothing-part-layering' }],
   'character-assembly': [{ id: 'raster-layering' }, { id: 'clothing-raster-layering' }],
   'shadow': [{ id: 'character-assembly' }],
-  'nine-axis': [{ id: 'shadow' }],
 };
 
 function terminate(child: ChildProcess, force = false) {
@@ -189,7 +188,7 @@ export async function runTask(options: TaskOptions, dependencies: {
         });
         run!.sections[id] = { status: 'completed', updatedAt: now(), summary: result.summary };
         // The delivery is the one of the furthest section completed.
-        if (sectionIds.indexOf(id) > delivered && result.output) { delivered = sectionIds.indexOf(id); run!.output = toTaskPath(directory, result.output); }
+        if (sectionIds.indexOf(id) > delivered) { delivered = sectionIds.indexOf(id); run!.output = result.output && toTaskPath(directory, result.output); }
         progress(id + '：已完成');
       } catch (error) {
         stopped.add(id);

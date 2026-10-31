@@ -71,7 +71,7 @@ test('每个视角的提示词带入动作与三张参考图', () => {
   assert.match(viewPrompt('up', '/task'), /抬头/);
 });
 
-test('step01 生成五个视角并统一到上半身尺寸，完成后沿用，来源变化后重做', async t => {
+test('step01 生成五个视角并统一到上半身尺寸，完成后沿用', async t => {
   const { root, task } = await fixture(t);
   const drawn: string[] = [];
   const draw = async (view: string, output: string) => {
@@ -91,9 +91,6 @@ test('step01 生成五个视角并统一到上半身尺寸，完成后沿用，�
   await access(join(step, '.completed'));
   assert.match(await runWorkflow({ name: 'case', dir: root }, deps), /沿用/);
   assert.equal(drawn.length, 5);
-  await writeFile(join(task, 'character-assembly/step01/.completed'), JSON.stringify({ stamp: 'assembly-2', inputs: {} }));
-  await runWorkflow({ name: 'case', dir: root }, deps);
-  assert.equal(drawn.length, 10);
 });
 
 test('任一视角失败时 step01 不完成，并列出失败的视角', async t => {

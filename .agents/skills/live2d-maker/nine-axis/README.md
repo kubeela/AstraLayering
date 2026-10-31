@@ -1,6 +1,6 @@
 # 头部九轴
 
-入口：`pnpm nine-axis --name <任务名> --knowledge <先验知识目录>`，或 `pnpm start --name <任务名> --from nine-axis --to nine-axis`。默认整条流程只到 shadow；头部九轴单独启动。目前 step01 已接入流水线；step02 的变形器与补绘仍由人工拟合制作（pink-doll），用来固定后续工作流应生成的格式。状态只记在任务根 `run.json`。
+入口：`pnpm nine-axis --name <任务名> --knowledge <先验知识目录>`。九轴全部完成前不接入总控流程与工作台阶段，只能这样单独启动；目前 step01 已能运行；step02 的变形器与补绘仍由人工拟合制作（pink-doll），用来固定后续工作流应生成的格式。状态记在各步骤目录的完成标记。
 
 | 步骤 | 输入 | 交付 |
 | --- | --- | --- |
@@ -15,7 +15,7 @@
 2. 五个视角 left、up、down、left-up、left-down 各由一个生图 agent 同时生成：图1 为 `upper-body.png`，图2、图3 为模板角色 pink-doll 的正面与目标姿态（`knowledge/nine-axis/step01_turn/references/pink-doll/`），提示词为同目录 `prompts/视角参考.md`，各视角的动作说明在 `prompts/views/<视角>.md`。右侧视角不画：角色常不对称，但脸部形变可以镜像复用。
 3. 结果铺在同一灰色上，缩放到上半身同尺寸后写为 `<视角>.png`；模型与各文件哈希写入 `views.json`。
 
-agent 使用 `layering_agent_preparation_model`（默认 gpt-6.1-sol-low），生图模型为 `layering_nine_axis_view_image_model`，留空继承 `layering_default_image_model`。来源角色图重做后 step01 随之重做。
+agent 使用 `layering_agent_preparation_model`（默认 gpt-6.1-sol-low），生图模型为 `layering_nine_axis_view_image_model`，留空继承 `layering_default_image_model`。已完成的 step01 保留；来源角色图重做后如需新视角，删除 `nine-axis/step01_turn` 再运行。
 
 ## step02_head
 

@@ -23,11 +23,11 @@ export async function resolveTurnInput(name: string, root: string): Promise<Turn
   const task = taskDirectory(name, root), shadow = join(task, 'shadow/step01_mask');
   const color = join(shadow, 'character-shadowed.png');
   let source: ChainStep;
-  if ((await readStep(shadow, task)).status === 'completed' && await exists(color)) {
-    source = { id: 'shadow/step01_mask', root: task, directory: shadow, dependsOn: [] };
+  if ((await readStep(shadow)).status === 'completed' && await exists(color)) {
+    source = { id: 'shadow/step01_mask', directory: shadow };
   } else {
     const assembly = join(await requireUpstream(name, 'character-assembly', [{ path: 'step01/character-assembled.png' }], root), 'step01');
-    source = { id: 'character-assembly/step01', root: task, directory: assembly, dependsOn: [] };
+    source = { id: 'character-assembly/step01', directory: assembly };
   }
   const parts = await requireUpstream(name, 'part-layering', [{ path: 'parts/face.svg' }], root);
   const optional = ['hair.svg', 'head_accessories.svg'].map(file => join(parts, 'parts', file));

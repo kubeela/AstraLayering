@@ -26,13 +26,10 @@ import { makeSection as shadowSection } from '../.agents/skills/live2d-maker/sha
 import type { KritaSection } from '../.agents/skills/live2d-maker/shared/raster/workflow.ts';
 import { completeRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { copiedInput, inputKras } from './kra-inputs.ts';
-import { resolveTurnInput, turnOutputs } from '../.agents/skills/live2d-maker/nine-axis/turn.ts';
 import { kritaRecordFile, kritaSlotsInUse, readKritaRecord } from '../.agents/skills/live2d-maker/shared/krita/section-krita.ts';
 
 export { phases } from './part-progress.ts';
 export const rasterDefinitions = { 'raster-layering': personSteps, 'clothing-raster-layering': clothingSteps, 'character-assembly': assemblySteps };
-// Nine-axis steps sit in note-named directories; the workbench shows them as step01, …
-const nineAxisSteps = [{ id: 'step01', directory: 'step01_turn', requiredFiles: turnOutputs }];
 export type Status = 'done' | 'running' | 'throttled' | 'pending' | 'failed' | 'interrupted' | 'available' | 'skipped' | 'unconfirmed';
 export const leftoverMessage = '残留目录（无完成或进行中标记）：下次运行会删除后重做';
 export const statusOf = (value?: string): Status => value === 'completed' ? 'done' : value === 'ready' ? 'pending' : ['running', 'failed', 'interrupted'].includes(value ?? '') ? value as Status : 'pending';
@@ -74,8 +71,7 @@ export async function snapshot(directory: string, name: string, dir: string) {
   // Slots held machine-wide, read once a section of this task holds or awaits one.
   let kritaInUse: number | undefined;
   for (const id of sectionIds) {
-    // An archive lists the sections it exported, and a later section made on top of it.
-    if (record.run?.archive && !record.run.sections[id] && !files.some(path => path.startsWith(id + '/'))) continue;
+    if (record.run?.archive && !record.run.sections[id]) continue;
     // The character and clothing lanes run side by side: several sections can be active at once.
     const current = !!record.run?.activeSections?.includes(id);
     const saved = record.run?.sections[id];
@@ -87,7 +83,6 @@ export async function snapshot(directory: string, name: string, dir: string) {
     const mode = shadowMode(record.run?.shadowMode);
     // The section's inputs, resolved from its upstream as a run would; none while the upstream is unfinished.
     const section: { resolveInput(name: string, root: string): Promise<unknown> } | undefined = id === 'shadow' ? shadowSection(mode)
-      : id === 'nine-axis' ? { resolveInput: resolveTurnInput }
       : ({ 'raster-layering': characterRaster, 'clothing-raster-layering': clothingRaster, 'character-assembly': assembly } as Record<string, KritaSection<any>>)[id];
     const sourceInput = await section?.resolveInput(name, dir).catch(() => undefined);
     const states: Record<string, Status> = {};
@@ -134,10 +129,8 @@ export async function snapshot(directory: string, name: string, dir: string) {
         }
       }
     } else {
-      const definitions: readonly { id: string; directory?: string; requiredFiles: readonly string[]; review?: unknown }[] =
-        id === 'shadow' ? stepsFor(mode) : id === 'nine-axis' ? nineAxisSteps : rasterDefinitions[id as keyof typeof rasterDefinitions];
-      for (const step of definitions) {
-        const prefix = id + '/' + (step.directory ?? step.id);
+      for (const step of id === 'shadow' ? stepsFor(mode) : rasterDefinitions[id]) {
+        const prefix = id + '/' + step.id;
         await loadReport(step.id, prefix + '/report.md');
         const previewInputs = [...inputKras(sourceInput, directory), ...files
           .filter(path => path.startsWith(prefix + '/') && !path.includes('/workspace/') && /\.kra$/i.test(path))
@@ -232,10 +225,9 @@ export async function snapshot(directory: string, name: string, dir: string) {
     if (waiting) for (const key of Object.keys(states)) if (states[key] === 'running') { states[key] = 'throttled'; messages[key] = waiting.retryError!; }
     let status: Status = active ? 'running' : observed(saved?.status);
     if (!saved) status = Object.values(states).includes('failed') ? 'failed' : Object.values(states).includes('unconfirmed') ? 'unconfirmed'
-      : id === 'nine-axis' && Object.keys(states).length && Object.values(states).every(value => value === 'done') ? 'done'
       : files.some(path => path.startsWith(id + '/')) ? 'available' : 'pending';
     if ((id === 'shadow' ? states.step01 === 'failed' : Object.values(states).includes('failed')) && !active) status = 'failed';
-    if ((id in rasterDefinitions || id === 'shadow' || id === 'nine-axis') && status === 'done' && Object.entries(states).some(([key, value]) => key.startsWith('step') && value !== 'done')) {
+    if ((id in rasterDefinitions || id === 'shadow') && status === 'done' && Object.entries(states).some(([key, value]) => key.startsWith('step') && value !== 'done')) {
       status = 'interrupted'; // Root coordinator history must not hide a removed step marker.
     }
     // A clothing lane skipped for lack of a dress-up is complete with nothing to make.
