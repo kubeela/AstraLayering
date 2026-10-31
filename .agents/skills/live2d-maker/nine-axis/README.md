@@ -1,6 +1,6 @@
 # 头部九轴
 
-入口：`pnpm nine-axis --name <任务名> --knowledge <先验知识目录> --krita <Krita 可执行文件>`。九轴全部完成前不接入总控流程与工作台阶段，只能这样单独启动；目前 step01、step02 只做脸部的左右转向（ParamAngleX），不含头发。状态记在各步骤目录的完成标记。
+入口：`pnpm nine-axis --name <任务名> --knowledge <先验知识目录> --krita <Krita 可执行文件>`。九轴全部完成前不接入总控流程与工作台阶段，只能这样单独启动；目前 step01、step02 只做脸部与双耳的左右转向（ParamAngleX），不含头发。左右边界关键形 ParamAngleX ±30 对应 step01 left 视角约 45° 的转头（±30 是参数值，不是度数）。状态记在各步骤目录的完成标记。
 
 | 步骤 | 输入 | 交付 |
 | --- | --- | --- |
@@ -17,9 +17,9 @@
 
 agent 使用 `layering_agent_preparation_model`（默认 gpt-6.1-sol-low），生图模型为 `layering_nine_axis_view_image_model`，留空继承 `layering_default_image_model`。已完成的 step01 保留；来源角色图重做后如需新视角，删除 `nine-axis/step01_turn` 再运行。
 
-## step02_head：脸部转向
+## step02_head：left 方向的脸部＋双耳透视形变
 
-1. agent（`layering_agent_shadow_model`）带着 krita 与 view_bitmap 工具启动，提示词 `knowledge/nine-axis/step02_head/prompts/脸部转向.md` 给出 pink-doll 的拟合方法与教程先验：模板匹配定位五官，父级为圆柱转向加 10×10 平滑残差（对齐向左视角的可见脸轮廓），子级按教程分眉眼、嘴、鼻在父级上补细节，最后牛顿法反解为每层 16×16 warp。脚本由 agent 自己在本步 `workspace/` 里写，不另提供拟合工具。
+1. agent（`layering_agent_shadow_model`）带着 krita 与 view_bitmap 工具启动，提示词 `knowledge/nine-axis/step02_head/prompts/脸部与双耳转向.md` 给出 pink-doll 的拟合方法与教程先验：模板匹配定位五官，父级为圆柱转向加 10×10 平滑残差（对齐向左视角的可见脸轮廓），子级按教程分眉眼、嘴、鼻在父级上补细节，最后牛顿法反解为每层 16×16 warp。通用积木在 `knowledge/nine-axis/step02_head/references/facefit/`（Python），agent 复制到本步 `workspace/` 后按角色取用或修改；蒙版、轮廓段、权重、ROI 与远近侧耳等按角色的判断和看图检查仍由 agent 完成，不是一键流程。
 2. agent 只交付向左（−30）：`face-left.json`（脸部中轴 `axis`、各层控制点与可选的 `opacity`）、`layers/`、`left-check.png`。不补绘。耳朵不拟合生图像素，只随父级平移和横向缩放；远侧耳在 −30 以 `opacity` 0 隐藏。
 3. 程序检查交付，按 id 中的 left/right 配对，把配对图层的 −30 关于中轴镜像为 +30（不透明度同样取配对图层的 −30），写出 `deformers.json` 与 `source.json`。
 
