@@ -8,6 +8,7 @@
     "tools": [
       "view_bitmap",
       "preview_svg",
+      "copy_parent_region",
       "submit_children"
     ]
   }
