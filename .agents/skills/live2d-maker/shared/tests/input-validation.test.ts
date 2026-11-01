@@ -12,13 +12,12 @@ import { profile as character } from '../../part-layering/profile.ts';
 import { profile as clothing } from '../../clothing-part-layering/profile.ts';
 import { fixture, shape } from '../../part-layering/tests/layering-fixture.ts';
 
-test('分组进度拒绝数组状态，合法 running 仍恢复为 pending', () => {
+test('分组进度拒绝数组状态', () => {
   for (const status of ['pending', 'running', 'completed', 'failed']) {
     assert.throws(() => normalizeGroups([{ id: 'head', steps: {
       outline: { status: [status], output: { path: 'head.svg' } },
     } }]), /invalid status/);
   }
-  assert.equal(normalizeGroups([{ id: 'head', steps: { outline: { status: 'running' } } }])[0].steps.outline.status, 'pending');
 });
 
 test('SVG 预览拒绝数组模式，不产生与请求不符的图片或观察记录', async t => {

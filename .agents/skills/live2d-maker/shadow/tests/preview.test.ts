@@ -17,7 +17,7 @@ async function fixture(t: TestContext) {
     await mkdir(join(task, section), { recursive: true });
     await writeFile(join(task, section, 'groups.json'), '{"groups":[]}'); await writeFile(join(task, section, 'occlusion.json'), '{"layers":[]}');
   }
-  await writeFile(join(source, '.completed'), JSON.stringify({ stamp: 'assembly-1', inputs: {} }));
+  await writeFile(join(source, '.completed'), '');
   const color = await sharp({ create: { width: 64, height: 96, channels: 4, background: { r: 200, g: 170, b: 140, alpha: .7 } } }).png().toBuffer();
   await writeFile(join(source, 'character-assembled.png'), color);
   await writeFile(join(refs, 'simplified-subject.png'), color);
@@ -38,16 +38,13 @@ test('Unified studio discovers pending maps read-only, without changing inputs, 
   assert.deepEqual(await readFile(join(f.output, 'normal.png')), normal);
   assert.deepEqual(await readFile(join(f.task, 'shadow/selection.json')), selection);
   await rm(join(f.output, '.running'));
-  await writeFile(join(f.output, '.completed'), JSON.stringify({ stamp: 'maps', inputs: { 'character-assembly/step01': 'assembly-1' } }));
+  await writeFile(join(f.output, '.completed'), '');
   assert.equal((await inspectDraftPreview('case', f.root))?.status, 'awaiting-publication');
 });
-test('Maps from a redone assembly and invalid normals are not exposed as pending maps', async t => {
+test('Invalid normals are not exposed as pending maps', async t => {
   const f = await fixture(t);
   await rm(join(f.output, '.running'));
-  await writeFile(join(f.output, '.completed'), JSON.stringify({ stamp: 'maps', inputs: { 'character-assembly/step01': 'assembly-1' } }));
-  await writeFile(join(f.source, '.completed'), JSON.stringify({ stamp: 'assembly-2', inputs: {} }));
-  assert.equal(await inspectDraftPreview('case', f.root), undefined);
-  await writeFile(join(f.source, '.completed'), JSON.stringify({ stamp: 'assembly-1', inputs: {} }));
+  await writeFile(join(f.output, '.completed'), '');
   await sharp({ create: { width: 64, height: 96, channels: 3, background: 'white' } }).png().toFile(join(f.output, 'normal.png'));
   assert.equal(await inspectDraftPreview('case', f.root), undefined);
 });

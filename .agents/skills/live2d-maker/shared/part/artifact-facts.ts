@@ -1,10 +1,9 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, rename } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
-import { walkGroups, writeAtomic } from './groups.ts';
-import type { GroupsDocument, ReviewedSvgArtifact } from './layering-types.ts';
+import type { ReviewedSvgArtifact } from './layering-types.ts';
 import { groupDepth, groupStepId, layerStepId } from './part-steps.ts';
-import { svgSource, updateSvgRoot } from '../xml.ts';
+import { svgSource } from '../xml.ts';
 
 export const svgHash = (bytes: Buffer | string): string => createHash('sha256')
   .update(bytes.toString().replace(/\r\n/g, '\n')).digest('hex');
@@ -42,18 +41,12 @@ export async function readSvg(path: string): Promise<Buffer | undefined> {
   catch (error) { throw new Error(`Invalid SVG output: ${path}`, { cause: error }); }
   return bytes;
 }
-export function stampedSvg(bytes: Buffer, sourceHash?: string): Buffer {
-  return sourceHash ? Buffer.from(updateSvgRoot(bytes.toString(), { 'data-source-sha256': sourceHash })) : bytes;
-}
-export async function publishSvg(draft: string, output: string, sourceHash?: string): Promise<void> {
+export async function publishSvg(draft: string, output: string): Promise<void> {
   if (!draft.endsWith('.draft.svg') || output.endsWith('.draft.svg') || !output.endsWith('.svg')) {
     throw new Error('正式 SVG 必须从 .draft.svg 发布');
   }
   const bytes = await readSvg(draft);
   if (!bytes) throw new Error(`SVG 草稿未生成：${draft}`);
-  if (sourceHash) {
-    await writeAtomic(draft, stampedSvg(bytes, sourceHash));
-  }
   await mkdir(dirname(output), { recursive: true });
   await rename(draft, output);
 }
@@ -82,13 +75,4 @@ export function reviewedArtifact(bytes: Buffer, path: string, report: ReviewRepo
   if (completedReviewCount(report) >= 2 && last?.verdict === 'revise' && matchesHash(bytes, last.repairedCandidateHash)) {
     return { path, reviewOutcome: 'repaired', note: `已按第 ${completedReviewCount(report)} 轮意见返修并自检，不再复审` };
   }
-}
-
-export async function mergeSourceHash(directory: string, document: GroupsDocument): Promise<string> {
-  const inputs = [];
-  for (const { group } of walkGroups(document.groups)) {
-    inputs.push({ id: group.id, ...(group.kind ? { kind: group.kind } : {}), children: group.groups.map(child => child.id),
-      hash: svgHash((await readSvg(artifactPath(directory, group.id, 'completion')))! ) });
-  }
-  return svgHash(JSON.stringify(inputs));
 }

@@ -63,11 +63,11 @@ preparation 使用当前配置的生图工具，将两张参考按顺序放入�
   occlusion.json               # 全部终止衣片从后到前的深度表
 ```
 
-同名续跑复用输入与正式文件，不依赖最初的外部图片路径。新 preparation 同时校验上游简化角色、素体与衣服图指纹，检测到被改写时拒绝静默沿用；旧单参考记录继续按原有指纹复用，不自动重画。生成图须为统一画布尺寸且含实际透明区域的 PNG；尺寸与文件检查不代替模型的视觉判断，组装阶段负责衣装与人物的整体配准。
+同名续跑复用输入与正式文件，不依赖最初的外部图片路径。已完成的 preparation 直接沿用，衣服图缺失时拒绝续跑并提示恢复文件或重试；上游参考重做不会让它自动重画。生成图须为统一画布尺寸且含实际透明区域的 PNG；尺寸与文件检查不代替模型的视觉判断，组装阶段负责衣装与人物的整体配准。
 
 在停止当前进程后，删除 `references/clothing.png` 可重新生成衣服参考；下次启动会先清除依赖旧参考的分组、parts、阶段记录、观察图、预览和深度表。重新制作全部衣服时也可使用新的 `--name`。不要用同一个名字并发启动。
 
-分件恢复使用共享的文件事实机制：有效正式 SVG、报告及输入指纹决定哪些工作可复用；删除或修改上游轮廓会使其下游失效，只删除某件补全则只重新制作该件及实际引用它的依赖。深度表失效只重做最终深度规划。这里不使用栅格流程的 `step01/.completed` 标记。
+分件恢复与人物 part 相同：每个步骤按自己的 `.running`／`.completed` 标记继续或沿用；重试只重做所选步骤，已完成的下游步骤沿用。
 
 ## 验证与代码入口
 
@@ -77,7 +77,7 @@ pnpm check
 
 [run.ts](../shared/part/run.ts) 串联 [preparation.ts](preparation.ts) 与共享 [layering.ts](../shared/part/layering.ts)；[agents.ts](../shared/codex/agents.ts) 和 [tool-agent.ts](../shared/codex/tool-agent.ts) 按各步骤配置的 harness（codex／claude／agv）运行，Codex 步骤经 Codex App Server（CLI 版本由 `@openai/codex-sdk` 依赖固定），见 [模型方案](../references/model-presets.md)。首次分组和递归拆分分别在 [initial-groups.ts](../shared/part/initial-groups.ts)、[children-agent.ts](../shared/part/children-agent.ts)。所有衣服提示词都在 [knowledge/clothing-part-layering](../knowledge/clothing-part-layering/)，各步骤由 `agent.json` 声明拼接的文件与工具。
 
-自动测试覆盖 preparation 的内置工具请求、缓存及失败恢复、穿插衣片的独立产物、分组调度与依赖失效。模型响应使用测试替身，不构成实际生图或视觉质量验收。
+自动测试覆盖 preparation 的内置工具请求、缓存及失败恢复、穿插衣片的独立产物、分组调度与完成标记沿用。模型响应使用测试替身，不构成实际生图或视觉质量验收。
 
 现已完成 [2026-10-18—19 真实实跑](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/clothing-raster-layering/README.md)：原生 ImageGen 提取衣服，5 层、93 节点、68 个终止 part，最终交给栅格流程生成 KRA。最终深度检查曾两次由外部局部重开跨深度悬绳，再通过原流程制作；这不代表当前代码已具备自动回拆。案例仅保留关键 KRA、过程图片与简要说明，LLM 中间记录保留本地；该历史案例推动的多深度与 step01 拆层协议现已接入，说明见 [共享流程](../shared/README.md#多深度与上游修正)。
 

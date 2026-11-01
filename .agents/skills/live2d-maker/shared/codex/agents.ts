@@ -17,7 +17,6 @@ import { randomUUID } from 'node:crypto';
 import type { ThreadEvent } from '@openai/codex-sdk';
 import type { ImageProcessingOptions } from '../image-processing.ts';
 import { executionPaths } from '../agents/workspace.ts';
-import { imagePath } from '../task-paths.ts';
 
 export const agentDefaults = defaultModels.medium;
 
@@ -307,15 +306,14 @@ export class CodexAgents {
   }
 }
 
-// A native image turn replies with the tool's savedPath, or an error.
+// A native image turn delivers the images the turn recorded; the agent never copies their paths.
+// Its reply only explains a turn that produced none.
 function nativeImageResult(name: string) {
   return (text: string, images: GeneratedImage[]): GeneratedImage[] => {
-    const output = JSON.parse(text) as { savedPath?: unknown; error?: unknown };
-    if (typeof output.error === 'string' && output.error) throw new Error(`${name}：${output.error}`);
-    if (typeof output.savedPath !== 'string' || !output.savedPath.trim()) throw new Error(`${name} 没有返回生成图片的 savedPath`);
-    // The agent copies the tool's absolute savedPath, as Codex native imagegen reports it.
-    const savedPath = imagePath(output.savedPath, `${name} 返回的 savedPath`);
-    return images.some(image => image.savedPath === savedPath) ? images : [...images, { savedPath }];
+    if (images.length) return images;
+    let error: unknown;
+    try { error = (JSON.parse(text) as { error?: unknown }).error; } catch {}
+    throw new Error(typeof error === 'string' && error ? `${name}：${error}` : `${name} 没有生成图片`);
   };
 }
 

@@ -41,7 +41,7 @@ pnpm start --name my-character --image /绝对路径/角色.png --krita /绝对�
 pnpm start --name my-character --status --json
 # 续跑：自定义运行根目录时，每次都加同一 --dir
 pnpm start --name my-character --background
-# 恢复（新会话、保留产物）/ 重试（删除该步骤产物与会话后重做，可指定已完成步骤；依赖它的后续步骤按指纹重跑）/ 停止
+# 恢复（新会话、保留产物）/ 重试（删除该步骤产物与会话后只重做该步骤，可指定已完成步骤；已完成的后续步骤沿用）/ 停止
 pnpm start --name my-character --resume --background
 pnpm start --name my-character --retry --section raster-layering --step step02 --background
 pnpm start --name my-character --stop

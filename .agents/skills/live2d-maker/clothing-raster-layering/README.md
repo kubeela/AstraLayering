@@ -58,23 +58,21 @@ reviewer 每次新建上下文，读取当前 KRA、参考及已有正式 Markdo
 
 | 文件情况 | 下次同名启动 |
 | --- | --- |
-| `.completed` 存在 | 跳过该步；第一步还会检查正式 review / repair 是否齐备 |
+| `.completed` 存在 | 核对必要交付后沿用该步；交付缺失时拒绝运行并列出路径 |
 | `.running` 存在 | 保留现有工程与日志，继续原绘制 thread 和未完成环节 |
-| 步骤目录存在，两个标记都没有 | 清空该步及后续步骤目录，重置绘制 thread 后重跑 |
-| 某份正式 review / repair 被删除 | 从该环节接续，清除后续反馈记录，保留当前 KRA 与绘制 thread |
-| 上游 `clothing-part-layering/occlusion` 重新完成（part 重做） | 清空 step01 及后续步骤，重置绘制 thread 后重跑 |
+| 步骤目录存在，两个标记都没有 | 清空该步目录，重置绘制 thread 后重跑 |
+| `.running` 中某份正式 review / repair 被删除 | 从该环节接续，清除后续反馈记录，保留当前 KRA 与绘制 thread |
 | 上游 occlusion 步骤未完成 | 拒绝运行，不改动本管线 |
 
 `.running` 表示已开始但未完成，不表示系统进程仍在运行。报告先写 `.tmp`，只有模型回合成功、报告结论有效且交付检查通过后才发布正式 Markdown；日志和暂存文件不算完成事实。
 
-先停止当前进程，再删除标记触发重跑。例如从第二步重新制作：
+先停止当前进程，再用重试重做某一步，不要手动删除标记。例如从第二步重新制作：
 
 ```bash
-rm <运行根目录>/jianma/clothing-raster-layering/step02/.completed
-pnpm clothing-raster-layering --name jianma --knowledge /path/to/knowledge
+pnpm start --name jianma --retry --section clothing-raster-layering --step step02
 ```
 
-这会保留第一步及上游产物，清空第二步目录并创建新绘制 thread。要从第一步重跑就删除 `step01/.completed`；未完成步骤也可删除其 `.running` 触发相同重置。重跑会删除对应步骤的工程和日志。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
+这会保留第一步及上游产物，删除第二步目录、会话与 agent 尝试记录，下次运行时创建新绘制 thread。重试 `step01` 只重做第一步，已完成的第二步沿用。若只想继续修画，保留标记并同名启动即可。同一个名字一次只启动一个进程。
 
 ## 验证与代码入口
 
@@ -84,7 +82,7 @@ pnpm check
 
 [steps.ts](steps.ts) 定义两步模型与输入输出，[workflow.ts](../shared/raster/workflow.ts) 顺序执行，[run-store.ts](../shared/raster/run-store.ts) 管理配置和标记，[review.ts](../shared/raster/review.ts) 调度新 reviewer 与原绘制会话。完整正文位于 [knowledge/clothing-raster-layering](../knowledge/clothing-raster-layering/)；review / repair 文件名由 `{review_round}` 给出，提示词不固定轮次。
 
-自动测试模拟 App Server 响应，覆盖上游产物读取、路径补全、同线程续跑、删除标记重置、两轮反馈全部修复及最终完成标记。
+自动测试模拟 App Server 响应，覆盖上游产物读取、路径补全、同线程续跑、两轮反馈全部修复及最终完成标记。
 
 现已完成 [2026-10-19 真实实跑](https://github.com/wu-tian807/AstraLayering/blob/main/demos/jianma/clothing-raster-layering/README.md)：两步及两轮 review／修复结束，保存并重开核对 69 个普通绘画层，导出透明合成 PNG。该运行由外部交接接受前襟跨深度拆层及合理的色块修正，并使用专用 Codex 的临时图片计数压缩补丁；案例说明保留这些边界，关键 KRA 与过程图片可直接查看，LLM 中间记录保留本地。本次已接入通用多深度与 step01 拆层、写回协议；可选图片压缩功能现已接入，需显式配置并使用补丁版 Codex，见 [配置说明](../workflow/README.md)。
 

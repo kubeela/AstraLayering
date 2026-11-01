@@ -43,7 +43,7 @@ test('独立深度表覆盖全部终止节点，拒绝重复、非法深度、�
   assert.equal(tree.layers, undefined);
 });
 
-test('最后一步在 preview 后执行；缺失、损坏、漏检或语义变化只重跑层级，不重做上游', async t => {
+test('最后一步在 preview 后执行；完成后沿用，交付缺失时拒绝，删除完成标记只重跑层级，不重做上游', async t => {
   const f = await prepared(t), previewBefore = await readFile(f.context.preview.path), treePath = join(f.directory, 'groups.json');
   const treeBefore = await readFile(treePath);
   let calls = 0;
@@ -55,29 +55,18 @@ test('最后一步在 preview 后执行；缺失、损坏、漏检或语义变�
   f.events.length = 0;
   await runLayering({ ...f, groups: null, steps, mergeSvg: workingMerger(f.events) });
   assert.equal(calls, 0);
-  for (const invalid of ['missing', '{broken', JSON.stringify({ version: 1, layers: [] })]) {
-    if (invalid === 'missing') await rm(occlusionPath(f.directory));
-    else await writeAtomic(occlusionPath(f.directory), invalid);
-    assert.equal((await runLayering({ ...f, groups: null, steps, mergeSvg: workingMerger(f.events) })).status, 'completed');
-  }
-  assert.equal(calls, 3);
+  await rm(occlusionPath(f.directory));
+  await assert.rejects(runLayering({ ...f, groups: null, steps, mergeSvg: workingMerger(f.events) }), /交付缺失/);
+  await rm(join(f.directory, 'step14_occlusion/.completed'));
+  assert.equal((await runLayering({ ...f, groups: null, steps, mergeSvg: workingMerger(f.events) })).status, 'completed');
+  assert.equal(calls, 1);
   assert.deepEqual(f.events, []);
   assert.deepEqual(await readFile(treePath), treeBefore);
-  const tree = JSON.parse(treeBefore.toString()); tree.groups[0].note = 'changed semantic responsibility';
-  await writeAtomic(treePath, JSON.stringify(tree));
-  await runLayering({ ...f, groups: null, steps, mergeSvg: workingMerger(f.events) });
-  assert.equal(calls, 4);
-  assert.deepEqual(f.events, []);
-  const original = await readFile(f.references.baseSubject);
-  await writeAtomic(f.references.baseSubject, Buffer.concat([original, Buffer.from('\n')]));
-  await runLayering({ ...f, groups: null, steps, mergeSvg: workingMerger(f.events) });
-  assert.equal(calls, 5);
-  assert.deepEqual(f.events, []);
 });
 
 test('已合并而最后一步待办、失败或中断时不冒充完成，恢复只执行最后一步', async t => {
   const f = await prepared(t);
-  await rm(occlusionPath(f.directory)); f.events.length = 0;
+  await rm(join(f.directory, 'step14_occlusion/.completed')); f.events.length = 0;
   const pending = await runLayering({ ...f, groups: null, steps: { ...f.steps,
     async planOcclusion() { return { status: 'pending', message: 'head/face 深度待确认' }; } } });
   assert.equal(pending.status, 'pending');

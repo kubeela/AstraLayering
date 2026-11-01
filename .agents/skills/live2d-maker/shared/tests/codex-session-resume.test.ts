@@ -8,7 +8,7 @@ import { CodexAgents } from '../codex/agents.ts';
 import { AgentRuntime, AgentCallError, recoverableAgentError, retryableAgentError } from '../codex/agent-runtime.ts';
 import { loadWorkflowEnvironment } from '../codex/environment.ts';
 import { nodeExecutables } from '../../part-layering/tests/node-executables.ts';
-import { patchedCodexCapabilities } from './fake-codex.ts';
+import { fakeDebug } from './fake-codex.ts';
 
 const schema = { type: 'object', properties: { status: { type: 'string' } }, required: ['status'], additionalProperties: false };
 async function fixture(t: TestContext, mode: string) {
@@ -20,7 +20,7 @@ async function fixture(t: TestContext, mode: string) {
 import {createInterface} from 'node:readline';
 import {appendFile, readFile} from 'node:fs/promises';
 const mode=${JSON.stringify(mode)}, capture=${JSON.stringify(capture)};
-if(process.argv[2]==='debug'){console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))});process.exit(0);}
+${fakeDebug()}
 const emit=v=>console.log(JSON.stringify(v)), record=v=>appendFile(capture,JSON.stringify(v)+'\\n');
 let threadId='old-thread', active, ended=false, starts=0, resuming=false;
 const done=(id,status)=>emit({method:'turn/completed',params:{threadId,turn:{id,status}}});

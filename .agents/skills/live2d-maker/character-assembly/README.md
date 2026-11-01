@@ -46,6 +46,6 @@ character-assembly/
 
 报告简述调整、遮罩用途和剩余差异。绘制 agent 负责保存重开、检查图层及合成效果；调度器在交付齐全后写 `.completed`。
 
-复用 raster 的顺序调度、临时错误重试、日志和异常说明。这个入口新建自己的绘制 thread，中断保留 `.running` 并恢复原 thread；已完成时跳过。删除 `step01/.completed` 后重跑会清理组装步骤并重建 thread，保留上游工程。只有一个步骤，不调用第二个绘制者或 reviewer，也不提供上游深度修改工具。
+复用 raster 的顺序调度、临时错误重试、日志和异常说明。这个入口新建自己的绘制 thread，中断保留 `.running` 并恢复原 thread；已完成时跳过。需要重做时用 `pnpm start --name <任务名> --retry --section character-assembly --step step01`（或网页「重试」），清理组装步骤并重建 thread，保留上游工程。只有一个步骤，不调用第二个绘制者或 reviewer，也不提供上游深度修改工具。
 
 `--dry-run` 检查上游和指定的 Krita、显示本次完整提示词，不调用模型、不写文件。配置与安装见 [SKILL.md](../SKILL.md)。

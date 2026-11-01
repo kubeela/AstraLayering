@@ -7,7 +7,7 @@ import { stageStep } from './preparation-steps.ts';
 // The base-subject step either draws a dress-up base body or copies the
 // simplified reference. Without a dress-up nothing is worn to strip, so the
 // clothing lane, raster step03 and the assembly agent are skipped.
-// The decision sits beside the step's records, outside its fingerprinted outputs.
+// The decision sits beside the step's records.
 export type DressupDecision = { version: 1; dressed: boolean; reason: string };
 
 const baseStep = (taskRoot: string) => join(taskRoot, 'part-layering', stageStep('base'));
@@ -21,7 +21,7 @@ export function checkDressupDecision(value: unknown): asserts value is DressupDe
 
 // undefined until the base-subject step has completed.
 export async function readDressup(taskRoot: string): Promise<boolean | undefined> {
-  if ((await readStep(baseStep(taskRoot), taskRoot)).status !== 'completed') return;
+  if ((await readStep(baseStep(taskRoot))).status !== 'completed') return;
   try {
     const decision: unknown = JSON.parse(await readFile(dressupDecisionPath(taskRoot), 'utf8'));
     checkDressupDecision(decision);

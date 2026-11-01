@@ -30,12 +30,7 @@ function readProgress<T>(value: unknown, name: string): StepProgress<T> {
     throw new Error(`${name} has an invalid status`);
   }
   if (item.status === 'completed' && item.output === undefined) throw new Error(`${name} is missing its output`);
-  const progress = structuredClone(item) as StepProgress<T>;
-  if (progress.status === 'running') {
-    progress.status = 'pending';
-    progress.message = '上次执行中断，等待续跑';
-  }
-  return progress;
+  return structuredClone(item) as StepProgress<T>;
 }
 
 function checkOutput(stage: GroupStage | 'merge', progress: StepProgress<unknown>): void {

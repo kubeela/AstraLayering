@@ -3,11 +3,15 @@ import { loadWorkflowEnvironment, workflowCodexOptions } from './environment.ts'
 import { agentCallError, formatAgentError } from './diagnostics.ts';
 import { errorDetails, errorMessage } from '../agents/errors.ts';
 import { workflowsDirectory } from '../paths.ts';
-import { spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
+import { createHash, randomUUID } from 'node:crypto';
+import { mkdir, rename, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { once } from 'node:events';
 import { dirname, join, resolve } from 'node:path';
 import { createInterface } from 'node:readline';
+import { tmpdir } from 'node:os';
+import { promisify } from 'node:util';
 import { AgentLog } from './agent-log.ts';
 import { AgentCallError } from './agent-runtime.ts';
 import { type AgentOptions, type AgentSession, type AgentTask, type GeneratedImage } from './agents.ts';
@@ -25,6 +29,25 @@ export function appServerCommand(override?: string): { command: string; args: st
   const sdkRequire = createRequire(import.meta.resolve('@openai/codex-sdk'));
   const packagePath = sdkRequire.resolve('@openai/codex/package.json');
   return { command: process.execPath, args: [join(dirname(packagePath), 'bin/codex.js'), 'app-server'] };
+}
+
+// The model catalog's tool_mode puts every tool behind code mode's exec script, which outranks
+// features.code_mode. That script receives a dynamic tool result as one string of JSON plus a data
+// URL, so the model misses images and paths. Run every model with direct tool calls instead.
+async function directToolCatalog(executable: { command: string; args: string[] }, configArgs: string[], env: NodeJS.ProcessEnv) {
+  const { stdout } = await promisify(execFile)(executable.command, [...executable.args.slice(0, -1), 'debug', 'models', ...configArgs],
+    { env, timeout: 60_000, maxBuffer: 64 * 1024 * 1024 });
+  const catalog = JSON.parse(stdout);
+  if (!Array.isArray(catalog?.models)) throw new Error('Codex debug models 未返回模型目录');
+  for (const model of catalog.models) model.tool_mode = null;
+  const text = JSON.stringify(catalog);
+  const directory = join(tmpdir(), 'astra-layering-codex-catalogs');
+  const file = join(directory, `${createHash('sha256').update(text).digest('hex').slice(0, 16)}.json`);
+  await mkdir(directory, { recursive: true });
+  const temporary = `${file}.${randomUUID()}.tmp`;
+  await writeFile(temporary, text);
+  await rename(temporary, file);
+  return file;
 }
 
 function flattenConfig(value: Record<string, unknown>, prefix = '', result: Record<string, unknown> = {}) {
@@ -240,10 +263,11 @@ export function createFunctionToolSession(options: AgentOptions, resumeThreadId?
 
   async function start(threadOptions: Record<string, unknown>) {
     const executable = appServerCommand(options.codexPathOverride);
-    const args = [...executable.args];
-    for (const config of options.configOverrides ?? []) args.push('-c', config);
     const env = { ...(options.env ?? process.env) };
     if (options.apiKey) env.CODEX_API_KEY = options.apiKey;
+    const configArgs = ['features.code_mode=false', 'features.code_mode_only=false', ...options.configOverrides ?? []].flatMap(config => ['-c', config]);
+    const catalog = await directToolCatalog(executable, configArgs, env);
+    const args = [...executable.args, ...configArgs, '-c', `model_catalog_json=${JSON.stringify(catalog)}`];
     child = spawn(executable.command, args, { cwd, env, stdio: ['pipe', 'pipe', 'pipe'] });
     child.once('error', fail);
     child.once('close', (code, exitSignal) => {

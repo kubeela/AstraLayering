@@ -121,29 +121,6 @@ export function mapPath(path: string): Mapped {
   return stepPattern.test(segments[0]) ? stepIn(section, [segments[0]], segments.slice(1)) : { path, rest: [] };
 }
 
-// The old directory that a step's section-relative ids are relative to.
-function oldUnit(markerPath: string): string {
-  const [section, next] = markerPath.split('/');
-  if (section === 'part-layering' && next === 'preparation') return 'part-layering/preparation';
-  if (section === 'shadow' && shadowModes.includes(next)) return `shadow/${next}`;
-  return section;
-}
-const prefixed = (id: string) => (sectionIds as readonly string[]).includes(id.split('/')[0]) && id.includes('/');
-// An old dependency id of a step in unit, as its new id; null when the dependency is retired.
-function mapId(id: string, unit: string): string | null | undefined {
-  const [step, output] = id.split('#');
-  const full = prefixed(step) ? step : `${unit}/${step}`, mapped = mapPath(full);
-  if (!mapped) return mapped;
-  if (mapped.rest.length || !mapped.step) return mapped.path === full ? (prefixed(step) ? step : step) : undefined;
-  const target = prefixed(step) ? `${mapped.section}/${mapped.step}` : mapped.step;
-  if (output === undefined) return target;
-  // An output named relative to the step directory keeps its target.
-  const named = mapPath(posix.normalize(`${full}/${output}`));
-  const name = named ? posix.relative(mapped.path, named.path) : output;
-  return `${target}#${name}`;
-}
-
-const sha = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const fileSha = async (path: string) => createHash('sha256').update(await readFile(path)).digest('hex');
 
 type Entry = { old: string; target: string };
@@ -208,45 +185,10 @@ async function convertLocked(directory: string, progress?: (message: string) => 
   const contents = new Map<string, string>();
   const read = (path: string) => readFile(join(directory, path), 'utf8');
 
-  // Step records: outputs re-keyed for the new directories, output stamps
-  // recomputed from the new declared names, then dependencies re-keyed.
+  // Step markers carry no data any more; older JSON markers become empty files.
   const markers = entries.filter(entry => ['.completed', '.running'].includes(basename(entry.old)));
-  const records = new Map<string, any>(), stamps = new Map<string, string>();
-  for (const { old, target } of markers) {
-    const text = await read(old);
-    let record: any;
-    try { record = text.trim() ? JSON.parse(text) : undefined; } catch { record = undefined; }
-    if (!record || typeof record !== 'object') continue;
-    records.set(old, record);
-    if (!record.outputs) continue;
-    const from = dirname(old), to = dirname(target), task = record.paths === 'task';
-    const declaredOld: Record<string, string> = {}, declaredNew: Record<string, string> = {}, stored: Record<string, string> = {};
-    for (const [key, hash] of Object.entries(record.outputs as Record<string, string>)) {
-      const absolute = task ? key : posix.normalize(`${from}/${key}`);
-      const moved = mapPath(absolute)?.path ?? absolute;
-      declaredOld[posix.relative(from, absolute)] = hash;
-      declaredNew[posix.relative(to, moved)] = hash;
-      stored[task ? moved : posix.relative(to, moved)] = hash;
-    }
-    record.outputs = stored;
-    if (typeof record.stamp === 'string' && record.stamp === sha(declaredOld)) {
-      const next = sha(declaredNew);
-      if (next !== record.stamp) stamps.set(record.stamp, next);
-      record.stamp = next;
-    }
-  }
-  for (const [old, record] of records) {
-    if (!record.inputs || typeof record.inputs !== 'object') continue;
-    const unit = oldUnit(old), inputs: Record<string, string> = {};
-    for (const [id, value] of Object.entries(record.inputs as Record<string, string>)) {
-      const next = mapId(id, unit);
-      if (next === null) continue;
-      if (next === undefined) throw new Error(`无法识别的步骤依赖 ${id}（${old}），未做转换；原目录备份在 ${backup}`);
-      inputs[next] = stamps.get(value) ?? value;
-    }
-    record.inputs = inputs;
-    contents.set(old, JSON.stringify(record) + '\n');
-  }
+  const records = new Set(markers.map(entry => entry.old));
+  for (const { old } of markers) contents.set(old, '');
 
   if (known.has('run.json')) {
     const run = JSON.parse(contents.get('run.json') ?? await read('run.json'));
@@ -264,20 +206,14 @@ async function convertLocked(directory: string, progress?: (message: string) => 
     const record = JSON.parse(await read(clothingRecord));
     const person = 'part-layering/references', clothing = 'clothing-part-layering/references/clothing.png';
     const hash = async (path: string) => known.has(path) ? fileSha(join(directory, path)) : undefined;
-    const upstream: Record<string, string> = {};
-    for (const id of [partSteps.standard, partSteps.simplified, partSteps.base]) {
-      const old = Object.keys(preparationIds).find(key => preparationIds[key] === id)!;
-      const marker = records.get(`part-layering/preparation/${old}/.completed`);
-      if (marker?.stamp) upstream[`part-layering/${id}`] = marker.stamp;
-    }
-    const valid = [1, 2].includes(record?.version) && Object.keys(upstream).length === 3
+    const upstream = [partSteps.standard, partSteps.simplified, partSteps.base].every(id =>
+      known.has(`part-layering/preparation/${Object.keys(preparationIds).find(key => preparationIds[key] === id)}/.completed`));
+    const valid = [1, 2].includes(record?.version) && upstream
       && record.inputHash === await hash(`${person}/simplified-subject.png`) && record.clothingHash === await hash(clothing)
       && (record.version !== 2 || record.baseInputHash === await hash(`${person}/base-subject.png`))
       && (!record.standardHash || record.standardHash === await hash(`${person}/standard.png`));
     if (valid) {
-      const outputs = { [clothing]: record.clothingHash };
-      contents.set(`\0clothing-part-layering/${clothingPreparationStep}/.completed`,
-        JSON.stringify({ stamp: sha({ '../references/clothing.png': record.clothingHash }), inputs: upstream, outputs, paths: 'task' }) + '\n');
+      contents.set(`\0clothing-part-layering/${clothingPreparationStep}/.completed`, '');
       notes.push('衣服 preparation.json 已转换为 step01_preparation 步骤记录，沿用现有纯衣服参考');
     } else notes.push('衣服 preparation.json 与当前人物参考不一致或人物准备步骤缺失，未转换；下次运行将重做衣服 preparation');
   }
@@ -351,6 +287,5 @@ async function convertLocked(directory: string, progress?: (message: string) => 
   }));
   if (retiredRoots.size) notes.push(`已从转换后的目录移除不再使用的内容（备份中保留）：${[...retiredRoots].join('、')}`);
   if (rewritten) notes.push(`更新了 ${rewritten} 个报告/记录文件中的路径`);
-  if (stamps.size) notes.push(`重算了 ${stamps.size} 个产物步骤的指纹`);
   return { directory, backup, notes };
 }

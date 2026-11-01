@@ -1,13 +1,13 @@
 import { chmod, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { patchedCodexCapabilities } from '../../shared/tests/fake-codex.ts';
+import { fakeDebug } from '../../shared/tests/fake-codex.ts';
 
 export type FakeToolCall = { tool: string; arguments: unknown; threadId?: string; namespace?: string | null };
 
 export async function fakeAppServer(directory: string, calls: FakeToolCall[], mode = 'completed', completedItems: unknown[] = [],
   behavior: { failedTurns?: number; blockedTurns?: number; errorInfo?: unknown; nativeReconnect?: boolean; skipCallsAfterFailure?: boolean; finalText?: string } = {}) {
   const executable = join(directory, 'fake-app-server.mjs');
-  const capture = join(directory, 'protocol.jsonl');
+  const capture = join(directory, 'protocol.jsonl'), argv = join(directory, 'argv.json');
   await writeFile(executable, `#!${process.execPath}
 import { createInterface } from 'node:readline';
 import { existsSync } from 'node:fs';
@@ -19,13 +19,14 @@ const capture = ${JSON.stringify(capture)};
 const behavior = ${JSON.stringify(behavior)};
 const finalText = behavior.finalText ?? '文件已保存，不返回 JSON。';
 const write = value => process.stdout.write(JSON.stringify(value) + '\\n');
-if (process.argv[2] === 'debug') { console.log(${JSON.stringify(JSON.stringify(patchedCodexCapabilities))}); process.exit(0); }
+${fakeDebug()}
 if (process.argv[2] === 'exec') {
   for await (const chunk of process.stdin) {}
   write({type:'thread.started',thread_id:'sdk-thread'});
   write({type:'turn.completed',usage:{input_tokens:1,cached_input_tokens:0,output_tokens:1}});
   process.exit(0);
 }
+await writeFile(${JSON.stringify(argv)}, JSON.stringify(process.argv.slice(2)));
 let index = 0, turns = 0, threads = 0, threadId = 'native-thread', rollout;
 // blockedTurns: the first turn of each of the first N threads is blocked; each thread
 // gets its own id and a rollout of what the model saw.
@@ -86,5 +87,5 @@ for await (const line of createInterface({ input: process.stdin })) {
 }
 `, 'utf8');
   await chmod(executable, 0o755);
-  return { executable, capture };
+  return { executable, capture, argv };
 }

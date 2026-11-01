@@ -1,10 +1,8 @@
 // 补全只能增加封闭路径。保留输入正文，新增路径置于其下方；不接受任意 SVG 属性或节点。
-import { svgSource, updateSvgRoot } from '../xml.ts';
+import { svgSource } from '../xml.ts';
 export type CompletionPath = { d: string; fillRule?: 'nonzero' | 'evenodd' };
 const open = '<g data-completion-additions="v1" fill="#58b8a9" stroke="none">';
-const clean = (text: string) => updateSvgRoot(text.replace(/\r\n/g, '\n'), {
-  'data-source-sha256': null, 'data-completion-inputs': null,
-});
+const clean = (text: string) => text.replace(/\r\n/g, '\n');
 
 export function completionPaths(value: unknown): CompletionPath[] {
   if (!Array.isArray(value) || value.length > 256) throw new Error('补全 paths 须为数组，最多 256 条');

@@ -24,8 +24,8 @@ export function partRasterSection<T extends PartRasterDefinition>(definition: T)
     resolveInput: (name, root) => resolvePartInput(name, definition.inputSection, root),
     validateInput: isPartLayeringInput,
     inputDirectories: input => [input.directory],
-    // occlusion is the last part step, so its stamp changes whenever the parts are redone.
-    upstreamStep: input => ({ id: `${definition.inputSection}/${partSteps.occlusion}`, root: taskRootOf(input.directory), directory: join(input.directory, partSteps.occlusion), dependsOn: [] }),
+    // occlusion is the last part step.
+    upstreamStep: input => ({ id: `${definition.inputSection}/${partSteps.occlusion}`, directory: join(input.directory, partSteps.occlusion) }),
     tools: (output, input, step, phase) => step.id === 'step01' && phase.startsWith('review-')
       ? [createReviewAnnotationTool(dirname(output), dirname(dirname(output)), join(output, 'review-evidence'))]
       : step.id === 'step01' && (phase === 'draw' || phase.startsWith('repair-'))

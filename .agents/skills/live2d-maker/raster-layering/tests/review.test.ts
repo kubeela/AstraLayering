@@ -46,6 +46,9 @@ async function fixture(t: TestContext) {
     index++;
     return completed;
   } });
+  // The drawing is delivered but not yet reviewed: the step is still running.
+  const output = join(runsDirectory, 'test', 'raster-layering');
+  await rename(join(output, 'step01/.completed'), join(output, 'step01/.running'));
   return { directory, output: join(runsDirectory, 'test', 'raster-layering'), options, resume: { name: 'test', krita: process.execPath }, deps };
 }
 
@@ -201,33 +204,6 @@ test('修复交付缺失不发布 repair.md，恢复后能继续补齐文件', a
   await readFile(join(f.output, 'step01/.completed'));
 });
 
-test('删除 review 报告只重启检查及后续反馈，保留工程和绘制 thread，且未改工程时保留后续步骤', async t => {
-  const f = await fixture(t);
-  await runWorkflow(f.resume, { ...f.deps, agent: request => report(request, '通过') });
-  await rm(join(f.output, 'step01/review-01.md'));
-  await writeFile(join(f.output, 'step01/repair-01.md'), '结论：已修复\n\nstale');
-  await writeFile(join(f.output, 'step01/review-02.md'), '结论：通过\n\nstale');
-  await mkdir(join(f.output, 'step02'));
-  await writeFile(join(f.output, 'step02/.completed'), '');
-  const original = await readFile(join(f.output, 'step01/character-depth.kra'));
-  const before = (await readdir(f.output)).sort();
-  const dryPrompt = await runWorkflow({ ...f.resume, dryRun: true }, { ...f.deps, agent: forbidden });
-  assert.ok(dryPrompt.startsWith('你负责对第一步交付'));
-  assert.ok(dryPrompt.includes('step01/review-01.md.tmp'));
-  await readFile(join(f.output, 'step01/.completed'));
-  await readFile(join(f.output, 'step01/repair-01.md'));
-  assert.deepEqual((await readdir(f.output)).sort(), before);
-  await runWorkflow(f.resume, { ...f.deps, agent: async request => {
-    assert.equal(reportName(request), 'review-01.md.tmp');
-    await absent(join(f.output, 'step01/repair-01.md'));
-    await absent(join(f.output, 'step01/review-02.md'));
-    await readFile(join(f.output, 'step02/.completed'));
-    assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-thread');
-    assert.deepEqual(await readFile(join(f.output, 'step01/character-depth.kra')), original);
-    return report(request, '通过');
-  } });
-});
-
 test('重新进入初次绘制时清除旧 review 结论，不把修改前的通过报告复用到新交付', async t => {
   const f = await fixture(t);
   await runWorkflow(f.resume, { ...f.deps, agent: request => report(request, '通过') });
@@ -270,7 +246,6 @@ test('缺失、不完整、无法检查的报告以及取消均不发布正式 r
   }
 });
 
-
 test('step01 返修修改分层文件后中断，续跑保留结构且保留未改动的 KRA', async t => {
   const f = await fixture(t);
   const source = join(dirname(f.output), 'part-layering');
@@ -291,23 +266,4 @@ test('step01 返修修改分层文件后中断，续跑保留结构且保留未�
     return report(request, '已修复');
   } });
   await runWorkflow(f.resume, { ...f.deps, agent: forbidden });
-});
-
-test('轮廓修复中断后保留原工程基线，修完归档后续成果且不更换绘制会话', async t => {
-  const f = await fixture(t);
-  await mkdir(join(f.output, 'step02'));
-  await writeFile(join(f.output, 'step02/.completed'), '');
-  await writeFile(join(f.output, 'step02/old.kra'), 'valuable old edge work');
-  await assert.rejects(runWorkflow(f.resume, { ...f.deps, agent: async request => {
-    if (isReview(request)) return report(request, '需要修复');
-    await writeFile(join(f.output, 'step01/character-depth.kra'), 'corrected outline');
-    throw new Error('interrupted after save');
-  } }), /interrupted after save/);
-  await readFile(join(f.output, 'step02/old.kra'));
-  await runWorkflow(f.resume, { ...f.deps, agent: request => report(request, isReview(request) ? '通过' : '已修复') });
-  const entries = await readdir(join(f.output, 'recovery'));
-  assert.equal(entries.length, 1);
-  assert.equal(await readFile(join(f.output, 'recovery', entries[0], 'step02/old.kra'), 'utf8'), 'valuable old edge work');
-  await absent(join(f.output, 'step02/.completed'));
-  assert.equal((await readStepSession(f.output, 'step01'))?.threadId, 'drawing-thread');
 });

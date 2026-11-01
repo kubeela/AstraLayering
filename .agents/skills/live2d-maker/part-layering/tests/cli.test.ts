@@ -89,21 +89,17 @@ test('人物 CLI 的标准化选项不把省略当成关闭', () => {
   assert.throws(() => parseRunArguments(['--standard', '--no-standard']), /不能同时使用/);
 });
 
-test('预览缺失时用模拟步骤重建；实际入口复用完整事实且强制禁止模型进程', async t => {
+test('模拟步骤完成后实际入口复用完整事实且强制禁止模型进程', async t => {
   const runName = `test-cli-${randomUUID()}`;
   const references = getPreparationDirectory(runName);
   const directory = dirname(references);
   t.after(() => rm(taskDirectory(runName), { recursive: true, force: true }));
   await seedPreparedReferences(runName);
   await seedInitialGroups(directory, [{ id: 'head', note: '已有识别的组' }]);
-  // 缺预览只重做合并；重建字节不变时层级规划沿用。
-  await runLayering({ profile, directory, references: await loadPreparedReferences(runName), groups: null, steps: workingSteps([]) });
-  await rm(join(directory, 'preview.svg'));
   const progress: string[] = [];
   await runLayering({ profile, directory, references: await loadPreparedReferences(runName), groups: null,
     steps: workingSteps([]), progress: message => progress.push(message) });
   assert.ok(progress.some(message => message.includes('最终预览合并：完成')));
-  assert.ok(progress.some(message => message.startsWith('遮挡层级规划：沿用')));
   const groupsPath = join(directory, 'input.json');
   await writeFile(groupsPath, JSON.stringify([{ id: 'head', note: '不能覆盖已有的说明' }]));
   const first = await runCli(['--name', runName, '--groups', groupsPath, '-j', '2']);
@@ -124,8 +120,8 @@ test('预览缺失时用模拟步骤重建；实际入口复用完整事实且�
   assert.ok(!('initial' in tree) && !('merge' in tree) && !('steps' in tree.groups[0]));
   assert.equal(tree.groups[0].note, '已有识别的组');
   assert.deepEqual((await readGroupInput(join(directory, 'groups.json')) as { id: string }[]).map(group => group.id), ['head']);
-  // 故意让缓存失效，证明隔离保护会立即报错，不能启动真实 SDK / app-server。
-  await rm(join(directory, 'occlusion.json'));
+  // 让最后一步重跑，证明隔离保护会立即报错，不能启动真实 SDK / app-server。
+  await rm(join(directory, 'step14_occlusion/.completed'));
   await assert.rejects(runCli(['--name', runName]), /CLI 测试禁止启动模型或其他外部进程/);
 });
 

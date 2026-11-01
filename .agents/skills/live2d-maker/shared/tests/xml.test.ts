@@ -2,7 +2,6 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { parseXml, svgSource, svgBody, updateSvgRoot } from '../xml.ts';
 import { composeCompletion, assertCompletionPreserves } from '../part/completion-svg.ts';
-import { stampedSvg } from '../part/artifact-facts.ts';
 import { namespaceSvg } from '../part/merge-svg.ts';
 import { layerPartName, matchLayerPart } from '../layer-names.ts';
 
@@ -13,9 +12,6 @@ test('XML source ranges ignore quoted >, comment tags, CDATA and DOCTYPE; metada
   const parsed = svgSource(source);
   assert.equal(parsed.elements.length, 4);
   assert.equal(svgBody(source), body);
-  const stamped = stampedSvg(Buffer.from(source), 'a'.repeat(64)).toString();
-  assert.equal(svgBody(stamped), body);
-  assert.equal(svgSource(stamped).root.element.getAttribute('data-source-sha256'), 'a'.repeat(64));
   const scaled = updateSvgRoot(source, { width: '20', height: '20', viewBox: '0 0 5 5' });
   assert.equal(svgBody(scaled), body);
   assert.equal(svgSource(scaled).root.element.getAttribute('data-note'), 'a > b');
@@ -23,9 +19,9 @@ test('XML source ranges ignore quoted >, comment tags, CDATA and DOCTYPE; metada
   assert.throws(() => parseXml('<svg id="a" id="b"/>'), /XML/);
   assert.equal(updateSvgRoot('<svg data-note="a > b"/>', { width: '10' }), '<svg data-note="a > b" width="10"/>');
 });
-test('completion is inserted after the real root and preserves all original content; stamps do not weaken preservation', () => {
+test('completion is inserted after the real root and preserves all original content', () => {
   const candidate = composeCompletion(source, [{ d: 'M0 0H1V1H0Z' }]);
-  assert.equal(assertCompletionPreserves(source, stampedSvg(Buffer.from(candidate), 'b'.repeat(64)).toString()), 1);
+  assert.equal(assertCompletionPreserves(source, candidate), 1);
   assert.ok(svgBody(candidate).endsWith(body));
   assert.throws(() => assertCompletionPreserves(source, candidate.replace('#123456', '#abcdef')), /改变了已有 SVG/);
 });
