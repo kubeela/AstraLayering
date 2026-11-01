@@ -5,14 +5,14 @@ import { resolve, join, delimiter } from 'node:path';
 import { parseEnv, promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import { workflowsDirectory } from '../.agents/skills/live2d-maker/shared/paths.ts';
-import { modelHarnesses, modelSlots, resolveModelDefaults, resolveImageDefaults, imageSteps, imageModelProviders, reasoningEfforts, stepModelSlots, type AgentStep, type Harness } from '../.agents/skills/live2d-maker/shared/agents/models.ts';
+import { modelHarnesses, modelSlots, modelSlotKey, isModelSlotKey, defaultImageModelKey, imageModelKey, resolveModelDefaults, resolveImageDefaults, imageSteps, imageModelProviders, reasoningEfforts, stepModelSlots, type AgentStep, type Harness, type ModelSlot } from '../.agents/skills/live2d-maker/shared/agents/models.ts';
 import { parseWorkflowEnvironment, type WorkflowEnvironment } from '../.agents/skills/live2d-maker/shared/codex/environment.ts';
 import { appServerCommand } from '../.agents/skills/live2d-maker/shared/codex/tool-agent.ts';
 import { validateImageSelection } from '../.agents/skills/live2d-maker/shared/agents/images.ts';
 import { validateProviderModel } from '../.agents/skills/live2d-maker/shared/agents/providers.ts';
 
 const envValues = (source: string) => parseEnv(source) as Record<string,string>;
-const roles: Record<string,string> = { preparation:'参考准备与姿态判断',part_draw:'轮廓绘制与返修',part_review:'轮廓审核',part_reduce:'同层去重',part_completion:'遮挡补全',part_groups:'部件分组',part_depth:'深度分析',raster_step01:'分层绘制与返修',raster_step01_review:'分层绘制审核',raster_step02:'边缘精修',raster_step03:'人物换装素体',assembly:'穿戴组装',shadow:'阴影制作' };
+const roles: Record<string,string> = { preparation:'参考准备与姿态判断',part_draw:'轮廓绘制与返修',part_review:'轮廓审核',part_reduce:'同层去重',part_completion:'遮挡补全',part_groups:'部件分组',part_depth:'深度分析',raster_step01:'分层绘制与返修',raster_step01_review:'分层绘制审核',raster_step02:'边缘精修',raster_step03:'人物换装素体',assembly:'穿戴组装',shadow:'阴影制作',nine_axis_head:'九轴脸部与双耳转向' };
 const images: Record<string,string> = { part_standardize:'人物姿态标准化',part_simplify:'简化穿衣参考',part_base_subject:'人物素体参考',clothing_preparation:'纯衣服参考',part_completion:'人物补全辅助参考',clothing_completion:'衣服补全辅助参考',raster_step01:'人物分层绘制',raster_step01_review:'人物绘制审核',raster_step01_repair:'人物绘制返修',raster_step02:'人物边缘精修',raster_step03:'人物换装素体',clothing_raster_step01:'衣服分层绘制',clothing_raster_step01_review:'衣服绘制审核',clothing_raster_step01_repair:'衣服绘制返修',clothing_raster_step02:'衣服边缘精修',assembly:'穿戴组装',shadow_maps:'阴影法线与深度' };
 export const secretKey = (key: string) => /(?:key|token|secret|password|credential|authorization)/i.test(key);
 const digest = (text: string, exists: boolean) => createHash('sha256').update(`${exists}\0${text}`).digest('hex');
@@ -25,12 +25,12 @@ function scalarFields(defaults: Record<string,string>): Field[] {
   for (const harness of ['codex','claude','agv']) {
     for (const [suffix,label,type] of [['api_key','API 密钥','secret'],['base_url','服务地址','text'],['models','可用模型列表','text'],['path','CLI 路径','text']]) result.push({key:`layering_${harness}_${suffix}`,label:`${harness} ${label}`,section:'connection',type,hint:suffix==='models'?'逗号分隔模型 ID；留空沿用已有范围':suffix==='api_key'?'留空复用已有登录；填入新值可替换本地密钥':undefined});
   }
-  const labels: Record<string,string> = {layering_agv_protocol:'AGV 网关协议',layering_codex_home:'Codex 配置目录',layering_openai_image_base_url:'GPT 生图服务地址',layering_openai_image_api_key:'GPT 生图 API 密钥',layering_google_image_base_url:'Nano 生图服务地址',layering_google_image_api_key:'Nano 生图 API 密钥',layering_google_image_protocol:'Nano 生图协议',layering_video_base_url:'生视频服务地址',layering_video_api_key:'生视频 API 密钥',layering_video_model:'生视频模型',layering_agv_unlimited_response_header_timeout:'AGV 响应头期限兼容',layering_agv_minimal_thinking_level:'AGV MINIMAL 兼容',layering_image_compact_threshold:'Codex 图片数量预算（兼容键）',layering_krita_max_instances:'本机 Krita 并发上限',layering_update_check:'检查新版本'};
+  const labels: Record<string,string> = {layering_agv_protocol:'AGV 网关协议',layering_codex_home:'Codex 配置目录',layering_openai_image_base_url:'GPT 生图服务地址',layering_openai_image_api_key:'GPT 生图 API 密钥',layering_google_image_base_url:'Nano 生图服务地址',layering_google_image_api_key:'Nano 生图 API 密钥',layering_google_image_protocol:'Nano 生图协议',layering_agv_unlimited_response_header_timeout:'AGV 响应头期限兼容',layering_agv_minimal_thinking_level:'AGV MINIMAL 兼容',layering_image_compact_threshold:'Codex 图片数量预算（兼容键）',layering_krita_max_instances:'本机 Krita 并发上限',layering_update_check:'检查新版本'};
   const choices: Record<string,string[]> = {layering_agv_protocol:['','genai','openai'],layering_google_image_protocol:['gemini','openai'],layering_agv_minimal_thinking_level:['','LOW','MEDIUM','HIGH']};
   for (const key of Object.keys(defaults)) {
-    if (result.some(f=>f.key===key)||key.startsWith('layering_agent_')||key.endsWith('_image_model')||key==='layering_image_model') continue;
+    if (result.some(f=>f.key===key)||isModelSlotKey(key)||key.endsWith('_image_model')||key==='layering_image_model') continue;
     const type = secretKey(key)?'secret':choices[key]?'select':/deduplicate$|unlimited_response_header_timeout$|update_check$/.test(key)?'boolean':/compact_threshold$|compact_mib$|_max_instances$/.test(key)?'number':'text';
-    result.push({ key,label:labels[key]??key.replace(/^layering_/,'').replaceAll('_',' '), section:key==='layering_agv_protocol'?'connection':key.includes('compact')||key.includes('deduplicate')?'budget':key.includes('_image_')||key.startsWith('layering_video_')?'image-api':'advanced',type,options:choices[key],fallback:defaults[key] });
+    result.push({ key,label:labels[key]??key.replace(/^layering_/,'').replaceAll('_',' '), section:key==='layering_agv_protocol'?'connection':key.includes('compact')||key.includes('deduplicate')?'budget':key.includes('_image_')?'image-api':'advanced',type,options:choices[key],fallback:defaults[key] });
   }
   for(const [key,label] of Object.entries({DISPLAY:'Linux 显示入口 DISPLAY',WAYLAND_DISPLAY:'Wayland 显示入口',QT_QPA_PLATFORM:'Qt 显示方式'})) result.push({key,label,section:'advanced',type:'text'});
   return result;
@@ -99,7 +99,7 @@ export function createEnvironmentConfig({directory=workflowsDirectory, env=proce
   async function schema() {
     const template=await readFile(join(directory,'example.env'),'utf8'), defaults=envValues(template);
     const modelSlotDefaults=resolveModelDefaults(defaults), imageDefaults=resolveImageDefaults(defaults);
-    return {template,fields:[...Object.entries(modelSlotDefaults).map(([slot,fallback])=>({key:`layering_agent_${slot}_model`,label:roles[slot],section:'llm',type:'model',fallback})),{key:'layering_default_image_model',label:'默认生图模型',section:'image',type:'image',fallback:imageDefaults.model},...imageSteps.map(step=>({key:`layering_${step}_image_model`,label:images[step],section:'image',type:'image',fallback:defaults[`layering_${step}_image_model`]??''})),...scalarFields(defaults)] as Field[]};
+    return {template,fields:[...Object.entries(modelSlotDefaults).map(([slot,fallback])=>({key:modelSlotKey(slot as ModelSlot),label:roles[slot],section:'llm',type:'model',fallback})),{key:defaultImageModelKey,label:'默认生图模型',section:'image',type:'image',fallback:imageDefaults.model},...imageSteps.map(step=>({key:imageModelKey(step),label:images[step],section:'image',type:'image',fallback:defaults[imageModelKey(step)]??''})),...scalarFields(defaults)] as Field[]};
   }
   async function describe(text:string,exists:boolean,revision:string) {
     const {fields}=await schema(),values=envValues(text), issues:string[]=[];
@@ -108,8 +108,8 @@ export function createEnvironmentConfig({directory=workflowsDirectory, env=proce
     const cli=Object.fromEntries(await Promise.all((['codex','claude','agv'] as const).map(async h=>[h,await probe(h,values,settings?.codex.env??{...values,...env},directory)])));
     const effective:Record<string,string>={};
     if(settings) {
-      for(const [step,slot] of Object.entries(stepModelSlots)) {const m=settings.stepModels[step as AgentStep];effective[`layering_agent_${slot}_model`]=`${m.model}-${m.effort}`;}
-      for(const step of imageSteps)effective[`layering_${step}_image_model`]=settings.stepImages[step]!;
+      for(const [step,slot] of Object.entries(stepModelSlots)) {const m=settings.stepModels[step as AgentStep];effective[modelSlotKey(slot)]=`${m.model}-${m.effort}`;}
+      for(const step of imageSteps)effective[imageModelKey(step)]=settings.stepImages[step]!;
       for(const step of imageSteps)try{validateImageSelection(settings,step);}catch(error){issues.push((error as Error).message);}
       for(const slot of modelSlots){const step=Object.keys(stepModelSlots).find(s=>stepModelSlots[s as AgentStep]===slot)!;try{validateProviderModel(settings.providers,settings.stepModels[step as AgentStep],roles[slot]);}catch(error){issues.push((error as Error).message);}}
     }
@@ -149,7 +149,7 @@ export function createEnvironmentConfig({directory=workflowsDirectory, env=proce
     // Validate with the worker resolver, without modifying the live file.
     parseWorkflowEnvironment(text,env,directory);
     const report=await describe(text,true,revision);
-    for(const [key,newValue] of Object.entries(edits)) if(key.startsWith('layering_agent_')&&newValue&&newValue!==envValues(current.text)[key]) {
+    for(const [key,newValue] of Object.entries(edits)) if(isModelSlotKey(key)&&newValue&&newValue!==envValues(current.text)[key]) {
       const model=report.models.find(m=>newValue.startsWith(m.id+'-'));
       if(model&&!model.available)throw new Error(model.detail);
       if(model&&!model.allowed)throw new Error(`${model.id} 未包含在该 CLI 的可用模型列表中，请同时调整模型列表。`);

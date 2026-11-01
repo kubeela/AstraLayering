@@ -33,7 +33,7 @@ export const help = [
   '--knowledge <目录> 用该目录完整替换 skill 自带的 knowledge/ 先验知识，不回退；记录在 run.json，续跑省略沿用。',
   '  启动、继续、恢复、重试前先检查其中全部文件，缺失则拒绝运行并写入 workflow.log。',
   '--from / --to <管线> 选择连续范围，默认从人物 part 到阴影制作；只制作一个管线时两者相同。',
-  '管线：part-layering、raster-layering、clothing-part-layering、clothing-raster-layering、character-assembly、shadow、nine-axis（头部九轴，需生视频接口与 ffmpeg；默认路线止于 shadow）',
+  '管线：part-layering、raster-layering、clothing-part-layering、clothing-raster-layering、character-assembly、shadow',
   '--shadow-mode mask|normal-depth 选择阴影路线，首次默认 mask；续跑省略沿用保存值。',
   '--jobs <正整数> 整次运行所有管线（含 raster、组装、阴影）共用的 agent 名额，默认 3；并行管线不增加总并发。',
   '--standard 在人物 preparation 中先判断姿态，必要时生成 standard.png；默认关闭，仅复制原图。',

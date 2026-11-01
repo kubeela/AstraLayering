@@ -10,13 +10,14 @@ import { publishDepthPreview } from './depth-preview.ts';
 import { type GroupContext, type GroupInput, type GroupNode, type GroupSeed, type GroupStage, type GroupStageOutputs, type LayeringResult, type LayeringSteps, type StepResult, type SvgArtifact, type SvgMerger } from './layering-types.ts';
 import type { PreparationReferences } from './preparation-types.ts';
 import { runWorkflow, validateWorkflowOptions } from './workflow.ts';
-import { validateGroupSvg } from './svg-tools.ts';
+import { parentBoundsSource, validateGroupSvg } from './svg-tools.ts';
+import { copyParentRegion } from './parent-region.ts';
 import { assertCompletionPreserves } from './completion-svg.ts';
 import { occlusionPath, occlusionSourceHash, validateOcclusionPlan } from './occlusion-plan.ts';
 import { dependenciesMatch } from './completion-inputs.ts';
 import { beginStep, checkStep, completeStep, readStep, type ChainStep, type StepAction, type StepStatus } from '../step-chain.ts';
 import { taskRootOf } from '../task-paths.ts';
-import { groupStep, layerStep, readInitialGroups } from './part-steps.ts';
+import { copiedOutlineNote, groupStep, layerStep, readInitialGroups } from './part-steps.ts';
 import { partSteps } from '../step-paths.js';
 
 const labels = { outline: '组轮廓与自检', review: '外轮廓与去噪 review', reduction: '同层轮廓去重',
@@ -164,6 +165,21 @@ export async function runLayering(input: {
       await completed(id, 'review', output);
       await completeStep(step.directory);
       report(`[${id}] 原图不可见：跳过描边和轮廓 review，直接补全`);
+      return;
+    }
+    const { group, parent } = context(id), parentSvg = parent?.steps.completion.output?.path;
+    if (group.outlineFromParent) {
+      if (!parentSvg) throw new Error(`${id}：复制轮廓需要父组完成稿`);
+      const meta = await sharp(resolve(directory, input.references.baseSubject)).metadata();
+      const canvas = { width: meta.autoOrient.width, height: meta.autoOrient.height };
+      const copy = await copyParentRegion(parentSvg, id, group.outlineFromParent, canvas);
+      await writeAtomic(outline, copy.svg);
+      await validateGroupSvg(outline, id, canvas, parentBoundsSource(group, parentSvg));
+      const output = { path: outline, note: copiedOutlineNote };
+      await completed(id, 'outline', output);
+      await completed(id, 'review', output);
+      await completeStep(step.directory);
+      report(`[${id}] ${copiedOutlineNote}`);
       return;
     }
     if (check.action === 'continue' && await readSvg(outline)) await completed(id, 'outline', { path: outline });

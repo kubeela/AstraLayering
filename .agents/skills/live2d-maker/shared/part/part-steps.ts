@@ -29,6 +29,7 @@ export function layerStep(directory: string, depth: number): ChainStep {
   return { id, directory: join(directory, id) };
 }
 
+export const copiedOutlineNote = '轮廓由父组完成稿框选复制：跳过描边和轮廓 review';
 type ChildrenFile = { groupId: string; groups: GroupSeed[]; note?: string };
 export async function readChildren(directory: string, id: string): Promise<ChildrenFile> {
   const value = JSON.parse(await readFile(join(directory, groupStepId(id, 'children'), 'children.json'), 'utf8')) as ChildrenFile;
@@ -60,7 +61,8 @@ export async function readGroupTree(directory: string, seed: GroupSeed, saved: M
   const outline = artifactPath(directory, id, 'outline');
   if (prepared.status === 'completed' && await present(outline)) {
     const path = outline, bytes = await readSvg(path);
-    const skipped = seed.hiddenInReference ? { note: '原图不可见：跳过描边和轮廓 review' } : {};
+    const skipped = seed.hiddenInReference ? { note: '原图不可见：跳过描边和轮廓 review' }
+      : seed.outlineFromParent ? { note: copiedOutlineNote } : {};
     steps.outline = { status: 'completed', output: { path, ...skipped } };
     steps.review = { status: 'completed', output: (bytes && reviewedArtifact(bytes, path,
       await readReviewReport(reportPath(directory, id, 'review'), id))) || { path, ...skipped } };
