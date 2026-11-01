@@ -5,6 +5,8 @@ import { tmpdir } from 'node:os';
 import { test, type TestContext } from 'node:test';
 import sharp from 'sharp';
 import { sectionIds, type SectionId } from '../../shared/paths.ts';
+// The default route ends at shadow; nine-axis is started on its own.
+const defaultRoute = sectionIds.slice(0, sectionIds.indexOf('shadow') + 1);
 import { runTask } from '../runner.ts';
 import { preflightKrita } from '../krita.ts';
 import { checkKrita } from '../../shared/raster/krita.ts';
@@ -89,7 +91,7 @@ test('总控保留输入与配置，按依赖推进；后续仅用 name 和 dir 
     assert.equal(run.standard, true); assert.equal(disk.standard, true);
     return { summary: id, output: join(f.directory, id, 'output') };
   } });
-  assert.deepEqual([...first].sort(), [...sectionIds].sort());
+  assert.deepEqual([...first].sort(), [...defaultRoute].sort());
   for (const [before, after] of [['part-layering', 'raster-layering'], ['part-layering', 'clothing-part-layering'],
     ['clothing-part-layering', 'clothing-raster-layering'], ['raster-layering', 'character-assembly'],
     ['clothing-raster-layering', 'character-assembly'], ['character-assembly', 'shadow']] as const) assert.ok(first.indexOf(before) < first.indexOf(after), before + ' → ' + after);
@@ -103,7 +105,7 @@ test('总控保留输入与配置，按依赖推进；后续仅用 name 和 dir 
     return { summary: '管线自身检查并跳过', output: 'retained' };
   } });
   // Re-enter the section's own authoritative checks, never trust a stale top-level completion alone.
-  assert.deepEqual([...second].sort(), sectionIds.filter(id => !['part-layering', 'clothing-part-layering'].includes(id)).sort());
+  assert.deepEqual([...second].sort(), defaultRoute.filter(id => !['part-layering', 'clothing-part-layering'].includes(id)).sort());
   const status = await taskStatus(f.options);
   assert.equal(status.status, 'completed'); assert.equal(status.runnerAlive, false); assert.equal(status.lockHeld, false);
   assert.equal(status.output, 'retained');
@@ -357,6 +359,6 @@ test('素体未换装时跳过衣服拆分与衣服绘制，记为已完成后�
   await markBaseStep(f.directory, true);
   const dressed = await runTask({ name: 'case', dir: f.options.dir }, { preflight, execute: async id => { executed.push(id); return { summary: id }; } });
   // part-layering stays as drawn: its raster stage has started.
-  assert.deepEqual(executed, sectionIds.slice(1));
+  assert.deepEqual(executed, defaultRoute.slice(1));
   assert.equal(dressed.sections['clothing-part-layering']?.skipped, undefined);
 });

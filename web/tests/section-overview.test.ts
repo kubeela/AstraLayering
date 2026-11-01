@@ -13,7 +13,7 @@ function render(statuses: string[], files: string[] = [], running = false, locke
   return runInNewContext(visibleStage + '\n' + observed + renderer + '\nprojectPage();', {
     stages: statuses.map((status, i) => ({ name: '管线 ' + i, id: 'section-' + i, status })),
     state: { name: 'case', stage: 0 }, data: { files, runnerAlive: running, lockHeld: locked, ...(sections ? { sections } : {}), kritaInUse, ...(archive ? { archived: true, run: archive } : {}) },
-    stepArtifacts: {}, available: () => [], pageHeading: () => '', runNotice: () => '',
+    mergeStages: [4, 5, 6], stepArtifacts: {}, available: () => [], pageHeading: () => '', runNotice: () => '',
     esc: String, icon: () => '', displayStatus, statusLabel,
     statusMark: (status: string) => `<i data-status="${status}"></i>`,
   }) as string;
@@ -26,6 +26,12 @@ test('执行面板逐管线展示真实状态，完成与失败不再显示为�
     assert.ok(card.includes(label), card);
   }
   assert.doesNotMatch(html, /未运行/);
+});
+
+test('合流列在穿戴组装、阴影之后列出头部九轴', () => {
+  const html = render(['done', 'done', 'done', 'done', 'done', 'done', 'done']);
+  const merge = html.slice(html.indexOf('overview-merge'));
+  assert.deepEqual([...merge.matchAll(/data-overview="(\d+)"/g)].map(match => match[1]), ['4', '5', '6']);
 });
 
 test('失败的管线卡片在概览上直接给出失败原因', () => {

@@ -9,7 +9,9 @@ import { formatLayeringSummary } from '../shared/part/run.ts';
 import { runWorkflow as characterRaster } from '../raster-layering/run.ts';
 import { runWorkflow as clothingRaster } from '../clothing-raster-layering/run.ts';
 import { runWorkflow as assemble } from '../character-assembly/run.ts';
+import { runWorkflow as nineAxis } from '../nine-axis/run.ts';
 import type { SectionId } from '../shared/paths.ts';
+import { nineAxisArtifacts } from '../shared/nine-axis.ts';
 import { taskOriginal, type TaskRun } from './state.ts';
 
 // output is the delivered file relative to the task root.
@@ -24,6 +26,7 @@ export async function executeSection(id: SectionId, directory: string, run: Task
     const summary = await shadow({ name, dir, krita: run.krita, shadowMode: mode, progress });
     return { summary, output: `shadow/${shadowStep(mode)}/${mode === 'mask' ? 'character-shadowed.kra' : 'normal.png'}` };
   }
+  if (id === 'nine-axis') return { summary: await nineAxis({ name, dir, progress }), output: nineAxisArtifacts.turnFrame };
   if (id === 'part-layering' || id === 'clothing-part-layering') {
     const execute = id === 'part-layering' ? runPartLayering : runClothingPartLayering;
     const result = await execute({
