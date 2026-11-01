@@ -163,7 +163,7 @@ pnpm web
 | 组装原画 | `character-assembly/step01/character-assembled.png` |
 | 法线 | `lighting/normal.png` |
 | 深度 | `lighting/depth.png` |
-| 头部九轴 | `nine-axis/step02_head/deformers.json`；补绘工程 `character-nine-axis.kra` / 同名 PNG |
+| 头部九轴 | `nine-axis/step02_angle-x/deformers.json`；补绘工程 `character-nine-axis.kra` / 同名 PNG |
 
 角色工程沿用已有组装管线。法线 / 深度路径是阴影 normal-depth 模式的固定发布约定。未生成时显示“待管线生成”，仍可预览角色原画；组装结果缺失则显示等待状态，不使用任意 KRA 或参考图代替。管线产出后点“更新项目”（或重新打开项目）自动绑定，操作会重置本次图层改动。管线负责保证贴图与组装原画对应，尺寸不符仍明确拒绝。头部九轴目录的 `source.json` 与当前选中的组装或阴影 KRA / PNG 一致时，角色工程改载九轴补绘工程；来源变化则退回原工程并标记待重做（见 `.agents/skills/live2d-maker/nine-axis/README.md`）。
 
@@ -171,7 +171,7 @@ pnpm web
 
 ## 阴影制作
 
-整条流程在组装后进入阴影制作，运行面板的“阴影方式”默认 Live2D 蒙版，可改法线＋深度。独立运行阴影时使用当前任务组装结果，不重新上传图片。LLM 职责为 `layering_agent_shadow_model`，蒙版不启用生图，法线／深度生图配置为 `layering_shadow_maps_image_model`，沿用现有配置和服务。
+整条流程在组装后进入阴影制作，运行面板的“阴影方式”默认 Live2D 蒙版，可改法线＋深度。独立运行阴影时使用当前任务组装结果，不重新上传图片。LLM 职责为 `shadow_agent_model`，蒙版不启用生图，法线／深度生图配置为 `shadow_maps_image_model`，沿用现有配置和服务。
 
 两种模式的进度及产物同时展示，续跑只检查所选模式的 step01。最后完整交付的路线写入 `shadow/selection.json`；制作选择记录该路线。产物接口可通过 `preview=mask|normal-depth|mixed` 选择预览文件，不改制作选择；角色前端优先载入完整可用的蒙版工程，显隐由其图层控制。混合预览要求两种模式的 `step01_<模式>/source.json` 都匹配当前组装 KRA / PNG；源工程改变则暂停旧结果，不能用一种模式的记录验证另一种模式。
 
