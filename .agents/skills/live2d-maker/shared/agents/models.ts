@@ -18,12 +18,19 @@ export type AgentModel = { model: ModelId; effort: ReasoningEffort; harness: Har
 export const modelSlots = [
   'preparation', 'part_draw', 'part_review', 'part_reduce', 'part_completion',
   'part_groups', 'part_depth', 'raster_step01', 'raster_step02', 'raster_step01_review',
-  'raster_step03', 'assembly', 'shadow',
+  'raster_step03', 'assembly', 'shadow', 'nine_axis_head',
 ] as const;
 export type ModelSlot = typeof modelSlots[number];
+// 模型键不带 layering 前缀；带前缀的旧键仅在已有 .env 中兼容读取，过渡期后移除。
+export const modelSlotKey = (slot: ModelSlot) => `${slot}_agent_model`;
+export const legacyModelSlotKey = (slot: ModelSlot) => `layering_agent_${slot}_model`;
+export const isModelSlotKey = (key: string) => modelSlots.some(slot => modelSlotKey(slot) === key);
+export const defaultImageModelKey = 'default_image_model', legacyDefaultImageModelKey = 'layering_default_image_model';
+export const imageModelKey = (step: string) => `${step}_image_model`;
+export const legacyImageModelKey = (step: string) => `layering_${step}_image_model`;
 export function resolveModelDefaults(configuration: DefaultConfiguration): Readonly<Record<ModelSlot, string>> {
   return Object.freeze(Object.fromEntries(modelSlots.map(slot => {
-    const key = `layering_agent_${slot}_model`, value = requiredDefault(configuration, key);
+    const key = modelSlotKey(slot), value = requiredDefault(configuration, key);
     parseAgentModel(value, `example.env:${key}`);
     return [slot, value];
   })) as Record<ModelSlot, string>);
@@ -44,7 +51,7 @@ export const stepModelSlots = {
   raster_step03: 'raster_step03',
   clothing_raster_step01: 'raster_step01', clothing_raster_step02: 'raster_step02',
   clothing_raster_step01_review: 'raster_step01_review', clothing_raster_step01_repair: 'raster_step01',
-  assembly: 'assembly', shadow_mask: 'shadow', shadow_maps: 'shadow',
+  assembly: 'assembly', shadow_mask: 'shadow', shadow_maps: 'shadow', nine_axis_view: 'preparation', nine_axis_head: 'nine_axis_head',
 } as const satisfies Record<string, ModelSlot>;
 export type AgentStep = keyof typeof stepModelSlots;
 export const stepDefaults = Object.fromEntries(Object.entries(stepModelSlots)
@@ -54,7 +61,7 @@ export const imageSteps: readonly AgentStep[] = [
   'part_completion', 'clothing_completion',
   'raster_step01', 'raster_step02', 'raster_step01_review', 'raster_step01_repair', 'raster_step03',
   'clothing_raster_step01', 'clothing_raster_step02', 'clothing_raster_step01_review', 'clothing_raster_step01_repair',
-  'assembly', 'shadow_maps',
+  'assembly', 'shadow_maps', 'nine_axis_view',
 ];
 export function parseAgentModel(value: string, key: string): AgentModel {
   const match = value.trim().match(/^(.+)-(low|medium|high|xhigh)$/);
@@ -84,10 +91,10 @@ export function resolveImageDefaults(configuration: DefaultConfiguration) {
     if (!Object.hasOwn(imageModelProviders, value)) throw new Error(`example.env:${key} 需要选择支持的生图模型`);
     return value as ImageModel;
   };
-  const model = parse(requiredDefault(configuration, 'layering_default_image_model'), 'layering_default_image_model');
+  const model = parse(requiredDefault(configuration, defaultImageModelKey), defaultImageModelKey);
   const legacy = parse(requiredDefault(configuration, 'layering_image_model'), 'layering_image_model');
   const steps = Object.fromEntries(imageSteps.map(step => {
-    const key = `layering_${step}_image_model`, value = configuration[key]?.trim();
+    const key = imageModelKey(step), value = configuration[key]?.trim();
     return [step, value ? parse(value, key) : model];
   })) as Record<AgentStep, ImageModel>;
   return { model, legacy, steps };
