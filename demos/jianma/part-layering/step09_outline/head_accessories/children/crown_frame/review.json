@@ -1,0 +1,143 @@
+{
+  "groupId": "head_accessories/crown_frame",
+  "reviews": [
+    {
+      "verdict": "revise",
+      "feedback": "已检查整图叠加，并以互相重叠的选框 [375,5,188,83]、[310,53,119,98]、[510,53,119,98] 完成弧梁、左右冠饰、连接凹口、尖端、下缘及发际接缝的 blend/edge 放大核对；另查看父完成稿和候选独显。本组实体归属及主要形体成立，无需整组重画；未发现独立组件整段漏画、碎片噪音或形体混乱。父范围检查通过（outsidePixels=0）。\n\n当前组可修问题：\n1. 画面左侧外伸冠片上缘，约 x331–348、y84–90：候选在外尖端回落后的浅凸段向白背景外扩，红边位于参考灰色实体上缘上方，尤其 x337–345 附近；参考边缘是更低的连续浅弧。请收回该段多包的背景，逐点贴合真实外缘，并顺接右侧凹口，不用整体平移冠片。证据：[左侧候选边缘](review-evidence/left-candidate-edge.png)。\n2. 画面右侧外伸冠片上缘，约 x591–608、y85–91：上缘浅凸段也包入了参考边缘上方的背景，局部出现不随原图走向的小折点。请按右侧自身的可见灰色外缘收窄并整理过渡，保持外端尖角，不用左侧镜像替代。证据：[右侧候选边缘](review-evidence/right-candidate-edge.png)。以上两处均可通过在现有父范围内收边修正。\n\n上游范围限制，须与上述当前组修正区分：\nA. 左侧短尖片的左上斜边约 x349–363、y79–90，参考尖峰和上升斜边位于候选边界左上方；候选的凹口更深，短尖片起峰偏右。父 SVG 同处边界与候选一致，未给这部分真实可见实体留出范围，不能要求本子组越界补齐。证据：[候选](review-evidence/left-candidate-edge.png)、[同局部父范围](review-evidence/left-parent-edge.png)。\nB. 右侧高尖片约 x563–567、y62–86，参考右外缘在候选竖向边缘右侧仍有可见实体；父完成稿同样截在当前候选边界，恢复这段宽度需要上游扩大父范围。证据：[候选](review-evidence/right-candidate-edge.png)、[同局部父范围](review-evidence/right-parent-edge.png)。这两处尚未补齐，不放宽父范围检查，也不要求本轮修改父稿。",
+      "candidateHash": "5e97de0b9cc99217f2d44d569a3cff8d68be58571727f57351e312f1cc8b6ac5",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/head_accessories.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-7.png"
+        },
+        {
+          "source": "part-layering/parts/head_accessories.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-8.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-9.png"
+        },
+        {
+          "source": "part-layering/parts/head_accessories.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-10.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-03-14-531Z-11.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T10:14:27.739Z",
+      "repairedCandidateHash": "a7d63aa7752b5d9a77c7b78d8b9f0abd08df7f74198ed41c57a2e25be969dc95"
+    },
+    {
+      "verdict": "revise",
+      "feedback": "已核对组说明、原图、父完成稿及候选；整图定位后，以弧梁[374,7,190,80]、左冠饰[310,53,117,96]、右冠饰[511,53,117,96]三个重叠选框完成 blend/edge 放大检查，另放大左短尖[330,76,45,20]。候选父范围检查通过（outsidePixels=0）。归属正确，未发现整段组件遗漏、碎片噪音或需要整组重画的主要形体错误。\n\n当前范围内须返修：左侧中间短尖饰片（约 x358–373、y78–90）的尖顶及右肩画成偏右、圆钝的鼓包。参考尖顶约在 x360–361、y79–80，右侧是明确向右下转的斜缘；候选尖顶偏到 x364–365 附近，顶部及右肩包入白背景。请局部重描这段上缘，削除无参考依据的顶部/右肩多包，保留尖顶转折；不要把整个短尖继续圆化，也不要扩大到父范围外。此处多包位于父轮廓内，属于当前可修问题。证据：[短尖8倍边缘图](review-evidence/left-short-tip-edge.png)、[左侧父子同局部叠加](review-evidence/left-parent-blue-candidate-red.png)（红为候选，蓝为父稿不同于候选的边缘，重合处显示红）。\n\n单独记录上游范围限制：①上述左短尖的左侧上升边（约 x349–361、y79–88）在原图中比父稿/候选更靠左上；该段候选已经贴父边，完整恢复需扩大父范围。②右侧高尖饰片的右外缘（约 x565–568、y63–85）仍有原图可见的银灰窄边落在父稿外，候选亦已贴父边。③弧梁两端内侧连接凸缘（约 x399–404、y54–65及 x534–539、y54–65）有可见银灰凸出部分被父轮廓截掉，父子对应边重合。以上不要求当前子组越界补齐，亦不视为已经覆盖。证据：[左侧叠加](review-evidence/left-parent-blue-candidate-red.png)、[右侧叠加](review-evidence/right-parent-blue-candidate-red.png)、[弧梁叠加](review-evidence/arc-parent-blue-candidate-red.png)。其余已检查的外端尖部、下缘、发际接缝和弧梁开口未发现另需返修的问题。",
+      "candidateHash": "a7d63aa7752b5d9a77c7b78d8b9f0abd08df7f74198ed41c57a2e25be969dc95",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/head_accessories.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-7.png"
+        },
+        {
+          "source": "part-layering/parts/head_accessories.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-8.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-9.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-10.png"
+        },
+        {
+          "source": "part-layering/parts/head_accessories.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-11.png"
+        },
+        {
+          "source": "part-layering/step09_outline/head_accessories/children/crown_frame/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-12.png"
+        },
+        {
+          "source": "part-layering/parts/head_accessories.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/head_accessories/children/crown_frame/previews/2026-11-02T10-23-53-065Z-13.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T10:31:00.451Z",
+      "repairedCandidateHash": "4d403d9fc6f9baf14b5297208fdc7e3e70f19e9762f206846e563b598b672296"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "groupId": "arms/arm_left/hand/little_finger",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已核对组说明、素体参考、候选和父组完成 SVG。整图定位后，以 [624,828,39,64] 覆盖全部候选，并以 [640,833,21,34]、[627,859,27,32] 两个重叠选框完成 8 倍 blend／edge 核对，另检查完整手部参考及候选独显。候选覆盖画面右侧掌缘下方的小指窄指段，未误包左侧另外几根可见指尖；上端接入、外侧弯折及下端遮挡衔接连续，内侧保留的少量重叠属于合理连接范围，无需沿暗线挖缝。未发现独立可见区域遗漏、孔洞误填、孤点或碎片。候选外缘与父组对应边界一致，父范围检查 outsidePixels=0；本轮无确定需要返修的问题。",
+      "candidateHash": "0fb37903c3eca3d601cae14e57a947e657b31d031945a1672de85e001df152ce",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-1.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-3.png"
+        },
+        {
+          "source": "part-layering/parts/arms/arm_left/hand.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-8.png"
+        },
+        {
+          "source": "part-layering/parts/arms/arm_left/hand.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-9.png"
+        },
+        {
+          "source": "part-layering/parts/arms/arm_left/hand.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-10.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/hand/children/little_finger/previews/2026-11-02T16-41-46-124Z-11.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T17:05:52.827Z"
+    }
+  ]
+}

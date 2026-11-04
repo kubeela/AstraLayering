@@ -1,0 +1,38 @@
+{
+  "groupId": "face/mouth/upper_teeth",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已核对组说明、参考图、候选及父组 mouth 完成 SVG，并先查看整图 blend 定位。参考口腔上沿内侧确有一段连续白色上牙，候选归属正确，未误包上唇或口腔暗部。通过口部选框 [447,253,44,43] 及完整覆盖上牙的 [455,258,26,13] 八倍放大原图、blend、edge 和 SVG 独显，检查了左右端、上缘与上唇接缝、下缘及全段连续性：可见范围完整，位置、宽度、弧度和端部转向与参考吻合，无明确漏画、孤点、碎片或形体混乱。allowOutsideParent=true；画布坐标及实体职责正确，当前候选亦位于父组范围内。本轮无需返修，不要求恢复被遮挡牙列或根部。",
+      "candidateHash": "4f7ca0aed0b74a5137b14b6155fde2b758d8a1dc4acb71e88dd849db3913e2b3",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/children/upper_teeth/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/face/children/mouth/children/upper_teeth/previews/2026-11-02T11-24-56-379Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/face/mouth.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/face/children/mouth/children/upper_teeth/previews/2026-11-02T11-24-56-379Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/children/upper_teeth/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/face/children/mouth/children/upper_teeth/previews/2026-11-02T11-24-56-379Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/children/upper_teeth/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/face/children/mouth/children/upper_teeth/previews/2026-11-02T11-24-56-379Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/mouth/children/upper_teeth/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/face/children/mouth/children/upper_teeth/previews/2026-11-02T11-24-56-379Z-5.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T11:25:56.506Z"
+    }
+  ]
+}

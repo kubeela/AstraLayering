@@ -1,0 +1,103 @@
+{
+  "groupId": "hair/bun",
+  "reviews": [
+    {
+      "verdict": "revise",
+      "feedback": "已完成整图定位及覆盖髻顶、左右侧缘、下缘与中央饰件交接的重叠分区 blend/edge 放大核对，并查看父组 hair 完成稿及候选独显。实体归属、主要形体及可见组件覆盖正确，未见碎片噪音；无需重画整组。候选父范围检查通过（outsidePixels=0）。\n\n需修改：画面右侧发髻外缘，约 x=516–519、y=67–82。参考外侧银白发体在 y=70–80 的实边约止于 x=516；候选右侧弧线向右鼓出约 1–2 像素，edge 对照可见红线落在原髻体之外，blend 中形成向白底扩出的窄条。请收回该段外弧，贴合参考实际可见外缘，并平顺衔接上方圆弧和下方 y≈83–86 的饰件交接转折；不要追随更靠内的深色发纹。该修正可在父范围内完成，不涉及上游限制。\n\n图像证据：右半边缘对照 ![右半边缘](previews/2026-11-02T10-08-31-072Z-5.png)；右侧原图叠加 ![右侧叠加](previews/2026-11-02T10-08-31-072Z-7.png)。",
+      "candidateHash": "be4a35f530f187536492feadab097d5a26ee1fb8da13efca73bb1eb1040c5b92",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-08-31-072Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/hair.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-08-31-072Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-08-31-072Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-08-31-072Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-08-31-072Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-08-31-072Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-08-31-072Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-08-31-072Z-8.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T10:20:32.094Z",
+      "repairedCandidateHash": "260babb0e47b64f5a6b9e48bffdd2c15bda08472999cc4fe1540734b75de7ede"
+    },
+    {
+      "verdict": "revise",
+      "feedback": "已核对整图叠加、完整发髻放大，以及左右重叠选框的 blend/edge；同时查看父组完成 SVG。主体归属、位置及主要比例正确，无需重画整组；未发现孤点、碎片或误包外侧饰架。候选父范围检查通过（outsidePixels=0）。\n\n需修正一处可见接缝：画面右侧前饰件外拱与髻体的交界，约 x490–501、y70–86。参考中蓝银饰件的银白外框之外仍有一条连续的浅色髻体；候选内凹弧向右挖得偏宽，edge 红线落在外框右侧的发面上，blend 中可见一条未覆盖的浅色窄带。请将此段内凹边向饰件外框收回，补足髻体至真实遮挡接缝，保持与下方 y86–88 已有髻体连续，勿把这条可见发面作为饰件或空白留下。这是当前父范围内可修的局部漏画，不涉及恢复大面积隐藏根部，也无父范围冲突。\n\n证据：右半边完整放大 [edge](previews/2026-11-02T10-26-54-368Z-5.png)，接缝放大 [blend](previews/2026-11-02T10-26-54-368Z-6.png)。",
+      "candidateHash": "260babb0e47b64f5a6b9e48bffdd2c15bda08472999cc4fe1540734b75de7ede",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-26-54-368Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/hair.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-26-54-368Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-26-54-368Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-26-54-368Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-26-54-368Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-26-54-368Z-6.png"
+        },
+        {
+          "source": "part-layering/parts/hair.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-26-54-368Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/bun/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/hair/children/bun/previews/2026-11-02T10-26-54-368Z-8.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T10:35:08.408Z",
+      "repairedCandidateHash": "c145a4ba9549510862135b1442cacdf1add6030f8805eb54dc3e36cbad806937"
+    }
+  ]
+}

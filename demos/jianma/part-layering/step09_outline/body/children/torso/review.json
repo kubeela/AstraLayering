@@ -1,0 +1,58 @@
+{
+  "groupId": "body/torso",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取 body/torso 与 body 职责说明、参考原图、候选及父完成 SVG。先检查整图 blend，再以相互重叠的选框 [325,330,290,210]、[350,490,240,160]、[345,610,250,140]，逐块完成 3–4 倍 blend 和 edge 对照，覆盖双肩、胸廓、两侧腋下转折、腰线、腹部及下端衔接；另检查了父完成稿局部叠加与候选独显。躯干联合色块完整连续，胸前未因 breast 覆盖而挖空，未发现所属可见组件遗漏、相邻实体误包、孤立碎片或噪点。肩臂及颈部衔接、左右可见外缘与参考相符，下端沿父完成稿的 pelvis 衔接底形连续收合。候选全部容纳于父完成轮廓内，范围检查 outsidePixels=0。当前未发现需要修改的确定问题。",
+      "candidateHash": "62282664e111dae974a86c1f99d5e6a5b4f8d5ada18f4a82f2b169e936243076",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/body/children/torso/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/torso/previews/2026-11-02T10-02-17-899Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/body.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/torso/previews/2026-11-02T10-02-17-899Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/torso/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/torso/previews/2026-11-02T10-02-17-899Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/torso/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/body/children/torso/previews/2026-11-02T10-02-17-899Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/torso/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/torso/previews/2026-11-02T10-02-17-899Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/torso/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/body/children/torso/previews/2026-11-02T10-02-17-899Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/torso/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/torso/previews/2026-11-02T10-02-17-899Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/torso/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/body/children/torso/previews/2026-11-02T10-02-17-899Z-8.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/torso/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/body/children/torso/previews/2026-11-02T10-02-17-899Z-9.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T10:11:43.851Z"
+    }
+  ]
+}

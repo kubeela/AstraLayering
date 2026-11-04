@@ -1,0 +1,72 @@
+{
+  "groupId": "chest_ornament",
+  "reviews": [
+    {
+      "verdict": "revise",
+      "feedback": "已只读核对纯衣服整图、局部放大、候选整体 blend、覆盖本组全部可见区域的局部 edge/blend 和 SVG 独显，并读取 groups.json 中 chest_ornament 的 note。本节点无父组。主体归属、位置比例、中央真实开口、中央菱形、下卷瓣与长短饰端总体成立；不因缺少内部纹样或配色报错。需修改以下一项，不需要重画整组：\n\n1. 左右卷叶顶部的实体金属翘边遗漏／被削平。位置约左 x425–457、y270–281，右 x487–519、y270–282。纯衣服参考可见蓝色叶面上方另有连续浅色包边向中央上翘，形成高于叶面顶部的尖细轮廓；这部分沿卷叶连续，不是喉扣珠链，也不是透明背景杂点。候选以左侧 (455,278) 到 (428,280)、右侧 (489,278) 到 (517,282) 的低平曲线收顶，edge 图中该段上方仍露出一条明确的原饰件实体，漏掉约数像素高的上翘轮廓。请沿参考补足两侧顶部固定包边及翘尖的实际外形，使其与现有叶面合并覆盖；仍需与喉扣细链、珠坠及领披分界，不把它们收入胸饰。此处属于外轮廓缺失，不要求绘制包边内部颜色、高光或花纹。\n\n图像证据：![原参考顶部放大](review-evidence/reference-upper.png)\n![完整胸饰边缘叠加](review-evidence/edge-full-ornament.png)\n![完整胸饰半透明叠加](review-evidence/blend-full-ornament.png)",
+      "candidateHash": "0170723a7cfab05c0b980a4eb818073605b42b8a95dafb3ded9d09133cfa8691",
+      "observations": [
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T11-45-13-020Z-1.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T11-45-13-020Z-2.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T11-45-13-020Z-3.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "svg",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T11-45-13-020Z-4.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T12:37:53.615Z",
+      "repairedCandidateHash": "37135c8d796018d381fdbb6f593837379f505c47ad7454e61645529e4557ef5a"
+    },
+    {
+      "verdict": "pass",
+      "feedback": "第 2 轮：通过。已先独立查看纯衣服全图及胸前局部，再完成候选整图 blend、覆盖全部可见范围的 5 倍 edge/blend/SVG 独显，以及上部卷叶和下伸端的 8 倍局部核对。chest_ornament 是顶层 group，无父 SVG／父范围限制。\n\n归属与覆盖：约 x398–541、y272–426 的左右卷叶、中央菱形及下卷瓣、两侧短弯端和两条细长端均有覆盖；未将上方喉扣、细链、小珠、两侧领披或下方腰带并入。中央胸前开口保持留空。下伸端连同浅色实体边缘检查，不按蓝色填面终点截断。组内固定卷纹和宝石表现无需内部路径，未据此判漏件。\n\n位置、比例与边界：逐段核对上部双尖卷叶及开口内缘（x400–540、y272–318）、两侧翻瓣和中央接合（y315–353）、短弯端（x427–440／503–517、y334–383）及长尖端（x444–456／486–503、y345–426），未发现确定需要修改的外形、归属、接缝或可见遗漏。note 已说明实体范围、邻接、位于内层衣身与外袍胸缘之前、共同随动和根部搭接，无需修订。本轮无需重画或局部返修。\n\n图像证据：\n![全部可见范围边缘覆盖](review-evidence-round02/edge-all.png)\n![全部可见范围原图叠加](review-evidence-round02/blend-all.png)\n![候选独显](review-evidence-round02/svg-all.png)",
+      "candidateHash": "37135c8d796018d381fdbb6f593837379f505c47ad7454e61645529e4557ef5a",
+      "observations": [
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T12-47-30-269Z-1.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T12-47-30-269Z-2.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "blend",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T12-47-30-269Z-3.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "svg",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T12-47-30-269Z-4.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T12-47-30-269Z-5.png"
+        },
+        {
+          "source": "clothing-part-layering/step09_outline/chest_ornament/outline.svg",
+          "mode": "edge",
+          "savedPath": "clothing-part-layering/step09_outline/chest_ornament/previews/2026-11-02T12-47-30-269Z-6.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T12:50:31.418Z"
+    }
+  ]
+}

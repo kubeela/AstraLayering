@@ -1,0 +1,48 @@
+{
+  "groupId": "arms/arm_left/upper_arm",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已独立读取本组及父组说明、参考图、候选与父组完成 SVG，并完成整图叠加定位。以相互重叠的 [515,340,110,150]、[535,465,100,145] 选框逐块查看 blend 与 edge，覆盖肩端、肩部外弧、上臂两侧及肘端；另检查父稿局部叠加及候选独显。可见上臂归属正确，未发现漏画或误包相邻结构；外侧肩弧、上臂外缘与衣物交接后露出的内缘均贴合参考。肩根内侧为父稿已有的遮挡下搭接，肘端局部圆弧分界符合本件与前臂的连接职责，无需沿内部明暗描边。轮廓连续干净，无孤点、碎片或无依据孔洞。父范围检查 outsidePixels=0；未发现需报告的上游范围限制。本轮无需重画或局部返修。",
+      "candidateHash": "346575212001d27d48e5bb803ee67e12da028a62df92ed3c706b15cb7a2d6bff",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/previews/2026-11-02T11-14-05-970Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/arms/arm_left.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/previews/2026-11-02T11-14-05-970Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/previews/2026-11-02T11-14-05-970Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/previews/2026-11-02T11-14-05-970Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/previews/2026-11-02T11-14-05-970Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/previews/2026-11-02T11-14-05-970Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_left/children/upper_arm/previews/2026-11-02T11-14-05-970Z-7.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T11:24:18.785Z"
+    }
+  ]
+}

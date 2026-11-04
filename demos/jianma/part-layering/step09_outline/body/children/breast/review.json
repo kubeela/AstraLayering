@@ -1,0 +1,58 @@
+{
+  "groupId": "body/breast",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已读取 body/breast 与 body 的职责、原始参考、候选及父完成 SVG，并在整图叠加定位后以三个重叠选框覆盖全部色块：左侧 [355,385,125,145]、右侧 [460,385,125,145]、中央 [410,385,120,145]，逐块完成 5 倍 blend 与 edge 核对。左右乳房及连体服覆盖的体积归属正确，两侧可见圆隆外缘、腋侧起接与下方接回躯干处均贴合参考；中央胸沟位置正确。上、下内部覆盖边界附近没有对应的可靠实体外缘，现有连续完整形体合理，不要求贴合领口、衣缝或明暗分界。未发现可见组件遗漏、误包相邻实体、真实孔洞被填平、碎片噪音或需要重画的问题。父范围检查 outsidePixels=0，候选完整容纳于 body 完成轮廓内，无已确认的上游范围冲突。\n\n图像证据：[父组叠加](review-evidence/round1-parent-blend.png)、[左侧叠加](review-evidence/round1-left-blend.png)、[左侧边缘](review-evidence/round1-left-edge.png)、[右侧叠加](review-evidence/round1-right-blend.png)、[右侧边缘](review-evidence/round1-right-edge.png)、[中央叠加](review-evidence/round1-center-blend.png)、[中央边缘](review-evidence/round1-center-edge.png)、[候选独显](review-evidence/round1-candidate.png)。",
+      "candidateHash": "a455db01c8bf01941bc9a60169dcbd07633e5f077904238c0f7e78a77e6dd1b9",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/body/children/breast/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/breast/previews/2026-11-02T10-11-21-683Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/body.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/breast/previews/2026-11-02T10-11-21-683Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/breast/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/breast/previews/2026-11-02T10-11-21-683Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/breast/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/body/children/breast/previews/2026-11-02T10-11-21-683Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/breast/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/breast/previews/2026-11-02T10-11-21-683Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/breast/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/body/children/breast/previews/2026-11-02T10-11-21-683Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/breast/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/body/children/breast/previews/2026-11-02T10-11-21-683Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/breast/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/body/children/breast/previews/2026-11-02T10-11-21-683Z-8.png"
+        },
+        {
+          "source": "part-layering/step09_outline/body/children/breast/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/body/children/breast/previews/2026-11-02T10-11-21-683Z-9.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T10:22:14.058Z"
+    }
+  ]
+}

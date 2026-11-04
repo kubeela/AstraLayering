@@ -1,0 +1,38 @@
+{
+  "groupId": "face/nose",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已核对 face/nose 的说明、原图、候选及父组完成稿；全图叠加定位后，以原图区域 [435,227,65,38] 检查鼻部与双眼、嘴部的归属，再以 [453,235,32,25] 的 8 倍 blend、edge 和独显核对全部可见范围。参考中的双鼻点与中央小高光均位于连续鼻部色块内，未发现独立可见组件遗漏；参考无清晰独立鼻梁线，周边弥散明暗不作为硬轮廓要求。候选位置、比例与局部连续形体合理，无碎点、孔洞或相邻眼口结构误包。父组完成稿覆盖该区域，四倍采样范围检查 outsidePixels=0，无父范围冲突。通过。",
+      "candidateHash": "07f2253d88e5699374dced45c45b399115be3036e5969132419f44f28a3e5d72",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/face/children/nose/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/face/children/nose/previews/2026-11-02T10-03-37-965Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/face.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/face/children/nose/previews/2026-11-02T10-03-37-965Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/nose/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/face/children/nose/previews/2026-11-02T10-03-37-965Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/nose/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/face/children/nose/previews/2026-11-02T10-03-37-965Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/face/children/nose/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/face/children/nose/previews/2026-11-02T10-03-37-965Z-5.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T10:14:00.442Z"
+    }
+  ]
+}

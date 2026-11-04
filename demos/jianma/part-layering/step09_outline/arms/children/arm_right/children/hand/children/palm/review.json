@@ -1,0 +1,48 @@
+{
+  "groupId": "arms/arm_right/hand/palm",
+  "reviews": [
+    {
+      "verdict": "pass",
+      "feedback": "已核对组说明、素体参考、候选及父组 hand 完成 SVG，并完成整图叠加、上段（277,772,53,53）与下段（276,815,55,50）相互重叠的 8 倍 blend/edge 检查及候选独显检查。当前色块归属为腕根至各指根的掌部，可见掌部体积覆盖完整；下方四指和右侧拇指的远端属于相邻 part，不构成本组遗漏。腕根连接、两侧外缘、掌部下缘与指根连接及拇指侧真实指缝均合理，未发现需返修的可见轮廓偏差、组件缺失、碎片或无依据孔洞。候选完全位于父组范围内（范围检查 outsidePixels=0）。本轮通过。",
+      "candidateHash": "7503e20136cd0d0d0a2b8f20b8280bf435746fb55e9c6cf24833c2a367a52b89",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/previews/2026-11-02T16-49-21-249Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/arms/arm_right/hand.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/previews/2026-11-02T16-49-21-249Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/previews/2026-11-02T16-49-21-249Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/previews/2026-11-02T16-49-21-249Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/previews/2026-11-02T16-49-21-249Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/previews/2026-11-02T16-49-21-249Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/arms/children/arm_right/children/hand/children/palm/previews/2026-11-02T16-49-21-249Z-7.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T17:13:11.230Z"
+    }
+  ]
+}

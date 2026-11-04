@@ -1,0 +1,177 @@
+{
+  "groupId": "hair/back_hair",
+  "reviews": [
+    {
+      "verdict": "revise",
+      "feedback": "本轮已检查整图 blend，并以重叠选框完整核对头后根区/耳后与颈后发幕（310,100,315,280）、躯干两侧（235,340,470,430）、手侧分叉与上段孔隙（210,740,520,340）、下段分叉和两侧发梢（235,1040,470,420）；局部再放大至 3–6 倍。联合色块未发现明确组件归属错误、可见组件整段遗漏或碎片噪音，主要形体不需重画，但下列可修边缘问题须一次修正。父范围检测 outsidePixels=0；候选与输入保持只读。\n\n1. 画面左右吊饰下方狭长发段，约 y195–355：左侧外缘约 x318–325、右侧外缘约 x613–620，候选红边持续落在原图发丝实体外的白色背景中，放大可见红边与深灰真实外缘之间有约 2–4 像素空白，尤以中下段明显。将这两段外缘分别向发体内收，按各自真实边缘及渐变弯向重新描绘，不能直接沿用父稿外缘或以镜像替代逐侧核对。这是当前父范围内可做的收缩修正。[左侧候选边缘](review-evidence-round1/view-14.png)；[右侧候选边缘](review-evidence-round1/view-15.png)。\n\n2. 两侧下段细弧分叉与主长束之间的真实白色孔隙，约 y1100–1230、左侧 x253–264 与右侧 x674–687 附近：细弧朝向孔隙的一侧边缘向白隙内扩出，右侧尤其清楚；blend 中可见紫色色块盖在参考白隙上，且细弧外侧同时漏出灰色参考，表现为细弧位置偏向孔隙，不是内部阴影分界。须先在当前父允许范围内收回侵入白隙的部分，保持孔隙真实宽度与弧度，保留上下接回主束的连续结构。不要通过填平孔隙处理。向外补回部分受下述父范围限制，应分开处理。[右孔隙放大 blend](review-evidence-round1/view-19.png)；[左孔隙放大 blend](review-evidence-round1/view-20.png)；[右侧 edge](review-evidence-round1/view-12.png)。\n\n单列上游范围限制（不要求当前子组越界补齐）：\nA. 同一对吊饰下方长发的朝头部内缘，约 y200–350，参考发面仍向左侧约 x348–352、右侧约 x586–590 延伸，而候选已经贴合父稿内缘，参考尚有窄条未覆盖。已在同一裁框核对父稿与候选，除上端遮挡连接形状外，该段边界相同；缺覆部分在父范围外，需要上游扩大父 hair 的对应范围。[左父稿](review-evidence-round1/view-16.png)与[左候选](review-evidence-round1/view-14.png)；[右父稿](review-evidence-round1/view-17.png)与[右候选](review-evidence-round1/view-15.png)。\nB. 两侧下段细弧分叉外缘，约 y1020–1230，尤其右侧 x675–693 一带，参考灰色外缘在父/候选红边之外仍有数像素实体；两者在同一局部的边界完全一致，候选不能在本轮单独向外扩。[右父稿](review-evidence-round1/view-11.png)与[右候选](review-evidence-round1/view-12.png)；[左父稿](review-evidence-round1/view-18.png)与[左候选](review-evidence-round1/view-13.png)。这些上游缺覆尚未补齐，也不抵消第 1、2 项当前范围内的可修问题。",
+      "candidateHash": "e3a7372cd293f9c28ccb10fff9a8daebcf700269427b3ccf7137b08b5f992546",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-1.png"
+        },
+        {
+          "source": "part-layering/parts/hair.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-8.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-9.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-10.png"
+        },
+        {
+          "source": "part-layering/parts/hair.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-11.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-12.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-13.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-14.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-15.png"
+        },
+        {
+          "source": "part-layering/parts/hair.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-16.png"
+        },
+        {
+          "source": "part-layering/parts/hair.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-17.png"
+        },
+        {
+          "source": "part-layering/parts/hair.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-18.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-19.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-05-10-504Z-20.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T10:18:54.680Z",
+      "repairedCandidateHash": "8732abae7d7cd2d1f39a6e02b99cae99dd20c090618071c609ef02689bfb1b77"
+    },
+    {
+      "verdict": "pass",
+      "feedback": "第 2 轮已完成全组独立核对。已读取 hair/back_hair 职责、候选和父完成 SVG，并检查整图叠加、独显，以及以下相互重叠区域的 blend 与 edge 放大图：头部及耳后颈后衔接区 [300,100,340,290]（3 倍）；肩部至长发中段 [215,350,510,390]（2 倍）；双侧弧形分叉、孔洞及回接处 [210,700,520,350]（2 倍）；下段双侧孔洞、外缘、内缘与发梢 [235,1010,470,445]（2 倍）。两侧分别对照参考，未以镜像关系代替检查。后发可见范围覆盖完整，耳后至肩部发幕、饰件下方狭长发段、两侧长束与弧形分叉的归属成立；前侧宽侧发和细鬓发未被误认成必须追加的后发组件。遮挡区已有连续底形可保留。可见边缘、开口与尖端未发现有明确图像依据的可修缺漏、误包或噪音碎片。父范围检查为 pass，4 倍采样 outsidePixels=0；当前候选满足父范围约束。无须重画或返修。",
+      "candidateHash": "8732abae7d7cd2d1f39a6e02b99cae99dd20c090618071c609ef02689bfb1b77",
+      "observations": [
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-1.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-2.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-3.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-4.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-5.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-6.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-7.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "edge",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-8.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-9.png"
+        },
+        {
+          "source": "part-layering/parts/hair.svg",
+          "mode": "blend",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-10.png"
+        },
+        {
+          "source": "part-layering/step09_outline/hair/children/back_hair/outline.svg",
+          "mode": "svg",
+          "savedPath": "part-layering/step09_outline/hair/children/back_hair/previews/2026-11-02T10-26-51-177Z-11.png"
+        }
+      ],
+      "updatedAt": "2026-11-02T10:34:47.004Z"
+    }
+  ]
+}
