@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { access, constants, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
-import { basename, delimiter, dirname, join } from 'node:path';
+import { basename, delimiter, dirname, join, relative, sep } from 'node:path';
 import sharp from 'sharp';
 import { MissingDependencyError } from '../shared/missing-dependency.ts';
 import { requireUpstream } from '../shared/upstream.ts';
@@ -10,12 +10,8 @@ import { taskDirectory } from '../shared/paths.ts';
 import { toTaskPath } from '../shared/task-paths.ts';
 import type { VideoApi } from '../shared/codex/environment.ts';
 
-// step01_video makes every video of the section. The front upper body around
-// the head is the first frame of three: the head turns left, the camera moves
-// below (up) and above (down), each uniformly to 90° over the whole video, so a
-// view at some angle is the frame that far through. The up and down views then
-// start two more left turns (left-up, left-down) for the corners. The views
-// steps only take frames from these videos.
+// Video production and frame extraction belong to the same step. Left crops
+// the front once; pitch and corners reuse that registration without recropping.
 export const profileAngle = 90, turnSeconds = '5';
 const background = 128, margin = 0.06, neckFaces = 0.5;
 const terminal = new Set(['completed', 'failed', 'cancelled', 'expired']);
@@ -195,46 +191,95 @@ export const videoNames = ['left', 'up', 'down', 'left-up', 'left-down'] as cons
 export type VideoName = typeof videoNames[number];
 export const viewsY = ['up', 'down'] as const;
 export type ViewY = typeof viewsY[number];
-export const videoOutputs = ['upper-body.png', 'crop.json', ...videoNames.map(name => `${name}.mp4`), 'videos.json'];
 export type VideoPrompts = { turn: string } & Record<ViewY, string>;
 
-// The whole step: crop; the left turn and the two camera moves at once; then
-// the up and down views at their angles start the two corner turns. Paths in
-// records are task-relative; each video's record names its first frame.
-export async function produceVideos(directory: string, input: TurnInput, generate: GenerateVideo, prompts: VideoPrompts,
-  { signal, progress, ffmpeg, model, angles }: Run & { ffmpeg: string; model: string; angles: Record<ViewY, number> }) {
+// Left owns the original crop, video and reference frame. Each video record
+// names its first frame relative to the video step directory.
+export async function produceLeftVideo(directory: string, input: TurnInput, generate: GenerateVideo, prompt: string,
+  { signal, progress, ffmpeg, model, angle }: Run & { ffmpeg: string; model: string; angle: number }) {
   const task = dirname(dirname(directory)), { width = 0, height = 0 } = await sharp(input.color).metadata();
   const box = await upperBodyBox(input, width, height), image = await cropUpperBody(input.color, box);
   await atomic(join(directory, 'upper-body.png'), image);
   await atomic(join(directory, 'crop.json'), JSON.stringify({ version: 1, source: toTaskPath(task, input.color), sourceHash: await fileHash(input.color),
     parts: input.parts.map(path => toTaskPath(task, path)), canvas: [width, height], box, background }, null, 2) + '\n');
   const run = { signal, progress }, started = Date.now();
-  progress?.(`上半身裁切 ${box.size}×${box.size}，提交向左转头与抬头、低头镜头视频（约 5 分钟）`);
-  const [left, ...ys] = await Promise.all([takeVideo(directory, 'left', prompts.turn, image, 'upper-body.png', generate, run),
-    ...viewsY.map(view => takeVideo(directory, view, prompts[view], image, 'upper-body.png', generate, run))]);
-  // The corner turns start from the up and down views, taken as the views-y step takes them.
-  const firsts = await Promise.all(viewsY.map(view => takeFrame(directory, `first/${view}.png`, join(directory, `${view}.mp4`), angles[view], box.size, { signal, ffmpeg })));
-  progress?.('提交左上、左下转头视频（约 5 分钟）');
-  const corners = await Promise.all(viewsY.map(async (view, i) =>
-    takeVideo(directory, `left-${view}`, prompts.turn, await readFile(join(directory, firsts[i].path)), firsts[i].path, generate, run)));
+  progress?.(`头部裁切 ${box.size}×${box.size}，提交向左转头视频`);
+  const cached = await readFile(join(directory, 'videos.json'), 'utf8').then(JSON.parse, error => { if (error.code !== 'ENOENT') throw error; });
+  const previous = cached?.left;
+  const reusable = cached?.version === 1 && cached.model === model && cached.seconds === turnSeconds && cached.profileAngle === profileAngle
+    && cached.input?.sha256 === bufferHash(image) && previous?.prompt === prompt && previous.first === 'upper-body.png' && previous.path === 'left.mp4'
+    && await exists(join(directory, previous.path)) && await fileHash(join(directory, previous.path)) === previous.sha256;
+  const left = reusable ? previous : await takeVideo(directory, 'left', prompt, image, 'upper-body.png', generate, run);
   await atomic(join(directory, 'videos.json'), JSON.stringify({ version: 1, model, seconds: turnSeconds, profileAngle,
-    input: { path: 'upper-body.png', sha256: bufferHash(image) }, first: Object.fromEntries(viewsY.map((view, i) => [view, firsts[i]])),
-    left, up: ys[0], down: ys[1], 'left-up': corners[0], 'left-down': corners[1],
+    input: { path: 'upper-body.png', sha256: bufferHash(image) }, ...(cached?.input?.sha256 === bufferHash(image) ? { up: cached.up, down: cached.down } : {}), left,
     elapsedSeconds: Math.round((Date.now() - started) / 100) / 10 }, null, 2) + '\n');
+  await produceViews(directory, directory, [{ view: 'left', angle }], { signal, progress, ffmpeg });
   return box;
 }
 
-// step02_views and step04_views-y: the frame of step01's videos at each view's
-// angle, at the upper body's size.
+export async function producePitchVideos(directory: string, front: string, generate: GenerateVideo, prompts: Record<ViewY, string>,
+  { signal, progress, ffmpeg, model, angles }: Run & { ffmpeg: string; model: string; angles: Record<ViewY, number> }) {
+  const upperBody = join(front, 'upper-body.png'), image = await readFile(upperBody), started = Date.now();
+  type Batch = { version: number; model: string; seconds: string; profileAngle: number; input: { sha256: string } } & Partial<Record<ViewY, Awaited<ReturnType<typeof takeVideo>>>>;
+  const cached: Batch | undefined = await readFile(join(directory, 'videos.json'), 'utf8').then(text => JSON.parse(text), error => {
+    if (error.code !== 'ENOENT') throw error;
+  });
+  const sameInput = cached?.version === 1 && cached.model === model && cached.seconds === turnSeconds
+    && cached.profileAngle === profileAngle && cached.input?.sha256 === bufferHash(image);
+  progress?.('提交抬头、低头绕轴视频，沿用左转步骤的正面裁框');
+  const records = await Promise.all(viewsY.map(async view => {
+    const previous = cached?.[view], first = relative(directory, upperBody).split(sep).join('/');
+    if (sameInput && previous?.prompt === prompts[view] && previous.first === first && previous.path === `${view}.mp4`
+      && await exists(join(directory, previous.path)) && await fileHash(join(directory, previous.path)) === previous.sha256) {
+      progress?.(`${view}：沿用相同输入与提示词、哈希核对通过的视频`);
+      return [view, previous] as const;
+    }
+    return [view, await takeVideo(directory, view, prompts[view], image, first, generate, { signal, progress })] as const;
+  }));
+  await atomic(join(directory, 'videos.json'), JSON.stringify({ version: 1, model, seconds: turnSeconds, profileAngle,
+    input: { path: relative(directory, upperBody).split(sep).join('/'), sha256: bufferHash(image) }, ...(directory === front && cached && 'left' in cached ? { left: cached.left } : {}), ...Object.fromEntries(records),
+    elapsedSeconds: Math.round((Date.now() - started) / 100) / 10 }, null, 2) + '\n');
+  await produceViews(directory, directory, viewsY.map(view => ({ view, angle: angles[view] })), { signal, progress, ffmpeg, upperBody });
+}
+
+export async function produceCornerVideos(directory: string, pitch: string, generate: GenerateVideo, prompt: string,
+  { signal, progress, model }: Run & { model: string }) {
+  const started = Date.now();
+  type Batch = { version: number; model: string; seconds: string; profileAngle: number } & Partial<Record<`left-${ViewY}`, Awaited<ReturnType<typeof takeVideo>> & { inputSha256: string }>>;
+  const cached: Batch | undefined = await readFile(join(directory, 'videos.json'), 'utf8').then(text => JSON.parse(text), error => {
+    if (error.code !== 'ENOENT') throw error;
+  });
+  const sameSettings = cached?.version === 1 && cached.model === model && cached.seconds === turnSeconds && cached.profileAngle === profileAngle;
+  progress?.('提交左上、左下转头参考视频');
+  const records = await Promise.all(viewsY.map(async view => {
+    const corner = `left-${view}` as const, first = relative(directory, join(pitch, `${view}.png`)).split(sep).join('/'), image = await readFile(join(pitch, `${view}.png`)), inputSha256 = bufferHash(image), previous = cached?.[corner];
+    if (sameSettings && previous?.prompt === prompt && previous.inputSha256 === inputSha256
+      && previous.path === `${corner}.mp4` && await exists(join(directory, previous.path)) && await fileHash(join(directory, previous.path)) === previous.sha256) {
+      progress?.(`${corner}：沿用相同输入与提示词、哈希核对通过的视频`);
+      // Imported reference caches may use a former step path. Identity is
+      // established by the exact first-frame and video hashes, then this
+      // run records the current relative input path without editing video bytes.
+      return [corner, { ...previous, first }] as const;
+    }
+    return [corner, { ...await takeVideo(directory, corner, prompt, image, first, generate, { signal, progress }), inputSha256 }] as const;
+  }));
+  await atomic(join(directory, 'videos.json'), JSON.stringify({ version: 1, model, seconds: turnSeconds, profileAngle,
+    ...Object.fromEntries(records), elapsedSeconds: Math.round((Date.now() - started) / 100) / 10 }, null, 2) + '\n');
+}
+
+// Frame extraction is shared by the left and pitch video steps.
 export const viewOutputs = (views: readonly string[]) => [...views.map(view => `${view}.png`), 'views.json'];
-export async function produceViews(directory: string, videos: string, views: { view: string; angle: number }[], { ffmpeg, signal, progress }: Run & { ffmpeg: string }) {
-  const task = dirname(dirname(directory)), upperBody = join(videos, 'upper-body.png');
+export async function produceViews(directory: string, videos: string, views: { view: string; angle: number }[], { ffmpeg, signal, progress, upperBody = join(videos, 'upper-body.png') }: Run & { ffmpeg: string; upperBody?: string }) {
+  const task = dirname(dirname(directory));
   const { width = 0 } = await sharp(upperBody).metadata();
   const records = await Promise.all(views.map(async ({ view, angle }) => {
     const video = join(videos, `${view}.mp4`), taken = await takeFrame(directory, `${view}.png`, video, angle, width, { signal, ffmpeg });
     progress?.(`${view}：第 ${taken.frame.frameIndex}/${taken.frame.frameCount - 1} 帧（约 ${taken.frame.angle.toFixed(1)}°）`);
     return [view, { ...taken, video: { path: toTaskPath(task, video), sha256: await fileHash(video) } }] as const;
   }));
+  const previous = await readFile(join(directory, 'views.json'), 'utf8').then(JSON.parse, error => { if (error.code !== 'ENOENT') throw error; });
+  const sameInput = previous?.input?.sha256 === await fileHash(upperBody);
+  const preserved = sameInput ? Object.fromEntries(videoNames.filter(view => !views.some(v => v.view === view) && previous?.[view]).map(view => [view, previous[view]])) : {};
   await atomic(join(directory, 'views.json'), JSON.stringify({ version: 1, profileAngle,
-    input: { path: toTaskPath(task, upperBody), sha256: await fileHash(upperBody) }, ...Object.fromEntries(records) }, null, 2) + '\n');
+    input: { path: toTaskPath(task, upperBody), sha256: await fileHash(upperBody) }, ...preserved, ...Object.fromEntries(records) }, null, 2) + '\n');
 }

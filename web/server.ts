@@ -13,7 +13,7 @@ import { runsDirectory, sectionIds, workflowsDirectory } from '../.agents/skills
 import { acquireTaskLock, configureRun, directoryFor, readRun, saveRun, selectedSections, sectionId, taskStatus, type TaskOptions } from '../.agents/skills/live2d-maker/workflow/state.ts';
 import { convertLayout } from '../.agents/skills/live2d-maker/workflow/layout.ts';
 import { applyTaskAction } from '../.agents/skills/live2d-maker/workflow/step-actions.ts';
-import { configAPI, configRaw } from './config.ts';
+import { configAPI, configRaw, streamMediaFile } from './config.ts';
 import { createEnvironmentConfig, EnvironmentConflict } from './environment-config.ts';
 import { atomicJSON, agentRecord, artifactExtensions, browse, inside, jsonFile, safePath } from './files.ts';
 import { createKritaScan } from './krita-scan.ts';
@@ -28,6 +28,7 @@ import { checkKnowledge, defaultKnowledgeDirectory } from '../.agents/skills/liv
 import { exportCompletedRun } from '../.agents/skills/live2d-maker/workflow/export.ts';
 import { LayerCompositor } from './layer-compositor.ts';
 import { isStudioPath, studioProject } from './studio-project.ts';
+import { saveNineAxis } from './nine-axis-save.ts';
 import { studioCatalog, studioAsset, studioReviews, saveStudioReview } from './studio.ts';
 import { createUpdateCheck } from './update-check.ts';
 import { installedVersion } from '../.agents/skills/live2d-maker/shared/version.ts';
@@ -191,6 +192,10 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           return;
         }
         const value = await body(request);
+        if (path === '/api/studio/nine-axis/save') {
+          const { directory } = await studioFolder(value.folder ?? '');
+          json(await saveNineAxis(directory, value)); return;
+        }
         if (value.dir !== requestDir) { json({ error: '追踪目录已改变，请刷新页面后重试' }, 409); return; }
         if (path === '/api/config/environment' || path === '/api/config/environment/preview') {
           try { json(await (path.endsWith('/preview') ? environment.preview(value) : environment.save(value))); }
@@ -263,6 +268,9 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           // The same commands as pnpm start: plain start / continue, or --continue / --resume / --retry
           // for every step still marked .running (task-action). One step is acted on from the CLI.
           if (starts.has(directory)) { json({ error: '该任务正在启动，请等待启动结果' }, 409); return; }
+          const actionSection = path === '/api/task-action' && value.section !== undefined ? sectionId(value.section) : undefined;
+          if (path === '/api/task-action' && value.step !== undefined) throw new Error('单步骤操作请使用 CLI --section 与 --step；task-action 作用于管线内所有待恢复步骤');
+          if (actionSection) opts.from = opts.to = actionSection;
           starts.add(directory);
           try {
             // Krita is checked before an action changes any step.
@@ -271,7 +279,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
               if (!(error instanceof KritaUnavailable)) throw error;
               json(kritaRefused(error), 409); return;
             }
-            const message = path === '/api/task-action' ? await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action }) : undefined;
+            const message = path === '/api/task-action' ? await applyTaskAction({ name: opts.name, dir: opts.dir, action: value.action, section: actionSection }) : undefined;
             json({ ...(message === undefined ? {} : { message }), pid: await start(opts), name: opts.name }, 202);
           } finally { starts.delete(directory); }
           return;
@@ -297,7 +305,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
           try { const directory = await task(entry.name, requestDir); tasks.push(await summary(directory, entry.name, requestDir)); }
           catch (error) { tasks.push({ name: entry.name, status: 'failed', error: String(error) }); }
         }
-        json({ directory: requestDir, tasks }); return;
+        json({ directory: requestDir, tasks, sections: sectionIds }); return;
       }
       if (path === '/api/task' || path === '/artifact' || path === '/api/export') {
         if (url.searchParams.get('dir') !== requestDir) { json({ error: '追踪目录已改变，请刷新页面' }, 409); return; }
@@ -319,6 +327,9 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         const file = await safePath(directory, selected);
         const info = await lstat(file);
         if (!info.isFile()) throw new Error('产物不是文件');
+        if (extname(file).toLowerCase() === '.mp4') {
+          await streamMediaFile(file, 'video/mp4', request, response); return;
+        }
         if (url.searchParams.get('preview') === 'kra' && extname(file).toLowerCase() === '.kra') {
           const image = await kraPreviews.get(file, `${info.mtimeMs}:${info.ctimeMs}:${info.size}:${info.ino}`, url.searchParams.get('fit') === 'content');
           response.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'no-cache' });
@@ -357,7 +368,7 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
       if (path === '/api/studio/project' || path === '/studio-artifact') {
         const { directory, name, dir } = await studioFolder(url.searchParams.get('folder') ?? '');
         if (path === '/api/studio/project') {
-          json({ ...await studioProject(directory, name, dir, url.searchParams.get('preview')), folder: directory, displayName: await projectDisplayName(directory, name),
+          json({ ...await studioProject(directory, name, dir, url.searchParams.get('preview'), url.searchParams.get('nineStage')), folder: directory, displayName: await projectDisplayName(directory, name),
             inDirectory: dir === settings.directory }); return;
         }
         // Only the studio's fixed outputs are readable, wherever the folder is.
@@ -365,6 +376,9 @@ export async function createWorkbench({ settingsPath = join(root, '.web/settings
         if (!isStudioPath(selected)) throw new Error('工作台只读取角色组装、光照、投影与九轴产物');
         const file = await safePath(directory, selected);
         if (!(await lstat(file)).isFile()) throw new Error('产物不是文件');
+        if (extname(file).toLowerCase() === '.mp4') {
+          await streamMediaFile(file, 'video/mp4', request, response); return;
+        }
         response.writeHead(200, { 'Content-Type': extname(file).toLowerCase() === '.png' ? 'image/png' : extname(file).toLowerCase() === '.json' ? 'application/json' : 'application/octet-stream' });
         createReadStream(file).on('error', () => response.destroy()).pipe(response); return;
       }
