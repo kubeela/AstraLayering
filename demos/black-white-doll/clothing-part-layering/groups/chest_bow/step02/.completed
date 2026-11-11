@@ -1,0 +1,9 @@
+{
+  "stamp": "ee5336bd21bce40d0d0315732158a76acbd0005d3adfe063078e8f1a08eac60e",
+  "inputs": {
+    "layers/depth01#chest_bow.svg": "b076c5331831a17377d39682764b9a849a7f222e378d73a367839dd8cf9e1dbf"
+  },
+  "outputs": {
+    "../../../parts/chest_bow.svg": "18401e78ce1be70370bc6337db6058174c43e980e54d864fdf56e4e417b5b272"
+  }
+}

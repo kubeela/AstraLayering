@@ -1,0 +1,9 @@
+{
+  "stamp": "843673a3f5ec7b2b02d7a223dbc16bd6210a5ea8265deda17aa9544b49737c5a",
+  "inputs": {
+    "groups/face/children/eyebrow_left/step02": "0b3d55a2228b20ecac12d9506a06245cd630986d276eece4da01d755c3212d98"
+  },
+  "outputs": {
+    "children.json": "e8795f0cc818c33d72302b238fec3f527dd88c8d097f8aa3f029ec2444019462"
+  }
+}

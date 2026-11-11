@@ -1,0 +1,9 @@
+{
+  "stamp": "18ab10a88875f96b05f6f4978622bdd3fe614b78a273513c6f6e972775922e32",
+  "inputs": {
+    "groups/hair/children/ponytail_right/children/inward_curl_strand/step02": "4bf6efa5d0c0889764d03031ac511647ba4433f8124f3e7fc165d51595a47c98"
+  },
+  "outputs": {
+    "children.json": "d0a93bbf02dc4298d9351a6e4119ece0c7f7b5a148481dd2bf4898e415c8971a"
+  }
+}

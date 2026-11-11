@@ -1,0 +1,9 @@
+{
+  "stamp": "5e49992ea13e1469966b01b807d83a7f3f979e3d7a033724a80f04bf0d23358f",
+  "inputs": {
+    "layers/depth02#face/ear_right.svg": "cd0c82430263f76f1da22bd9c235f18cb3cc595e5bd5ac5885cd3c05bd7ce963"
+  },
+  "outputs": {
+    "../../../../../parts/face/ear_right.svg": "13d70578427f09b86118192cfbd5722b9a48af248a827808f336ae0e56f8a6f2"
+  }
+}

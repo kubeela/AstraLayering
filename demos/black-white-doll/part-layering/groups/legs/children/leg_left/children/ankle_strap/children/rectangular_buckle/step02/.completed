@@ -1,0 +1,9 @@
+{
+  "stamp": "8e442b1fee3f70602286776768fb0e8b2b628e3ce596f6ba01d613bd23ef16ac",
+  "inputs": {
+    "layers/depth04#legs/leg_left/ankle_strap/rectangular_buckle.svg": "bc4cf81297a38588467247c516240ab5d431e05c5606f0238582f48e2a4d209c"
+  },
+  "outputs": {
+    "../../../../../../../../../parts/legs/leg_left/ankle_strap/rectangular_buckle.svg": "683c1fe80269160c89c465af487a69381cadd1b3016a90b7e326928448a27d93"
+  }
+}

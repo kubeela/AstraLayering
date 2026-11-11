@@ -1,0 +1,9 @@
+{
+  "stamp": "f9bdcaf0e566d970e9e5b3df813a51a327d7cc9554841c0b1f3ac7653a603ad9",
+  "inputs": {
+    "layers/depth01#arms.svg": "9e0425f18263bdbbfbbd5bf99ff46873ccfb8132bdf5f89debcd829fdb4c57cd"
+  },
+  "outputs": {
+    "../../../parts/arms.svg": "d18d1aee20b1e41628c86cf7d7e3bba7a95a406442b6178a12acc7fd4d05844d"
+  }
+}

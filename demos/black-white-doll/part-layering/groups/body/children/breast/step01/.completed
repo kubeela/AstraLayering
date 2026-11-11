@@ -1,0 +1,9 @@
+{
+  "stamp": "80c3deed378868a53e35a57b9deb21dad22a510e4c3aea2a38aa2c9dde8bed4c",
+  "inputs": {
+    "groups/body/step02": "ccc421047d8d8fd787af0e215d2d4bf2874418d83957720d3f5afe2cc3f059f9"
+  },
+  "outputs": {
+    "outline.svg": "1e57bc48ac4d50ee0dc2aaec77c70408a33722375136e2e3ec5efbcc06182936"
+  }
+}

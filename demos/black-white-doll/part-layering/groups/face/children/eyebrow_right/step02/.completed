@@ -1,0 +1,9 @@
+{
+  "stamp": "1175ec0069966b2d4ad3b10e1d5811595bed2b5945dd1bda9523fd87677240dc",
+  "inputs": {
+    "layers/depth02#face/eyebrow_right.svg": "b5be1d300f5a2389286b8d096c3ecee0c1ca2f8dd11d661945af96e12b6220fe"
+  },
+  "outputs": {
+    "../../../../../parts/face/eyebrow_right.svg": "23cf8e5f32bba34f90806ed6e4e9387ea1f25356bbe3887dcb5d64dee728f7f5"
+  }
+}

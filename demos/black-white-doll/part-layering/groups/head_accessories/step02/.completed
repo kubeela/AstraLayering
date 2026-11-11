@@ -1,0 +1,9 @@
+{
+  "stamp": "e577ee08ea8c6ede7d2140799f5866abccc69a558c8d2205953310532b530bd1",
+  "inputs": {
+    "layers/depth01#head_accessories.svg": "d9147d868cef31f70039af54da01cb03c5e9384d67c7484706f4b0ec5b83944f"
+  },
+  "outputs": {
+    "../../../parts/head_accessories.svg": "83a2005d2a33af2189bfd4c744fb27c98fc81cdb454944ea3e5a94b388200318"
+  }
+}

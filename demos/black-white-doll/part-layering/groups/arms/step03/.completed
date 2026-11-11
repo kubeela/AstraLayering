@@ -1,0 +1,9 @@
+{
+  "stamp": "27fc2caad06c2720f0d67ba64254752a77672866882fe462be3b7ccd66f57dbd",
+  "inputs": {
+    "groups/arms/step02": "f9bdcaf0e566d970e9e5b3df813a51a327d7cc9554841c0b1f3ac7653a603ad9"
+  },
+  "outputs": {
+    "children.json": "362d02c425627bd03c8447dfb02733261ed6ebb25efca4ab48db78e7b7a6a14e"
+  }
+}

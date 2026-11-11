@@ -1,0 +1,9 @@
+{
+  "stamp": "d8499fd4a155115c91cc151fcffda7650045921d71c973b7268a6eb37d018abb",
+  "inputs": {
+    "layers/depth02#camisole/bodice.svg": "e8a7fab5184e2f3b96b6565ad62b04513a147f01704f536957167e813168f986"
+  },
+  "outputs": {
+    "../../../../../parts/camisole/bodice.svg": "13213b2d78c587adc482853721eb59cde54d7c7092983e59722411bb82f1a215"
+  }
+}

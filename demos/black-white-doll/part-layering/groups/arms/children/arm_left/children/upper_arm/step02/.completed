@@ -1,0 +1,9 @@
+{
+  "stamp": "1df0121da5804cd80c2d1554e9be284a1bc8c4f1c9c4851abe540b6e1459e960",
+  "inputs": {
+    "layers/depth03#arms/arm_left/upper_arm.svg": "b3e6f5b723ff4a4966e5469a67e15de7eebbfb85edd689dbf5165cbc8c4eead2"
+  },
+  "outputs": {
+    "../../../../../../../parts/arms/arm_left/upper_arm.svg": "72a09b1fbc1cc1cd9f34f387fada1bb26741fcee32be37ebf690daebc997e646"
+  }
+}

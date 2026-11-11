@@ -1,0 +1,9 @@
+{
+  "stamp": "42e70d82490711b1764d273abd9a5763bdfb8514598e44118fd44d957ba0aebc",
+  "inputs": {
+    "groups/arms/children/arm_left/step02": "d1ce21ee46ee558dfaec39e23a8ecc6eeb7eab85bbd64415d0c2828008ded3ff"
+  },
+  "outputs": {
+    "children.json": "fe99fa4974429a01d70e98fc185de9770298cfa247d0bd973682b0c0fa2df13c"
+  }
+}

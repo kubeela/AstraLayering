@@ -1,0 +1,9 @@
+{
+  "stamp": "087632bd410ff07220a8a1756e69c8706b7e3f2cfe0a77670acaaf2a628fe639",
+  "inputs": {
+    "groups/arms/children/arm_right/children/hand/children/index_finger/step02": "069fd15a2865affa86f633a90786bd64aa92b901b008eca6389cd017ea7ad55e"
+  },
+  "outputs": {
+    "children.json": "3ba0b0437f86f766d577bf1c39ef5169c813520d2afe9772b807eda960849444"
+  }
+}

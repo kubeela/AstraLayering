@@ -1,0 +1,9 @@
+{
+  "stamp": "05c2d43e0446fd0cd33def59a7764e55e94a8a058c9543a9b2f49365deaa791b",
+  "inputs": {
+    "groups/arms/children/arm_left/children/hand/children/thumb/step02": "3fc4f4432fd4bd65809c5bfdd24c1ca662c7b5aa3ab590d55f324a88d3ffc423"
+  },
+  "outputs": {
+    "children.json": "a941f73ae248f485e69f198daac37b4a9a09c4fe5f789e9922a03371e8afabc0"
+  }
+}

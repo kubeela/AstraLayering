@@ -1,0 +1,9 @@
+{
+  "stamp": "e5768eab8fbcf5f2479e3672a22cafade82e2991644fc5194e878c05587a32b6",
+  "inputs": {
+    "layers/depth03#face/eye_right/highlight.svg": "c112c02069e9b7c69999e756ef6a6e287c7db45f8effae257ae2d950148aa3c3"
+  },
+  "outputs": {
+    "../../../../../../../parts/face/eye_right/highlight.svg": "60317bd37037d4b8ac3ee032f09afe919d4090d5d041787aef4b59922090de79"
+  }
+}

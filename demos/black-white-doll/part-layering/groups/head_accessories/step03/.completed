@@ -1,0 +1,9 @@
+{
+  "stamp": "1d21e91e337b28b689eb6556a430e179e6a4dbb63ebed6417e754f08ab59570e",
+  "inputs": {
+    "groups/head_accessories/step02": "e577ee08ea8c6ede7d2140799f5866abccc69a558c8d2205953310532b530bd1"
+  },
+  "outputs": {
+    "children.json": "fc77107bbf62bb8b020566aaebd66c8d27dd8ce28f8979253f4014dd6d48c2eb"
+  }
+}

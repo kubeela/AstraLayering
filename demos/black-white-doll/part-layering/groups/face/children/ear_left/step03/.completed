@@ -1,0 +1,9 @@
+{
+  "stamp": "a87485d0a6eae70be0e2b63d6256877e52ba8a91de69769f80d541c10acd5cef",
+  "inputs": {
+    "groups/face/children/ear_left/step02": "167d44798dd0c6f0d8101304e5002492ffbdf472060615ef03b3c3f50ca7e175"
+  },
+  "outputs": {
+    "children.json": "c9e2505f59765f946d9e0e330edcb9044e4daca0c0fcc29a53c02739d97b834e"
+  }
+}

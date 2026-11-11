@@ -1,0 +1,9 @@
+{
+  "stamp": "03cb5a96bf66a9a33854cb54b6a49a1ccc967a9d351806d2163380d54f85a119",
+  "inputs": {
+    "groups/hair/children/bangs/step02": "ceb60737f78eee7a5ae186c30e130d1ab773681fa55000c771d6b7de2857e776"
+  },
+  "outputs": {
+    "children.json": "9d87035256c6c9ee1b02b1fd74aa6ba00b5e7a0e2946835a264ae92d8a74c162"
+  }
+}

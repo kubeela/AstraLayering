@@ -1,0 +1,9 @@
+{
+  "stamp": "c58576fb4767576aeb611a184c8e055755807a6019ce8231e19be554ce2047b0",
+  "inputs": {
+    "groups/arms/children/arm_left/children/hand/children/little_finger/step02": "cab858f0f58e442c95da1c598a32e7e4d65d6f52c0a8bcbc570fb1601564ee15"
+  },
+  "outputs": {
+    "children.json": "8f5e772b9f4962263e2efb5fcccf97da788445ed30140350381c0388fe051fad"
+  }
+}

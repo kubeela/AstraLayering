@@ -1,0 +1,10 @@
+{
+  "stamp": "3fc4f4432fd4bd65809c5bfdd24c1ca662c7b5aa3ab590d55f324a88d3ffc423",
+  "inputs": {
+    "layers/depth04#arms/arm_left/hand/thumb.svg": "69a6f9841c576a3d2a08b8b5d1ade5ee259e5f1cc8f544d087fdb0eacb33eeee",
+    "layers/depth04#arms/arm_left/hand/palm.svg": "ac0efb24f4eb28e85d8e67341473f7d9e2b684dbdc74d1d89a9937c07bfe85f5"
+  },
+  "outputs": {
+    "../../../../../../../../../parts/arms/arm_left/hand/thumb.svg": "67540a652c5f374399fd694c08be1aaea09d20dbde31a077624893313be7ef0e"
+  }
+}

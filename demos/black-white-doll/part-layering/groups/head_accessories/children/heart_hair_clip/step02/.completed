@@ -1,0 +1,9 @@
+{
+  "stamp": "0d6649d4b58a7cd90fb70c9e813663f4858031c83511927ab35ffd143392c405",
+  "inputs": {
+    "layers/depth02#head_accessories/heart_hair_clip.svg": "ae343deed890414b720f39fabacc1f76325bf8dbfe9e741a5b32c7e4d8886617"
+  },
+  "outputs": {
+    "../../../../../parts/head_accessories/heart_hair_clip.svg": "e920e7276cdd1d024b29804b364e87be63c95a5b0af69fe4cafb3a6df75d71f1"
+  }
+}

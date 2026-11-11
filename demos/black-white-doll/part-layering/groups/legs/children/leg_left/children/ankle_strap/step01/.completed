@@ -1,0 +1,9 @@
+{
+  "stamp": "bd98014f5ae36bea9c1c0b76d8ec0db498506534f16f23f3ab052f1882326652",
+  "inputs": {
+    "groups/legs/children/leg_left/step02": "3fdda45c58180d7b8d45a2ddc3fd83cfd47d5f72a5984b9a8cb8ee537c758aed"
+  },
+  "outputs": {
+    "outline.svg": "0bd575d45e7f2108fff92d0cbdc7d41f2a9f60e5362bd0178accb3f24bab2958"
+  }
+}

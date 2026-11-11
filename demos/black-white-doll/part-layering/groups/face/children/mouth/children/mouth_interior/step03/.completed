@@ -1,0 +1,9 @@
+{
+  "stamp": "f264461edab1202080d2fb103e30bf9a36538d0a0abbcfa17964b92fdc4e3b05",
+  "inputs": {
+    "groups/face/children/mouth/children/mouth_interior/step02": "aa7a390a927e49c62588b23d616e42c10c90d1b17f616b8285a07557b51f4e0e"
+  },
+  "outputs": {
+    "children.json": "f955c738b676d53132e0869e3be07fd5288f2e1147dc52af6f54056125dacc37"
+  }
+}

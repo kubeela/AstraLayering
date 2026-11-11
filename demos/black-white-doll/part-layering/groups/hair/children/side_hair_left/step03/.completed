@@ -1,0 +1,9 @@
+{
+  "stamp": "a21a9af61de0c22a93e75dda8151550fad303d508aae15c9a21d403c1dd582ab",
+  "inputs": {
+    "groups/hair/children/side_hair_left/step02": "fcc547ce555766bd798d0d8ee113b49094f776a45556190d78111c7d9c92d251"
+  },
+  "outputs": {
+    "children.json": "5d5417c54d2bf10b4a024472101953e6f8bd08479ad0fe0860542863ec387e91"
+  }
+}

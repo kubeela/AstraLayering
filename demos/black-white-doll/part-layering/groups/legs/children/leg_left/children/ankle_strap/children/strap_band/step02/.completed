@@ -1,0 +1,9 @@
+{
+  "stamp": "7af8539ec83ea7dee8c9ec93d430aabdddd2bc63c6c68172883c4da4f0ee5ba4",
+  "inputs": {
+    "layers/depth04#legs/leg_left/ankle_strap/strap_band.svg": "c334819f47037f37a7455d22c70785d0b524e7c74c944b96c5515e45cac96cca"
+  },
+  "outputs": {
+    "../../../../../../../../../parts/legs/leg_left/ankle_strap/strap_band.svg": "80f8953c16c68acd1daa13d7ef91531170004e1ed030d4ffddd4b1d70d4ef143"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "standard": true,
+  "files": {
+    "standard": {
+      "outputHash": "e5a581d1ea711c746d25310ab140e3bd0555d7e0f1949393e244783f14331b97",
+      "inputHash": "12da77f0dcba53b6e4d5c6a62af32aa0b10b9b16cd651523cbc9a90c1ed43df1"
+    },
+    "judgment": {
+      "outputHash": "dd37eaa27e037b0c81cda3a55a4461810aeb7221543dc0de991955404439a7bc",
+      "inputHash": "a214fdc0026742568b24be5844907f165cc348c1e047c9f091b9c81826bb801c"
+    },
+    "simplified": {
+      "outputHash": "084dd7ec5983efa9747e1ee89ff2313cc2a096dedfd8532e25291277d79433f7",
+      "inputHash": "d793746453d6b2f91512dbd4714d559b0b11c10cde83768ec9c17b920f759058"
+    },
+    "base": {
+      "outputHash": "0f8cdcbfa04899b761ed25345738359294b7a22562e2c047e68f1b0ed668bbda",
+      "inputHash": "af489c7c316455dd91265a24876fbb1cb690a0f09f0e1b8e2e3ee4d129fa3de8"
+    }
+  },
+  "partReferencesHash": "821e6a8d67b3f7279842b4c50ea7861be9dfc0721099e069dd317ab989abb4b5",
+  "standardJudgment": {
+    "inputHash": "ceaac51bec95a0dc06320088a64aeb00005451ab5f52317426e82b458d2c1b54",
+    "decision": {
+      "needsAdjustment": true,
+      "reason": "角色为坐姿，双手在身前交叠抱着玩偶，嘴部闭合；需调整为正视站立、双手置于身体两侧、嘴部张大，眼睛保持张开。"
+    }
+  }
+}

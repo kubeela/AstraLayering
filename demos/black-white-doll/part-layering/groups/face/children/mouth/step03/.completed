@@ -1,0 +1,9 @@
+{
+  "stamp": "acbc1a9fe9075070808739f1238f20ac84151a7b33b114aa55c5c43bf47f9134",
+  "inputs": {
+    "groups/face/children/mouth/step02": "e815c8bd6a59ea63bca829a6c494f8c19b69be0c10671788caad3ededb00fbcd"
+  },
+  "outputs": {
+    "children.json": "2f3d3669579e9dcc741a9e7f70b2a62fc75df20b3c4357573847f477d2df8317"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "stamp": "eb6743cb229aee9c4c028717bfb26e65724fb03f6f41199f575d09ff36f967e7",
+  "inputs": {
+    "groups/arms/children/arm_left/children/forearm/step02": "c6482dd2c76cb8d027d4457385659071f61242cf20a7c86a3d1b98d64b3aa67f"
+  },
+  "outputs": {
+    "children.json": "deff99067725449f79e548040964dd96663f62db60172ee03d7dc60327410706"
+  }
+}

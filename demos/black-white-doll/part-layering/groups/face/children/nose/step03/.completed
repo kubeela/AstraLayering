@@ -1,0 +1,9 @@
+{
+  "stamp": "5eee93547ed27c6aaf990859cde336bc5398f4777e935d2f901119bdc2ca157e",
+  "inputs": {
+    "groups/face/children/nose/step02": "b216457b5c35f74298a18a3cb153a6fc740865a7c1901fd1e99f6c66bd1371c8"
+  },
+  "outputs": {
+    "children.json": "f42166edde187587f4f7fadf59c44b27616d3a86bda2052e72a60d3fab3dbeaf"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "stamp": "b6e242bdf45aeef0b8dee5eead82bc970514cdd0142e7d6105e0461b7c8d30e0",
+  "inputs": {
+    "groups/head_accessories/children/right_hair_bow/children/long_black_ribbon_tail/step02": "71ce59a738864916870012043321389e989e7c038beace5a460a58ae18df2887"
+  },
+  "outputs": {
+    "children.json": "eb5484afb4b2baff9d73c8642bf7594ebf98a443d20ef6881f6c30735a1c1ad1"
+  }
+}

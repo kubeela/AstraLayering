@@ -1,0 +1,9 @@
+{
+  "stamp": "7d5f5bcd07ec983b840a77e988b71586bf0b1187eed574e1fd2b2e625b3fcdf5",
+  "inputs": {
+    "groups/legs/children/leg_left/children/ankle_strap/children/rectangular_buckle/step02": "8e442b1fee3f70602286776768fb0e8b2b628e3ce596f6ba01d613bd23ef16ac"
+  },
+  "outputs": {
+    "children.json": "028004373d7f5562594f10f4c48800c52ddbb1b0b4a63fd5e4597aa58bb8359a"
+  }
+}

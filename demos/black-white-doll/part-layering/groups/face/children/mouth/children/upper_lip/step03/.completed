@@ -1,0 +1,9 @@
+{
+  "stamp": "b9299141fe0a6ac51e87808465c8b8d01ea0a2341954b87d7e7ea42cdab52e42",
+  "inputs": {
+    "groups/face/children/mouth/children/upper_lip/step02": "25127dbe70c07abba991c25e52e0fe60848e7dcfcf0a4966cb65babd09cca80f"
+  },
+  "outputs": {
+    "children.json": "0573c5948e48dc31612d26ea47f1c2fe4943881d6b4f48327b875f27a819d0d7"
+  }
+}
