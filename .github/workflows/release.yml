@@ -1,0 +1,340 @@
+name: Verify and publish release
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - package.json
+      - CHANGELOG.md
+      - .github/workflows/release.yml
+      - .github/release-rebuild.json
+  push:
+    branches: [main]
+    paths:
+      - package.json
+      - CHANGELOG.md
+      - .github/workflows/release.yml
+      - .github/release-rebuild.json
+  workflow_dispatch:
+    inputs:
+      rebuild_existing:
+        description: Rebuild using the checked-in release request
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.16.0
+      - name: Install dependencies
+        run: |
+          npm install --global pnpm@10.33.0
+          pnpm install --frozen-lockfile
+      - name: Check publication shell syntax
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          import { spawnSync } from 'node:child_process';
+          const lines = readFileSync('.github/workflows/release.yml', 'utf8').split('\n');
+          let checked = 0;
+          for (let i = 0; i < lines.length; i++) {
+            if (lines[i] !== '        run: |') continue;
+            const script = [];
+            while (++i < lines.length && (lines[i].startsWith('          ') || !lines[i].trim())) script.push(lines[i].slice(10));
+            i--;
+            const result = spawnSync('bash', ['-n'], { input: script.join('\n'), encoding: 'utf8' });
+            if (result.error || result.status !== 0) throw new Error(result.stderr || String(result.error));
+            checked++;
+          }
+          if (checked < 5) throw new Error('Publication scripts were not found');
+          console.log('Publication shell scripts checked:', checked);
+          NODE
+      - name: Install browser test dependencies
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Check workflow types
+        run: pnpm --dir .agents/skills/live2d-maker check
+      - name: Check workbench types
+        run: pnpm check:web
+      - name: Test workflows
+        timeout-minutes: 10
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          import { spawn } from 'node:child_process';
+          const cwd = '.agents/skills/live2d-maker';
+          const script = JSON.parse(readFileSync(cwd + '/package.json', 'utf8')).scripts.test;
+          if (!script.startsWith('node ')) throw new Error('Expected a Node test script');
+          const args = ['--test-force-exit', '--test-timeout=120000', ...script.slice(5).split(/\s+/)];
+          const child = spawn(process.execPath, args, { cwd, stdio: 'inherit' });
+          child.on('error', error => { console.error(error); process.exitCode = 1; });
+          child.on('exit', (code, signal) => { process.exitCode = signal ? 1 : (code ?? 1); });
+          NODE
+      - name: Test workbench
+        run: pnpm test:web
+      - name: Test release packaging
+        run: pnpm test:release
+
+  publish:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.16.0
+      - name: Install dependencies
+        run: |
+          npm install --global pnpm@10.33.0
+          pnpm install --frozen-lockfile
+      - name: Read explicit release rebuild request
+        id: rebuild
+        env:
+          MANUAL_REBUILD: ${{ inputs.rebuild_existing || false }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          request=.github/release-rebuild.json
+          if [[ "$MANUAL_REBUILD" != true ]] && ! git diff --name-only HEAD^ HEAD | grep -Fxq "$request"; then
+            echo "requested=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          node --input-type=module <<'NODE'
+          import { readFileSync, appendFileSync } from 'node:fs';
+          const request = JSON.parse(readFileSync('.github/release-rebuild.json', 'utf8'));
+          const version = JSON.parse(readFileSync('package.json', 'utf8')).version;
+          if (request.version !== version || !/^\d+\.\d+\.\d+$/.test(version)) throw new Error('Rebuild version mismatch');
+          if (!/^[a-f0-9]{40}$/.test(request.expectedTagSha)) throw new Error('Invalid expected tag SHA');
+          if (![request.releaseId, request.assetId].every(value => Number.isSafeInteger(value) && value > 0)) throw new Error('Invalid release or asset ID');
+          appendFileSync(process.env.GITHUB_OUTPUT, 'requested=true\nexpected_tag=' + request.expectedTagSha + '\nrelease_id=' + request.releaseId + '\nasset_id=' + request.assetId + '\n');
+          NODE
+      - name: Pack and publish the version in package.json
+        if: steps.rebuild.outputs.requested != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="v$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid release version: $tag"
+            exit 1
+          fi
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "$tag is already published."
+            exit 0
+          fi
+          mkdir -p .release
+          node --input-type=module <<'NODE'
+          import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+          const version = JSON.parse(readFileSync('package.json', 'utf8')).version;
+          const text = readFileSync('CHANGELOG.md', 'utf8').replaceAll('\r\n', '\n');
+          const heading = '## v' + version + '\n';
+          const start = text.indexOf(heading);
+          if (start < 0) throw new Error('Missing release notes for v' + version);
+          const notes = text.slice(start + heading.length).split('\n## ')[0].trim();
+          if (!notes) throw new Error('Empty release notes');
+          mkdirSync('.release', { recursive: true });
+          writeFileSync('.release/notes.md', notes + '\n');
+          NODE
+          if git ls-remote --exit-code --tags origin "refs/tags/$tag" > .release/tag-ref; then
+            git fetch --depth=1 origin "refs/tags/$tag:refs/tags/$tag"
+            if [[ "$(git rev-parse "$tag^{commit}")" != "$GITHUB_SHA" ]]; then
+              echo "::error::$tag already points to a different commit."
+              exit 1
+            fi
+          else
+            status=$?
+            if [[ "$status" != 2 ]]; then exit "$status"; fi
+            git tag "$tag" "$GITHUB_SHA"
+          fi
+          pnpm release:pack "$tag"
+          git push origin "refs/tags/$tag"
+          gh release create "$tag" ".release/AstraLayering-$tag.zip" \
+            --repo "$GITHUB_REPOSITORY" --verify-tag --title "$tag" \
+            --notes-file .release/notes.md --latest
+      - name: Rebuild the explicitly requested published version
+        if: steps.rebuild.outputs.requested == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_TAG_SHA: ${{ steps.rebuild.outputs.expected_tag }}
+          RELEASE_ID: ${{ steps.rebuild.outputs.release_id }}
+          OLD_ASSET_ID: ${{ steps.rebuild.outputs.asset_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="v$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
+          canonical="AstraLayering-$tag.zip"
+          stage="AstraLayering-$tag-rebuild-${GITHUB_SHA:0:12}.zip"
+          backup="AstraLayering-$tag-previous-${EXPECTED_TAG_SHA:0:12}.zip"
+          api="repos/$GITHUB_REPOSITORY/releases"
+          mkdir -p .release
+          gh api "$api/$RELEASE_ID" > .release/previous-release.json
+          actual_tag="$(git ls-remote --exit-code --refs origin "refs/tags/$tag" | cut -f1)"
+          if [[ "$actual_tag" == "$GITHUB_SHA" ]]; then
+            if gh api "$api/$RELEASE_ID" --jq ".assets[] | select(.name == \"$canonical\" and .id != $OLD_ASSET_ID and .state == \"uploaded\") | .id" | grep -q '[0-9]'; then
+              echo "$tag has already been rebuilt from this commit."
+              exit 0
+            fi
+            echo "::error::Tag moved but its replacement asset is incomplete."
+            exit 1
+          fi
+          if [[ "$actual_tag" != "$EXPECTED_TAG_SHA" ]]; then
+            echo "::error::The release tag changed; refusing to overwrite it."
+            exit 1
+          fi
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const version = JSON.parse(readFileSync('package.json', 'utf8')).version;
+          const release = JSON.parse(readFileSync('.release/previous-release.json', 'utf8'));
+          const asset = release.assets.find(asset => asset.id === Number(process.env.OLD_ASSET_ID));
+          if (release.id !== Number(process.env.RELEASE_ID) || release.tag_name !== 'v' + version || release.draft || !asset || asset.name !== 'AstraLayering-v' + version + '.zip' || asset.state !== 'uploaded') throw new Error('Release or asset no longer matches the rebuild request');
+          writeFileSync('.release/previous-notes.md', release.body ?? '');
+          writeFileSync('.release/previous-label.txt', asset.label ?? '');
+          const text = readFileSync('CHANGELOG.md', 'utf8').replaceAll('\r\n', '\n');
+          const heading = '## v' + version + '\n', start = text.indexOf(heading);
+          if (start < 0) throw new Error('Missing release notes');
+          const notes = text.slice(start + heading.length).split('\n## ')[0].trim();
+          if (!notes) throw new Error('Empty release notes');
+          writeFileSync('.release/notes.md', '**同版本补充发布：** 已补入栅格报告与交付检查的遗漏；下载过早先 v' + version + ' 安装包的用户请重新下载本页文件。\n\n' + notes + '\n');
+          NODE
+          git fetch --depth=1 origin "refs/tags/$tag:refs/tags/$tag"
+          git tag --force "$tag" "$GITHUB_SHA"
+          pnpm release:pack "$tag"
+          cp ".release/$canonical" ".release/$stage"
+          gh release upload "$tag" ".release/$stage" --repo "$GITHUB_REPOSITORY" --clobber
+          gh api "$api/$RELEASE_ID" --jq ".assets[] | select(.name == \"$stage\")" > .release/candidate.json
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { readFileSync } from 'node:fs';
+          const asset = JSON.parse(readFileSync('.release/candidate.json', 'utf8'));
+          const bytes = readFileSync('.release/' + asset.name);
+          const digest = 'sha256:' + createHash('sha256').update(bytes).digest('hex');
+          if (asset.state !== 'uploaded' || asset.size !== bytes.length || asset.digest !== digest) throw new Error('Candidate ZIP upload verification failed');
+          NODE
+          candidate_id="$(node -p "JSON.parse(require('fs').readFileSync('.release/candidate.json', 'utf8')).id")"
+          tag_moved=false
+          old_renamed=false
+          candidate_promoted=false
+          rollback() {
+            status=$?
+            if [[ "$status" != 0 ]]; then
+              set +e
+              if [[ "$candidate_promoted" == true ]]; then
+                gh api --method PATCH "$api/assets/$candidate_id" -f name="$stage" >/dev/null
+              fi
+              if [[ "$old_renamed" == true ]]; then
+                gh api --method PATCH "$api/assets/$OLD_ASSET_ID" -f name="$canonical" -f label="$(cat .release/previous-label.txt)" >/dev/null
+              fi
+              if [[ "$tag_moved" == true ]]; then
+                git push --force-with-lease="refs/tags/$tag:$GITHUB_SHA" origin "$EXPECTED_TAG_SHA:refs/tags/$tag"
+                gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --notes-file .release/previous-notes.md
+              fi
+              echo "::error::Rebuild failed; rollback was attempted. Inspect this run before retrying."
+            fi
+            exit "$status"
+          }
+          trap rollback EXIT
+          git push --force-with-lease="refs/tags/$tag:$EXPECTED_TAG_SHA" origin "refs/tags/$tag:refs/tags/$tag"
+          tag_moved=true
+          gh api --method PATCH "$api/assets/$OLD_ASSET_ID" -f name="$backup" -f label="Previous $tag build from $EXPECTED_TAG_SHA" >/dev/null
+          old_renamed=true
+          gh api --method PATCH "$api/assets/$candidate_id" -f name="$canonical" -f label="" >/dev/null
+          candidate_promoted=true
+          gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --notes-file .release/notes.md --latest
+          trap - EXIT
+          echo "Rebuilt $tag from $GITHUB_SHA"
+      - name: Keep the published download clean
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="v$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
+          canonical="AstraLayering-$tag.zip"
+          api="repos/$GITHUB_REPOSITORY/releases"
+          mkdir -p .release/audit
+          gh api "$api/tags/$tag" > .release/audit/release.json
+          gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern "$canonical" --dir .release/audit --clobber
+          python3 - "$tag" "$canonical" <<'PY'
+          import hashlib, json, pathlib, re, sys, zipfile
+          from collections import defaultdict
+          tag, canonical = sys.argv[1:]
+          folder = pathlib.Path('.release/audit')
+          release = json.loads((folder / 'release.json').read_text())
+          assets = release['assets']
+          matches = [asset for asset in assets if asset['name'] == canonical]
+          if release['tag_name'] != tag or release['draft'] or len(matches) != 1:
+              raise SystemExit('No unique published installation ZIP')
+          asset = matches[0]
+          data = (folder / canonical).read_bytes()
+          digest = 'sha256:' + hashlib.sha256(data).hexdigest()
+          if asset['state'] != 'uploaded' or asset['size'] != len(data) or asset.get('digest') != digest:
+              raise SystemExit('Published ZIP checksum mismatch')
+          prefix = 'AstraLayering-' + tag + '/'
+          sizes = defaultdict(int)
+          with zipfile.ZipFile(folder / canonical) as archive:
+              entries = archive.infolist()
+              names = set(entry.filename for entry in entries)
+              required = ['package.json', 'CHANGELOG.md', 'start-workbench.sh', 'start-workbench.cmd',
+                          'start-workbench.command', 'web/server.ts', '.agents/skills/live2d-maker/SKILL.md',
+                          '.run/pink-doll/run.json', 'LICENSE', 'COPYING']
+              if any(prefix + name not in names for name in required):
+                  raise SystemExit('Published ZIP is missing application files')
+              if json.loads(archive.read(prefix + 'package.json'))['version'] != tag[1:]:
+                  raise SystemExit('Published ZIP has the wrong version')
+              for entry in entries:
+                  if not entry.filename.startswith(prefix):
+                      raise SystemExit('Unexpected ZIP root')
+                  relative = entry.filename[len(prefix):]
+                  parts = pathlib.PurePosixPath(relative).parts
+                  if '..' in parts or (parts and parts[0] in {'.git', 'node_modules', '.web', 'tmp', '.release'}):
+                      raise SystemExit('Unexpected runtime or temporary file: ' + relative)
+                  if parts and parts[-1] == '.env':
+                      raise SystemExit('Private environment file in ZIP')
+                  if len(parts) > 1 and parts[0] == '.run' and parts[1] != 'pink-doll':
+                      raise SystemExit('Unexpected task in ZIP')
+                  if parts:
+                      sizes[parts[0]] += entry.file_size
+              print('Verified installation ZIP:', canonical, len(data), 'bytes;', len(entries), 'entries')
+              print('Uncompressed size by top-level path:', dict(sorted(sizes.items(), key=lambda item: -item[1])))
+          pattern = re.compile(r'^AstraLayering-' + re.escape(tag) + r'-(?:previous|rebuild)-[a-f0-9]+\.zip$')
+          stale = [str(item['id']) for item in assets if pattern.fullmatch(item['name'])]
+          (folder / 'asset-id').write_text(str(asset['id']))
+          (folder / 'stale-ids').write_text('\n'.join(stale))
+          PY
+          asset_id="$(cat .release/audit/asset-id)"
+          gh api --method PATCH "$api/assets/$asset_id" -f label="" >/dev/null
+          while IFS= read -r stale_id || [[ -n "$stale_id" ]]; do
+            [[ -z "$stale_id" ]] && continue
+            gh api --method DELETE "$api/assets/$stale_id"
+          done < .release/audit/stale-ids
+          gh api "$api/tags/$tag" > .release/audit/cleaned.json
+          python3 - "$canonical" <<'PY'
+          import json, pathlib, sys
+          release = json.loads(pathlib.Path('.release/audit/cleaned.json').read_text())
+          assets = release['assets']
+          if len(assets) != 1 or assets[0]['name'] != sys.argv[1] or assets[0].get('label'):
+              raise SystemExit('Published download list is not clean')
+          print('Published download:', assets[0]['name'])
+          PY
+
