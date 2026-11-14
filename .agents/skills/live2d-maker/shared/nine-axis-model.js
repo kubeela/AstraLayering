@@ -123,6 +123,14 @@ export function nineAxisCapabilities(doc, allowPlane = true) {
     return Array.isArray(p) && p.length === (n.cols + 1) * (n.rows + 1) && p.every(q => Array.isArray(q) && q.length === 2 && q.every(Number.isFinite));
   };
   const byId = new Map(all.map(n => [n.id,n]));
+  const inheritedForm = (node, field, key) => {
+    const visited = new Set();
+    for (let current = node; current && !visited.has(current.id); current = byId.get(current.parent)) {
+      visited.add(current.id);
+      if (Object.hasOwn(current[field] ?? {}, String(key))) return form(current, field, key);
+    }
+    return false;
+  };
   const scopes = [...new Set(all.map(n => n.level))].map(level => {
     const scope = new Set(all.filter(n => n.level === level));
     for (const n of scope) if (byId.has(n.parent)) scope.add(byId.get(n.parent));
@@ -131,7 +139,9 @@ export function nineAxisCapabilities(doc, allowPlane = true) {
   const contributors = (scope, field) => scope.filter(n => Object.keys(n[field] ?? {}).some(key => key !== '0'));
   const complete = (field, keys) => scopes.length > 0 && scopes.every(scope => {
     const authored = contributors(scope,field);
-    return authored.length > 0 && authored.every(n => keys.every(key => form(n,field,key)));
+    // Sparse local corrections inherit the carrier's available directions;
+    // an explicitly malformed form still fails instead of being inherited.
+    return authored.length > 0 && authored.every(n => keys.every(key => inheritedForm(n,field,key)));
   });
   const axis = (id, field) => {
     const keys = [...new Set([0, ...doc.parameters?.find(p => p.id === id && !p.status)?.keys?.filter(k =>

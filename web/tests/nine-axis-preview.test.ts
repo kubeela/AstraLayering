@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { nineAxisCapabilities } from '../../.agents/skills/live2d-maker/shared/nine-axis-model.js';
+import { evaluatePoints, nineAxisCapabilities } from '../../.agents/skills/live2d-maker/shared/nine-axis-model.js';
 import { nextPreviewSelection, nineAxisPreviewModes } from '../../.agents/skills/live2d-maker/shared/nine-axis-preview.js';
 
 const rest = [[0, 0], [10, 0], [0, 10], [10, 10]];
@@ -57,6 +57,44 @@ test('capabilities include actual Warp ancestors and clip sources but not unrela
   doc.parts[0].clip = { by: ['head_accessories/hat'] };
   const face = nineAxisPreviewModes(doc)[0];
   assert.equal(face.scope.has('head_accessories/hat'), true); assert.equal(face.axes.plane, false);
+});
+
+function sparseCorrection(): any {
+  const doc = fixture();
+  doc.authoring.stage = 'jaw';
+  doc.parameters[1] = { id: 'ParamAngleY', keys: [-25, 0, 25] };
+  const face = doc.parts[0];
+  doc.parts = [face];
+  const carrier = { ...structuredClone(face), id: 'face/carrier' };
+  const middle = { ...structuredClone(carrier), id: 'face/local-carrier', parent: carrier.id,
+    keyforms: { '0': rest, '30': rest }, keyformsY: undefined, keyformsXY: undefined };
+  const correction = { ...structuredClone(middle), id: 'face/right-correction', parent: middle.id,
+    keyforms: { '0': rest, '30': rest.map(([x, y]) => [x + 1, y]) },
+    keyformsXY: { '30,25': rest.map(([x, y]) => [x + 1, y]), '30,-25': rest.map(([x, y]) => [x + 1, y]) } };
+  face.parent = correction.id;
+  doc.deformers = [carrier, middle, correction];
+  return doc;
+}
+
+test('a sparse correction inherits completed carrier directions without relocking the face plane', () => {
+  const doc = sparseCorrection(), before = JSON.stringify(doc), face = nineAxisPreviewModes(doc)[0];
+  assert.deepEqual(face.axes.x.keys, [-30, 0, 30]);
+  assert.deepEqual(face.axes.y.keys, [-25, 0, 25]);
+  assert.equal(face.axes.plane, true);
+  assert.deepEqual([...evaluatePoints(doc, doc.parts[0], -30, 25)], rest.flat(), 'the absent left correction renders through its carrier');
+  assert.equal(JSON.stringify(doc), before, 'preview readiness never fills author keyforms');
+});
+
+test('an incomplete root carrier cannot inherit readiness from its descendants', () => {
+  const doc = sparseCorrection();
+  delete doc.deformers[0].keyformsXY['-30,25'];
+  assert.equal(nineAxisPreviewModes(doc)[0].axes.plane, false);
+});
+
+test('an explicitly invalid correction is not replaced by a valid inherited form', () => {
+  const doc = sparseCorrection();
+  doc.deformers[2].keyformsXY['-30,25'] = [[NaN, 0]];
+  assert.equal(nineAxisPreviewModes(doc)[0].axes.plane, false);
 });
 
 test('newly made combinations become default once; saves preserve manual selection and removals fall back', () => {
