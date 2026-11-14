@@ -70,8 +70,8 @@ test('fixed face branches cannot rebind KRA layers while preserving stale PNGs',
   upstream.axis=6;
   for(const part of upstream.parts)part.keyforms={...part.keyforms,'-30':structuredClone(part.keyforms['0']),'30':structuredClone(part.keyforms['0'])};
   upstream.parameters=[{id:'ParamAngleX',min:-30,max:30,keys:[-30,0,30]},{id:'ParamAngleY',keys:[0]}];
-  const author=startContinuation(upstream,'original','up'); author.parts[0].uuid=hairUuid;
-  assert.throws(()=>checkContinuation(author,upstream,'original','up',angleScale()),/不能替换上游 KRA 图层绑定/);
+  const author=startContinuation(upstream,'up'); author.parts[0].uuid=hairUuid;
+  assert.throws(()=>checkContinuation(author,upstream,'up',angleScale()),/不能替换上游 KRA 图层绑定/);
 });
 
 test('existing hair keyforms and parents survive KRA hydration instead of becoming static references', async t => {
@@ -89,4 +89,29 @@ test('existing hair keyforms and parents survive KRA hydration instead of becomi
   assert.deepEqual(resolved.keyforms,part.keyforms);assert.equal(resolved.parent,'hair-root');assert.deepEqual(result.doc.deformers,input.doc.deformers);
   assert.equal(resolved.uuid,hairUuid);assert.equal(result.doc.parts.filter(p=>p.uuid===hairUuid).length,1);
   assert.ok(!result.doc.parts.some(p=>p.id==='__kra__/'+hairUuid));
+});
+
+test('a native UUID model re-renders after deleting its entire derived cache without stage PNGs',async t=>{
+  const root=await mkdtemp(join(tmpdir(),'nine-uuid-only-'));t.after(()=>rm(root,{recursive:true,force:true}));
+  const input=materialFixture();delete input.doc.parts[0].texture;
+  const directory=join(root,'nine-axis/step04_angles/model/left'),kra=join(root,input.doc.source!.document);
+  await mkdir(directory,{recursive:true});await mkdir(join(kra,'..'),{recursive:true});await writeFile(kra,await kraFixture('#f00'));
+  const materials=new KraMaterials(fixtureExport);
+  const render=async()=>{const built=await materials.resolve(root,directory,input,undefined,false);return sharp(built.textures.get(built.doc.parts[0].texture!)!).ensureAlpha().raw().toBuffer();};
+  const first=await render();await rm(join(root,'.cache'),{recursive:true});
+  assert.deepEqual(await render(),first);assert.equal(input.doc.parts[0].texture,undefined);
+});
+
+test('edited artwork may use a new UUID while immutable axis sources keep their original binding',async t=>{
+  const root=await mkdtemp(join(tmpdir(),'nine-source-uuid-'));t.after(()=>rm(root,{recursive:true,force:true}));
+  const input=materialFixture(),original=structuredClone(input.doc),fresh='33333333-3333-3333-3333-333333333333';
+  original.source={document:'original.kra'};
+  input.doc.source={document:input.doc.source!.document,geometryDocument:'original.kra'};
+  input.doc.parts[0].uuid=fresh;
+  input.doc.axisSources=['x','up','down'].map(axis=>({axis:axis as any,doc:structuredClone(original)}));
+  const directory=join(root,'nine-axis/step07_jaw-line');await mkdir(directory,{recursive:true});
+  await writeFile(join(directory,'character-nine-axis.kra'),zipSync({'maindoc.xml':strToU8(xml.replaceAll(faceUuid,fresh)),'mergedimage.png':kraContents(await kraFixture('#f00')).merged}));
+  const built=await new KraMaterials(fixtureExport).resolve(root,directory,input,undefined,false);
+  assert.equal(built.doc.parts[0].uuid,fresh);
+  assert.ok(built.doc.axisSources!.every(axis=>axis.doc.parts[0].uuid===faceUuid));
 });

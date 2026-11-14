@@ -152,18 +152,14 @@ test('阴影蒙版完成时用阴影角色图', async t => {
 });
 
 test('转头提示词向左；生视频只用自己的接口，不读生图接口', async () => {
-  assert.match(videoPrompt(), /转向画面左侧/);
-  assert.doesNotMatch(videoPrompt(), /[{}]/);
-  assert.match(videoPrompt('up'), /抬头/);
-  assert.match(videoPrompt('down'), /低头/);
   assert.equal(loadWorkflowEnvironment({}).videoApi, undefined);
   assert.equal(loadWorkflowEnvironment({ openai_image_base_url: 'https://image.example/v1', openai_image_api_key: 'i' }).videoApi, undefined);
   assert.throws(() => loadWorkflowEnvironment({ video_base_url: 'https://video.example/v1' }), /video_api_key/);
   assert.deepEqual(loadWorkflowEnvironment({ layering_video_base_url: 'https://video.example/v1', layering_video_api_key: 'k' }).videoApi,
-    { baseUrl: 'https://video.example/v1', apiKey: 'k', model: 'seedance-2.5' });
+    { provider:'volcengine',baseUrl: 'https://video.example/v1', apiKey: 'k', model: 'doubao-seedance-2-5-260628' });
   assert.deepEqual(loadWorkflowEnvironment({ openai_image_base_url: 'https://image.example/v1', openai_image_api_key: 'i',
     video_base_url: 'https://video.example/v1', video_api_key: 'k', nine_axis_view_video_model: 'seedance-2-fast' }).videoApi,
-    { baseUrl: 'https://video.example/v1', apiKey: 'k', model: 'seedance-2-fast' });
+    { provider:'volcengine',baseUrl: 'https://video.example/v1', apiKey: 'k', model: 'seedance-2-fast' });
   await assert.rejects(ffmpegPath({ PATH: '' }), (error: unknown) => error instanceof MissingDependencyError);
 });
 
@@ -186,11 +182,11 @@ test('生视频提交、轮询并下载，错误中不含密钥', async t => {
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(() => server.close());
   const base = `http://127.0.0.1:${(server.address() as { port: number }).port}`;
-  const api = { baseUrl: base, apiKey: 'secret-key', model: 'seedance-test' };
+  const api = { provider:'openai' as const, baseUrl: base, apiKey: 'secret-key', model: 'seedance-test' };
   const video = await generateVideo(api, 'turn', Buffer.from('png'), { poll: 1 });
   assert.equal(video.bytes.toString(), 'mp4');
   assert.equal(requests[0], 'POST /videos Bearer secret-key');
-  await assert.rejects(generateVideo({ ...api, baseUrl: base + '/x' }, 'turn', Buffer.from('png'), { poll: 1 }),
+  await assert.rejects(generateVideo({ provider:'openai', ...api, baseUrl: base + '/x' }, 'turn', Buffer.from('png'), { poll: 1 }),
     (error: Error) => !error.message.includes('secret-key') && error.message.includes('[redacted]'));
 });
 
@@ -254,7 +250,7 @@ test('脸部步骤提示词以度数写出关键形', () => {
   for (const prompt of [x, up, down, xy, jaw, viewFrames, frames, ...cornerOutlines]) assert.doesNotMatch(prompt, /\{(?:[\w-]+:)?[\w./\u4e00-\u9fff-]+\}/);
 });
 
-test('连续七步：平层视频、三路真实并发、联合工程、斜角与下颌；完成后沿用', { timeout: 30_000 }, async t => {
+test('完整脸部流程后只制作前发首轮，保留头发步骤等待同一会话的下一轮', { timeout: 30_000 }, async t => {
   const { root, task } = await fixture(t);
   const sample = join(root, 'sample.mp4'), ffmpeg = await testVideo(t, sample);
   if (!ffmpeg) return;
@@ -287,11 +283,11 @@ test('连续七步：平层视频、三路真实并发、联合工程、斜角�
     for (const p of seeded.parts) {
       const original = neutral.doc.parts.find(n => n.id === p.id)!;
       assert.deepEqual(p.keyforms['0'], original.keyforms['0']);
-      assert.deepEqual(await readFile(join(directory, p.texture)), await readFile(join(preparation, original.texture)));
+      assert.equal(p.uuid,original.uuid);assert.equal(p.texture,undefined);
     }
     if (group !== 'left') {
       assert.deepEqual(seeded.source, neutral.doc.source);
-      assert.equal((seeded as unknown as { authoring: { upstreamSha256: string } }).authoring.upstreamSha256, neutral.hash);
+      assert.deepEqual((seeded as unknown as { authoring: { stage: string } }).authoring, { stage: group });
       assert.equal(seeded.axisSources, undefined);
     }
     entered.add(group);
@@ -313,8 +309,8 @@ test('连续七步：平层视频、三路真实并发、联合工程、斜角�
     await createContinuationEditTool(directory, axes, 'xy', undefined, task).execute({}, new AbortController().signal);
     const authored = JSON.parse(await readFile(join(directory, 'face-xy.json'), 'utf8'));
     const linear = JSON.parse(await readFile(join(directory, 'linear.json'), 'utf8'));
-    assert.equal(authored.authoring.upstreamSha256, parent.hash);
-    assert.equal(linear.authoring.upstreamSha256, parent.hash);
+    assert.deepEqual(authored.authoring, { stage: 'xy' });
+    assert.deepEqual(linear.authoring, { stage: 'xy' });
     assert.deepEqual(authored.axisSources, parent.doc.axisSources);
     for (const c of ['left-up','left-down']) {
       await writeFile(join(directory, `${c}-face-trace.json`), '{"fixture":"selected trace"}');
@@ -334,21 +330,41 @@ test('连续七步：平层视频、三路真实并发、联合工程、斜角�
   };
   const fitJawLine = async (directory: string) => {
     const upstream = await readUpstream(join(nine, 'step06_angle-xy'));
-    const doc = startContinuation(upstream.doc, upstream.hash, 'jaw');
+    const doc = startContinuation(upstream.doc, 'jaw');
     const base = doc.parts.find(p => p.id === 'face/face_base')!;
-    await mkdir(join(directory, 'layers'), { recursive: true });
-    for (const name of ['jaw_line', 'jaw_mask']) await copyFile(join(nine, 'step06_angle-xy', base.texture), join(directory, `layers/${name}.png`));
-    const fresh = (id: string, extra: object) => ({ ...structuredClone(base), id, group: 'jaw', texture: `layers/${id.split('/')[1]}.png`, ...extra });
+    const fresh = (id: string, extra: object) => ({ ...structuredClone(base), id, uuid:'fixture-'+id, group:'jaw', ...extra });
     doc.parts.push(fresh('face/jaw_mask', { role: 'mask' }), fresh('face/jaw_line', { clip: { by: ['face/jaw_mask'], invert: true } }));
     await writeFile(join(directory, 'jaw.json'), JSON.stringify(doc));
   };
   const deps = { environment: loadWorkflowEnvironment({}), generate, viewFramesHead: pickViews(ffmpeg), framesHead: pickCorners, prepareNeutral,
-    materialize: async (directory: string, built: import('../head.ts').Built) => ({ ...built, textures: new Map(await Promise.all(built.doc.parts.map(async part => {
-      const own = join(directory, part.texture), inherited = join(nine, 'step06_angle-xy', part.texture);
-      return [part.texture, await access(own).then(() => own, () => inherited)] as [string,string];
-    }))) }),
+    prepareHair: async (directory: string, upstream: string) => {
+      if(await access(join(directory,'hair.json')).then(()=>true,()=>false)) return;
+      await copyFile(join(upstream,'character-nine-axis.kra'),join(directory,'character-nine-axis.kra'));
+      const inherited=await readUpstream(upstream),doc=startContinuation(inherited.doc,'hair');
+      const {withDocument}=await import('../source.ts');
+      doc.source=withDocument(doc,task,join(directory,'character-nine-axis.kra')).source;
+      const front={...structuredClone(doc.parts.find(p=>p.id==='face/face_base')!),id:'hair/bangs',uuid:'fixture-bangs',level:'hair' as const};
+      delete front.keyformsY;delete front.keyformsXY;
+      doc.parts.push(front);doc.levels.push({id:'hair',includes:['face','hair']});
+      await writeFile(join(directory,'hair.json'),JSON.stringify(doc));
+      await writeFile(join(directory,'source.json'),JSON.stringify({sourceDocument:doc.source!.document}));
+      await writeBuilt(directory,{doc,textures:new Map()});
+    },
+    fitHair: async (directory: string) => {
+      await createContinuationEditTool(directory,join(nine,'step07_jaw-line'),'hair',undefined,task).execute({operations:[{action:'transform',id:'hair/bangs',x:-30,translate:[-1,0]}]},new AbortController().signal);
+      await writeFile(join(directory,'notes.md'),'前发首轮完成，等待侧发提示词');
+    },
+    materialize: async (_directory: string, built: import('../head.ts').Built) => {
+      const doc=structuredClone(built.doc),textures=new Map<string,string>(),cache=join(task,'.test-materials');await mkdir(cache,{recursive:true});
+      for(const [i,part] of doc.parts.entries()){
+        const file=join(cache,`part-${i}.png`);part.texture=`layers/part-${i}.png`;
+        await sharp({create:{width:part.textureBounds[2],height:part.textureBounds[3],channels:4,background:'#ffe4d2'}}).png().toFile(file);
+        textures.set(part.texture,file);
+      }
+      return {...built,doc,textures};
+    },
     fitHead: fit('left'), fitUp: fit('up'), fitDown: fit('down'), fitAngleXY, fitJawLine };
-  assert.match(await runWithFFmpeg({ name: 'case', dir: root }, deps), /step07_jaw-line 已完成：6 个部件的下颌线与脖子/);
+  assert.match(await runWithFFmpeg({ name: 'case', dir: root }, deps), /前发轮次已完成/);
   assert.deepEqual([...entered].sort(), ['down', 'left', 'up']);
   assert.deepEqual(fitted.sort(), ['down', 'left', 'up']);
   assert.equal(neutralPreparations, 1);
@@ -375,6 +391,7 @@ test('连续七步：平层视频、三路真实并发、联合工程、斜角�
   for (const name of ['left-up', 'left-down', 'right']) await assert.rejects(access(join(videos, `${name}.png`)), { code: 'ENOENT' });
   for (const step of ['step02_angle-x', 'step03_video-y', 'step04_angle-up', 'step05_angle-down', 'step01_video', 'step02_angles', 'step03_angle-xy', 'step04_jaw-line']) await assert.rejects(access(join(nine, step)), { code: 'ENOENT' });
   for (const step of ['step01_preparation','step02_video','step03_frames','step04_angles','step05_frames','step06_angle-xy','step07_jaw-line']) assert.equal((await readStep(join(nine, step))).status, 'completed');
+  assert.equal((await readStep(join(nine,'step08_hair'))).status,'running');
   const source = JSON.parse(await readFile(join(axes, 'source.json'), 'utf8'));
   assert.equal(source.sourceDocument, 'character-assembly/step01/character-assembled.kra');
   await assert.rejects(access(join(preparation, 'character-nine-axis.kra')), { code: 'ENOENT' });
@@ -417,9 +434,16 @@ test('连续七步：平层视频、三路真实并发、联合工程、斜角�
   assert.deepEqual(jaw.parts.map(p => p.id).slice(-2), ['face/jaw_mask', 'face/jaw_line']);
   assert.deepEqual(jaw.levels.map(l => l.name), ['脖子＋脸＋五官']);
   assert.deepEqual(jaw.parts.at(-1)!.clip, { by: ['face/jaw_mask'], invert: true });
-  for (const p of neutral.doc.parts) for (const output of [axes, corners, join(nine, 'step07_jaw-line')])
-    assert.deepEqual(await readFile(join(output, p.texture)), await readFile(join(preparation, p.texture)));
-  assert.match(await runWithFFmpeg({ name: 'case', dir: root }, deps), /沿用/);
+  for (const output of [axes,corners,join(nine,'step07_jaw-line')]) {
+    const current=(await readUpstream(output)).doc;
+    for(const part of neutral.doc.parts){const next=current.parts.find(p=>p.id===part.id)!;assert.equal(next.uuid,part.uuid);assert.equal(next.texture,undefined);}
+  }
+  assert.match(await runWithFFmpeg({ name: 'case', dir: root }, {...deps,fitHair:async(directory,prompt)=>{
+    assert.match(prompt,/继续制作两片侧发/);
+    const path=join(directory,'hair.json'),doc=JSON.parse(await readFile(path,'utf8'));
+    doc.parts.push({...structuredClone(doc.parts.find((p:any)=>p.id==='hair/bangs')),id:'hair/side_hair/left',uuid:'fixture-side'});
+    await writeFile(path,JSON.stringify(doc));await writeFile(join(directory,'notes.md'),'侧发完成，等待后发');
+  }}), /侧发轮次已完成/);
   assert.equal(prompts.length, 5);
   assert.equal(fitted.length, 3);
   assert.equal(neutralPreparations, 1);

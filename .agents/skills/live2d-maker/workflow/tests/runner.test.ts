@@ -17,7 +17,7 @@ import { defaultKnowledgeDirectory, knowledgeDirectory, selectKnowledge } from '
 import { markBaseStep } from '../../shared/tests/dressup-fixture.ts';
 
 // Real background workers inherit this and pass the Codex startup check without a build.
-process.env.codex_path = await fakePatchedCodex();
+process.env.ASTRA_TEST_CODEX_EXECUTABLE = await fakePatchedCodex();
 
 const png = (background: string) => sharp({ create: { width: 2, height: 2, channels: 4, background } }).png().toBuffer();
 const originalImage = await png('#f00');
@@ -474,4 +474,15 @@ test('FFmpeg startup checks only nine-axis and preserves the run after a refused
   assert.equal(run.ffmpeg, chosen);
   assert.equal((parseArguments(['--name', 'case', '--ffmpeg', chosen]) as any).options.ffmpeg, chosen);
   for (const action of ['--status', '--stop']) assert.throws(() => parseArguments(['--name', 'case', action, '--ffmpeg', chosen]), /不修改启动配置/);
+});
+
+test('a saved round with completed=false keeps the section and task unfinished without reporting a failure',async t=>{
+  const f=await fixture(t);
+  const result=await runTask({...f.options,from:'part-layering',to:'part-layering'},{preflight,
+    execute:async()=>({summary:'前发已保存，等待同一会话的侧发提示词',completed:false,output:'nine-axis/step08_hair/deformers.json'}),
+  });
+  assert.equal(result.status,'interrupted');assert.equal(result.sections['part-layering']?.status,'interrupted');
+  assert.match(result.sections['part-layering']!.summary!,/前发已保存/);assert.equal(result.error,undefined);
+  assert.equal((await readRun(f.directory))?.status,'interrupted');
+  assert.doesNotMatch(await readFile(join(f.directory,'workflow.log'),'utf8'),/所选路线已完成/);
 });

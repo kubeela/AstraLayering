@@ -1,6 +1,6 @@
 import { checkCodexCapabilities, type WorkflowEnvironment } from '../codex/environment.ts';
 import type { SectionId } from '../paths.ts';
-import { stepDefaults, type AgentStep } from './models.ts';
+import { stepModelSlots, type AgentStep } from './models.ts';
 import { cliExecutable } from './cli.ts';
 import { validateImageSelection } from './images.ts';
 import { validateProviderModel } from './providers.ts';
@@ -13,6 +13,7 @@ import { withNodePath } from '../process-environment.ts';
 import type { Harness } from './models.ts';
 
 export async function checkAgentCli(settings: WorkflowEnvironment, harness: Harness, runsRoot?: string): Promise<string> {
+  if (harness === 'codex' && !settings.codex.codexPathOverride) await checkCodexCapabilities(settings);
   const launch = harness === 'codex' ? appServerCommand(settings.codex.codexPathOverride)
     : { command: await cliExecutable(settings, harness, runsRoot), args: [] };
   const args = [...(harness === 'codex' ? launch.args.slice(0, -1) : launch.args), '--version'];
@@ -49,7 +50,7 @@ export async function checkAgentCli(settings: WorkflowEnvironment, harness: Harn
 }
 
 export function sectionAgentSteps(section: SectionId, standard = false, shadowMode: 'mask' | 'normal-depth' = 'mask'): AgentStep[] {
-  return (Object.keys(stepDefaults) as AgentStep[]).filter(step => {
+  return (Object.keys(stepModelSlots) as AgentStep[]).filter(step => {
     if (section === 'part-layering') return step.startsWith('part_') && (standard || !['part_pose_judgment', 'part_standardize'].includes(step));
     if (section === 'clothing-part-layering') return step.startsWith('clothing_') && !step.startsWith('clothing_raster_');
     if (section === 'raster-layering') return step.startsWith('raster_');

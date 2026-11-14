@@ -16,7 +16,7 @@ pnpm check
 
 | 条件 | 通过标准 |
 | --- | --- |
-| 方案 1 默认、方案 2 混合与自定义配置 | 全部 LLM 职责和独立生图选择完整；人物／衣服职责共享，但工具和提示词覆盖保留；shell 覆盖、默认回退与旧配置冲突有对应断言 |
+| 方案 1 默认、方案 2 混合与自定义配置 | 全部 LLM 职责和独立生图选择完整；人物／衣服职责共享，但工具和提示词覆盖保留；本地非空值优先、启动环境回退与旧配置冲突有对应断言 |
 | 模型与生图组合 | 所有生图步骤拒绝非 Codex harness 配原生 imagegen；缺少所选生图 URL／key、CLI 或 Codex 生图补丁能力时，启动前明确报错；CLI 本地版本探测能识别文件存在但解释器／动态库缺失的情况 |
 | 真实工具目录 | 读取 `shared/tools/`、`shadow/tools/`、`clothing-part-layering/tools/` 的全部 schema.json 与 knowledge 中的 description.md，管线自有工具只出现在该管线的 catalog；不以只含简单字符串的测试工具代替；可空类型、嵌套数组、枚举、数值约束、oneOf 和 additionalProperties 等逐字段保留 |
 | Gemini 请求 | 实际 HTTP 适配路径用 parametersJsonSchema 传完整 JSON Schema，不能把 type 数组塞进受限的 parameters；保留 CLI 原生工具；重复准备不重复注册；camelCase／snake_case 原生声明均可处理 |
@@ -24,9 +24,10 @@ pnpm check
 | Codex 原生生图 | `codex-native` 不注入补丁生图配置；GPT／Nano 使用原生工具；不同请求的路由／模型隔离，保存图片事件与原 thread 续跑保留 |
 | 自定义生图协议 | Gemini 原生和 OpenAI 兼容的生图／编辑请求保留提示词与输入图片，输入文件不修改；输出落在请求目录，跨任务路径被拒绝 |
 | 会话恢复 | 同 CLI 修改模型／力度恢复原会话；切换 CLI 或会话失效创建替代会话并记录历史，已有产物保留 |
+| 会话配置隔离 | 三种 harness 共用任务内的会话路径注册；Codex 模型目录探测与 App Server 使用同一私有配置根，只迁入认证文件。新会话隔离，重连复用原数据；任务移动后可解析，数据目录、workspace 与配置文件的路径逃逸被拒绝。管线显式 provider 配置和动态工具保留，宿主个人指令与扩展不自动载入 |
 | 故障与状态 | 只按通道给出的结构化错误码判断临时错误并沿用会话重试，错误文本只能否决、不能触发重试；正常退出却无产物展示最后消息；取消、失败及进程退出的总控状态明确，不把已退出进程展示为运行中 |
 
-这些是配置、传输和恢复的自动回归；它们不能证明上游当前授权、API 完整兼容或绘图质量。
+自动回归覆盖配置、传输与恢复；新服务另按下节检查实际调用和制作效果。
 
 ### 新环境的真实验证
 
@@ -54,3 +55,11 @@ pnpm check
 ```
 
 自动回归使用本地模拟，不证明上游授权、实际绘图质量或全部协议兼容。临时服务退避、会话恢复与宿主巡检见 [workflow](../workflow/README.md)。
+
+配置规则与视频适配的无模型回归：
+
+```sh
+node --import ./shared/tests/ignore-local-env.ts --test shared/tests/model-patterns.test.ts shared/tests/default-configuration.test.ts nine-axis/tests/video-providers.test.ts workflow/tests/configuration-startup.test.ts
+```
+
+覆盖同一份浏览器／管线通配语法、追加规则与自定义路由、静态图片参数、三种视频协议、密钥隔离及启动失败日志。

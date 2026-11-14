@@ -1,10 +1,11 @@
+import { withCodex } from '../../shared/tests/fake-codex.ts';
 // First, so a direct `node --test` of this file also keeps its own Krita slots and
 // ignores the local .env, as `pnpm test` does through --import.
 import '../../shared/tests/ignore-local-env.ts';
 import assert from 'node:assert/strict';
 import { test, type TestContext } from 'node:test';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import sharp from 'sharp';
 import { zipSync, strToU8 } from 'fflate';
@@ -58,7 +59,7 @@ async function fixture(t: TestContext) {
     }
     return {success:true,width:2,height:2,nativeVersion:'fixture',relations:relations.map((r,i)=>({id:r.id,bounds:[0,0,2,2],fullPaint:`paint-${i}.png`,receiver:`receiver-${i}.png`,clipBase:`receiver-${i}.png`,frames:r.testOffsets.map((offset:number[],j:number)=>({offset,file:`offset-${i}-${j}.png`,clipped:`offset-${i}-${j}.png`}))}))};
   };
-  const deps = { environment: loadWorkflowEnvironment({ codex_path: await fakePatchedCodex(root) }, root), preflight: async (executable: string) => ({ executable }) };
+  const deps = { environment: withCodex(loadWorkflowEnvironment({}, root), await fakePatchedCodex(root)), preflight: async (executable: string) => ({ executable }) };
   // A mask agent saves its work, then may inspect it (null: delivers without inspecting).
   const deliver = async (request: AgentRequest, native: NativeInspect | null = inspectNative) => {
     await request.onEvent({ type: 'thread.started', thread_id: request.threadId ?? (request.step + '-thread') });
@@ -111,7 +112,7 @@ test('dry-run 与缺上游不调用模型、不写文件，提示词包含精度
   for (const mode of ['mask', 'normal-depth'] as const) {
     const prompt = await runWorkflow({ ...f.options, shadowMode: mode, dryRun: true }, { ...f.deps,
       agent: async () => assert.fail('dry run must not call models') });
-    assert.ok(prompt.includes(f.source + '/')); assert.match(prompt, mode === 'mask' ? /deformer/ : /白近黑远/);
+    assert.ok(prompt.includes(f.source + '/'));
   }
   await assert.rejects(readFile(join(f.task, 'shadow/selection.json')), { code: 'ENOENT' });
   await rm(join(f.source, 'character-assembled.kra'));

@@ -4,8 +4,8 @@
 
 | 功能 | .env 开关／选择 | 启动行为 |
 | --- | --- | --- |
-| Codex 失败流错误读取 | 使用 Codex 即生效，无开关 | 未指定 `codex_path` 时自动构建并复用缓存；读取 LiteLLM 在空 `response.failed` 后单独发送的 `error` 事件 |
-| Codex 图片数 compact | `image_compact_threshold=<正整数>` | 未指定 `codex_path` 时自动构建并复用缓存 |
+| Codex 失败流错误读取 | 使用 Codex 即生效，无开关 | 自动构建并复用管线缓存；读取 LiteLLM 在空 `response.failed` 后单独发送的 `error` 事件 |
+| Codex 图片数 compact | `image_compact_threshold=<正整数>` | 自动构建并复用管线缓存 |
 | 三种 CLI 图片／请求体预算 | `<codex/claude/agv>_image_compact_threshold` / `<codex/claude/agv>_request_compact_mib` | 留空关闭；按实际发送内容检查，带图分批压缩，保留最新图与恢复记录 |
 | Claude 拒绝后的会话恢复 | 自动处理结构化 refusal，无开关 | 保留记录与产物，从恢复提示词新建会话；边界见下文 |
 | Codex 自定义生图 | 对应步骤选择 GPT／Nano，并填写对应 API | 与 compact 共用同一补丁，按所选路线实际需要准备 |
@@ -38,7 +38,7 @@ node patches/shared/cli-visual-smoke.ts --harness claude
 这项兼容行为在工作流调用层实现，不修改或重新编译 Claude Code CLI。收到 Claude 的结构化 `model_refusal*` 事件或结果中的 `stop_reason: refusal` 时，记录拒绝类别与回合数；普通错误文案中的“拦截”字样本身不触发这项恢复，也不能据此认定一定是误判。
 
 - **首次恢复：** 有可替换的会话时，保留旧会话记录与制作产物，记录替换原因并新建会话；步骤提供 `recoveryPrompt` 时用它重新接手任务，否则沿用原任务提示词。不在已拒绝的会话中按网络错误反复等待重试。
-- **再次拒绝：** 与其他换会话错误同一条规则：被替换的必须是原会话，或已有进展（调用过工具，或 `num_turns > 1`）的新会话。替代会话没做任何事就又被拒时，停止并报告 CLI 原始错误；已有进展后才被拒，允许再次替换；一次调用最多换的会话数与网络重试上限相同（10）。因此不是对所有拒绝固定重试一次，也不保证恢复成功。
+- **再次拒绝：** 与其他换会话错误同一条规则：被替换的必须是原会话，或已有进展（调用过工具，或 `num_turns > 1`）的新会话。替代会话没做任何事就又被拒时，停止并报告 CLI 原始错误；已有进展后才被拒，允许再次替换；一次调用最多换的会话数与网络重试上限相同（10）。
 - **适用边界：** 明确的图片内容策略拦截在 Claude／AGV CLI 路径中直接失败，不套用 Codex 专用的历史图片替换逻辑；鉴权、额度及其他明确不可重试错误也分别处理。恢复不关闭 CLI 安全检查，不自动改写请求来规避拒绝。无法恢复时，查看 `workflow.log` 中的原始原因，再核对请求或服务配置后从原入口继续。
 
 步骤会话的替换历史追加到 `session.json.history.jsonl`，已有文件保留；记录位置见 [shared · 工作区与产物](../shared/README.md#工作区与产物)。事件读取见 [shared/agents/cli.ts](../shared/agents/cli.ts)，恢复与边界见 [shared/codex/agents.ts](../shared/codex/agents.ts) 和 [agent-runtime.ts](../shared/codex/agent-runtime.ts)。[step-models.test.ts](../shared/tests/step-models.test.ts) 用模拟 CLI 覆盖首次替换、首轮再次拒绝后停止、多轮执行后再次替换和产物保留；不调用真实模型。
@@ -49,7 +49,7 @@ node patches/shared/cli-visual-smoke.ts --harness claude
 
 ### 补丁入口与缓存校验
 
-使用 Codex harness 时始终需要补丁版：错误读取修正对所有请求生效。`codex_path` 留空时，启动预检自动准备并复用缓存；显式指定入口时只检查该入口，不自动替换。构建命令、平台依赖与恢复办法见 [setup · Codex 补丁构建与恢复](../references/setup.md#codex-补丁构建与恢复)。
+使用 Codex harness 时始终需要补丁版：错误读取修正对所有请求生效。启动预检自动准备并复用管线补丁缓存。构建命令、平台依赖与恢复办法见 [setup · Codex 补丁构建与恢复](../references/setup.md#codex-补丁构建与恢复)。
 
 缓存为 `.codex-build/<平台-架构>/<源码与补丁指纹>/`。进程锁防止并发重复构建，产物和官方 Code Mode companion 的 SHA-256 校验通过后才复用；失败不写成功标记，中断后可直接续跑。补丁更新使用新指纹目录，旧文件保留。所有入口要求 `failed_error_event_version: 1`；生图要求 `image_provider_version: 2`，按图片数压缩要求 `image_compaction_version: 2`，请求体预算另外要求 `request_compaction_version: 1`。
 

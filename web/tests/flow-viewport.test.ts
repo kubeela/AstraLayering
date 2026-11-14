@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { chromium } from 'playwright';
 import { createWorkbench } from '../server.ts';
+import { sectionSteps, type ProgressStep } from '../progress.js';
 
 test('flow preview retains the right edge, manual zoom and a middle position across layout changes and polling',
   { timeout: 30_000 }, async t => {
@@ -66,6 +67,12 @@ test('nine-axis branches show flat task rows with one workbench entry and access
   await writeFile(join(model, 'left/.completed'), '');
   await writeFile(join(model, 'left/deformers.json'), '{}');
   await writeFile(join(model, 'up/.running'), '');
+  const hair = join(root, 'case/nine-axis/step08_hair'), accessories = join(root, 'case/nine-axis/step09_head-accessories');
+  await mkdir(hair, { recursive: true }); await mkdir(accessories, { recursive: true });
+  await writeFile(join(hair, '.running'), '');
+  await writeFile(join(hair, 'hair-progress.json'), JSON.stringify({ version: 2, completed: ['front'], next: 'side' }));
+  await writeFile(join(accessories, 'deformers.json'), '{}');
+  await writeFile(join(accessories, 'notes.md'), 'Stage notes');
   const server = await createWorkbench({ defaultDir: root, settingsPath: join(root, 'settings.json') });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(() => new Promise<void>(resolve => server.close(() => resolve())));
@@ -81,6 +88,25 @@ test('nine-axis branches show flat task rows with one workbench entry and access
   await page.route('**/api/studio/project?*', route => route.fulfill({ json: { nineAxis: { available: false } } }));
   await page.goto(`http://127.0.0.1:${(server.address() as any).port}/?name=case&page=preview&stage=6`);
   const card = page.locator('[data-node="6:step04_angles"]'); await card.waitFor();
+  const section = page.locator('[data-section="6"]');
+  const plan = section.locator('.preview-step-plan');
+  const count = (steps: ProgressStep[]): number => steps.reduce((sum, step) => sum + 1 + count(step.children), 0);
+  assert.equal(await plan.locator('[data-step]').count(), count(sectionSteps[6]), 'the pending group lists the complete execution tree');
+  const sizes = await page.evaluate(() => {
+    const common = document.querySelector('[data-node="0:initial"]') as HTMLElement;
+    const nine = document.querySelector('[data-node="6:step02_video"]') as HTMLElement;
+    return { common: [common.clientWidth, common.clientHeight], nine: [nine.clientWidth, nine.clientHeight] };
+  });
+  assert.deepEqual(sizes.nine, sizes.common, 'pending nine-axis cards use the existing card geometry');
+  assert.equal(await plan.locator('[data-step="6:step01_preparation"]').count(), 1);
+  assert.equal(await plan.locator('[data-step="6:step04_angles/model/left"]').count(), 1);
+  assert.equal(await plan.locator('[data-step="6:step09_head-accessories"]').count(), 1);
+  const pendingToggle = section.locator('[data-step-toggle="6:step02_video"]');
+  await pendingToggle.click();
+  assert.equal(await pendingToggle.getAttribute('aria-expanded'), 'false');
+  assert.equal(await plan.locator('[data-step]').count(), count(sectionSteps[6]), 'folding a card does not remove the plan');
+  await pendingToggle.click();
+  assert.equal(await pendingToggle.getAttribute('aria-expanded'), 'true');
   await page.locator('.flow-scroll').evaluate(element => {
     const node = element.querySelector('[data-node="6:step04_angles"]')!;
     element.scrollLeft += node.getBoundingClientRect().left - element.getBoundingClientRect().left - 20;
@@ -101,5 +127,19 @@ test('nine-axis branches show flat task rows with one workbench entry and access
   await page.getByRole('button', { name: '关闭产物面板' }).click();
   assert.equal(await row.evaluate(element => (element as HTMLDetailsElement).open), true, 'output disclosure survives a refresh');
   assert.equal(await card.locator('.nine-task-title').evaluateAll(elements => elements.some(element => element.scrollWidth > element.clientWidth + 1)), false);
+  const hairCard = page.locator('[data-node="6:step08_hair"]');
+  assert.equal(await hairCard.locator('[data-hair-round]').count(), 4);
+  assert.equal(await hairCard.locator('[data-hair-round="front"] .nine-task-status').textContent(), '已完成');
+  assert.equal(await hairCard.locator('[data-hair-round="side"] .nine-task-status').textContent(), '待执行');
+  assert.equal(await hairCard.locator('.step-activity').textContent(), '继续后制作侧发');
+  assert.equal(await hairCard.locator('[data-node]').count(), 0, 'rounds are not executable children');
+  const accessoriesCard = page.locator('[data-node="6:step09_head-accessories"]');
+  assert.equal(await accessoriesCard.getByRole('button', { name: '头部累计模型', exact: true }).count(), 1);
+  assert.equal(await accessoriesCard.getByRole('button', { name: '制作说明', exact: true }).count(), 1);
+  await writeFile(join(hair, 'hair-progress.json'), JSON.stringify({ version: 2, completed: ['front', 'side'], next: 'back' }));
+  await hairCard.locator('.step-activity').filter({ hasText: '继续后制作后发' }).waitFor();
+  assert.equal(await hairCard.locator('[data-hair-round="side"] .nine-task-status').textContent(), '已完成');
+  assert.equal(await hairCard.locator('[data-hair-round="back"] .nine-task-status').textContent(), '待执行');
+  assert.equal(await page.locator('[data-section="6"] a[href*="studio?"]').count(), 1);
   assert.deepEqual(errors, []);
 });

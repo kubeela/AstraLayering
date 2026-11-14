@@ -1,3 +1,4 @@
+import { withCodex } from './fake-codex.ts';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -26,9 +27,9 @@ async function setImages(directory: string, enabled: boolean) {
 test('nine-axis steps use their own agent.json while sharing a model slot', async t => {
   const knowledge = await temporaryKnowledge(t);
   const entries = [['step03_frames', ['nine_axis_view_frames']], ['step04_outline', ['nine_axis_outline']], ['step04_angles', ['nine_axis_head', 'nine_axis_head_y', 'nine_axis_head_down']],
-    ['step05_frames', ['nine_axis_frames']], ['step06_angle-xy', ['nine_axis_head_xy']], ['step07_jaw-line', ['nine_axis_head_jaw']]] as const;
+    ['step05_frames', ['nine_axis_frames']], ['step06_angle-xy', ['nine_axis_head_xy']], ['step07_jaw-line', ['nine_axis_head_jaw']], ['step08_hair',['nine_axis_head_hair']], ['step09_head-accessories',['nine_axis_head_accessories']]] as const;
   for (const [directory, identities] of entries) {
-    const path = join(knowledge, 'nine-axis', directory, 'agent.json');
+    const path = join(knowledge, 'head-nine-axis', directory, 'agent.json');
     const config = JSON.parse(await readFile(path, 'utf8'));
     config.main.tools.push('imagegen');
     await writeFile(path, JSON.stringify(config));
@@ -71,16 +72,26 @@ test('all named agents read capability from their role; main and repair share to
   assert.throws(() => checkKnowledge(knowledge), /未注册的工具/);
 });
 
+test('new imagegen capabilities inherit global defaults without changing the selected knowledge', async t => {
+  const knowledge=await temporaryKnowledge(t);
+  await setImages(knowledge,true);
+  const native=loadWorkflowEnvironment({},knowledge);
+  assert.equal(native.stepImages.raster_step02,native.stepImages.raster_step01);
+  const custom=loadWorkflowEnvironment({default_image_model:'gpt-image-2.6-flare'},knowledge);
+  assert.equal(custom.stepImages.raster_step02,'gpt-image-2.6-flare');
+  assert.equal(agentImageGeneration('raster_step02'),true);
+});
+
 for (const model of ['codex-native', 'gpt-image-2.5-flare', 'gemini-nano-banana-2.1'] as const) {
   test(`Codex ${model}: agent.json controls start/resume and closes custom image routes`, async t => {
     const knowledge = await temporaryKnowledge(t);
     await setImages(knowledge, true);
     const server = await fakeAppServer(knowledge, [], 'completed', [], { finalText: 'done' });
-    const settings = loadWorkflowEnvironment({ layering_codex_path: server.executable,
+    const settings = withCodex(loadWorkflowEnvironment({
       raster_step02_image_model: model,
       layering_openai_image_base_url: 'http://127.0.0.1:1/v1', layering_openai_image_api_key: 'fixture',
       layering_google_image_base_url: 'http://127.0.0.1:1/v1', layering_google_image_api_key: 'fixture',
-    }, knowledge);
+    }, knowledge), server.executable);
     settings.codex.config = { 'features.image_generation': true, features: { image_generation: true } };
     const agents = new CodexAgents({ environment: settings, cwd: knowledge });
     const session = agents.createSession();
